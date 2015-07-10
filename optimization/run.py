@@ -64,9 +64,6 @@ sh_bg["zjets"] = sh_all.find("zjets")
 
 
 
-
-# sh_bg["ssss"]
-
 tempDirDict = {   
 	sh_data: "rundir_data",
 	sh_signal: "rundir_signal",
@@ -75,32 +72,6 @@ tempDirDict = {
 	sh_bg["wjets"]: "rundir_wjets",
 	sh_bg["zjets"]: "rundir_zjets",
     }
-
-
-def scaleMyRootFiles(mysamplehandler,mylumi):
-	for sample in mysamplehandler:
-		tempxs = sample.getMetaDouble("nc_xs") * sample.getMetaDouble("kfactor") * sample.getMetaDouble("filter_efficiency")
-		
-		print "Scaling %s by %f/(%f or %f)"%(sample.getMetaString("short_name"), tempxs, sample.getMetaDouble("nc_nevt"), sample.getMetaDouble("nc_sumw"))
-		m_eventscaling = tempxs
-		if sample.getMetaDouble("nc_nevt"):
-			m_eventscaling /= sample.getMetaDouble("nc_nevt") if "jetjet" in sample.getMetaString("short_name") else sample.getMetaDouble("nc_sumw")
-		else:
-			m_eventscaling = 0.
-
-		print m_eventscaling
-		# for ifile in xrange(sample.numFiles() ):
-		myfile = ROOT.TFile( tempDirDict[mysamplehandler]+"/hist-"+sample.fileName(0).split("/")[-2]+".root","UPDATE")
-		dirList = ROOT.gDirectory.GetListOfKeys()
-		for k1 in dirList:
-			h1 = k1.ReadObj()
-			h1.Scale(m_eventscaling)
-			# h1.Scale(0.0)
-			h1.Scale(mylumi)
-			h1.Write()
-			# print h1.Integral()
-		myfile.Close()
-
 
 
 ROOT.TMVA.Tools.Instance()
@@ -115,6 +86,7 @@ factory = ROOT.TMVA.Factory("TMVAClassification", fout,
                                 "AnalysisType=Classification"]
                                      ))
 
+## Allows us to look at low sig eff points...
 (ROOT.TMVA.gConfig().GetVariablePlotting()).fNbinsXOfROCCurve =  200
 
 #factory.AddVariable("NTRJigsawVars.RJVars_SS_MDeltaR/1000.","F")
@@ -157,7 +129,6 @@ for mysamplehandler in [
 		m_sumw = 0
 		for ifile in xrange(sample.numFiles() ):
 			myfile = ROOT.TFile(sample.fileName(ifile))
-			ibin = 1 if "jetjet" in sample.getMetaString("short_name") else 1
 			try:
 				m_nevt += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(1)
 				m_sumw += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(2)
@@ -168,6 +139,9 @@ for mysamplehandler in [
 
 	if mysamplehandler==sh_signal:
 		for sample in mysamplehandler:
+			#################################################################################
+			## This is hard-coding what signal to optimize against... #######################
+			#################################################################################
 			if not("_1200_600" in sample.getMetaString("short_name") ):
 				continue
 			tempxs = sample.getMetaDouble("nc_xs") * sample.getMetaDouble("kfactor") * sample.getMetaDouble("filter_efficiency")
@@ -176,6 +150,7 @@ for mysamplehandler in [
 
 	else:
 		for sample in mysamplehandler:
+			## Just killing these low JX samples - should be ~kosher for now.
 			if "JZ0W" in sample.getMetaString("short_name") or "JZ1W" in sample.getMetaString("short_name"):
 				continue
 			tempxs = sample.getMetaDouble("nc_xs") * sample.getMetaDouble("kfactor") * sample.getMetaDouble("filter_efficiency")
@@ -200,9 +175,6 @@ options = "!H:V:FitMethod=GA:EffSel"
 # options += ":VarProp[4]=NotEnforced"
 # options += ":VarProp[12]=NotEnforced"
 # options += ":VarProp[13]=NotEnforced"
-
-#options += ":CutRangeMin[0]=300:CutRangeMin[1]=300"
-#options += ":CutRangeMax[0]=1e30:CutRangeMax[1]=500"
 
 method = factory.BookMethod(ROOT.TMVA.Types.kCuts, "kCuts", options)
 

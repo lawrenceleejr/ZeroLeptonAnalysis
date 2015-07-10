@@ -119,7 +119,6 @@ for mysamplehandler in [
 		m_sumw = 0
 		for ifile in xrange(sample.numFiles() ):
 			myfile = ROOT.TFile(sample.fileName(ifile))
-			ibin = 1 if "jetjet" in sample.getMetaString("short_name") else 1
 			try:
 				m_nevt += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(1)
 				m_sumw += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(2)
@@ -239,6 +238,8 @@ for mysamplehandler in [
 	}
 
 
+	## This part sets up both N-1 hists and the cutflow histogram for "sirop_tight"
+
 	cutflow = ROOT.TH1F ("cutflow", "cutflow", len(sirop_tight_cuts)+1 , 0, len(sirop_tight_cuts)+1 );
 	cutflow.GetXaxis().SetBinLabel (1, "NTVars.eventWeight");
 
@@ -248,14 +249,13 @@ for mysamplehandler in [
 		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_tight_minus_%s"%cutpartname, "sirop_tight_%s"%cutpartname, 5000, -1, 500), 
 			cutpart.split("<")[0].split(">")[0],
 			"NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in sirop_tight_cuts if  mycut!=cutpart ]))    )        )
-	
-		# print "\n\n\n\n"
-		# print cutpart
-		# print "---------"
-		# print "NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in sirop_1200_600_cuts if  mycut!=cutpart ]))
+
 		cutflow.GetXaxis().SetBinLabel (i+2, cutpart);
 
 	job.algsAdd(ROOT.MD.AlgCFlow (cutflow))
+
+
+
 
 
 	for cut in cuts:
