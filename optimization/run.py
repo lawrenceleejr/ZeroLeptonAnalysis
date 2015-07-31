@@ -89,29 +89,29 @@ factory = ROOT.TMVA.Factory("TMVAClassification", fout,
 ## Allows us to look at low sig eff points...
 (ROOT.TMVA.gConfig().GetVariablePlotting()).fNbinsXOfROCCurve =  200
 
-#factory.AddVariable("NTRJigsawVars.RJVars_SS_MDeltaR/1000.","F")
-#factory.AddVariable("NTRJigsawVars.RJVars_MG/1000.","F") 
+factory.AddVariable("NTRJigsawVars.RJVars_SS_MDeltaR/1000.","F")
+factory.AddVariable("NTRJigsawVars.RJVars_MG/1000.","F") 
 #factory.AddVariable("NTRJigsawVars.RJVars_SS_Mass/1000." ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_G_0_CosTheta" ,"F")
-factory.AddVariable("NTRJigsawVars.RJVars_G_1_CosTheta" ,"F")
+# factory.AddVariable("NTRJigsawVars.RJVars_G_1_CosTheta" ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_G_0_PInvHS" ,"F")
-factory.AddVariable("NTRJigsawVars.RJVars_G_1_PInvHS" ,"F")
+# factory.AddVariable("NTRJigsawVars.RJVars_G_1_PInvHS" ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_G_0_Jet2_pT/1000." ,"F")
-factory.AddVariable("NTRJigsawVars.RJVars_G_1_Jet2_pT/1000." ,"F")
+# factory.AddVariable("NTRJigsawVars.RJVars_G_1_Jet2_pT/1000." ,"F")
 factory.AddVariable("abs(NTRJigsawVars.RJVars_SS_CosTheta)" ,"F")
 factory.AddVariable("abs(NTRJigsawVars.RJVars_DeltaBetaGG)" ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_QCD_Rpt" ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib" ,"F")
 
 factory.AddVariable("NTRJigsawVars.RJVars_C_0_CosTheta" ,"F")
-factory.AddVariable("NTRJigsawVars.RJVars_C_1_CosTheta" ,"F")
+# factory.AddVariable("NTRJigsawVars.RJVars_C_1_CosTheta" ,"F")
 factory.AddVariable("cos(NTRJigsawVars.RJVars_G_0_dPhiGC)" ,"F")
-factory.AddVariable("cos(NTRJigsawVars.RJVars_G_1_dPhiGC)" ,"F")
+# factory.AddVariable("cos(NTRJigsawVars.RJVars_G_1_dPhiGC)" ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_G_0_Jet1_pT/1000." ,"F")
-factory.AddVariable("NTRJigsawVars.RJVars_G_1_Jet1_pT/1000." ,"F")
+# factory.AddVariable("NTRJigsawVars.RJVars_G_1_Jet1_pT/1000." ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_dphiVG" ,"F")
 factory.AddVariable("NTRJigsawVars.RJVars_V1_N" ,"I")
-factory.AddVariable("NTRJigsawVars.RJVars_I1_Depth" ,"I")
+#factory.AddVariable("NTRJigsawVars.RJVars_I1_Depth" ,"I")
 
 
 for mysamplehandler in [	
@@ -142,7 +142,7 @@ for mysamplehandler in [
 			#################################################################################
 			## This is hard-coding what signal to optimize against... #######################
 			#################################################################################
-			if not("_1200_600" in sample.getMetaString("short_name") ):
+			if not("_1200_800" in sample.getMetaString("short_name") ):
 				continue
 			tempxs = sample.getMetaDouble("nc_xs") * sample.getMetaDouble("kfactor") * sample.getMetaDouble("filter_efficiency")
 			if sample.getMetaDouble("nc_sumw"):
@@ -161,7 +161,7 @@ for mysamplehandler in [
 factory.SetBackgroundWeightExpression( "NTVars.eventWeight" );
 factory.SetSignalWeightExpression( "NTVars.eventWeight" );
 
-preselection = ROOT.TCut("NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300&&met>100.&&NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>100.&&NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>100.")
+preselection = ROOT.TCut("NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300&&met>100.&&NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>100.&&NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>100.")
 factory.PrepareTrainingAndTestTree( preselection, preselection ,
 									"V:SplitMode=Random:NormMode=NumEvents" )
 

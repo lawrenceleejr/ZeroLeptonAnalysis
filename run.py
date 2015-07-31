@@ -131,112 +131,110 @@ for mysamplehandler in [
 	job = ROOT.EL.Job()
 	job.sampleHandler(mysamplehandler)
 
-	sirop_1200_600_cuts = []
-	sirop_1200_600_cuts += ["met>100"]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>400"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>70."   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>70."   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta<0.8"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta<0.8"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta>-0.9"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.9"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_0_PInvHS>0.15"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_1_PInvHS>0.15"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_C_0_CosTheta<0.9"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_C_1_CosTheta<0.9"   ]
-	sirop_1200_600_cuts += ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.8"   ]
-	sirop_1200_600_cuts += ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.8"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>100"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>100"   ]
-	sirop_1200_600_cuts += ["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.9"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_DeltaBetaGG>0.6"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.9"   ]
-	sirop_1200_600_cuts += ["NTRJigsawVars.RJVars_QCD_Rpt<0.15"]
+	sirop_1200_800_cuts = []
+	sirop_1200_800_cuts += ["met>100"]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>200."   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>200."   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>100."   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>100."   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_0_PInvHS>0.17"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_1_PInvHS>0.17"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta>-0.5"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.5"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_C_1_CosTheta<0.8"   ]
+	sirop_1200_800_cuts += ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.9 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.6"]
+	sirop_1200_800_cuts += ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.9 && cos(NTRJigsawVars.RJVars_G_1_dPhiGC)<0.6"]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_DeltaBetaGG<0.9" ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_QCD_Rpt<0.3"]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_SS_VisShape>0.1"   ]
+	sirop_1200_800_cuts += ["NTRJigsawVars.RJVars_MG/1000.>600"   ]
+
+
+	sirop_1200_800_limits =  [] #[]
+	sirop_1200_800_limits +=  [ (50,0,1000) ] # ["met>100"]
+	sirop_1200_800_limits +=  [ (50,0,2000) ] # ["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"   ]
+	sirop_1200_800_limits +=  [ (50,0,500) ] # ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>200."   ]
+	sirop_1200_800_limits +=  [ (50,0,500) ] # ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>200."   ]
+	sirop_1200_800_limits +=  [ (50,0,500) ] # ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>100."   ]
+	sirop_1200_800_limits +=  [ (50,0,500) ] # ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>100."   ]
+	sirop_1200_800_limits +=  [ (50,0,1) ] # ["NTRJigsawVars.RJVars_G_0_PInvHS>0.17"   ]
+	sirop_1200_800_limits +=  [ (50,0,1) ] # ["NTRJigsawVars.RJVars_G_1_PInvHS>0.17"   ]
+	sirop_1200_800_limits +=  [ (50,-1,1) ] # ["NTRJigsawVars.RJVars_G_0_CosTheta>-0.5"   ]
+	sirop_1200_800_limits +=  [ (50,-1,1) ] # ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.5"   ]
+	sirop_1200_800_limits +=  [ (50,-1,1) ] # ["NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
+	sirop_1200_800_limits +=  [ (50,-1,1) ] # ["NTRJigsawVars.RJVars_C_1_CosTheta<0.8"   ]
+	sirop_1200_800_limits +=  [ (50,-1,1) ] # ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.9 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.6"]
+	sirop_1200_800_limits +=  [ (50,-1,1) ] # ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.9 && cos(NTRJigsawVars.RJVars_G_1_dPhiGC)<0.6"]
+	sirop_1200_800_limits +=  [ (50,0,1) ] # ["NTRJigsawVars.RJVars_DeltaBetaGG<0.9" ]
+	sirop_1200_800_limits +=  [ (50,0,1) ] # ["NTRJigsawVars.RJVars_QCD_Rpt<0.3"]
+	sirop_1200_800_limits +=  [ (50,-1,1) ] # ["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
+	sirop_1200_800_limits +=  [ (50,0,1) ] # visshape
+	sirop_1200_800_limits +=  [ (50,0,2000) ] # ["NTRJigsawVars.RJVars_MG/1000.>600"   ]
+
 
 
 	sirop_tight_cuts = []
 	sirop_tight_cuts += ["met>100"]
 	sirop_tight_cuts += ["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"   ]
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>140."   ]
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>140."   ]
-
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta>-0.6 && NTRJigsawVars.RJVars_G_0_CosTheta<0.6"   ]
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.6 && NTRJigsawVars.RJVars_G_0_CosTheta<0.6"   ]
-
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_PInvHS>0.1 && NTRJigsawVars.RJVars_G_0_PInvHS<0.8"   ]
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_PInvHS>0.1 && NTRJigsawVars.RJVars_G_0_PInvHS<0.8"   ]
-
-	sirop_tight_cuts += ["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.9"   ]
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_DeltaBetaGG<0.9"   ]
-
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>150."   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>150."   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>110."   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>110."   ]
 	sirop_tight_cuts += ["NTRJigsawVars.RJVars_QCD_Rpt<0.3"]
 	sirop_tight_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
-
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_0_CosTheta>-0.9 && NTRJigsawVars.RJVars_C_0_CosTheta<0.9"   ]
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_1_CosTheta>-0.9 && NTRJigsawVars.RJVars_C_0_CosTheta<0.9"   ]
-
-	sirop_tight_cuts += ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.8"]
-	sirop_tight_cuts += ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.8"]
-
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>230."   ]
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>230."   ]
-
-	sirop_tight_cuts += ["NTRJigsawVars.RJVars_dphiVG>0.2 && NTRJigsawVars.RJVars_dphiVG<2.7"   ]
-
-
-	# ## Kill W
-
-	# ## Kill Z
-	# # sirop_tight_cuts += ["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.8"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>120."   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>120."   ]
-	# # sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta<0.4"   ]
-	# # sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta<0.4"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>120."   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>120."   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_0_CosTheta<0.9"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_1_CosTheta<0.9"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_PInvHS>0.2"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_PInvHS>0.2"   ]
-	# # sirop_tight_cuts += ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>0"   ]
-	# # sirop_tight_cuts += ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>0"   ]
-	# # sirop_tight_cuts += ["NTRJigsawVars.RJVars_dphiVG>0.4"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_DeltaBetaGG<0.7"   ]
-
-	# ## Kill Top
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_DeltaBetaGG<0.8"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.6"   ]
-	# # sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>150."   ]
-	# # sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>150."   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>200."   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>200."   ]
-	# sirop_tight_cuts += ["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.8"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_0_CosTheta<0.9"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_1_CosTheta<0.9"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_PInvHS>0.2"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_PInvHS>0.2"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta>-0.9"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.9"   ]
-
-	# ## Kill QCD
-	# # sirop_tight_cuts += ["NTRJigsawVars.RJVars_DeltaBetaGG<0.7"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.1"   ]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_QCD_Rpt<0.3"]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_V1_N>1"]
-	# sirop_tight_cuts += ["NTRJigsawVars.RJVars_I1_Depth>1"]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_PInvHS>0.25"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_PInvHS>0.25"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_dphiVG>0.3 && NTRJigsawVars.RJVars_dphiVG<2.7"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_0_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_C_1_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_1_CosTheta<0.8"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_0_CosTheta<0.7"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_1_CosTheta<0.7"   ]
+	sirop_tight_cuts += ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.7"]
+	sirop_tight_cuts += ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_1_dPhiGC)<0.7"]
+	sirop_tight_cuts += ["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.9"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_SS_VisShape>0.1"   ]
+	sirop_tight_cuts += ["NTRJigsawVars.RJVars_MG/1000.>800"   ]
 
 
+
+	sirop_tight_limits = []
+	sirop_tight_limits += [ (50,0,1000) ]  #["met>100"]
+	sirop_tight_limits += [ (50,0,2000) ]  #["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"   ]
+	sirop_tight_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>150."   ]
+	sirop_tight_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>150."   ]
+	sirop_tight_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>110."   ]
+	sirop_tight_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>110."   ]
+	sirop_tight_limits += [ (50,0,1) ]  #["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.9"   ]
+	sirop_tight_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_G_0_PInvHS>0.25 && NTRJigsawVars.RJVars_G_0_PInvHS<1"   ]
+	sirop_tight_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_G_1_PInvHS>0.25 && NTRJigsawVars.RJVars_G_0_PInvHS<1"   ]
+	sirop_tight_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_G_0_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_0_CosTheta<0.7"   ]
+	sirop_tight_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_G_1_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_0_CosTheta<0.7"   ]
+	sirop_tight_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_C_0_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
+	sirop_tight_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_C_1_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
+	sirop_tight_limits += [ (50,-1,1) ]  #["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.7"]
+	sirop_tight_limits += [ (50,-1,1) ]  #["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_1_dPhiGC)<0.7"]
+	sirop_tight_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_DeltaBetaGG>0.2" ]
+	sirop_tight_limits += [ (50,0,4) ]  #["NTRJigsawVars.RJVars_dphiVG>0.3 && NTRJigsawVars.RJVars_dphiVG<2.7"   ]
+	sirop_tight_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_QCD_Rpt<0.3"]
+	sirop_tight_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
+	sirop_tight_limits += [ (50,0,1) ]  #visshape
+	sirop_tight_limits += [ (50,0,2000) ]  #["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
 
 
 	## Define your cut strings here....
 	cuts = {
-		"no_cut": "(NTRJigsawVars.RJVars_G_0_Jet1_pT/1000. > 250)",
-		"l1trigger": "(NTVars.nJet>1 && met > 100)",
+		# "no_cut": "(NTRJigsawVars.RJVars_G_0_Jet1_pT/1000. > 250)",
+		# "l1trigger": "(NTVars.nJet>1 && met > 100)",
 		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300)",
-		"sirop_1200_600_noMDR": "*".join( ["(%s)"%mycut for mycut in sirop_1200_600_cuts ]),
-		"sirop_tight_noMDR": "*".join( ["(%s)"%mycut for mycut in sirop_tight_cuts ])
+		"sirop_1200_800": "*".join( ["(%s)"%mycut for mycut in sirop_1200_800_cuts ]),
+		"sirop_tight": "*".join( ["(%s)"%mycut for mycut in sirop_tight_cuts ])
 	}
 
+
+	#################################################################################################
 
 	## This part sets up both N-1 hists and the cutflow histogram for "sirop_tight"
 
@@ -246,7 +244,7 @@ for mysamplehandler in [
 	for i,cutpart in enumerate(sirop_tight_cuts):
 
 		cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_tight_minus_%s"%cutpartname, "sirop_tight_%s"%cutpartname, 5000, -1, 500), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_tight_minus_%s"%cutpartname, "sirop_tight_%s"%cutpartname, sirop_tight_limits[i][0], sirop_tight_limits[i][1], sirop_tight_limits[i][2] ), 
 			cutpart.split("<")[0].split(">")[0],
 			"NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in sirop_tight_cuts if  mycut!=cutpart ]))    )        )
 
@@ -255,6 +253,23 @@ for mysamplehandler in [
 	job.algsAdd(ROOT.MD.AlgCFlow (cutflow))
 
 
+	## This part sets up both N-1 hists and the cutflow histogram for "sirop_1200_800"
+
+	cutflow2 = ROOT.TH1F ("cutflow2", "cutflow2", len(sirop_1200_800_cuts)+1 , 0, len(sirop_1200_800_cuts)+1 );
+	cutflow2.GetXaxis().SetBinLabel (1, "NTVars.eventWeight");
+
+	for i,cutpart in enumerate(sirop_1200_800_cuts):
+
+		cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_1200_800_minus_%s"%cutpartname, "sirop_1200_800_%s"%cutpartname, sirop_1200_800_limits[i][0], sirop_1200_800_limits[i][1], sirop_1200_800_limits[i][2] ), 
+			cutpart.split("<")[0].split(">")[0],
+			"NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in sirop_1200_800_cuts if  mycut!=cutpart ]))    )        )
+
+		cutflow2.GetXaxis().SetBinLabel (i+2, cutpart);
+
+	job.algsAdd(ROOT.MD.AlgCFlow (cutflow2))
+
+	#################################################################################################
 
 
 
@@ -319,6 +334,7 @@ for mysamplehandler in [
 		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("meffInc_%s"%cut, "meffInc_%s"%cut, 100, 0, 3000), 
 			"NTVars.meffInc",
 			"NTVars.eventWeight*%s"%cuts[cut]))
+
 		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("Ap_%s"%cut, "Ap_%s"%cut, 100, 0, 1), 
 			"NTExtraVars.Ap",
 			"NTVars.eventWeight*%s"%cuts[cut]))
