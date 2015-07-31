@@ -1,0 +1,26 @@
+
+
+setupATLAS
+localSetupROOT --rootVersion=5.34.24-x86_64-slc6-gcc48-opt
+
+# first time setting up:
+export ALRB_TutorialData=/afs/cern.ch/atlas/project/PAT/tutorial/cern-may2015/
+svn co svn+ssh://$USER@svn.cern.ch/reps/atlasphys-susy/Physics/SUSY/Analyses/HistFitter/tags/HistFitter-00-00-47 RJigsawHistFitter
+cd RJigsawHistFitter
+source setup.sh
+cd src
+make
+cd ..
+mkdir samples
+cd samples
+ln -s $ALRB_TutorialData/HistFitter tutorial
+cd ..
+
+# every subsequent time:
+setupATLAS
+localSetupROOT --rootVersion=5.34.24-x86_64-slc6-gcc48-opt
+cd RJigsawHistFitter
+source setup.sh
+
+
+
