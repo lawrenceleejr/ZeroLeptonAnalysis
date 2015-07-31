@@ -1,0 +1,10 @@
+K 10
+svn:ignore
+V 82
+My*.root
+MyShapeFitExample
+MyConfigExample
+MyUserAnalysis
+MySimpleChannelAnalysis
+
+END
