@@ -31,8 +31,7 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.5  ## in pb-1
-search_directories = ("/afs/cern.ch/work/l/leejr/public/SklimmerOutput/fromGrid/rucio/063015a/",)
-
+search_directories = ["/data/users/rsmith/photonTruthStudies/"]
 
 ##
 ##
@@ -54,14 +53,14 @@ discoverInput.addTags(sh_all)
 
 ## Split up samplehandler into per-BG SH's based on tag metadata
 
-sh_data = sh_all.find("data")
+sh_data   = sh_all.find("data")
 sh_signal = sh_all.find("signal")
 sh_bg = {}
 
-sh_bg["qcd"] = sh_all.find("qcd")
-sh_bg["top"] = sh_all.find("top")
-sh_bg["wjets"] = sh_all.find("wjets")
-sh_bg["zjets"] = sh_all.find("zjets")
+#sh_bg["qcd"  ] = sh_all.find("qcd"  )
+#sh_bg["top"  ] = sh_all.find("top"  )
+sh_bg["gamma"] = sh_all.find("gamma")
+sh_bg["znunu"] = sh_all.find("znunu")
 
 
 
@@ -71,21 +70,18 @@ sh_bg["zjets"] = sh_all.find("zjets")
 
 
 #Creation of output directory names
-tempDirDict = {   
-	sh_data: "rundir_data",
-	sh_signal: "rundir_signal",
-	sh_bg["qcd"]: "rundir_qcd",
-	sh_bg["top"]: "rundir_top",
-	sh_bg["wjets"]: "rundir_wjets",
-	sh_bg["zjets"]: "rundir_zjets",
-    }
+tempDirDict = {}
+
+for key in sh_bg.keys() :
+    tempDirDict[key] = "rundir_" + key
+
 
 
 #To scale the histograms in the files after the event loop is done...
 def scaleMyRootFiles(mysamplehandler,mylumi):
 	for sample in mysamplehandler:
 		tempxs = sample.getMetaDouble("nc_xs") * sample.getMetaDouble("kfactor") * sample.getMetaDouble("filter_efficiency")
-		
+
 		print "Scaling %s by %f/(%f or %f)"%(sample.getMetaString("short_name"), tempxs, sample.getMetaDouble("nc_nevt"), sample.getMetaDouble("nc_sumw"))
 		m_eventscaling = tempxs
 		if sample.getMetaDouble("nc_nevt"):
@@ -103,17 +99,7 @@ def scaleMyRootFiles(mysamplehandler,mylumi):
 
 
 
-for mysamplehandler in [	
-							sh_signal,
-							sh_data,
-							sh_bg["qcd"],
-							sh_bg["top"],
-							sh_bg["wjets"],
-							sh_bg["zjets"] 
-						]:
-
-
-
+for mysamplehandler in sh_bg.iteritems() :
 	for sample in mysamplehandler:
 		m_nevt = 0
 		m_sumw = 0
@@ -174,8 +160,6 @@ for mysamplehandler in [
 	sirop_1200_800_limits +=  [ (50,0,1) ] # visshape
 	sirop_1200_800_limits +=  [ (50,0,2000) ] # ["NTRJigsawVars.RJVars_MG/1000.>600"   ]
 
-
-
 	sirop_tight_cuts = []
 	sirop_tight_cuts += ["met>100"]
 	sirop_tight_cuts += ["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"   ]
@@ -197,8 +181,6 @@ for mysamplehandler in [
 	sirop_tight_cuts += ["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.9"   ]
 	sirop_tight_cuts += ["NTRJigsawVars.RJVars_SS_VisShape>0.1"   ]
 	sirop_tight_cuts += ["NTRJigsawVars.RJVars_MG/1000.>800"   ]
-
-
 
 	sirop_tight_limits = []
 	sirop_tight_limits += [ (50,0,1000) ]  #["met>100"]
@@ -244,7 +226,7 @@ for mysamplehandler in [
 	for i,cutpart in enumerate(sirop_tight_cuts):
 
 		cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_tight_minus_%s"%cutpartname, "sirop_tight_%s"%cutpartname, sirop_tight_limits[i][0], sirop_tight_limits[i][1], sirop_tight_limits[i][2] ), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_tight_minus_%s"%cutpartname, "sirop_tight_%s"%cutpartname, sirop_tight_limits[i][0], sirop_tight_limits[i][1], sirop_tight_limits[i][2] ),
 			cutpart.split("<")[0].split(">")[0],
 			"NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in sirop_tight_cuts if  mycut!=cutpart ]))    )        )
 
@@ -261,7 +243,7 @@ for mysamplehandler in [
 	for i,cutpart in enumerate(sirop_1200_800_cuts):
 
 		cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_1200_800_minus_%s"%cutpartname, "sirop_1200_800_%s"%cutpartname, sirop_1200_800_limits[i][0], sirop_1200_800_limits[i][1], sirop_1200_800_limits[i][2] ), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("sirop_1200_800_minus_%s"%cutpartname, "sirop_1200_800_%s"%cutpartname, sirop_1200_800_limits[i][0], sirop_1200_800_limits[i][1], sirop_1200_800_limits[i][2] ),
 			cutpart.split("<")[0].split(">")[0],
 			"NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in sirop_1200_800_cuts if  mycut!=cutpart ]))    )        )
 
@@ -271,71 +253,69 @@ for mysamplehandler in [
 
 	#################################################################################################
 
-
-
 	for cut in cuts:
 
 		## each of this histograms will be made for each cut
 
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("jet1pt_%s"%cut, "jet1pt_%s"%cut, 100, 0, 1000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("jet1pt_%s"%cut, "jet1pt_%s"%cut, 100, 0, 1000),
 			"jetPt[0]",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("jet2pt_%s"%cut, "jet2pt_%s"%cut, 100, 0, 1000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("jet2pt_%s"%cut, "jet2pt_%s"%cut, 100, 0, 1000),
 			"jetPt[1]",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("met_%s"%cut, "met_%s"%cut, 100, 0, 1000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("met_%s"%cut, "met_%s"%cut, 100, 0, 1000),
 			"met",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("nJet_%s"%cut, "nJet_%s"%cut, 20, 0, 20), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("nJet_%s"%cut, "nJet_%s"%cut, 20, 0, 20),
 			"NTVars.nJet",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_Mass_%s"%cut, "RJVars_SS_Mass_%s"%cut, 100, 0, 6000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_Mass_%s"%cut, "RJVars_SS_Mass_%s"%cut, 100, 0, 6000),
 			"NTRJigsawVars.RJVars_SS_Mass/1000.",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_MDeltaR_%s"%cut, "RJVars_SS_MDeltaR_%s"%cut, 100, 0, 2000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_MDeltaR_%s"%cut, "RJVars_SS_MDeltaR_%s"%cut, 100, 0, 2000),
 			"NTRJigsawVars.RJVars_SS_MDeltaR/1000.",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_MG_%s"%cut, "RJVars_MG_%s"%cut, 100, 0, 2000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_MG_%s"%cut, "RJVars_MG_%s"%cut, 100, 0, 2000),
 			"NTRJigsawVars.RJVars_MG/1000.",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_PInvHS_%s"%cut, "RJVars_G_0_PInvHS_%s"%cut, 100, -1, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_PInvHS_%s"%cut, "RJVars_G_0_PInvHS_%s"%cut, 100, -1, 1),
 			"NTRJigsawVars.RJVars_G_0_PInvHS",
 			"NTVars.eventWeight*%s"%cuts[cut]))
 
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_CosTheta_%s"%cut, "RJVars_G_0_CosTheta_%s"%cut, 100, -1, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_CosTheta_%s"%cut, "RJVars_G_0_CosTheta_%s"%cut, 100, -1, 1),
 			"NTRJigsawVars.RJVars_G_0_CosTheta",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_Jet2_pT_%s"%cut, "RJVars_G_0_Jet2_pT_%s"%cut, 100, -1, 1000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_Jet2_pT_%s"%cut, "RJVars_G_0_Jet2_pT_%s"%cut, 100, -1, 1000),
 			"NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_CosTheta_%s"%cut, "RJVars_SS_CosTheta_%s"%cut, 100, -1, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_CosTheta_%s"%cut, "RJVars_SS_CosTheta_%s"%cut, 100, -1, 1),
 			"NTRJigsawVars.RJVars_SS_CosTheta",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_DeltaBetaGG_%s"%cut, "RJVars_DeltaBetaGG_%s"%cut, 100, 0, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_DeltaBetaGG_%s"%cut, "RJVars_DeltaBetaGG_%s"%cut, 100, 0, 1),
 			"NTRJigsawVars.RJVars_DeltaBetaGG",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_dphiVG_%s"%cut, "RJVars_dphiVG_%s"%cut, 100, 0, 4), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_dphiVG_%s"%cut, "RJVars_dphiVG_%s"%cut, 100, 0, 4),
 			"NTRJigsawVars.RJVars_dphiVG",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Rpt_%s"%cut, "RJVars_QCD_Rpt_%s"%cut, 100, 0, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Rpt_%s"%cut, "RJVars_QCD_Rpt_%s"%cut, 100, 0, 1),
 			"NTRJigsawVars.RJVars_QCD_Rpt",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Delta2_%s"%cut, "RJVars_QCD_Delta2_%s"%cut, 100, -1, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Delta2_%s"%cut, "RJVars_QCD_Delta2_%s"%cut, 100, -1, 1),
 			"NTRJigsawVars.RJVars_QCD_Delta2",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Delta1_x_Rpsib_%s"%cut, "RJVars_QCD_Delta1_x_Rpsib_%s"%cut, 100, -1, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Delta1_x_Rpsib_%s"%cut, "RJVars_QCD_Delta1_x_Rpsib_%s"%cut, 100, -1, 1),
 			"(NTRJigsawVars.RJVars_QCD_Delta1)*(NTRJigsawVars.RJVars_QCD_Rpsib)",
 			"NTVars.eventWeight*%s"%cuts[cut]))
 
 
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("cosNTRJigsawVars.RJVars_G_1_dPhiGC_%s"%cut, "cosNTRJigsawVars.RJVars_G_1_dPhiGC_%s"%cut, 100, -1, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("cosNTRJigsawVars.RJVars_G_1_dPhiGC_%s"%cut, "cosNTRJigsawVars.RJVars_G_1_dPhiGC_%s"%cut, 100, -1, 1),
 			"cos(NTRJigsawVars.RJVars_G_1_dPhiGC)",
 			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("meffInc_%s"%cut, "meffInc_%s"%cut, 100, 0, 3000), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("meffInc_%s"%cut, "meffInc_%s"%cut, 100, 0, 3000),
 			"NTVars.meffInc",
 			"NTVars.eventWeight*%s"%cuts[cut]))
 
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("Ap_%s"%cut, "Ap_%s"%cut, 100, 0, 1), 
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("Ap_%s"%cut, "Ap_%s"%cut, 100, 0, 1),
 			"NTExtraVars.Ap",
 			"NTVars.eventWeight*%s"%cuts[cut]))
 

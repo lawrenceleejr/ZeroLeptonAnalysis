@@ -6,12 +6,16 @@ import os
 
 def discover(sh, search_directories):
 
+	print "searching directories : "
+	print search_directories
 	# scan for datasets in the given directories
 	for directory in search_directories:
-	    ROOT.SH.scanDir(sh, directory)
+		print directory
+		ROOT.SH.scanDir(sh, directory)
 
 
 	logging.info("%d different datasets found scanning all directories", len(sh))
+	sh.printContent()
 
 	return sh
 
