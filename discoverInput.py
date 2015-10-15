@@ -68,6 +68,3 @@ def addTags(sh_all):
 #			sample.addTag("zjets")
 		if "Sherpa_Wqq" in name:
 			sample.addTag("zjets")
-
-
-		print ROOT.SH.dbg(sample.tags(),1000)
