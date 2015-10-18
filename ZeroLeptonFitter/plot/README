@@ -1,0 +1,6 @@
+go one step above in the directory (in ZeroLeptonFitter)
+and do
+export ZEROLEPTONFITTER=$PWD
+then simply run the code with
+python plot/PlotMaker.py 
+(do not hesitate to edit the file to match your requirements!)
