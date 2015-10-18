@@ -11,6 +11,8 @@ def discover(sh, search_directories):
 	    ROOT.SH.scanDir(sh, directory)
 
 
+	print sh
+
 	logging.info("%d different datasets found scanning all directories", len(sh))
 
 	return sh
