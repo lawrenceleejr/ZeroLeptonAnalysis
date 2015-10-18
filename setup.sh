@@ -1,2 +1,2 @@
 setupATLAS
-rcSetup Base,2.1.33
+rcSetup Base,2.3.22

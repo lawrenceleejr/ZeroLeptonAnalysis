@@ -21,11 +21,11 @@ import ROOT
 useConRegions = False
 useValRegions = False
 useSigRegions = True 
-
+useStat = True # stat errors? to check
 
 # where to find inputs
-baseDir = '/afs/cern.ch/work/l/leejr/public/SklimmerOutput/fromGrid/rucio/063015a/'
-
+baseDir = '/afs/cern.ch/user/m/marijam/work/public/ZeroLeptonRun2-44-forEPS/DataSUSY9_p2375_MCSUSY1_p2372/'
+baseDirSignals = ''
 
 
 ################################################################
@@ -40,7 +40,8 @@ configMgr.outputFileName = "results/"+configMgr.analysisName+"_Output.root"
 #configMgr.blindVR = True
 
 # Hypothesis test paramters:
-configMgr.doHypoTest=False
+#configMgr.doHypoTest=False
+configMgr.doExclusion=True 
 #configMgr.nTOYs=2000
 configMgr.calculatorType=2 #0 #for frequentist #2 for asymptotics
 configMgr.testStatType=3
@@ -52,7 +53,7 @@ configMgr.writeXML = True
 ################################################################
 ## Inputs
 ################################################################
-configMgr.inputFileNames = []
+#configMgr.inputFileNames = []
 
 
 
@@ -63,9 +64,13 @@ configMgr.inputFileNames = []
 # scaling calculated by outputLumi / inputLumi
 # Question: Are our mini-ntuple normalized to some int. lumi?
 # If so, need to do this:
-#configMgr.inputLumi = 0.001                       # Luminosity of input TTree after weighting
-#configMgr.outputLumi = 20.28 #(20.3837*0.97120714)  # Luminosity of output results
-#configMgr.setLumiUnits("fb-1")
+
+# Luminosity of input TTree after weighting:
+configMgr.inputLumi = 0.001 # 0-lep merging code normalized to 1 pb-1 via normWeight
+
+ # Luminosity of output results
+configMgr.outputLumi = 0.1 # amount of data?            
+configMgr.setLumiUnits("fb-1")
 
 
 
@@ -109,6 +114,7 @@ if useValRegions:
 
 #### define signal regions ####
 if useSigRegions:
+    configMgr.cutsDict['SR_TEST'] = 'NTVars.met > 500' # in trees, do it as Top_SRAll.NTVars.met ?
     # Example:
     # RvMRcutlist = {'SR_0LEP_HT': [0.60,1.0,900,1500,6]}
     # configMgr.cutsDict['SR_0LEP_HT'] = 'AnalysisType==10 && AnalysisTypeTrig2==102 && met>160 && jet1Pt>200 && jet2Pt>200 && DeltaPhi_jet1_met>1.4 && DeltaPhi_jet2_met>1.4 && R>%f && MR>%f'%(RvMRcutlist['SR_0LEP_HT'][0],RvMRcutlist['SR_0LEP_HT'][2])
@@ -122,35 +128,36 @@ if useSigRegions:
 ################################################################
 
 #-- ttbar
-topSample = Sample("ttbar",kGreen-9) #ichep coloring scheme
+#topSample = Sample("ttbar",kGreen-9) #ichep coloring scheme
+topSample = Sample("Top_SRAll",kGreen-9) #ichep coloring scheme
 topSample.setStatConfig(useStat)
-#topSample.setFileList([baseDir+'razor_0leptonBox/HistFitterInputs/UpdatedVars/razor_0leptonBox_Input_PowhegTTbar.root',])
+topSample.treeName = "Top_SRAllTest"
+topSample.setFileList([baseDir+'Top.root'])
 
 
 #-- Zjets
 zxSample = Sample("ZX",38)
 zxSample.setStatConfig(useStat)
-#zxSample.setFileList([baseDir+'razor_0leptonBox/HistFitterInputs/UpdatedVars/razor_0leptonBox_Input_Zjets.root',])
+#zxSample.setFileList([baseDir+'ZSherpaMassiveCB.root',])
 
 #-- Wjets
 wxSample = Sample("WX",kAzure+1)
 wxSample.setStatConfig(useStat)
-#wxSample.setFileList([baseDir+'razor_0leptonBox/HistFitterInputs/UpdatedVars/razor_0leptonBox_Input_Wjets.root',])
+#wxSample.setFileList([baseDir+'WSherpaMassiveCB.root',])
 
 #-- Data
 dataSample = Sample("Data",kBlack)
 dataSample.setData()
-#dataSample.setFileList([baseDir+'razor_0leptonBox/HistFitterInputs/UpdatedVars/razor_0leptonBox_Input_Data.root',])
+#dataSample.setFileList([baseDir+'DataMain_new.root',])
 
 
 # List of samples:
-sampleListMC =  ['ttbar','ZX','WX',]
-sampleSet = [dataSample,topSample,zxSample,wxSample] # order of plotting
+#sampleListMC =  ['ttbar','ZX','WX',]
+#sampleSet = [dataSample,topSample,zxSample,wxSample] # order of plotting
 
-# Question: not sure what these commands do:
-# configMgr.cutsDict["UserRegion"] = "1."
-#bkgSample.buildHisto([nbkg],"UserRegion","cuts",0.5)
-#bkgSample.buildStatErrors([nbkgErr],"UserRegion","cuts")
+sampleListMC =  ['ttbar','ZX']
+sampleSet = [topSample, zxSample]
+
 
 
 ################################################################
@@ -163,6 +170,8 @@ sampleSet = [dataSample,topSample,zxSample,wxSample] # order of plotting
 # configMgr.weights = ['genWeight','eventWeight',ttbarWeightString,'bTagWeight'] # list of common event weights for all samples
 configMgr.weights = "1." # basic setting
 
+# list of common event weights for all samples
+#configMgr.weights = ['Top_SRAll.NTVars.genWeight','Top_SRAll.NTVars.eventWeight','Top_SRAll.NTVars.normWeight']
 
 
 ################################################################
@@ -194,7 +203,7 @@ bkt.addSamples(sampleSet)
 
 # luminosity uncert
 lumiError=0.05
-meas = ana.addMeasurement(name="NormalMeasurement",lumi=1.0,lumiErr=lumiError)
+meas = bkt.addMeasurement(name="NormalMeasurement",lumi=1.0,lumiErr=lumiError)
 meas.addPOI("mu_Sig")
 
 
@@ -235,8 +244,11 @@ srvalidations = []
 for acut in configMgr.cutsDict:
 
     if not 'SR' in acut: continue
-
-    srvalidations += [ bkt.addChannel('MR',[acut],RvMRcutlist[acut][4],RvMRcutlist[acut][2],RvMRcutlist[acut][3]) ]
+    
+    # args: variable to fit, cut name, num bins, min value to fit, max value to fit 
+    srvalidations += [ bkt.addChannel('Top_SRAll.NTVars.met',[acut],5,500,1500) ]
+    
+    #srvalidations += [ bkt.addChannel('MR',[acut],RvMRcutlist[acut][4],RvMRcutlist[acut][2],RvMRcutlist[acut][3]) ]
     srvalidations[-1].showLumi = True
     srvalidations[-1].ATLASLabelText = "Internal"
     srvalidations[-1].ATLASLabelX = 0.31
@@ -252,9 +264,10 @@ print bkt # Dump the whole thing...
 ## Hypthoesis test fits                                       ##
 ################################################################
 
+# define sigSamples somehow (read in from text file or something)
+sigSamples = ['SM_GG_direct_800_100']
 
 
-# define sigSamples (ex SM_SS_800_100, etc.)
 for sig in sigSamples:
     if 'SM_SS_direct' in sig:
         sigFiles = [baseDir+'razor_0leptonBox/HistFitterInputs/UpdatedVars/razor_0leptonBox_Input_SM.root'] # assuming all in one
@@ -277,7 +290,7 @@ for sig in sigSamples:
         if not 'SR' in acut: continue
         #signalregions += [ bkt.getChannel('MR',[acut]) ]
         #iPop = myTopLvl.validationChannels.index(acut+'_MR')
-        myTopLvl.validationChannels.pop(iPop)
+        #myTopLvl.validationChannels.pop(iPop)
     for sr in signalregions:
         sr.useOverflowBin=True
     myTopLvl.setSignalChannels(signalregions)

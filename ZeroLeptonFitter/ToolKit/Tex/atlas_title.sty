@@ -1,0 +1,73 @@
+%
+%------------------------------------------------------------------------------
+% Sets up the title page for a draft, a note, a preprint or a journal
+% article for the ATLAS Collaboration.
+% Adapted from the L3 paper template.
+%
+% The author should supply:
+% \title
+% \author{The ATLAS Collaboration}
+% \journal{Phys. Lett. B}    or wherever is appropriate
+% \atlasdraft{x.y}   OR 
+% \atlasnote{number} OR
+% \preprint{number} 
+%------------------------------------------------------------------------------
+%
+\def\mydocversion{}
+\def\@docversion{}
+\def\@subprepend{To be submitted to}
+\def\@journalname{Phys. Lett. B}
+\def\journalname#1{\def\@journalname{#1}}
+\def\atlasdraft#1{\def\@docversion{Draft version #1} \usepackage{drafthead}}
+\def\journal{\def\@docversion{}             \usepackage{endfig}}
+\def\journaln{\def\@docversion{}}
+%
+% This is the titlepage
+%
+\def\titlepage{\clearpage%
+\setcounter{footnote}{0}\setcounter{page}{1}%
+\thispagestyle{empty}\pagestyle{plain}\pagenumbering{arabic}%
+% CERN title
+\kern1mm\begin{center}
+% \mbox{\large EUROPEAN ORGANIZATION FOR NUCLEAR RESEARCH}
+\mbox{}
+\end{center}
+\vskip3mm\normalsize
+\@docnum\\
+\@docdate}% End of \titlepage tag
+%
+% Document number (flushright) - (for draft versions)
+%
+\def\@docnum#1{\hbox to \hsize{\hskip133mm%
+\ifx\@docversion\@empty\mbox{}%
+\else\hbox{\@docversion}\fi\hss}}
+%
+% Date now somewhere else 
+%
+\def\@docdate{\mbox{}}
+% \def\@docdate{\hbox to \hsize{\hskip60mm%
+% \ifx\@docversion\@empty\mbox{}%
+% \else\hbox{\@date}\fi\hss}}
+% Title
+\def\title#1{\vskip 0.8in plus 2in\begin{center}%
+{\Large\bf#1\par}\vskip1.5em\end{center}\vskip 1in}
+% Author
+\def\@makefnmark{\hbox{$^{\@thefnmark)}$}}
+\def\author#1{%% Treat the list of authors
+\setcounter{footnote}{0}\def\@currentlabel{}%
+\begingroup\def\thefootnote{\arabic{footnote}}
+\def\@makefnmark{\hbox{$^{\@thefnmark)}$}}
+\global\@topnum\z@ \large\begin{center}{\lineskip.5em
+\begin{tabular}[t]{c}#1\end{tabular}\par}
+\end{center}\par\vskip1.5em\@thanks\endgroup}
+\newenvironment{Authlist}{\begin{center}}{\end{center}}
+% Abstract
+\def\abstract{\vskip0.8in plus 3in\begin{center}%
+{\large\bf Abstract}\end{center}\quotation}
+\def\endabstract{\endquotation}
+%
+\def\submitted{\vskip 0.8in plus 2in\begin{center}%
+\ifx\@docversion\@empty\mbox{}%
+\else\@subprepend\space {\it \@journalname}\fi\vskip1.5em\end{center}%
+  \vskip 0.5in}
+\def\endtitlepage{\pagebreak}
