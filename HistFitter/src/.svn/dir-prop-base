@@ -1,9 +1,0 @@
-K 10
-svn:ignore
-V 41
-SusyFitter_Dict.h
-SusyFitter_Dict.C
-obj
-
-
-END
