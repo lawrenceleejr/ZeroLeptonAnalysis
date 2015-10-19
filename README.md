@@ -18,9 +18,9 @@ If you're in an ATLAS environment, you can do
 
 which setups up matplotlib/numpy/etc. On lxplus, you can follow the instructions here: 
 
-[http://www.rootpy.org/start.html#try-rootpy-on-cern-s-lxplus]
+http://www.rootpy.org/start.html#try-rootpy-on-cern-s-lxplus
 
 Or if you want to install rootpy on your own computer, it can be a pain to make sure that python versions are carried through correctly, so these instructions are a bit handy:
 
-[https://fieldsofdata.wordpress.com/tag/root/]
+https://fieldsofdata.wordpress.com/2014/10/15/data-analysis-packages-on-mac-os-x-10-8/
 
