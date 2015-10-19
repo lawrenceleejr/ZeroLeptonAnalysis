@@ -80,7 +80,7 @@ myfiles = {
 signalsamples = os.listdir("hists/signal/")
 # print signalsamples
 signalsamples = [x for x in signalsamples if "GG_direct" in x]
-print signalsamples
+# print signalsamples
 
 # plottedsignals =  ["_1100_300_SRAll","_1100_500_SRAll","_1100_700_SRAll" ]
 # plottedsignals =  ["_1500_100_SRAll","_1600_0_SRAll","_1100_700_SRAll" ]
@@ -201,6 +201,21 @@ for histogramName in histogramNames:
 	# leg = plt.legend(loc="best")
 	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.05,0.95),xycoords='axes fraction') 
 	axes.annotate(r'$\int{L}\sim$ %d pb$^{-1}$, $\sqrt{s}$=13 TeV, N-1, %s'%(lumiscale, histogramName.split("_")[0] ),xy=(0.0,1.01),xycoords='axes fraction') 
+
+
+	cutvalue = histogramName.split(">")[-1].split("<")[-1]
+	if cutvalue[0]=="0":
+		cutvalue = "0."+cutvalue[1:]
+	cutvalue = float(cutvalue)
+	boxDirection = 1 if ">" in histogramName else -1
+
+	axes.plot( (cutvalue,cutvalue), (1e-10,1), 'g-' , alpha=0.8)
+	axes.plot( (cutvalue,cutvalue*1e10*boxDirection), (1,1), 'g-' , alpha=0.8)
+	axes.text( cutvalue, 0.01, 'Cut at %.2f'%cutvalue, color="k", size=10, va="top", ha="center", rotation=90)
+
+	# axes_ratio.set_xlabel(histogramName.replace("_"," ").replace(">","$>$").replace("<","$<$") )
+
+
 
 	# get handles
 	handles, labels = axes.get_legend_handles_labels()
