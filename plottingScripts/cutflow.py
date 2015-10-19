@@ -34,6 +34,10 @@ mpl.rcParams['text.latex.preamble'] = [
 ]  
 
 
+makeCutFlowTables = True
+if makeCutFlowTables:
+	import cutFlowTools
+
 samples = [
 			# 'Data',
 			# 'QCD',
@@ -149,17 +153,23 @@ for region in regions:
 	axes.set_xticklabels( mybinlabels, rotation=90 )
 	plt.setp( axes.get_xticklabels(), visible=False)
 
+
+	cutflows = {}
 	for tmphist in sortedHistsToStack:
 		if tmphist.Integral():
-			stack.Add(tmphist)
+			# stack.Add(tmphist)
 			rplt.hist(tmphist, alpha=0.5, emptybins=False)
+
+			if makeCutFlowTables:
+				cutflows[tmphist.GetTitle()] = cutFlowTools.histToCutFlow(tmphist)
+
+
+	cutFlowTools.dictToTable(cutflows, "CutFlowBG%s"%region)
 
 
 	axes2 = subplot(212, sharex=axes)
 	axes2.set_yscale('log')
 	ylim([1e-7,2])
-
-
 
 	axes2.set_xticks(np.arange( hists[samples[0]].GetNbinsX()  )+0.5 )
 	# ax.set_xticklabels( ('G1', 'G2', 'G3', 'G4', 'G5') )
@@ -169,7 +179,7 @@ for region in regions:
 
 	for tmphist in sortedHistsToStack:
 		if tmphist.Integral():
-			stack.Add(tmphist)
+			# stack.Add(tmphist)
 			tmphist.Scale(1./tmphist.GetBinContent(1) )
 			rplt.hist(tmphist, alpha=0.5, emptybins=False)
 
@@ -180,9 +190,7 @@ for region in regions:
 	plt.subplots_adjust(left=0.1, right=0.9, top=0.98, bottom=0.45)
 
 
-
-
-
+	cutflows = {}
 
 	for signalsample in signalsamples:
 		skip = 1
@@ -194,8 +202,10 @@ for region in regions:
 		try:
 			hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
 			hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")   )
-			# hists[signalsample].Scale(1./hists[signalsample].GetBinContent(1)  )
-			# hists[signalsample].color = "red"
+			
+			if makeCutFlowTables:
+				cutflows[hists[signalsample].GetTitle()] = cutFlowTools.histToCutFlow(hists[signalsample])
+
 			rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0)
 			hists[signalsample].Scale(1./hists[signalsample].GetBinContent(1)  )
 			rplt.errorbar(hists[signalsample], axes=axes2, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0)
@@ -204,10 +214,9 @@ for region in regions:
 			continue
 
 
-	print "BG: %f"%stack.sum.Integral()
+	cutFlowTools.dictToTable(cutflows, "CutFlowSig%s"%region)
 
 
-	# leg = plt.legend(loc="best")
 	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.4,0.90),xycoords='axes fraction') 
 	axes.annotate(r'$\sqrt{s}$=13 TeV, %s'%region,xy=(0.65,0.90),xycoords='axes fraction') 
 
