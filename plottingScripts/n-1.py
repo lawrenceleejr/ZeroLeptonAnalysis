@@ -25,97 +25,94 @@ from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text', usetex=True)
 
+mpl.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
+
 
 samples = [
-			'Data',
-			'QCD',
+			# 'Data',
+			# 'QCD',
 			'Top',
-			'W+Jets',
-			'Z+Jets'
+			'W',
+			'Z',
+			'Diboson',
 			]
 
-lumiscale = 10000/3.5
+lumiscale = 1
 
 
-colorpal = sns.color_palette("husl", 3 )
+colorpal = sns.color_palette("husl", 4 )
 
 
 colors = {
 	'Data': 'black',
 	'QCD': 'gray',
 	'Top': colorpal[0],
-	'W+Jets': colorpal[1],
-	'Z+Jets': colorpal[2],
+	'W': colorpal[1],
+	'Z': colorpal[2],
+	'Diboson': colorpal[3],
 }
 
 # colors = {
 # 	'Data': 'black',
 # 	'QCD': 'gray',
 # 	'Top': 'red',
-# 	'W+Jets': 'green',
-# 	'Z+Jets': 'blue',
+# 	'W': 'green',
+# 	'Z': 'blue',
 # }
 
 myfiles = {
-	'Data': 'hists/rundir_data.root',
-	'QCD': 'hists/rundir_qcd.root',
-	'Top': 'hists/rundir_top.root',
-	'W+Jets': 'hists/rundir_wjets.root',
-	'Z+Jets': 'hists/rundir_zjets.root',
+	# 'Data':   'hists/hist-DataMain_periodC.root.root',
+	# 'QCD':    'hists/hist-QCD.root.root',
+	'Top':    'hists/BG/Top/hist-Top.root.root',
+	'W':      'hists/BG/W/hist-Wjets.root.root',
+	'Z':      'hists/BG/Z/hist-Zjets.root.root',
+	'Diboson':'hists/BG/Diboson/hist-Diboson.root.root',
 }
 
 
-signalsamples = os.listdir("hists/rundir_signal")
+
+signalsamples = os.listdir("hists/signal/")
+# print signalsamples
 signalsamples = [x for x in signalsamples if "GG_direct" in x]
+print signalsamples
 
-plottedsignals =  ["_1150_250." , "_1150_450." , "_1150_650." , "_1150_850." ]
+# plottedsignals =  ["_1100_300_SRAll","_1100_500_SRAll","_1100_700_SRAll" ]
+# plottedsignals =  ["_1500_100_SRAll","_1600_0_SRAll","_1100_700_SRAll" ]
+# plottedsignals = []
 
-histogramNames = [
+plottedsignals = {}
+plottedsignals["SR1"] = ["_800_600","_900_700","_1000_800" ]
+plottedsignals["SR2"] = ["_1000_600","_1100_700","_1200_800" ]
+plottedsignals["SR3"] = ["_1100_500","_1200_600","_1400_800" ]
+plottedsignals["SR4"] = ["_1200_400","_1300_500","_1400_600" ]
+plottedsignals["SR5"] = ["_1400_0","_1500_100","_1600_0" ]
 
-	"met",
-	"NTRJigsawVars.RJVars_SS_MDeltaR"   ,
-	"NTRJigsawVars.RJVars_G_0_Jet1_pT"   ,
-	"NTRJigsawVars.RJVars_G_1_Jet1_pT"   ,
-	"NTRJigsawVars.RJVars_G_0_Jet2_pT"   ,
-	"NTRJigsawVars.RJVars_G_1_Jet2_pT"   ,
-	"abs(NTRJigsawVars.RJVars_SS_CosTheta)"   ,
-	"NTRJigsawVars.RJVars_G_0_PInvHS"   ,
-	"NTRJigsawVars.RJVars_G_1_PInvHS"   ,
-	"NTRJigsawVars.RJVars_G_0_CosTheta"   ,
-	"NTRJigsawVars.RJVars_G_1_CosTheta"   ,
-	"NTRJigsawVars.RJVars_C_0_CosTheta"   ,
-	"NTRJigsawVars.RJVars_C_1_CosTheta"   ,
-	"cos(NTRJigsawVars.RJVars_G_0_dPhiGC)",
-	"cos(NTRJigsawVars.RJVars_G_1_dPhiGC)",
-	"NTRJigsawVars.RJVars_DeltaBetaGG" ,
-	"NTRJigsawVars.RJVars_dphiVG" ,
-	"NTRJigsawVars.RJVars_QCD_Rpt",
-	"NTRJigsawVars.RJVars_QCD_Delta1xNTRJigsawVars.RJVars_QCD_Rpsib"   ,
-	"NTRJigsawVars.RJVars_MG"   ,
 
-	]
+# histogramNames = [
 
-cuts = [
-		# "no_cut",
-		# "l1trigger",
-		# "hlttrigger",
-		# "sr1",
-		# "sr2",
-		# "sirop_1200_400_tight",
-		# "sirop_1200_400_loose",
-		# "sirop_1200_600_noMDR",
-		"sirop_tight"
+# 	]
 
-]
+
+f = root_open(myfiles['Top'])
+# f.ls()
+# print [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
+histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName()  ]
+
+# myfiles[""]
 
 
 # style_mpl()
-fig = plt.figure(figsize=(6,7.5), dpi=100)
+fig = plt.figure(figsize=(6,7.5))
 
-for (tmphist,tmpcut) in [(x,y) for x in histogramNames for y in cuts]:
-	# histogramName = tmphist+"_"+tmpcut
 
-	histogramName = "sirop_tight_minus_%s"%tmphist
+for histogramName in histogramNames:
+
 
 	plt.clf()
 
@@ -129,7 +126,7 @@ for (tmphist,tmpcut) in [(x,y) for x in histogramNames for y in cuts]:
 		hists[sample] = f.Get(histogramName).Clone(sample)
 		hists[sample].Sumw2()
 		if not("nJet" in histogramName)  and not("QCD_Delta" in histogramName):
-			hists[sample].Rebin(4)
+			hists[sample].Rebin(2)
 			# hists[sample].Rebin(100)
 		hists[sample].SetTitle(r"%s"%sample)
 		hists[sample].fillstyle = 'solid'
@@ -140,6 +137,7 @@ for (tmphist,tmpcut) in [(x,y) for x in histogramNames for y in cuts]:
 			histsToStack.append( hists[sample] )
 		else:
 			hists[sample].markersize = 1.2
+
 
 	# print histsToStack[0].Integral()
 	# print histsToStack
@@ -166,7 +164,7 @@ for (tmphist,tmpcut) in [(x,y) for x in histogramNames for y in cuts]:
 
 	try:
 		axes.set_yscale('log')
-		rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, )
+		rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, rasterized=True)
 		if hists['Data'].Integral():
 			rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes)
 	except:
@@ -176,34 +174,33 @@ for (tmphist,tmpcut) in [(x,y) for x in histogramNames for y in cuts]:
 
 	for signalsample in signalsamples:
 		skip = 1
-		if any([thissig in signalsample for thissig in plottedsignals]):
+		if any([thissig in signalsample for thissig in plottedsignals[histogramName.split("_")[0]  ] ]):
 			skip=0
 		if skip:
 			continue
-		signalfile = root_open("hists/rundir_signal/"+signalsample)
-		try:
-			hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
-			hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").split(".")[4].split("MadGraphPythia8EvtGen ")[1]    )
-			hists[signalsample].Scale(lumiscale)
-			if not("nJet" in histogramName) and not("QCD_Delta" in histogramName):
-				hists[signalsample].Rebin(4)
-				# hists[signalsample].Rebin(100)
-			hists[signalsample].color = "red"
-			rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0)
-			print "%s %f"%(signalsample, hists[signalsample].Integral()  )
-		except:
-			continue
-		# signalfile.Close()
+
+		signalfile = root_open("hists/signal/%s/hist-GG_direct.root.root"%signalsample)
+
+		hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
+		hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")  )
+		hists[signalsample].Scale(lumiscale)
+
+
+		if not("nJet" in histogramName) and not("QCD_Delta" in histogramName):
+			hists[signalsample].Rebin(4)
+		hists[signalsample].color = "red"
+
+		rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0, rasterized=False)
+
+		signalfile.Close()
 
 
 	print "BG: %f"%stack.sum.Integral()
 
 
 	# leg = plt.legend(loc="best")
-	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.05,0.9),xycoords='axes fraction') 
-	axes.annotate(r'$\int{L}\sim$ %d pb$^{-1}$, $\sqrt{s}$=13 TeV, N-1'%(3.5*lumiscale),xy=(0.3,0.82),xycoords='axes fraction') 
-
-
+	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.05,0.95),xycoords='axes fraction') 
+	axes.annotate(r'$\int{L}\sim$ %d pb$^{-1}$, $\sqrt{s}$=13 TeV, N-1, %s'%(lumiscale, histogramName.split("_")[0] ),xy=(0.0,1.01),xycoords='axes fraction') 
 
 	# get handles
 	handles, labels = axes.get_legend_handles_labels()
@@ -227,10 +224,10 @@ for (tmphist,tmpcut) in [(x,y) for x in histogramNames for y in cuts]:
 		ylim([0,2])
 
 	axes.set_ylabel('Events')
-	axes_ratio.set_xlabel(histogramName.replace("_"," ") )
+	axes_ratio.set_xlabel(histogramName.replace("_"," ").replace(">","$>$").replace("<","$<$") )
 	axes_ratio.set_ylabel('Data/MC')
 
 	print "saving"
-	fig.savefig("N-1_plots/%s.pdf"%histogramName)
+	fig.savefig("N-1_plots/%s.png"%histogramName, dpi=100)
 
 
