@@ -110,6 +110,7 @@ histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_
 # style_mpl()
 fig = plt.figure(figsize=(6,7.5))
 
+outputFile = open("n-1.tex", 'w')
 
 for histogramName in histogramNames:
 
@@ -243,6 +244,20 @@ for histogramName in histogramNames:
 	axes_ratio.set_ylabel('Data/MC')
 
 	print "saving"
-	fig.savefig("N-1_plots/%s.png"%histogramName, dpi=100)
+	fig.savefig("N-1Plots/%s.png"%histogramName, dpi=100)
 
+	outputFile.write(r"""
+\begin{figure}[tbph]
+\begin{center}
+\includegraphics[width=0.49\textwidth]{figures/N-1Plots/%s}
+\end{center}
+\caption{N-1 Plots for %s}
+\label{fig:%s}
+\end{figure}
+
+
+		"""%(histogramName, histogramName.split("_")[0], histogramName.translate(None, "<>")  )
+
+
+		)
 
