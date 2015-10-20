@@ -25,178 +25,226 @@ from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text', usetex=True)
 
+mpl.rcParams['text.latex.preamble'] = [
+       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
+       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
+       r'\usepackage{helvet}',    # set the normal font here
+       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
+]  
+
+
+makeCutFlowTables = True
+if makeCutFlowTables:
+	import cutFlowTools
 
 samples = [
-			'Data',
-			'QCD',
+			# 'Data',
+			# 'QCD',
 			'Top',
-			'W+Jets',
-			'Z+Jets'
+			'W',
+			'Z',
+			'Diboson',
 			]
 
-lumiscale = 10000/3.5
+lumiscale = 1000
 
 
-colorpal = sns.color_palette("husl", 3 )
+colorpal = sns.color_palette("husl", 4 )
+
 
 
 colors = {
 	'Data': 'black',
 	'QCD': 'gray',
 	'Top': colorpal[0],
-	'W+Jets': colorpal[1],
-	'Z+Jets': colorpal[2],
+	'W': colorpal[1],
+	'Z': colorpal[2],
+	'Diboson': colorpal[3],
 }
 
 # colors = {
 # 	'Data': 'black',
 # 	'QCD': 'gray',
 # 	'Top': 'red',
-# 	'W+Jets': 'green',
-# 	'Z+Jets': 'blue',
+# 	'W': 'green',
+# 	'Z': 'blue',
 # }
 
+
 myfiles = {
-	'Data': 'hists/rundir_data.root',
-	'QCD': 'hists/rundir_qcd.root',
-	'Top': 'hists/rundir_top.root',
-	'W+Jets': 'hists/rundir_wjets.root',
-	'Z+Jets': 'hists/rundir_zjets.root',
+	# 'Data':   'hists/hist-DataMain_periodC.root.root',
+	# 'QCD':    'hists/BG/hist-QCD.root.root',
+	'Top':    'hists/BG/Top/hist-Top.root.root',
+	'W': 'hists/BG/W/hist-Wjets.root.root',
+	'Z': 'hists/BG/Z/hist-Zjets.root.root',
+	'Diboson':'hists/BG/Diboson/hist-Diboson.root.root',
 }
 
 
-signalsamples = os.listdir("hists/rundir_signal")
+signalsamples = os.listdir("hists/signal/")
+# print signalsamples
 signalsamples = [x for x in signalsamples if "GG_direct" in x]
+# print signalsamples
 
-plottedsignals =  ["_1150_250." , "_1150_450." , "_1150_650." , "_1150_850." ]
+plottedsignals = {}
+plottedsignals["SR1"] = ["_800_600","_900_700","_1000_800" ]
+plottedsignals["SR2"] = ["_1000_600","_1100_700","_1200_800" ]
+plottedsignals["SR3"] = ["_1100_500","_1200_600","_1400_800" ]
+plottedsignals["SR4"] = ["_1200_400","_1300_500","_1400_600" ]
+plottedsignals["SR5"] = ["_1400_0","_1500_100","_1600_0" ]
 
 
 # style_mpl()
-fig = plt.figure(figsize=(10,5), dpi=100)
-
-
-histogramName = "cutflow"
-
-plt.clf()
-
-hists = {}
-histsToStack = []
-stack = HistStack()
-
-for sample in samples:
-	f = root_open(myfiles[sample])
-	# f.ls()
-	hists[sample] = f.Get(histogramName).Clone(sample)
-	hists[sample].Sumw2()
-	hists[sample].SetTitle(r"%s"%sample)
-	# hists[sample].fillstyle = 'solid'
-	hists[sample].fillcolor = colors[sample]
-	hists[sample].linecolor = colors[sample]
-	hists[sample].linewidth = 2
-	hists[sample].Scale(1./hists[sample].GetBinContent(1) )
-	if sample != 'Data':
-		histsToStack.append( hists[sample] )
-	else:
-		hists[sample].markersize = 1.2
-
-sortedHistsToStack = sorted(histsToStack, key=lambda x: x.Integral() , reverse=False)
-
-
-axes = plt.subplot()
-axes.set_yscale('log')
-
-
-axes.set_xticks(np.arange(21)+0.5 )
-# ax.set_xticklabels( ('G1', 'G2', 'G3', 'G4', 'G5') )
-axes.set_xticklabels( [
-	r"1",
-	r"met 100",
-	r"MDeltaR 300"   ,
-	r"P0 Jet1 pT 150."   ,
-	r"P1 Jet1 pT 150."   ,
-	r"P0 Jet2 pT 110."   ,
-	r"P1 Jet2 pT 110."   ,
-	r"QCD Rpt 0.3",
-	r"QCD Delta1*QCD Rpsib -0.7"   ,
-	r"P0 PInvHS 0.25"   ,
-	r"P1 PInvHS 0.25"   ,
-	r"0.3 dphiVG 2.7"   ,
-	r"-0.75 C0 CosTheta 0.8"   ,
-	r"-0.75 C1 CosTheta 0.8"   ,
-	r"-0.7 G0 CosTheta 0.7"   ,
-	r"-0.7 G1 CosTheta 0.7"   ,
-	r"-0.8 cos(P0 dPhiGC) 0.7",
-	r"-0.8 cos(P1 dPhiGC) 0.7",
-	r"abs(CosThetaPP) 0.9"   ,
-	r"VisShape 0.1"   ,
-	r"MP 800"   ,
-	], rotation=90 )
-
-for tmphist in sortedHistsToStack:
-	if tmphist.Integral():
-		stack.Add(tmphist)
-		rplt.hist(tmphist, alpha=0.5, emptybins=False)
-
-
-
-rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes)
-
-ylim([1e-17,2])
-plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.35)
+fig = plt.figure(figsize=(7,7), dpi=100)
 
 
 
 
+regions = [
+"SR1",
+"SR2",
+"SR3",
+"SR4",
+"SR5",
+]
+
+for region in regions:
+
+	histogramName = "cutflow_%s"%region
+
+	plt.clf()
+
+	hists = {}
+	histsToStack = []
+	stack = HistStack()
+
+	for sample in samples:
+		f = root_open(myfiles[sample])
+		# f.ls()
+		hists[sample] = f.Get(histogramName).Clone(sample)
+		hists[sample].Sumw2()
+		hists[sample].SetTitle(r"%s"%sample)
+		# hists[sample].fillstyle = 'solid'
+		hists[sample].fillcolor = colors[sample]
+		hists[sample].linecolor = colors[sample]
+		hists[sample].linewidth = 2
+		# hists[sample].Scale(1./hists[sample].GetBinContent(1) )
+		if sample != 'Data':
+			histsToStack.append( hists[sample] )
+		else:
+			hists[sample].markersize = 1.2
+
+	sortedHistsToStack = sorted(histsToStack, key=lambda x: x.Integral() , reverse=False)
 
 
-for signalsample in signalsamples:
-	skip = 1
-	if any([thissig in signalsample for thissig in plottedsignals]):
-		skip=0
-	if skip:
-		continue
-	signalfile = root_open("hists/rundir_signal/"+signalsample)
-	try:
-		hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
-		hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").split(".")[4].split("MadGraphPythia8EvtGen ")[1]    )
-		hists[signalsample].Scale(1./hists[sample].GetBinContent(1)  )
-		hists[signalsample].color = "red"
-		rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0)
-		print "%s %f"%(signalsample, hists[signalsample].Integral()  )
-	except:
-		continue
+	mybinlabels = []
+	for ibin in xrange(1,hists[samples[0]].GetNbinsX()+1 ):
+		# print hists[samples[0]].GetXaxis().GetBinLabel(ibin)
+		label = hists[samples[0]].GetXaxis().GetBinLabel(ibin).translate(None, " _(),.").replace("<","$<$").replace(">","$>$")
+		mybinlabels.append(  label )
+
+	axes = plt.subplot(211)
+	axes.set_yscale('log')
+	ylim([1e-7,1e7])
+
+	axes.set_xticks(np.arange( hists[samples[0]].GetNbinsX()  )+0.5 )
+	# ax.set_xticklabels( ('G1', 'G2', 'G3', 'G4', 'G5') )
+	axes.set_xticklabels( mybinlabels, rotation=90 )
+	plt.setp( axes.get_xticklabels(), visible=False)
 
 
-print "BG: %f"%stack.sum.Integral()
+	cutflows = {}
+	for tmphist in sortedHistsToStack:
+		if tmphist.Integral():
+			# stack.Add(tmphist)
+			rplt.hist(tmphist, alpha=0.5, emptybins=False)
+
+			if makeCutFlowTables:
+				cutflows[tmphist.GetTitle()] = cutFlowTools.histToCutFlow(tmphist)
 
 
-# leg = plt.legend(loc="best")
-axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.3,0.05),xycoords='axes fraction') 
-axes.annotate(r'$\sqrt{s}$=13 TeV',xy=(0.5,0.05),xycoords='axes fraction') 
+	cutFlowTools.dictToTable(cutflows, "CutFlowBG%s"%region)
 
 
+	axes2 = subplot(212, sharex=axes)
+	axes2.set_yscale('log')
+	ylim([1e-7,2])
 
-# get handles
-handles, labels = axes.get_legend_handles_labels()
-# remove the errorbars
-# handles = [h[0] for h in handles]
-for myhandle in handles:
-	try:
-		myhandle = myhandle[0]
-	except:
-		pass
-
-# use them in the legend
-axes.legend(handles, labels, loc='best',numpoints=1)
+	axes2.set_xticks(np.arange( hists[samples[0]].GetNbinsX()  )+0.5 )
+	# ax.set_xticklabels( ('G1', 'G2', 'G3', 'G4', 'G5') )
+	axes2.set_xticklabels( mybinlabels, rotation=90 )
 
 
 
-axes.set_ylabel('Cut Flow Efficiency')
+	for tmphist in sortedHistsToStack:
+		if tmphist.Integral():
+			# stack.Add(tmphist)
+			tmphist.Scale(1./tmphist.GetBinContent(1) )
+			rplt.hist(tmphist, alpha=0.5, emptybins=False)
 
-plt.show()
+	fig.subplots_adjust(hspace=0.01)
+	# rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes)
+
+	# ylim([1e-7,2])
+	plt.subplots_adjust(left=0.1, right=0.9, top=0.98, bottom=0.45)
 
 
-print "saving"
-fig.savefig("N-1_plots/%s.pdf"%histogramName)
+	cutflows = {}
+
+	for signalsample in signalsamples:
+		skip = 1
+		if any([thissig in signalsample for thissig in plottedsignals[region]  ]):
+			skip=0
+		if skip:
+			continue
+		signalfile = root_open("hists/signal/%s/hist-GG_direct.root.root"%signalsample)
+		try:
+			hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
+			hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")   )
+			
+			if makeCutFlowTables:
+				cutflows[hists[signalsample].GetTitle()] = cutFlowTools.histToCutFlow(hists[signalsample])
+
+			rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0)
+			hists[signalsample].Scale(1./hists[signalsample].GetBinContent(1)  )
+			rplt.errorbar(hists[signalsample], axes=axes2, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0)
+			print "%s %f"%(signalsample, hists[signalsample].Integral()  )
+		except:
+			continue
+
+
+	cutFlowTools.dictToTable(cutflows, "CutFlowSig%s"%region)
+
+
+	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.4,0.90),xycoords='axes fraction') 
+	axes.annotate(r'$\sqrt{s}$=13 TeV, %s'%region,xy=(0.65,0.90),xycoords='axes fraction') 
+
+
+
+	# get handles
+	handles, labels = axes.get_legend_handles_labels()
+	# remove the errorbars
+	# handles = [h[0] for h in handles]
+	for myhandle in handles:
+		try:
+			myhandle = myhandle[0]
+		except:
+			pass
+
+	# use them in the legend
+	for isignal in xrange(len(plottedsignals[region]) ):
+		handles[-1-isignal] = handles[-1-isignal][0]
+	axes2.legend(handles, labels, loc='best',numpoints=1)
+
+
+
+	axes.set_ylabel('Events / fb-1')
+	axes2.set_ylabel('Cut Flow Efficiency')
+
+	# plt.show()
+
+	print "saving"
+	fig.savefig("N-1_plots/%s.pdf"%histogramName)
 
 
