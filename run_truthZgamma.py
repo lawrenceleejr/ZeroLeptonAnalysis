@@ -122,6 +122,9 @@ for mysamplehandlername in sh_bg.keys():
 	job = ROOT.EL.Job()
 	job.sampleHandler(mysamplehandler)
 
+        no_cuts = {}
+	no_cuts["met>0."] = [50,0,1000]
+
 	baseline_cuts = {}#[]
 	baseline_cuts["met>140"]                                  = [50,0,1000]
 	baseline_cuts["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"]= [50,0,2000]
@@ -129,7 +132,7 @@ for mysamplehandlername in sh_bg.keys():
 #       baseline_cuts["jetPt[0] > 50"]
 #       baseline_cuts["jetPt[1] > 50"]
         baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]         =  [50,0,1]
-        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rpsib)"] = [50,-1,1]
+        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rsib)"] = [50,-1,1]
 
         cry_cuts = baseline_cuts
 
@@ -181,7 +184,8 @@ for mysamplehandlername in sh_bg.keys():
 		# "l1trigger": "(NTVars.nJet>1 && met > 100)",
 #		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300)",
 #		"cry_1200_800": "*".join( ["(%s)"%mycut for mycut in cry_1200_800_cuts ]),
-		"cry_tight": "*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() ])
+		"cry_tight": "*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() ]),
+		"no_cuts"  : "*".join( ["(%s)"%mycut for mycut in no_cuts .keys() ])
 	}
 
 
