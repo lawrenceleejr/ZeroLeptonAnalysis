@@ -40,7 +40,6 @@ lumiscale = 10000/3.5
 
 colorpal = sns.color_palette("husl", 3 )
 
-
 colors = {
 	'Data': 'black',
 	'QCD': 'gray',
