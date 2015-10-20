@@ -88,11 +88,12 @@ signalsamples = [x for x in signalsamples if "GG_direct" in x]
 # print signalsamples
 
 plottedsignals = {}
-plottedsignals["SR1"] = ["_800_600","_900_700","_1000_800" ]
-plottedsignals["SR2"] = ["_1000_600","_1100_700","_1200_800" ]
-plottedsignals["SR3"] = ["_1100_500","_1200_600","_1400_800" ]
-plottedsignals["SR4"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR5"] = ["_1400_0","_1500_100","_1600_0" ]
+plottedsignals["SR1A"] = ["_800_600","_900_700","_1000_800" ]
+plottedsignals["SR1B"] = ["_1000_600","_1100_700","_1200_800" ]
+plottedsignals["SR1C"] = ["_1000_600","_1100_700","_1200_800" ]
+plottedsignals["SR2A"] = ["_1100_500","_1200_600","_1400_800" ]
+plottedsignals["SR2B"] = ["_1200_400","_1300_500","_1400_600" ]
+plottedsignals["SR3"] = ["_1400_0","_1500_100","_1600_0" ]
 
 
 # style_mpl()
@@ -102,11 +103,12 @@ fig = plt.figure(figsize=(7,7), dpi=100)
 
 
 regions = [
-"SR1",
-"SR2",
+"SR1A",
+"SR1B",
+"SR1C",
+"SR2A",
+"SR2B",
 "SR3",
-"SR4",
-"SR5",
 ]
 
 for region in regions:
@@ -245,6 +247,6 @@ for region in regions:
 	# plt.show()
 
 	print "saving"
-	fig.savefig("N-1_plots/%s.pdf"%histogramName)
+	fig.savefig("N-1Plots/%s.pdf"%histogramName)
 
 
