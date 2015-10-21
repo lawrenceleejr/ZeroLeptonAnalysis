@@ -63,7 +63,7 @@ sh_bg["gamma"]    = sh_all.find("gamma")
 sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
 
 print sh_bg
-sh_bg["gamma"].printContent()
+sh_bg["gamma"]   .printContent()
 sh_bg["znunu_lo"].printContent()
 
 ######This will be done per samplehandler ############################
@@ -104,8 +104,11 @@ def scaleMyRootFiles(mysamplehandlername,mylumi):
 
 for mysamplehandlername in sh_bg.keys():
         mysamplehandler = sh_bg[mysamplehandlername]
-	for sample in mysamplehandler:
+        for sample in mysamplehandler:
+                mychain = sample.makeTChain()
                 print sample
+                print mychain.GetEntries()
+#                print mychain.Print()
 		m_nevt = 0
 		m_sumw = 0
 		for ifile in xrange(sample.numFiles() ):
@@ -123,16 +126,17 @@ for mysamplehandlername in sh_bg.keys():
 	job.sampleHandler(mysamplehandler)
 
         no_cuts = {}
-	no_cuts["met>0."] = [50,0,1000]
+	no_cuts["1"] = [50,0,1000]
+#	no_cuts["met>0."] = [50,0,1000]
 
 	baseline_cuts = {}#[]
-	baseline_cuts["met>140"]                                  = [50,0,1000]
-	baseline_cuts["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"]= [50,0,2000]
-#       baseline_cuts["Length%(jetPt) >= 2"]
-#       baseline_cuts["jetPt[0] > 50"]
-#       baseline_cuts["jetPt[1] > 50"]
-        baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]         =  [50,0,1]
-        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rsib)"] = [50,-1,1]
+
+	baseline_cuts["met>140"]                                                                   = [50,0,1000]
+	baseline_cuts["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300."]                                = [50,0,2000]
+#       baseline_cuts["jetPt[0] > 50"]                                                             = [50,0,500]
+#       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
+#       baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]                                          = [50,-1,1]
+#       baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rsib)"] = [50,-1,1]
 
         cry_cuts = baseline_cuts
 
@@ -207,73 +211,90 @@ for mysamplehandlername in sh_bg.keys():
 
 	job.algsAdd(ROOT.MD.AlgCFlow (cutflow))
 
-
+#include all these
+        RJigsawVariables = {
+            "RJVars_PP_MDeltaR"        :  [100, 0 , 1000],
+            "RJVars_PP_Mass"           :  [100, 0 , 1000],
+            "RJVars_PP_InvGamma"       :  [100, -1 , 1],
+            "RJVars_PP_dPhiBetaR"      :  [100, -1 , 1],
+            "RJVars_PP_dPhiVis"        :  [100, -1 , 1],
+            "RJVars_PP_CosTheta"       :  [100, -1 , 1],
+            "RJVars_PP_dPhiDecayAngle" :  [100, -1 , 1],
+            "RJVars_PP_VisShape"       :  [100, 0 , 1000],
+            "RJVars_P1_Mass"           :  [100, 0 , 1000],
+            "RJVars_P1_CosTheta"       :  [100, -1 , 1],
+            "RJVars_P2_Mass"           :  [100, 0 , 1000],
+            "RJVars_P2_CosTheta"       :  [100, -1 , 1],
+            "RJVars_I1_Depth"          :  [100, 0 , 1000],
+            "RJVars_I2_Depth"          :  [100, 0 , 1000],
+            "RJVars_dphiPV1a"  :  [100, -1 , 1],
+            "RJVars_cosV1a"    :  [100, -1 , 1],
+            "RJVars_dphiCV2a"  :  [100, -1 , 1],
+            "RJVars_cosV2a"    :  [100, -1 , 1],
+            "RJVars_dphiPV1b" :  [100, -1 , 1],
+            "RJVars_cosV1b"   :  [100, -1 , 1],
+            "RJVars_dphiCV2b" :  [100, -1 , 1],
+            "RJVars_cosV2b":  [100, -1 , 1],
+            "RJVars_V1_N" :  [100, 0 , 1000],
+            "RJVars_V2_N" :  [100, 0 , 1000],
+            "RJVars_MP"          :  [100, 0 , 1000],
+            "RJVars_DeltaBetaGG" :  [100, -1 , 1],
+            "RJVars_dphiVG"      :  [100, -1 , 1],
+            "RJVars_QCD_dPhiR"    :  [100, -1 , 1],
+            "RJVars_QCD_Rpt"      :  [100, -1 , 1],
+            "RJVars_QCD_Rsib"    :  [100, -1 , 1],
+            "RJVars_QCD_Delta1"   :  [100, -1 , 1],
+            "RJVars_H2PP":  [100, 0 , 4000],
+            "RJVars_H3PP":  [100, 0 , 4000],
+            "RJVars_H4PP":  [100, 0 , 4000],
+            "RJVars_H6PP":  [100, 0 , 4000],
+            "RJVars_H2Pa":  [100, 0 , 4000],
+            "RJVars_H2Pb":  [100, 0 , 4000],
+            "RJVars_H3Pa":  [100, 0 , 4000],
+            "RJVars_H3Pb":  [100, 0 , 4000],
+            "RJVars_H4Pa":  [100, 0 , 4000],
+            "RJVars_H4Pb":  [100, 0 , 4000],
+            "RJVars_H5Pa":  [100, 0 , 4000],
+            "RJVars_H5Pb":  [100, 0 , 4000],
+            "RJVars_H2Ca":  [100, 0 , 4000],
+            "RJVars_H2Cb":  [100, 0 , 4000],
+            "RJVars_H3Ca":  [100, 0 , 4000],
+            "RJVars_H3Cb":  [100, 0 , 4000],
+            "RJVars_HT4PP":  [100, 0 , 4000],
+            "RJVars_HT6PP":  [100, 0 , 4000],
+            "RJVars_minH3P":  [100, 0 , 4000],
+            "RJVars_sangle":  [100, -1 , 1],
+            "RJVars_dangle":  [100, -1 , 1],
+            "RJVars_ddphiPC":  [100, -1 , 1],
+            "RJVars_sdphiPC":  [100, -1 , 1],
+            "RJVars_dH2o3P":  [100, -1 , 1],
+            "RJVars_RPZ_HT4PP":  [100, -1 , 1],
+            "RJVars_RPZ_HT6PP":  [100, -1 , 1],
+            }
 	#################################################################################################
 
-	for cut in cuts:
-                print cut
-		## each of this histograms will be made for each cut
 
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("jet1pt_%s"%cut, "jet1pt_%s"%cut, 100, 0, 1000),
-			"jetPt[0]",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("jet2pt_%s"%cut, "jet2pt_%s"%cut, 100, 0, 1000),
-			"jetPt[1]",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("met_%s"%cut, "met_%s"%cut, 100, 0, 1000),
-			"met",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("nJet_%s"%cut, "nJet_%s"%cut, 20, 0, 20),
-			"NTVars.nJet",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_Mass_%s"%cut, "RJVars_SS_Mass_%s"%cut, 100, 0, 6000),
-			"NTRJigsawVars.RJVars_SS_Mass/1000.",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_MDeltaR_%s"%cut, "RJVars_SS_MDeltaR_%s"%cut, 100, 0, 2000),
-			"NTRJigsawVars.RJVars_SS_MDeltaR/1000.",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_MG_%s"%cut, "RJVars_MG_%s"%cut, 100, 0, 2000),
-			"NTRJigsawVars.RJVars_MG/1000.",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_PInvHS_%s"%cut, "RJVars_G_0_PInvHS_%s"%cut, 100, -1, 1),
-			"NTRJigsawVars.RJVars_G_0_PInvHS",
-			"NTVars.eventWeight*%s"%cuts[cut]))
+        for cut in cuts:
+            cutstring = "NTVars.eventWeight*%s"%cuts[cut]
+#            cutstring = "1."
+            for varname,limits in RJigsawVariables.items() :
+                divisionStr = None #todo do this better
+                # if (RJigsawVariables[varname][2] % 1000 == 0 ): #scale variables
+                #     divisionStr = "/1000."
+                # else : #angular variables
+                #     divisionStr = "/1."
 
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_CosTheta_%s"%cut, "RJVars_G_0_CosTheta_%s"%cut, 100, -1, 1),
-			"NTRJigsawVars.RJVars_G_0_CosTheta",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_G_0_Jet2_pT_%s"%cut, "RJVars_G_0_Jet2_pT_%s"%cut, 100, -1, 1000),
-			"NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_SS_CosTheta_%s"%cut, "RJVars_SS_CosTheta_%s"%cut, 100, -1, 1),
-			"NTRJigsawVars.RJVars_SS_CosTheta",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_DeltaBetaGG_%s"%cut, "RJVars_DeltaBetaGG_%s"%cut, 100, 0, 1),
-			"NTRJigsawVars.RJVars_DeltaBetaGG",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_dphiVG_%s"%cut, "RJVars_dphiVG_%s"%cut, 100, 0, 4),
-			"NTRJigsawVars.RJVars_dphiVG",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Rpt_%s"%cut, "RJVars_QCD_Rpt_%s"%cut, 100, 0, 1),
-			"NTRJigsawVars.RJVars_QCD_Rpt",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Delta2_%s"%cut, "RJVars_QCD_Delta2_%s"%cut, 100, -1, 1),
-			"NTRJigsawVars.RJVars_QCD_Delta2",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("RJVars_QCD_Delta1_x_Rpsib_%s"%cut, "RJVars_QCD_Delta1_x_Rpsib_%s"%cut, 100, -1, 1),
-			"(NTRJigsawVars.RJVars_QCD_Delta1)*(NTRJigsawVars.RJVars_QCD_Rpsib)",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("cosNTRJigsawVars.RJVars_G_1_dPhiGC_%s"%cut, "cosNTRJigsawVars.RJVars_G_1_dPhiGC_%s"%cut, 100, -1, 1),
-			"cos(NTRJigsawVars.RJVars_G_1_dPhiGC)",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("meffInc_%s"%cut, "meffInc_%s"%cut, 100, 0, 3000),
-			"NTVars.meffInc",
-			"NTVars.eventWeight*%s"%cuts[cut]))
-
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("Ap_%s"%cut, "Ap_%s"%cut, 100, 0, 1),
-			"NTExtraVars.Ap",
-			"NTVars.eventWeight*%s"%cuts[cut]))
+		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F(varname+"_%s"%cut,
+                                                       varname+"_%s"%cut,
+                                                       limits[0],
+                                                       limits[1],
+                                                       limits[2]
+                                                       ),
+                                                       #100, 0, 1000),#todo make this use the other half of the dictionary
+                                             "NTRJigsawVars."+varname+"/1000.",
+                                             cutstring
+                                             )
+                             )
 
 
 	driver = ROOT.EL.DirectDriver()
