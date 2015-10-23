@@ -46,7 +46,7 @@ discoverInput.discover(sh_all, search_directories)
 
 sh_all.setMetaString("nc_tree", "CRY_SRAllNT")
 
-ROOT.SH.readSusyMeta(sh_all,"./susy_crosssections_13TeV.txt")
+ROOT.SH.readSusyMeta(sh_all,"optimization/susy_crosssections_13TeV.txt")
 
 logging.info("adding my tags defined in discoverInput.py")
 discoverInput.addTags(sh_all)
@@ -60,16 +60,11 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 sh_bg["gamma"]    = sh_all.find("gamma")
-sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
+sh_bg["znunu_nlo"] = sh_all.find("znunu_nlo")
 
 print sh_bg
 sh_bg["gamma"]   .printContent()
-sh_bg["znunu_lo"].printContent()
-
-######This will be done per samplehandler ############################
-##
-##
-
+sh_bg["znunu_nlo"].printContent()
 
 #Creation of output directory names
 tempDirDict = {}
@@ -138,7 +133,7 @@ for mysamplehandlername in sh_bg.keys():
 #       baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]                                          = [50,-1,1]
 #       baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rsib)"] = [50,-1,1]
 
-        cry_cuts = baseline_cuts
+        cry_cuts = baseline_cuts.copy()
 
 #        cry_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1>*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
 	#
@@ -278,12 +273,6 @@ for mysamplehandlername in sh_bg.keys():
             cutstring = "NTVars.eventWeight*%s"%cuts[cut]
 #            cutstring = "1."
             for varname,limits in RJigsawVariables.items() :
-                divisionStr = None #todo do this better
-                # if (RJigsawVariables[varname][2] % 1000 == 0 ): #scale variables
-                #     divisionStr = "/1000."
-                # else : #angular variables
-                #     divisionStr = "/1."
-
 		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
                                                        limits[0],
