@@ -124,17 +124,16 @@ for mysamplehandlername in sh_bg.keys():
 	no_cuts["1"] = [50,0,1000]
 #	no_cuts["met>0."] = [50,0,1000]
 
-	baseline_cuts = {}#[]
-
-	baseline_cuts["met>140"]                                                                   = [50,0,1000]
-	baseline_cuts["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300."]                                = [50,0,2000]
+	baseline_cuts = no_cuts.copy()#[]
+	baseline_cuts["met>140"]                                        = [50,0,1000]
+        baseline_cuts["NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300."]     = [50,0,2000]
 #       baseline_cuts["jetPt[0] > 50"]                                                             = [50,0,500]
 #       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
-#       baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]                                          = [50,-1,1]
-#       baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rsib)"] = [50,-1,1]
+        baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]                                          = [50,-1,1]
+        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rsib)"] = [50,-1,1]
 
         cry_cuts = baseline_cuts.copy()
-
+        print cry_cuts
 #        cry_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1>*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
 	#
 	# cry_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>150."   ]
@@ -150,18 +149,18 @@ for mysamplehandlername in sh_bg.keys():
 	# cry_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_1_CosTheta<0.7"   ]
 	# cry_cuts += ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.7"]
 	# cry_cuts += ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_1_dPhiGC)<0.7"]
-	# cry_cuts += ["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.9"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_SS_VisShape>0.1"   ]
+	# cry_cuts += ["abs(NTRJigsawVars.RJVars_PP_CosTheta)<0.9"   ]
+	# cry_cuts += ["NTRJigsawVars.RJVars_PP_VisShape>0.1"   ]
 	# cry_cuts += ["NTRJigsawVars.RJVars_MG/1000.>800"   ]
 
 	# cry_limits = []
 	# cry_limits += [ (50,0,1000) ]  #["met>100"]
-	# cry_limits += [ (50,0,2000) ]  #["NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300"   ]
+	# cry_limits += [ (50,0,2000) ]  #["NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300"   ]
 	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>150."   ]
 	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>150."   ]
 	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>110."   ]
 	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>110."   ]
-	# cry_limits += [ (50,0,1) ]  #["abs(NTRJigsawVars.RJVars_SS_CosTheta)<0.9"   ]
+	# cry_limits += [ (50,0,1) ]  #["abs(NTRJigsawVars.RJVars_PP_CosTheta)<0.9"   ]
 	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_G_0_PInvHS>0.25 && NTRJigsawVars.RJVars_G_0_PInvHS<1"   ]
 	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_G_1_PInvHS>0.25 && NTRJigsawVars.RJVars_G_0_PInvHS<1"   ]
 	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_G_0_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_0_CosTheta<0.7"   ]
@@ -181,7 +180,7 @@ for mysamplehandlername in sh_bg.keys():
 	cuts = {
 		# "no_cut": "(NTRJigsawVars.RJVars_G_0_Jet1_pT/1000. > 250)",
 		# "l1trigger": "(NTVars.nJet>1 && met > 100)",
-#		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300)",
+#		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300)",
 #		"cry_1200_800": "*".join( ["(%s)"%mycut for mycut in cry_1200_800_cuts ]),
 		"cry_tight": "*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() ]),
 		"no_cuts"  : "*".join( ["(%s)"%mycut for mycut in no_cuts .keys() ])
@@ -273,7 +272,10 @@ for mysamplehandlername in sh_bg.keys():
             cutstring = "NTVars.eventWeight*%s"%cuts[cut]
 #            cutstring = "1."
             for varname,limits in RJigsawVariables.items() :
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F(varname+"_%s"%cut,
+		print varname
+                print "NTRJigsawVars."+varname+"/1000."
+                print cutstring
+                job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
                                                        limits[0],
                                                        limits[1],
