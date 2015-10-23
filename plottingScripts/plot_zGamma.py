@@ -21,7 +21,7 @@ ROOT.gROOT.SetBatch(True)
 AtlasStyle.SetAtlasStyle()
 
 myfiles = {
-	'Znunu'  : root_open('../rundir_znunu_lo.root'),
+	'Znunu'  : root_open('../rundir_znunu_nlo.root'),
 	'Gamma'  : root_open('../rundir_gamma.root'),
 }
 
@@ -34,6 +34,12 @@ for counter, histoKey in enumerate(histoList) :
         for name, ifile in myfiles.items() :
             histos[name] = ifile.Get(histoKey.GetName())
 #   #        histos[name].Print()
+            if( not histos[name] ) :
+                return None
+            if( not histos[name].GetEntries()) :
+                return None
+            print histos[name].GetEntries()
+
 
         c1 = ROOT.TCanvas("c1_"+histoKey.GetName(),
                           "c1_"+histoKey.GetName(),
@@ -87,6 +93,7 @@ for counter, histoKey in enumerate(histoList) :
         c1.cd()
         c1.Print("plots/"+c1.GetName()+".eps")
         histos = None
+        return
 
     printHisto(histoKey)
 
