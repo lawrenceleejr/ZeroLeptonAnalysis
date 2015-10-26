@@ -6,7 +6,7 @@ __doc__ = """
 """
 
 #from AnaList import *
-from allChannelsDict import *
+from ChannelsDict import *
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 # Import Modules                                                             # 
@@ -119,45 +119,46 @@ end="""
 f=open("Main.tex",'w')
 f.write(begin)
 f.write("\n")
-#f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{plotSR}\\end{tabular}\\end{center}\\end{figure}\n")
+#f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{plotSR}\\end{tabular}\\end{center}\\end{figure}\n")
 
-#f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{summaryMU}\\end{tabular}\\end{center}\\end{figure}\n")
-#f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{summaryNP}\\end{tabular}\\end{center}\\end{figure}\n")
+#
+f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{summaryMU}\\end{tabular}\\end{center}\\end{figure}\n")
 
-#f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{SummaryPull}\\end{tabular}\\end{center}\\end{figure}\n")
+#f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{SummaryPull}\\end{tabular}\\end{center}\\end{figure}\n")
 
 f.write("\\clearpage\n")
 
 
-for ana in sorted(allChannelsDict.keys()):
+for ana in sorted(finalChannelsDict.keys()):
     f.write("\\include{yield_"+ana+"}\n")
 
 
 f.write("\\clearpage\n")
-for ana in sorted(allChannelsDict.keys()):
+for ana in sorted(finalChannelsDict.keys()):
     f.write("\\include{systtable_"+ana+"}\n")
 
 
     
 f.write("\\clearpage\n")
-for ana in sorted(allChannelsDict.keys()):
-    f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{histpull_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
+for ana in sorted(finalChannelsDict.keys()):
+    f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{histpull_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
     
 
 
-#f.write("\\clearpage\n")
-#for ana in sorted(allChannelsDict.keys()):
-#    f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{MU_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
+f.write("\\clearpage\n")
+for ana in sorted(finalChannelsDict.keys()):
+    f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{MU_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
+
+f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{summaryNP}\\end{tabular}\\end{center}\\end{figure}\n")
+
+f.write("\\clearpage\n")
+for ana in sorted(finalChannelsDict.keys()):
+    f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{NP_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
 
 
-#f.write("\\clearpage\n")
-#for ana in sorted(allChannelsDict.keys()):
-#    f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{NP_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
-
-
-#f.write("\\clearpage\n")
-#for ana in sorted(allChannelsDict.keys()):
-#    f.write("\\begin{figure}[H]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{corr_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
+f.write("\\clearpage\n")
+for ana in sorted(finalChannelsDict.keys()):
+    f.write("\\begin{figure}[h]\\begin{center}\\begin{tabular}{cc}\\includegraphics[width=1\\textwidth]{corr_"+ana+"}\\end{tabular}\\end{center}\\end{figure}\n")
 
 
 f.write(end)

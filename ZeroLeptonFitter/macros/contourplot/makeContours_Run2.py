@@ -229,7 +229,7 @@ def parseCmdLine(args):
     parser.add_option("--modeL", dest="modeL", choices=["comb","metomeff","metsig","all"], default="comb", help="comb (default), metomeff or metsig; or all")
     parser.add_option("--inputDir", dest="inputDir", help="input directory", default=INPUTDIR)
     parser.add_option("--all", dest="doAll", help="do all steps", action='store_true', default=False)
-    parser.add_option("--grid", dest="grid", help="grid name", default="GG_direct")
+    parser.add_option("--grid", dest="grid", help="grid name", default="SS_direct") #"GG_onestepCC")#
     parser.add_option("--shape", action="store_true", default=False, dest="shape", help="use MyAnaList_Shape.py when --opti, else the shape regions for Paper '13")
     parser.add_option("--suffix", dest="suffix", help="suffix to append after grid name in output files (default empty)", default="")
     parser.add_option("--match", dest="match", help="name to match input files against", default="")
@@ -336,8 +336,9 @@ def MergeFiles(config):
     elif grid_name == "pMSSM_qL_to_h_M1M2":
         grid_name="pMSSM_qL_to_h"
         #extra_filter="_60_Output"
-    elif grid_name == "GG_direct": 
-        config.anaList = ["SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt150-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt60-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff1600-sljetpt200-34jetpt150-dphi0.4-ap0.02"]#, "SR4j-MetoMeff0.2-Meff2600-sljetpt200-34jetpt150-dphi0.4-ap0.02"]
+    elif grid_name == "GG_direct" or grid_name == "SS_direct" or grid_name == "GG_onestepCC": 
+        config.anaList = ["SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt150-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt60-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff1600-sljetpt200-34jetpt150-dphi0.4-ap0.02"]
+        config.anaList = ["SR5jbase-MetoMeff0.25-Meff1600-sljetpt100-34jetpt100-dphi0.4-ap0.04", "SR4jbase-MetoMeff0.2-Meff2200-sljetpt100-34jetpt100-dphi0.4-ap0.04"]
     # CHECK: Add your anaList            
     else:
         print "grid_name is not defined."
@@ -745,6 +746,10 @@ def MakeContours(config):
                 format = "hypo_MUED_%f_%f";
                 interpretation = "oneOverR:LambdaR";
 
+            if config.grid.find("GG_onestepCC")!=-1:
+                format     = "hypo_GG_onestepCC_%f_%f_%f";
+                interpretation = "mgluino:mchargino:mlsp";
+                
             if config.discovery:
                 format = format.replace("hypo", "hypo_discovery")
             
@@ -757,9 +762,9 @@ def MakeContours(config):
                 cutStr = "mlsp==60"
                 listSuffix = "__mlspEE60_harvest_list"
             elif config.grid.find("onestep") != -1 and config.grid.find("LSP60") == -1:
-                cutStr = "mlsp!=60"
-                listSuffix = "__mlspNE60_harvest_list"
-
+                # tmp cutStr = "mlsp!=60"
+                # tmp listSuffix = "__mlspNE60_harvest_list"
+                print "removed mlsp!=60 temtatively"
             # M160 wants M1==60, other pMSSM grids want M1 != 60
             if config.grid.find("pMSSM_qL") != -1 and config.grid.find("M160") != -1:
                 cutStr = "M1==60"
@@ -796,18 +801,29 @@ def MakeContours(config):
                     # by defition, ULs are not discovery -> don't care about passing -d
                     # weird concept, but this prevents a memleak
                     cmd = "$ZEROLEPTONFITTER/macros/contourplot/CollectAndWriteHypoTestResults.py -F %s -f %s -I %s -c %s" % (inputfile, format, interpretation, cutStr)
+                    print "Executing %s" % cmd
                     subprocess.call(cmd, shell=True)
                     
                     cmd="mv *_list "+OUTPUTDIR
+                    print "Executing %s" % cmd
                     subprocess.call(cmd, shell=True)
                     
                     #merge the 2 files in 1
                     mergeFileList(config, basename+listSuffix, basenameUL+listSuffix)
             
             if not os.path.exists(basename+listSuffix):
-                print "INFO: file %s does not exist, skipping call to makecontourhists.C" % (basename+listSuffix)
-                continue
-            
+                # Does it exist in JSON format?
+                JSONname = "%s.json" % (basename+listSuffix)
+                if os.path.exists(JSONname):
+                    print "INFO: attempting to generate old-fashioned list from JSON output %s" % (JSONname)
+                    cmd = "GenerateTreeDescriptionFromJSON.py -f %s" % JSONname
+                    subprocess.call(cmd, shell=True)
+
+                # Now does it exist?
+                if not os.path.exists(basename+listSuffix):
+                    print "INFO: file %s does not exist, skipping call to makecontourhists.C" % (basename+listSuffix)
+                    continue
+
             cmd="mv *_list "+OUTPUTDIR
             subprocess.call(cmd, shell=True)
            
@@ -1699,7 +1715,7 @@ def Oring(config):
         par2_s = "m12"
         par3_s = ""
 
-        if config.grid.find("SM_GG_onestep")!=-1:
+        if config.grid.find("SM_GG_onestep")!=-1 or config.grid.find("GG_onestep")!=-1:
             print "Ordering SM_GG_onestep"
             par1_s = "mgluino"
             par2_s = "mchargino"

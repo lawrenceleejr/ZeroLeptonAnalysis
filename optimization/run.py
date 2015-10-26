@@ -62,57 +62,27 @@ factory = ROOT.TMVA.Factory("TMVAClassification", fout,
 
 #######################################
 #factory.AddVariable("NTRJigsawVars.RJVars_PP_MDeltaR","F")
-factory.AddVariable("NTRJigsawVars.RJVars_MG/1000.","F") 
-#factory.AddVariable("NTRJigsawVars.RJVars_MG*NTRJigsawVars.RJVars_P_0_MassRatioGC/1000.","F") 
-#factory.AddVariable("NTRJigsawVars.RJVars_MG*NTRJigsawVars.RJVars_P_1_MassRatioGC/1000.","F") 
-#factory.AddVariable("NTRJigsawVars.RJVars_P_0_MassRatioGC/1000.","F") 
-#factory.AddVariable("NTRJigsawVars.RJVars_P_1_MassRatioGC/1000.","F") 
-
-#factory.AddVariable("NTRJigsawVars.RJVars_P_0_Jet2_pT/1000." ,"F")
-#factory.AddVariable("NTRJigsawVars.RJVars_P_1_Jet2_pT/1000." ,"F")
-
-#factory.AddVariable("NTRJigsawVars.RJVars_PP_Mass/1000." ,"F")
-
-#factory.AddVariable("NTRJigsawVars.RJVars_P_0_CosTheta" ,"F")
-#factory.AddVariable("NTRJigsawVars.RJVars_P_1_CosTheta" ,"F")
-#factory.AddVariable("NTRJigsawVars.RJVars_P_0_PInvHS" ,"F")
-#factory.AddVariable("NTRJigsawVars.RJVars_P_1_PInvHS" ,"F")
-
-#factory.AddVariable("abs(NTRJigsawVars.RJVars_PP_CosTheta)" ,"F")
-# # factory.AddVariable("abs(NTRJigsawVars.RJVars_DeltaBetaGG)" ,"F")
-# factory.AddVariable("NTRJigsawVars.RJVars_QCD_Rpt" ,"F")
-#factory.AddVariable("NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib" ,"F")
-
-#factory.AddVariable("NTRJigsawVars.RJVars_C_0_CosTheta" ,"F")
-#factory.AddVariable("NTRJigsawVars.RJVars_C_1_CosTheta" ,"F")
-# factory.AddVariable("TMath::Power(cos(NTRJigsawVars.RJVars_P_0_dPhiGC+NTRJigsawVars.RJVars_P_1_dPhiGC),2)" ,"F")
-# factory.AddVariable("cos(NTRJigsawVars.RJVars_P_1_dPhiGC)" ,"F")
-# factory.AddVariable("NTRJigsawVars.RJVars_P_0_Jet1_pT/1000." ,"F")
-# # factory.AddVariable("NTRJigsawVars.RJVars_P_1_Jet1_pT/1000." ,"F")
-# factory.AddVariable("NTRJigsawVars.RJVars_dphiVG" ,"F")
-# factory.AddVariable("NTRJigsawVars.RJVars_V1_N+NTRJigsawVars.RJVars_V2_N" ,"I")
-# # factory.AddVariable("NTRJigsawVars.RJVars_I1_Depth" ,"I")
-
-
-factory.AddVariable("NTRJigsawVars.RJVars_PP_InvGamma","F")
-#factory.AddVariable("NTRJigsawVars.RJVars_PP_InvGamma-NTRJigsawVars.RJVars_PP_VisShape","F")
-factory.AddVariable("NTRJigsawVars.RJVars_PP_VisShape","F")
-
-#factory.AddVariable("TMath::Power(TMath::Sin(NTRJigsawVars.RJVars_P_0_dPhiGC/2.+NTRJigsawVars.RJVars_P_1_dPhiGC/2.),2)","F")
-#factory.AddVariable("abs(NTRJigsawVars.RJVars_P_0_dPhiGC-NTRJigsawVars.RJVars_P_1_dPhiGC)","F")
-
-
+# factory.AddVariable("NTRJigsawVars.RJVars_MG/1000.","F") 
+factory.AddVariable("minH3P/H6PP","F") 
+factory.AddVariable("R_H2PP_H6PP","F") 
+factory.AddVariable("R_HT6PP_H6PP","F") 
+factory.AddVariable("min(R_pTj2a_HT6PP,R_pTj2b_HT6PP)","F") 
+factory.AddVariable("RPZ_HT6PP","F") 
+factory.AddVariable("HT6PP","F") 
+factory.AddVariable("H2PP","F") 
+factory.AddVariable("minH3P","F") 
 
 
 f = {}
-f["W"]          = ROOT.TFile("/afs/cern.ch/user/l/leejr/work/public/Merged0LNtuples/082715a_40GeVTest/WMassiveCB.root")
-f["Z"]          = ROOT.TFile("/afs/cern.ch/user/l/leejr/work/public/Merged0LNtuples/082715a_40GeVTest/ZMassiveCB.root")
-f["Top"]        = ROOT.TFile("/afs/cern.ch/user/l/leejr/work/public/Merged0LNtuples/082715a_40GeVTest/Top.root")
-f["Diboson"]    = ROOT.TFile("/afs/cern.ch/user/l/leejr/work/public/Merged0LNtuples/082715a_40GeVTest/DibosonMassiveCB.root")
-f["signal"]     = ROOT.TFile("/afs/cern.ch/user/l/leejr/work/public/Merged0LNtuples/082715a_40GeVTest/GG_direct.root")
+f["W"]          = ROOT.TFile("/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/BKG/Wjets.root")
+f["Z"]          = ROOT.TFile("/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/BKG/Zjets.root")
+f["Top"]        = ROOT.TFile("/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/BKG/Top.root")
+f["Diboson"]    = ROOT.TFile("/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/BKG/Diboson.root")
+f["signal"]     = ROOT.TFile("/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_pT50/GG_direct.root")
 
+factory.AddSignalTree( f["signal"].Get("GG_direct_1600_0_SRAll") )
 #factory.AddSignalTree( f["signal"].Get("GG_direct_1100_700_SRAll") )
-factory.AddSignalTree( f["signal"].Get("GG_direct_1000_600_SRAll") )
+# factory.AddSignalTree( f["signal"].Get("GG_direct_1000_600_SRAll") )
 #factory.AddSignalTree( f["signal"].Get("GG_direct_1250_750_SRAll") )
 #factory.AddSignalTree( f["signal"].Get("GG_direct_812_787_SRAll") )
 
@@ -122,19 +92,20 @@ factory.AddBackgroundTree( f["Top"].Get("Top_SRAll") )
 factory.AddBackgroundTree( f["Diboson"].Get("Diboson_SRAll") )
 
 
-factory.SetBackgroundWeightExpression( "NTVars.eventWeight*NTVars.normWeight" );
-factory.SetSignalWeightExpression( "NTVars.eventWeight*NTVars.normWeight/2." );########################### BOOKKEPPERS BUG: HAS FACTOR OF TWO DIVIDED OUT!!!!!!!!!!!!!!!!!!!!!
+factory.SetBackgroundWeightExpression( "weight" );
+# factory.SetSignalWeightExpression( "NTVars.eventWeight*NTVars.normWeight/2." );########################### BOOKKEPPERS BUG: HAS FACTOR OF TWO DIVIDED OUT!!!!!!!!!!!!!!!!!!!!!
 # factory.SetBackgroundWeightExpression( "1" );
 # factory.SetSignalWeightExpression( "1" );
 
-preselection = "NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300&&met>100.&&NTRJigsawVars.RJVars_P_0_Jet1_pT/1000.>100.&&NTRJigsawVars.RJVars_P_1_Jet1_pT/1000.>100.&&NTRJigsawVars.RJVars_MG/1000.>300"
-preselection += "&&NTRJigsawVars.RJVars_P_0_MassRatioGC>0&&NTRJigsawVars.RJVars_P_1_MassRatioGC>0"
-#preselection += "&&NTRJigsawVars.RJVars_P_0_PInvHS>0.1&&NTRJigsawVars.RJVars_P_1_PInvHS>0.1"
-#preselection += "&&NTRJigsawVars.RJVars_P_0_CosTheta<0.7&&NTRJigsawVars.RJVars_P_1_CosTheta<0.7"
-preselection += "&&NTRJigsawVars.RJVars_QCD_Rpt<0.2"
+# preselection = "NTRJigsawVars.RJVars_SS_MDeltaR/1000.>300&&met>100.&&NTRJigsawVars.RJVars_P_0_Jet1_pT/1000.>100.&&NTRJigsawVars.RJVars_P_1_Jet1_pT/1000.>100.&&NTRJigsawVars.RJVars_MG/1000.>300"
+# preselection += "&&NTRJigsawVars.RJVars_P_0_MassRatioGC>0&&NTRJigsawVars.RJVars_P_1_MassRatioGC>0"
+# #preselection += "&&NTRJigsawVars.RJVars_P_0_PInvHS>0.1&&NTRJigsawVars.RJVars_P_1_PInvHS>0.1"
+# #preselection += "&&NTRJigsawVars.RJVars_P_0_CosTheta<0.7&&NTRJigsawVars.RJVars_P_1_CosTheta<0.7"
+# preselection += "&&NTRJigsawVars.RJVars_QCD_Rpt<0.2"
+preselection = "(( deltaQCD/(Rsib-1) < 0.05) && (RPT < 0.4) && (sangle < 0.5)    )"
 # preselection = "met>100.&&NTRJigsawVars.RJVars_P_0_Jet1_pT/1000.>100.&&NTRJigsawVars.RJVars_P_1_Jet1_pT/1000.>100."
 factory.PrepareTrainingAndTestTree( ROOT.TCut(preselection), ROOT.TCut(preselection) ,
-									"V:SplitMode=Random:NormMode=None" )
+									"V:SplitMode=Random:NormMode=EqualNumEvents" )
 
 
 

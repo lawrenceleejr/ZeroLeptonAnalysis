@@ -5,7 +5,7 @@ __doc__ = """
 
 """
 
-from allChannelsDict import *
+from ChannelsDict import *
 from makeSignalPointPickle import *
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
@@ -32,7 +32,7 @@ def main():
     
     
     scriptname = os.environ['ZEROLEPTONFITTER']+"/analysis/ZeroLepton_Run2.py" #ATT
-    runList = allChannelsDict.keys()
+    runList = finalChannelsDict.keys()
 
 
     option = "-t -w -f "
@@ -63,7 +63,7 @@ def main():
         if int(config.FitType)!=2:
             if config.all==True: log+="&"
             cmd= "HistFitter.py "+option+" -r "+ana+" "+scriptname+log        
-            print cmd
+            print "\n",cmd
             if config.run:
                 subprocess.call(cmd, shell=True)
                 print "Execution done"

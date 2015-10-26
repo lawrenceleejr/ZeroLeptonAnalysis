@@ -19,7 +19,7 @@ import os
 import sys
 
 ################################################################################
-from allChannelsDict import *
+from finalChannelsDict import *
 
 from ZLFitterConfig import *
 zlFitterConfig = ZLFitterConfig()
@@ -44,7 +44,7 @@ options.output_dir += "/" #to be sure
 
 
 #loop over analysis and compute UL,p0,...
-for anaName in allChannelsDict.keys():
+for anaName in finalChannelsDict.keys():
 
     #names
     fileName = options.output_dir+"/ZL_"+anaName+"_Discovery/Fit__Discovery_combined_NormalMeasurement_model.root"

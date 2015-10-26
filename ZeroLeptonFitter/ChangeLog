@@ -1,3 +1,119 @@
+2015-11-08 Nikola
+    * add test SR with upper cuts on meffInc
+    * ntuple version 53 for data
+	
+2015-10-08 Nikola
+    * update the systematic uncertainties
+    * add python/TheoUncertainties.py
+
+2015-10-07 Nikola
+    * split channels into two groups: one for plotting and one for  final results
+    * add setNormRegion	
+    * add CRY in the fit
+	
+2015-10-07 Nikola Makovec
+    * add inverted Ap cut
+	
+2015-10-06 Nikola Makovec
+    * update weights and systematics
+
+2015-10-01 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+    * plotResult.py now outputs a combined ROOT file
+
+2015-10-01 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+    * Reworked makelistfiles.C and makecontourhists.C into macros now used by optimisation
+    * Fixed gSystem.Load() calls to function under OS X 10.11
+
+2015-10-02 Nikola Makovec
+	*Move to tuple v51
+	*update systematic uncertainties for jet
+	* still some troubles to be fix for met and JER 
+	
+2015-10-01 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* HistMaker and ListMaker classes can now write any list file to TH2D
+	* Optimisation code updated to write out .root for each region
+	* (Still needs caching+combination of regions)
+
+2015-10-01 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* Rework several utility modules into a package to prevent naming
+	conflicts
+	* Update the optimisation code to use the package
+
+2015-09-30 Nikola Makovec
+    * Add more summary plots for bkg fits
+	
+2015-09-29 Nikola Makovec
+    * Add more bkg fir diagnostic plots by updating HistFitter scripts 
+    * A   ToolKit/SysTableTex.py   	
+    * A   ToolKit/SysTable.py   	
+    * These files should be added back to HistFitter with the modification	
+    * Update jes systematics	
+
+2015-09-29 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+    * Updates to the optimisation:
+    * M       ToolKit/optimisation/plotResult.py
+    * M       python/ContourUtils.py
+    * A       python/Plotting.py
+    * M       settings/grids.cfg
+    *
+    * The new Plotting module contains the class used for plotting
+    * Split functonality to merge files into ContourUtils.py
+    * makeContours should start to make use of these in future
+
+2015-09-22 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* Add METsig to optimisation variables
+
+2015-09-21 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* New dir settings/ that can contain setting files
+	* Move settings files grids.cfg and batch.cfg to that dir
+	* Modular design of optimisation grids
+	* Move BatchUtils.py to OldBatchUtils.py to make a new one from scratch
+
+2015-09-21 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* Remove unused mysetup.sh
+	* Update README to reflect correct instructions
+	* Improvements to setup.sh: autosetup of HistFitter if ../HistFitter or
+	  ../HistFitter-<tag> are found.
+
+2015-09-17 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* Optimisation can use entire grids
+	* Plotting script can plot a simple contour
+	* Legend on the plots
+	* New signalPointPickle.py file from factory code
+
+2015-09-17 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* Renaming of ChannelConfig members to be slightly more sensible
+	* Bug fix in optimisation
+	* Plotting script does not overwrite existing files
+	* Axis configuration from grid.cfg now used for labels
+
+2015-09-17 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* Add a new ContourUtils.py module that will contain functionality for
+	makeContours
+	* Add a setting grids.cfg that defines settings for plotting of grid
+	output, to make scripts more generic
+	* Revert accidental commenting in plotResult
+	* New svn ignore for TOolKit
+	*
+	*  M      .
+	* A       python/ContourUtils.py
+	*  M      ToolKit
+	* M       ToolKit/optimisation/plotResult.py
+	* A       ToolKit/grids.cfg
+
+2015-09-17 Geert-Jan Besjes <geert-jan.besjes@cern.ch>
+	* Addition of ToolKit/optimisation
+	* 3 scripts to run discovery optimisation for run 2
+	* See the README in the directory for more details
+
+2015-08-21 Ingrid Deigaard
+	* Updated the PlotMaker so it includes the list of systematics and can run ocer CRT.
+	* Added CRQ which reverses the dPhi cut (dPhi < 0.2)
+	* Added quality cut on leadgin jet in SR and CRQ.
+
+2015-08-18 Yu Nakahama
+	* Updated the p0 plotting macros to support SS,GG_direct and onestep grids
+	
 2015-07-31 Yu Nakahama
 	* Updated Config and ChannelsDict to the GeV unit
 	* Updated ZeroLepton_Run2.py for the EPS dataset

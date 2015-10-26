@@ -8,8 +8,13 @@ Last update: 2015/08/05
 Recommended tags:
 ==================================
 
-
 HistFitter-00-00-49
++ the latest ROOT5 release you have available
+
+OR
+
+HistFitter-00-00-50
++ the most recent ROOT6 release (e.g. from localSetupROOT)
 
 ==================================
 Setup:
@@ -26,6 +31,8 @@ cd ../..
 svn co $SVNPHYS/Physics/SUSY/Analyses/ZeroLeptonFitter/tags/ZeroLeptonFitter-00-00-YY/  ZeroLeptonFitter-00-00-YY
 cd ZeroLeptonFitter-00-00-YY
 source setup.sh    
+
+NOTE: ZeroLeptonFitter's setup.sh script tries to detect ../HistFitter and ../HistFitter-<usedtag> as directories. 
 
 ==================================
 Howto:

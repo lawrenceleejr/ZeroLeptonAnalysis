@@ -25,6 +25,7 @@ parser.add_option("-f", "--format", help="format of input file", default=None)
 parser.add_option("-I", "--interpretation", help="interpretation", default=None)
 parser.add_option("-c", "--cutstring", help="cut string applied", default=None)
 parser.add_option("-d", "--discovery", help="discovery prefix", default=False, action="store_true")
+parser.add_option("-o", "--output-dir", help="output directory", type=str, default="Outputs/")
 
 (options, args) = parser.parse_args(sys.argv[1:])
 
@@ -48,5 +49,5 @@ prefix = ""
 if options.discovery:
     prefix = "discovery"
 
-ROOT.CollectAndWriteHypoTestResults( options.inputFile, options.format, options.interpretation, options.cutstring, int(automaticRejection), "Outputs/", prefix ) ;
+ROOT.CollectAndWriteHypoTestResults( options.inputFile, options.format, options.interpretation, options.cutstring, int(automaticRejection), options.output_dir, prefix ) ;
 

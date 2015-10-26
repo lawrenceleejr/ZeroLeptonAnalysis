@@ -7,6 +7,8 @@
 #include <TTree.h>
 #include <Riostream.h>
 #include "contourmacros/GG_direct_8TeVobs.C"
+#include "contourmacros/SS_direct_8TeVobs.C"
+#include "contourmacros/GG_onestepCCx12_8TeVobs.C"
 #include "TROOT.h"
 #include <algorithm>
 #include <iostream>
@@ -19,8 +21,10 @@ void initialize() {
 void SUSY_contourplots_p0(
    TString fname0="", TString fname1="", TString fname2="", 
    const char* prefix="",
-   const float& lumi = 5,
+   TString lumi = 5,
    TString fnamesr1="", TString fnamesr2="", TString fnamesr3="",
+   TString Grid,
+   bool showSR,
    int discexcl = 1)
 {
 
@@ -35,6 +39,8 @@ void SUSY_contourplots_p0(
   TFile* f0;
   TFile* f1;
   TFile* f2;
+
+  TString dirname=lumi+"ifb";
   
   cout << "--- Reading root base file0: " << fname0 << endl;
   f0 = TFile::Open( fname0, "READ" );
@@ -96,7 +102,14 @@ void SUSY_contourplots_p0(
   gPad->SetLeftMargin( 0.1  );
 
   //Palette
-  frame->SetXTitle( "m_{#tilde{g}} [GeV]" );
+  TString STmass="";
+  if(Grid=="GG_direct" || Grid=="GG_onestepCC"){
+     STmass = "m_{#tilde{g}} [GeV]";
+  }else if (Grid=="SS_direct"){
+     STmass = "m_{#tilde{q}} [GeV]";
+  }
+  
+  frame->SetXTitle( STmass );
   frame->SetYTitle( "m_{#tilde{#chi}_{1}^{0}} [GeV]" );
   frame->SetZTitle( "X-Section" );
   frame->GetXaxis()->SetTitleOffset(1.15);
@@ -117,7 +130,7 @@ void SUSY_contourplots_p0(
   frame->Draw("axis");
 
   // creat legend
-  TLegend *leg = new TLegend(0.45,0.68,0.8,0.9);
+  TLegend *leg = new TLegend(0.45,0.72,0.7,0.9);
   leg->SetTextSize( CombinationGlob::DescriptionTextSize );
   leg->SetFillStyle(0000); 
   leg->SetTextSize( 0.03 );
@@ -137,20 +150,115 @@ void SUSY_contourplots_p0(
   
   TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, ncontours);
   gStyle->SetNumberContours(ncontours);
-
+  
   // plot p0 map in 2D 
   contourobs_comb->Draw("colz same");
   latexz=TLatex();
   latexz.SetTextSize(0.035);
   latexz.SetTextFont( 42 );
   latexz.SetTextAngle(90.);
-  latexz.DrawText(2200, 20,"p0 significance on best SR");
+  contourobs_comb->GetZaxis()->SetRangeUser(0.0, 7);
+  latexz.DrawText(2200, 20,"p0 significance with best SR");
 
-  // plot 3-sigma contours
-  if (contourobs_comb!=0) DrawContourLine3sigma( leg, contourobs_comb, "Best SR", CombinationGlob::c_DarkRed, 1, 6);
-  if (contourobs_sr1!=0) DrawContourLine3sigma( leg, contourobs_sr1, "SR4j Meff2400-1,2jetpt200-3,4jetpt150", CombinationGlob::c_DarkOrange, 1, 2);
-  if (contourobs_sr2!=0) DrawContourLine3sigma( leg, contourobs_sr2, "SR4j Meff2400-1,2jetpt200-3,4jetpt60", CombinationGlob::c_DarkGreen, 1, 2);
-  if (contourobs_sr3!=0) DrawContourLine3sigma( leg, contourobs_sr3, "SR4j Meff1600-1,2jetpt200-3,4jetpt150", CombinationGlob::c_DarkBlue, 1, 2);
+  // plot 2, 3-sigma contours
+  TString namesr1=fnamesr1.ReplaceAll("Outputs/"+dirname+"/"+Grid+"_","").ReplaceAll("_fixSigXSecNominal_discovery_1_harvest_list.root","");
+  TString namesr2=fnamesr2.ReplaceAll("Outputs/"+dirname+"/"+Grid+"_","").ReplaceAll("_fixSigXSecNominal_discovery_1_harvest_list.root","");
+  TString namesr3=fnamesr3.ReplaceAll("Outputs/"+dirname+"/"+Grid+"_","").ReplaceAll("_fixSigXSecNominal_discovery_1_harvest_list.root","");
+
+  TGraph *NOpoints = new TGraph(6);
+  TGraph *targetpoint = new TGraph(3);
+  TGraph *targetpoint_white = new TGraph(3);
+  if (Grid=="GG_direct"){
+     NOpoints->SetPoint(0,197.5,0);
+     if(lumi=="8"){
+        NOpoints->SetPoint(1,995,0);
+     }else{
+        NOpoints->SetPoint(1,1195,0);
+     }
+     NOpoints->SetPoint(2,650.,630.);
+     NOpoints->SetPoint(3,630.,630.);
+     NOpoints->SetPoint(4,197.5,197.5);
+     NOpoints->SetPoint(5,197.5,0.);
+     targetpoint->SetPoint(1,1100,500+20);
+     targetpoint->SetPoint(2,750,650+20);
+     targetpoint_white->SetPoint(1,1100,500+20);
+     targetpoint_white->SetPoint(2,750,650+20);
+     if(lumi=="8"){
+        targetpoint->SetPoint(0,1400,0+20);
+        targetpoint_white->SetPoint(0,1400,0+20);
+     }else{
+        targetpoint->SetPoint(0,1400,0+20);
+        targetpoint_white->SetPoint(0,1400,0+20);
+     }
+     namesr1="SR4jt";
+     namesr2="SR5j";
+     namesr3="SR2jm";
+  }else if(Grid=="SS_direct"){
+     NOpoints->SetPoint(0,197.5,0);
+     NOpoints->SetPoint(1,810,0);
+     NOpoints->SetPoint(2,430.,430.);
+     NOpoints->SetPoint(3,197.5,197.5);
+     NOpoints->SetPoint(4,197.5,0.);     
+     if(lumi=="8"){
+        targetpoint->SetPoint(0,1200,0+20);
+        targetpoint_white->SetPoint(0,1200,0+20);
+     }else{
+        targetpoint->SetPoint(0,1000,0+20);
+        targetpoint_white->SetPoint(0,1000,0+20);
+     }     
+     targetpoint->SetPoint(1,800,400+20);
+     targetpoint->SetPoint(2,425,375+20);
+     targetpoint_white->SetPoint(1,800,400+20);
+     targetpoint_white->SetPoint(2,425,375+20);
+     namesr1="SR2jt";
+     namesr2="SR2jl";
+     namesr3="SR2jm";     
+  }else if (Grid=="GG_onestepCC"){
+     NOpoints->SetPoint(0,197.5,0);
+     NOpoints->SetPoint(1,1195,0);
+     NOpoints->SetPoint(3,400.,375.);
+     NOpoints->SetPoint(2,400.,400.);
+     NOpoints->SetPoint(4,197.5,197.5);
+     NOpoints->SetPoint(5,197.5,0.);
+     targetpoint->SetPoint(0,1545,25);
+     targetpoint->SetPoint(1,1265,625);
+     targetpoint->SetPoint(2,825,745);
+     targetpoint_white->SetPoint(0,1545,25);
+     targetpoint_white->SetPoint(1,1265,625);
+     targetpoint_white->SetPoint(2,825,745);
+     namesr1="SR6jt";
+     namesr2="SR6jm";
+     namesr3="SR2jm";
+  }
+
+  bool show2sigma=false;
+  if (show2sigma) {
+     if (contourobs_comb!=0) DrawContourLine2sigma( leg, contourobs_comb, "Base SR per point", CombinationGlob::c_DarkRed, 2, 4);
+     if (contourobs_sr1!=0) DrawContourLine2sigma( leg, contourobs_sr1, namesr1, CombinationGlob::c_DarkOrange, 2, 2);
+     if (contourobs_sr2!=0) DrawContourLine2sigma( leg, contourobs_sr2, namesr2, CombinationGlob::c_DarkGreen, 2, 2);
+     if (contourobs_sr3!=0) DrawContourLine2sigma( leg, contourobs_sr3, namesr3, CombinationGlob::c_DarkBlue, 2, 2);
+  }
+  if (contourobs_comb!=0) DrawContourLine3sigma( leg, contourobs_comb, "Best SR per point", CombinationGlob::c_DarkRed, 1, 4);
+  if (contourobs_sr1!=0) DrawContourLine3sigma( leg, contourobs_sr1, namesr1, CombinationGlob::c_DarkOrange, 2, 2);
+  if (contourobs_sr2!=0) DrawContourLine3sigma( leg, contourobs_sr2, namesr2, CombinationGlob::c_DarkGreen, 2, 2);
+  if (contourobs_sr3!=0) DrawContourLine3sigma( leg, contourobs_sr3, namesr3, CombinationGlob::c_DarkBlue, 2, 2);
+
+  NOpoints->SetFillColor(17);
+  NOpoints->Draw("FL same");
+  
+  targetpoint->SetMarkerSize(1.5);
+  targetpoint->SetMarkerStyle(29);
+  targetpoint->Draw("P same");
+
+  targetpoint_white->SetMarkerSize(1.5);
+  targetpoint_white->SetMarkerStyle(30);
+  targetpoint_white->SetMarkerColor(0);
+  targetpoint_white->Draw("P same");
+  
+  TObjArray* arr = fname0.Tokenize("/");
+  TObjString* objstring = (TObjString*)arr->At( arr->GetEntries()-1 );
+  TString outfile = objstring->GetString().ReplaceAll(".root","").ReplaceAll("_1_harvest_list","");    
+  
   
   gPad->RedrawAxis();     
   TLine lineExcl = ( TLine(200,200,800,800));
@@ -168,11 +276,19 @@ void SUSY_contourplots_p0(
   massforbidden.Draw("same"); 
 
   // plot 8 TeV exclusion:
-  TGraphAsymmErrors *g=GG_direct_8TeVobs();
-  g->SetLineColor(c_myRed);
+  TGraphAsymmErrors *g;
+  if(Grid=="GG_direct"){
+     g=GG_direct_8TeVobs();
+  }else if (Grid=="SS_direct"){
+     g=SS_direct_8TeVobs();
+  }else if (Grid=="GG_onestepCC"){
+     g=GG_onestepCCx12_8TeVobs();
+  }
+  g->SetLineColor(14);
   g->SetLineWidth(2);
-  g->SetLineStyle(6);
+  g->SetLineStyle(3);
   g->Draw("same");
+  
   leg->AddEntry(g,"Observed limit at 95% CL (#sqrt{s} = 8 TeV)","l"); 
     
   // Cosmetics for plotting 
@@ -191,18 +307,26 @@ void SUSY_contourplots_p0(
   Leg0->SetTextColor( 1 );
   Leg0->AppendPad();
 
+  TString STdecayLabel="";
+  if (Grid=="GG_direct"){
+     STdecayLabel="#tilde{g}#tilde{g} production, #it{B}(#tilde{g} #rightarrow qq #tilde{#chi}_{1}^{0})=100%";
+  }else if (Grid=="SS_direct"){
+     STdecayLabel="#tilde{q}#tilde{q} production, #it{B}(#tilde{q} #rightarrow q #tilde{#chi}_{1}^{0})=100%";
+  }else if (Grid=="GG_onestepCC"){
+     STdecayLabel="#tilde{g}#tilde{g} production, #it{B}(#tilde{g} #rightarrow qq #tilde{#chi}_{1}^{#pm} #rightarrow qq W^{#pm} #tilde{#chi}_{1}^{0})=100%, m(#tilde{#chi}_{1}^{#pm})=(m(#tilde{g}) + m(#tilde{#chi}_{1}^{0}))/2";
+  } 
   TLatex* decayLabel = new TLatex();
   decayLabel->SetNDC();
   decayLabel->SetTextFont(42);
   decayLabel->SetTextColor(ROOT::kBlack);
   decayLabel->SetTextSize( 0.0335 );
-  decayLabel->DrawLatex(0.14, 0.962,"#tilde{g}#tilde{g} production, #it{B}(#tilde{g} #rightarrow qq #tilde{#chi}_{1}^{0})=100%");
+  decayLabel->DrawLatex(0.14, 0.962,STdecayLabel);
 
   TLatex* atlasLabel = new TLatex();
   atlasLabel->SetNDC();
   atlasLabel->SetTextFont(42);
   atlasLabel->SetTextColor(ROOT::kBlack);
-  atlasLabel->SetTextSize( 0.04 );
+  atlasLabel->SetTextSize( 0.03 );
   atlasLabel->DrawLatex(0.13, 0.87,"#bf{#it{ATLAS}}");
   atlasLabel->AppendPad();
 
@@ -210,21 +334,21 @@ void SUSY_contourplots_p0(
   progressLabel->SetNDC();
   progressLabel->SetTextFont(42);
   progressLabel->SetTextColor(ROOT::kBlack);
-  progressLabel->SetTextSize( 0.04 );
-  progressLabel->DrawLatex(0.23, 0.87,"Simulation Internal");
+  progressLabel->SetTextSize( 0.03 );
+  progressLabel->DrawLatex(0.2, 0.87,"Simulation Internal");
   progressLabel->AppendPad();
   
   TLatex *Leg1 = new TLatex();
   Leg1->SetNDC();
   Leg1->SetTextFont( 42 );
-  Leg1->SetTextSize( 0.04 );
+  Leg1->SetTextSize( 0.03 );
   Leg1->SetTextColor( ROOT::kBlack );
-  Leg1->DrawLatex(0.13, 0.79, "#int Ldt = 2 fb^{-1}, #sqrt{s} = 13 TeV");
+  Leg1->DrawLatex(0.13, 0.79, "#int Ldt = "+lumi+" fb^{-1}, #sqrt{s} = 13 TeV");
   Leg1->AppendPad();
 
   TLatex *Leg2 = new TLatex();
   Leg2->SetNDC();
-  Leg2->SetTextSize(0.04);
+  Leg2->SetTextSize(0.03);
   Leg2->SetTextColor( 1 );
   Leg2->SetTextFont( 42 );
   Leg2->DrawLatex(0.13, 0.65, prefix);
@@ -233,23 +357,38 @@ void SUSY_contourplots_p0(
   TLatex *Leg2 = new TLatex();
   Leg2->SetNDC();
   Leg2->SetTextFont( 42 );
-  Leg2->SetTextSize( 0.04 );
+  Leg2->SetTextSize( 0.03 );
   Leg2->SetTextColor( ROOT::kBlack );
-  Leg2->DrawLatex(0.13, 0.7, "3#sigma evidence");
+  Leg2->DrawLatex(0.13, 0.7, "3#sigma-discovery projection");
   Leg2->AppendPad();
 
   TLatex *Leg3 = new TLatex();
   Leg3->SetNDC();
   Leg3->SetTextFont( 42 );
-  Leg3->SetTextSize( 0.04 );
+  Leg3->SetTextSize( 0.03 );
   Leg3->SetTextColor( ROOT::kBlack );
   Leg3->DrawLatex(0.13, 0.6, "(Fit to SR,CRT,CRW)");
   Leg3->AppendPad();
 
   if (prefix!=0) { Leg2->AppendPad(); }
 
-  leg->Draw("same");
+  c->Update();
+  Double_t xmax = frame->GetXaxis()->GetXmax();
+  Double_t xmin = frame->GetXaxis()->GetXmin();
+  Double_t ymax = frame->GetYaxis()->GetXmax();
+  Double_t ymin = frame->GetYaxis()->GetXmin();
+  if(showSR){
+     std::cout << "--- printing best SRs" << std::endl;
+     Show_SR(fname0, c, xmin, xmax, ymin, ymax, Grid);
+     TLatex lat;
+     //lat.SetTextAlign( 11 );
+     lat.SetTextSize( 0.0265 );
+     lat.SetTextColor( 12 );
+     lat.SetTextFont( 42 ); 
+  }
 
+  leg->Draw("same");
+  
   c->Update();
   gPad->Update();
   
@@ -257,12 +396,16 @@ void SUSY_contourplots_p0(
   
   // create plots
   // store histograms to output file
-  TObjArray* arr = fname0.Tokenize("/");
-  TObjString* objstring = (TObjString*)arr->At( arr->GetEntries()-2 );
-  TString outfile = fname0.ReplaceAll("/","").ReplaceAll(".root","").ReplaceAll("_merged_hypotest__1_harvest_list","").ReplaceAll("_fixSigXSecNominal__1_harvest_list","");
-  delete arr;
-  
-  CombinationGlob::imgconv( c, Form("plots/atlascls_SM_GG_direct_%s",outfile.Data()));
+  //TObjArray* arr = fname0.Tokenize("/");
+  //TObjString* objstring = (TObjString*)arr->At( arr->GetEntries()-2 );
+  //TString outfile = fname0.ReplaceAll("/","").ReplaceAll(".root","").ReplaceAll("_merged_hypotest__1_harvest_list","").ReplaceAll("_fixSigXSecNominal__1_harvest_list","");
+  //delete arr;
+
+  TString plotname = "plots/"+lumi+"ifb/atlasp0_"+Grid+".eps";
+  if (showSR) plotname = "plots/"+lumi+"ifb/atlasp0_"+Grid+"_showSR.eps"; 
+  c->SaveAs(plotname);
+
+     
 }
 
 
@@ -774,6 +917,25 @@ DrawContourLine3sigma( TLegend *leg, TH2F* hist, const TString& text="", Int_t l
 }
 
 void
+DrawContourLine2sigma( TLegend *leg, TH2F* hist, const TString& text="", Int_t linecolor=CombinationGlob::c_VDarkGray, Int_t linestyle=2, Int_t linewidth=2 )
+{
+  // contour plot
+  TH2F* h = new TH2F( *hist );
+  h->SetContour( 1 );
+  double pval = (1.-0.9545)*0.5; // one-sided
+  double signif = TMath::NormQuantile(1-pval);
+  cout <<"DrawContourLine3sigma: pval="<<pval<<", "<<signif<<"sigma for "<<text<<endl;
+  h->SetContourLevel( 0, signif );
+
+  h->SetLineColor( linecolor );
+  h->SetLineWidth( linewidth );
+  h->SetLineStyle( linestyle );
+  h->Draw( "samecont3" );
+
+  if (!text.IsNull()) leg->AddEntry(h,text.Data(),"l");
+}
+
+void
 DrawContourLine99( TLegend *leg, TH2F* hist, const TString& text="", Int_t linecolor=CombinationGlob::c_VDarkGray, Int_t linestyle=2, Int_t linewidth=2 )
 {
   // contour plot
@@ -851,29 +1013,109 @@ TH2F* linearsmooth(const TH2& hist, const char* name, const char* title) {
 }
 
 
-void GetSRName(int fID, TString SRset, TString& text=""){
-   cout<<" "<< SRset<<" "<<fID<<endl;
+TString GetSRName(int fID, TString& text=""){
    
-   TString SRSets[15]={"A1+C1","A1+C2","A1+C3", "A2+C1","A2+C2","A2+C3", "no+C1","no+C2","no+C3", "A3+C1","A3+C2","A3+C3", "A4+C1","A4+C2","A4+C3"};
-//   TString SRSets[15]={"A1+C1","A2+C1","no+C1","A3+C1","A4+C1", "A1+C2","A2+C2","no+C2","A3+C2","A4+C2","A1+C3","A2+C3","no+C3","A3+C3","A4+C3"};
-   TString SRAs[5]= {"A1","A2","no","A3","A4"};
-   TString SRABs[5]= {"A1+B","A2+B","no+B","A3+B","A4+B"};
-   TString SRABCSets[20]={"A1+B","A2+B","no+B","A3+B","A4+B", "A1+C1","A1+C2","A1+C3", "A2+C1","A2+C2","A2+C3", "no+C1","no+C2","no+C3", "A3+C1","A3+C2","A3+C3", "A4+C1","A4+C2","A4+C3"};
-   TString SRAABCSets[25]={"A1","A2","no","A3","A4", "A1+B","A2+B","no+B","A3+B","A4+B", "A1+C1","A1+C2","A1+C3", "A2+C1","A2+C2","A2+C3", "no+C1","no+C2","no+C3", "A3+C1","A3+C2","A3+C3", "A4+C1","A4+C2","A4+C3"};
+
+   TString SRABCSets[10]={"2jl","2jm","2jt","4jt","5j","6jm", "6jt","no","no","no"};
+
+   /*
+     "SR2jbase-MeSig15-Meff1200-sljetpt200-dphi0.8-ap0.00", #SR2jl
+     "SR2jbase-MeSig20-Meff1800-sljetpt60-dphi0.4-ap0.00", #SR2jm
+     "SR2jbase-MeSig20-Meff2200-sljetpt200-dphi0.8-ap0.00", #SR2jt
+     "SR4jbase-MetoMeff0.2-Meff2200-sljetpt150-34jetpt150-dphi0.4-ap0.04", #SR4jvt
+     "SR4jbase-MetoMeff0.2-Meff2200-sljetpt100-34jetpt100-dphi0.4-ap0.04", #SR4jt
+     "SR5jbase-MetoMeff0.25-Meff1600-sljetpt100-34jetpt100-dphi0.4-ap0.04", #SR5j
+     "SR6jbase-MetoMeff0.25-Meff1600-sljetpt100-34jetpt100-dphi0.4-ap0.04", #SR6jm
+     "SR6jbase-MetoMeff0.2-Meff1800-sljetpt150-34jetpt150-dphi0.4-ap0.04", #SR6jvt
+     "SR6jbase-MetoMeff0.2-Meff1800-sljetpt100-34jetpt100-dphi0.4-ap0.04", #SR6jt        
+   */
    
-   cout<< fID<<endl;
-   if (SRset=="ABC"){
-      text= SRABCSets[fID-1];
-   }else if (SRset=="AC"){
-      text= SRSets[fID-1];
-   }else if (SRset=="A"){
-      text= SRAs[fID-1];
-   }else if (SRset=="AABC"){
-      text= SRAABCSets[fID-1];
-   }else{
-      text= SRABs[fID-1];
-   }
+   /*
+     TString SRABCSets[20]={"2jm","2jl","2jmp","2jt","4jm", "5jt","4jt","6jm", "6jt","4jvt","6jvt", "no+C1","no+C2","no+C3", "A3+C1","A3+C2","A3+C3", "A4+C1","A4+C2","A4+C3"};
+     
+   "SR2jbase-MeSig20-Meff1600-sljetpt200-dphi0.4-ap0.00", # SS_direct_425_375 2jm
+      "SR2jbase-MeSig25-Meff1200-sljetpt200-dphi0.8-ap0.00", # SS_direct_800_400 2jl
+      "SR2jbase-MeSig20-Meff1600-sljetpt300-dphi0.4-ap0.00", # SS_direct_1000_0 2jmp
+      "SR2jbase-MeSig20-Meff2000-sljetpt200-dphi0.4-ap0.00", # GG_direct_750_650 and GG_onestepCC_825_785_745 2jt
+      "SR4j-MetoMeff0.2-Meff1600-sljetpt200-34jetpt150-dphi0.4-ap0.02", # GG_direct_1100_500 or 900_500 4jm
+      "SR5j-MetoMeff0.2-Meff1600-sljetpt200-34jetpt150-dphi0.4-ap0.04", # GG_direct_900_500 5jt
+      "SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt150-dphi0.4-ap0.02", # GG_direct_1400_0 4jt
+      "SR6jbase-MetoMeff0.2-Meff1600-sljetpt200-34jetpt100-dphi0.4-ap0.00", # GG_onestepCC_1265_945_625 6jm
+      "SR6jbase-MetoMeff0.2-Meff2000-sljetpt200-34jetpt150-dphi0.4-ap0.04", # GG_onestepCC_1385_705_25 6jt
+      "SR4j-MetoMeff0.2-Meff2800-sljetpt200-34jetpt150-dphi0.4-ap0.02", # GG_direct_1600_0 for 4 or 8/fb 4jvt 
+      //"SR6jbase-MetoMeff0.2-Meff2400-sljetpt200-34jetpt150-dphi0.4-ap0.04", # GG_onestepCC_1545_785_25 for 4/fb 6jvt   or Meff2200
+      "SR6jbase-MetoMeff0.2-Meff2200-sljetpt200-34jetpt150-dphi0.4-ap0.04", # GG_onestepCC_1545_785_25 for 4/fb 6jvt 
+   */
+
+   //cout<< fID<<endl;
+   text= SRABCSets[fID-1];
+   return text;
 }
 
 
-                           
+void Show_SR(TString oredList,  TCanvas *can, float xlow, float xhigh, float ylow, float yhigh, TString Grid)
+{
+    Int_t c_myRed      = TColor::GetColor("#aa000");
+    
+    can->cd();
+
+    TLatex lat;
+    //lat.SetTextAlign( 11 );
+    lat.SetTextSize( 0.0265 );
+    lat.SetTextColor( 12 );
+    lat.SetTextFont( 42 );
+
+    cout << "Draw signal region labels." << endl;
+    gROOT->ProcessLine(".L summary_harvest_tree_description.h+");
+    gSystem->Load("libSusyFitter.so");
+
+    TString txtfile=oredList;
+    txtfile.ReplaceAll(".root","");
+
+    TTree* tree = harvesttree( txtfile!=0 ? txtfile : 0 );
+    if (tree==0) { 
+        cout << "Cannot open list file. Exit." << endl;
+        return;
+    }
+
+    Float_t fID;
+    Float_t m0; 
+    Float_t m12; 
+
+    TBranch *b_m0;
+    TBranch *b_m12;
+    TBranch *b_fID;
+
+    TString m_x = "m0";
+    TString m_y = "m12";
+    if(Grid=="GG_onestepCC"){
+       m_x = "mgluino";
+       m_y = "mlsp";
+    }else if (Grid=="SS_direct" || Grid=="GG_direct"){
+       m_x = "m0";
+       m_y = "m12";
+    }
+       
+    tree->SetBranchAddress(m_x, &m0, &b_m0);
+    tree->SetBranchAddress(m_y, &m12, &b_m12);
+    tree->SetBranchAddress("fID",  &fID,  &b_fID);
+    
+    for( Int_t i = 0; i < tree->GetEntries(); i++ ){
+        
+        tree->GetEntry( i );
+
+        
+        int _m0 = (int) m0;
+        int _m12 = (int) m12;
+
+        TString mySR = GetSRName(fID,"aaa");
+        //cout <<"bestSR: "<< m0 << " " << m12 << " " << fID <<" "<<mySR<< endl;        
+        //well inside the edges
+        if((_m0 > (xhigh-xlow)/30.0 + xlow) && (_m12 < yhigh - (yhigh-ylow)/30.0) && _m12<870 && _m0<1980.)
+        {
+           lat.DrawLatex(m0-25, m12+40, mySR.Data());
+           
+        }
+    }
+}
+
