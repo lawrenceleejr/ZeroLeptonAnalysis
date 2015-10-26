@@ -30,7 +30,7 @@ regionDict["VRWTfminus"]=Region("VRWTfminus","CRWT",["lep1sign<0"],[])
 
 
 
-regionDict["CRY"]=Region("CRY","CRY",["(phSignal==1 && phPt>130.)"],[])#extra weights should be applied only to gamma+jets
+regionDict["CRY"]=Region("CRY","CRY",["(phSignal==1 && dPhi>=0.4 && phPt>130. && jetPt[0]>130.)"],[])#extra weights should be applied only to gamma+jets
 regionDict["VRYf"]=Region("VRY","CRY",[],[])#extra weights should be applied only to gamma+jets
 #regionDict["CRY"]=Region("CRY","CRY",["(phQuality == 2 && phIso < 5000. && nLep == 0)"],["photonWeight","triggerWeight"])#extra weights should be applied only to gamma+jets
 regionDict["CRQ"]=Region("CRQ","SRAll")#ATT: qcd weight
@@ -159,6 +159,38 @@ anaSRNew.pt3=150.
 anaSRNew.meff=2600
 allChannelsDict[anaSRNew.name]=anaSRNew
 
+
+#----------------------------------------------------------
+# RJigsaw
+#----------------------------------------------------------
+anaSRJigsaw=ChannelConfig("SRJigsaw",regionDict)
+
+anaSRJigsaw.nJet=2
+anaSRJigsaw.pt0=60  # leading jet pt cut-->to check
+anaSRJigsaw.pt1=60  # subleading jet pt cut-->to check
+anaSRJigsaw.jetPtThreshold=30  # general jet pt cut-->to check
+anaSRJigsaw.met=100
+anaSRJigsaw.RJVars_PP_MDeltaR=300*1000 # always check units (currently MeV for Jigsaw, GeV all others)
+anaSRJigsaw.RJVars_P_0_Jet1_pT=200*1000
+anaSRJigsaw.RJVars_P_1_Jet1_pT=200*1000
+anaSRJigsaw.RJVars_P_0_Jet2_pT=100*1000
+anaSRJigsaw.RJVars_P_1_Jet2_pT=100*1000
+anaSRJigsaw.RJVars_P_0_PInvHS=0.17 
+anaSRJigsaw.RJVars_P_1_PInvHS=0.17 
+anaSRJigsaw.RJVars_P_0_CosTheta=-0.5
+anaSRJigsaw.RJVars_P_1_CosTheta=-0.5
+anaSRJigsaw.RJVars_C_0_CosTheta_upperValue=0.8
+anaSRJigsaw.RJVars_C_1_CosTheta_upperValue=0.8
+anaSRJigsaw.RJVars_P_0_dPhiGC_lowerValue=-0.9
+anaSRJigsaw.RJVars_P_0_dPhiGC_upperValue=0.6
+anaSRJigsaw.RJVars_P_1_dPhiGC_lowerValue=-0.9
+anaSRJigsaw.RJVars_P_1_dPhiGC_upperValue=0.6
+anaSRJigsaw.RJVars_DeltaBetaGG_upperValue=0.9
+anaSRJigsaw.RJVars_QCD_Rpt_upperValue=0.3
+anaSRJigsaw.RJVars_QCD_Delta1_times_Rpsib=-0.7
+anaSRJigsaw.RJVars_PP_VisShape=0.1
+anaSRJigsaw.RJVars_MG=600*1000
+allChannelsDict[anaSRJigsaw.name]=anaSRJigsaw
 
 
 # #----------------------------------------------------------

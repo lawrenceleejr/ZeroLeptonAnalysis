@@ -205,10 +205,10 @@ def PrintText(name,text):
     text.SetTextFont(42);
     text.SetTextSize(0.04);
     text.SetTextColor(kBlack);
-    text.SetNDC(true);
+    text.SetNDC(True);
     # text.DrawLatex(0.65,0.5,"#bf{#it{ATLAS}} Preliminary");
     # text.DrawLatex(0.35,0.93,"#bf{#it{ATLAS}} Preliminary");
-    text.DrawLatex(0.35,0.93,"#bf{#it{ATLAS}} Internal");
+    #text.DrawLatex(0.35,0.93,"#bf{#it{ATLAS}} Internal");
     
 # def SetLegend(dataHisto,mc,mcHisto,lumi):
 #     legend.SetTextSize(0.035);
@@ -220,7 +220,7 @@ def PrintText(name,text):
 
 
 def SignificanceFcn(nbSig,nbBkg,nbSigEr,nbBkgEr,erBkgSys=0.2):
-    conditionStat=true
+    conditionStat=True
     doP0=false
     significance=0.
 #    nbBkg=nbBkg*SCALEMC
@@ -231,7 +231,7 @@ def SignificanceFcn(nbSig,nbBkg,nbSigEr,nbBkgEr,erBkgSys=0.2):
     if doP0:
         significance=p
 
-    if conditionStat==true and nbBkg>0 and nbBkgEr/nbBkg>0.3:
+    if conditionStat==True and nbBkg>0 and nbBkgEr/nbBkg>0.3:
 #        print 'bah on est la bizarre', nbBkg, nbBkgEr/nbBkg
         significance=0
         if doP0:

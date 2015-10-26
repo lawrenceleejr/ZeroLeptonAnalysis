@@ -1,5 +1,5 @@
 //#include "contourmacros/SM_GG_onestep_mgluino_vs_x_nofloat.C"
-//#include "contourmacros/SM_GG_onestep_mgluino_vs_mlsp_nofloat.C"
+#include "contourmacros/SM_GG_onestep_mgluino_vs_mlsp_nofloat.C"
 //#include "contourmacros/MUED_OneOverR_vs_LambdaR_nofloat.C"
 #include "contourmacros/m0_vs_m12_nofloat.C"
 //#include "contourmacros/pMSSM_qL_to_h_nofloat.C"
@@ -28,6 +28,7 @@ void makecontourhists(const TString& combo = "all", const TString& gridName = "m
     else if(gridName=="pMSSM_qL_to_h_M1M2") const char* ehistfile3 = pMSSM_qL_to_h_nofloat(combo); 
     else if(gridName=="MUED") const char* ehistfile3 = MUED_OneOverR_vs_LambdaR_nofloat(combo);
     else if(gridName=="mssm") const char* ehistfile3 = mgl_vs_msq_nofloat(combo);
+    else if(gridName=="GG_onestepCC") const char* ehistfile3 = SM_GG_onestep_mgluino_vs_mlsp_nofloat(combo);
     else const char* ehistfile3 = m0_vs_m12_nofloat(combo);
 
 

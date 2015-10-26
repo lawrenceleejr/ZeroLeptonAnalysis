@@ -1,12 +1,22 @@
+import itertools
 import os
+import sys
+import time
 
 def myreplace(l1, l2, element):
     idx = l1.index(element)
     if idx >= 0:
         return l1[:idx] + l2 + l1[idx+1:]
-    
-    print "WARNING idx negative"
+
+    # print "WARNING idx negative"
     return l1
+
+def chunks(l, n):
+    for i in xrange(0, len(l), n):
+        yield l[i:i+n]
+
+def cartesian_product(dicts):
+    return (dict(itertools.izip(dicts, x)) for x in itertools.product(*dicts.itervalues()))
 
 def addWeight(oldList, newWeight):
     newList = deepcopy(oldList)

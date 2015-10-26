@@ -10,7 +10,6 @@ from optparse import OptionParser
 import sys, os, string, shutil, pickle, subprocess, copy
 from YieldsTable import latexfitresults
 
-
 from logger import Logger
 
 ROOT.gROOT.LoadMacro("python/Functions.C")
@@ -21,14 +20,14 @@ class ZLFitterConfig:
 
         self.log = Logger("ZLFitter Config")
         ##############################################
-        #Fit config
+        # Fit config
         ##############################################
 
-        #blinding
-        self.blindSR=True
-        self.blindCR=True
-        self.blindVR=True
-        self.useSignalInBlindedData=True
+        # blinding
+        self.blindSR = False
+        self.blindCR = False
+        self.blindVR = False
+        self.useSignalInBlindedData = False
 
         #Run hypotests with also with up and down theor. uncert.? False: add uncert. as fit parameter
         self.fixSigXSec = True           
@@ -37,9 +36,8 @@ class ZLFitterConfig:
         self.runOnlyNominalXSec = True
 
         ##############################################
-        #fit setup
+        # Basic fit setup
         ##############################################
-        
 
         # Use a shape factor when using shape fits?
         self.useShapeFactor = False
@@ -51,95 +49,145 @@ class ZLFitterConfig:
         self.minbin      = 1000
         self.maxbin      = 2000
         self.nBins       = 5
-        self.binVar      = "meffInc"
+        self.binVar      = "cuts"
 
         ##############################################
-        #Systematics
+        # Sample Name
+        ##############################################
+        self.qcdSampleName="Multijets"
+        self.gammaSampleName="GAMMAjets"
+        self.zSampleName="Zjets"
+        self.wSampleName="Wjets"
+        self.topSampleName="Top"
+        self.dibosonSampleName="Diboson"
+        self.sampleNameList=[]
+        self.sampleNameList.append(self.qcdSampleName)
+        self.sampleNameList.append(self.wSampleName)
+        self.sampleNameList.append(self.zSampleName)
+        self.sampleNameList.append(self.gammaSampleName)
+        self.sampleNameList.append(self.topSampleName)
+        self.sampleNameList.append(self.dibosonSampleName)
+
+
+
+        ##############################################
+        # Systematics
         ##############################################
 
-         # Apply a user-defined errBG to the background errors? (Useful if setting everything to MC pred)
-        self.useFlatBkgError = True
-        self.flatError=0.2
+         # Apply a user-defined error to the background and signal errors? (Useful if setting everything to MC pred)
+        self.useFlatError = True
+        self.flatError=0.1  #this number is only used for the signal, see TheoUncertainties.py for the background
 
-        #Bkg theory
+        # Bkg theory
         self.useBkgTheoryUncertainties = True
 
-        #JES,JER,...
-        self.useJETUncertainties = False
+        # JES,JER,...
+        self.useJETUncertainties = True
+        
+        # MET
+        self.useMETUncertainties = True
+
+        # Btag
+        self.useBTagUncertainties = False
+
+        # Leptons
+        self.useLeptonUncertainties = False
 
         ##############################################
-        #Kappa correction for gamma+jets
+        # Kappa correction for gamma+jets
         ##############################################
         self.applyKappaCorrection = False
 
-
         ##############################################
-        #statistical error
+        # Statistical error
         ##############################################
         
         # use stat uncertainties on MC - globally
         self.useStat = True              
+        
         # use MC stat per sample
         self.useStatPerSample = False    
-        self.statErrThreshold = 0.03#ATT
-
+        self.statErrThreshold = 0.02
 
         ##############################################
-        #luminosity
+        # Luminosity
         ##############################################
 
-        self.luminosity = 2.0#0.001*6.63446 #fb-1
+        self.luminosity = 0.489#unit is fb-1
         self.luminosityEr = 0.028 # style the run1 error
 
         ##############################################
         # samples
         ##############################################
 
-        self.useQCDsample=False
-        self.useDIBOSONsample=True
+        self.useQCDsample =False
+        self.useDIBOSONsample = True
 
-        #qcd weight one number per jet multiplicity starting with the monojet channel
+        # QCD weight- one number per jet multiplicity starting with the monojet channel
         self.qcdWeightList = [ 0.00192226,0.00192226, 0.00172744, 0.00149138, 0.00129087, 0.00122661, 0.00122661, 0.00122661] 
 
         ##############################################
-        # signal and control region
+        # Signal and control region
         ##############################################
 
-        self.SRName="SR"
+        self.doSetNormRegion=True
 
-        #list of constraining regions
-        self.constrainingRegionsList=[]
-        self.constrainingRegionsList+=["CRT","CRW"] 
-        self.constrainingRegionsList+=["CRY"]
-        #self.constrainingRegionsList+=["CRQ"]
+        self.SRName = "SR"
+        
+        # list of constraining regions
+        self.constrainingRegionsList = []
+        self.constrainingRegionsList += ["CRT","CRW"] 
+        #self.constrainingRegionsList += ["CRY"]
+        #self.constrainingRegionsList += ["CRQ"]
 
 
-        #list of validation regions
-        self.validationRegionsList=[]
-        self.validationRegionsList+=["VRZ"]
-        self.validationRegionsList+=["VRZf"]
-        #self.validationRegionsList+=["VRYf"]
-        #self.validationRegionsList+=["VRWf","VRTf"]
-        #self.validationRegionsList+=["VRWM","VRTM"]
-        #self.validationRegionsList+=["VRWMf","VRTMf"]
-        #self.validationRegionsList+=["VRWTplus","VRWTminus"]
-        #self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
-        #self.validationRegionsList+=["VRT2L"] 
+
+
+        # list of validation regions
+        self.validationRegionsList = []
+
+        # WARNING: CRY and CRQ are temporary added as validation
+        self.validationRegionsList += ["CRY"]
+        self.validationRegionsList += ["CRQ"]
+
+        self.validationRegionsList += ["VRZ"]
+        self.validationRegionsList +=["VRZf"]
+        self.validationRegionsList+=["VRWf","VRTf"]
+        self.validationRegionsList+=["VRWM","VRTM"]
+        self.validationRegionsList+=["VRWMf","VRTMf"]
+        ##self.validationRegionsList+=["VRWTplus","VRWTminus"]
+        ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
+        ##self.validationRegionsList+=["VRT2L"]  
+        ##self.validationRegionsList+=["VRYf"]
         #self.validationRegionsList+=["VRQ1","VRQ2","VRQ3","VRQ4"] 
-
 
         # print
         self.Print()
 
         return
 
+    def getSampleColor(self,sample):
+        if sample == self.topSampleName:         return ROOT.kGreen-9
+        if sample == self.wSampleName:       return ROOT.kAzure - 4
+        if sample == self.zSampleName:       return ROOT.kBlue + 3
+        if sample == self.qcdSampleName:   return ROOT.kOrange
+        if sample == self.gammaSampleName:   return ROOT.kYellow
+        if sample == self.dibosonSampleName:     return ROOT.kPink-4#ROOT.kRed + 3
+        return 1
+
+    def getSampleNiceName(self,sample):
+        if sample == self.topSampleName:  return "Top"
+        if sample == self.wSampleName:       return "W+jets"
+        if sample == self.zSampleName:       return "Z+jets"
+        if sample == self.qcdSampleName:   return "Multijet"
+        if sample == self.gammaSampleName:   return "GAMMA+jets"
+        if sample == self.dibosonSampleName:     return "Diboson"
+        return "Unknown"
 
     def allRegionsList(self):
         return self.constrainingRegionsList+self.validationRegionsList+[self.SRName]
 
     def Print(self):
-                        
-
         self.log.info("blindSR = %s" % self.blindSR)
         self.log.info("blindCR = %s" % self.blindCR)
         self.log.info("blindVR = %s" % self.blindVR)
@@ -152,7 +200,7 @@ class ZLFitterConfig:
         self.log.info("maxbin  = %s" % self.maxbin )
         self.log.info("nBins  = %s" % self.nBins )
         self.log.info("binVar  = %s" % self.binVar )
-        self.log.info("useFlatBkgError  = %s" % self.useFlatBkgError )
+        self.log.info("useFlatError  = %s" % self.useFlatError )
         self.log.info("flatError = %s" % self.flatError)
         self.log.info("useStat  = %s" % self.useStat )
         self.log.info("useStatPerSample  = %s" % self.useStatPerSample )
@@ -165,7 +213,6 @@ class ZLFitterConfig:
         self.log.info("ConstrainingRegionsList  = %s" %  self.constrainingRegionsList ) 
         self.log.info("ValidationRegionsList  = %s" %  self.validationRegionsList ) 
         self.log.info("allRegionsList  = %s" %  self.allRegionsList() ) 
-
 
         return
         
