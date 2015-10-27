@@ -31,7 +31,7 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.5  ## in pb-1
-search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies/"]
+search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies_v3/"]
 
 ##
 ##
@@ -60,19 +60,19 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 sh_bg["gamma"]    = sh_all.find("gamma")
-sh_bg["znunu_nlo"] = sh_all.find("znunu_nlo")
+sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
+#sh_bg["znunu_nlo"] = sh_all.find("znunu_nlo")
 
 print sh_bg
-sh_bg["gamma"]   .printContent()
-sh_bg["znunu_nlo"].printContent()
+sh_bg["gamma"]    .printContent()
+sh_bg["znunu_lo" ].printContent()
+#sh_bg["znunu_nlo"].printContent()
 
 #Creation of output directory names
 tempDirDict = {}
 
 for key in sh_bg.keys() :
     tempDirDict[key] = "rundir_" + key
-
-
 
 #To scale the histograms in the files after the event loop is done...
 def scaleMyRootFiles(mysamplehandlername,mylumi):
@@ -207,63 +207,63 @@ for mysamplehandlername in sh_bg.keys():
 
 #include all these
         RJigsawVariables = {
-            "RJVars_PP_MDeltaR"        :  [100, 0 , 1000],
-            "RJVars_PP_Mass"           :  [100, 0 , 1000],
-            "RJVars_PP_InvGamma"       :  [100, -1 , 1],
-            "RJVars_PP_dPhiBetaR"      :  [100, -1 , 1],
-            "RJVars_PP_dPhiVis"        :  [100, -1 , 1],
-            "RJVars_PP_CosTheta"       :  [100, -1 , 1],
-            "RJVars_PP_dPhiDecayAngle" :  [100, -1 , 1],
-            "RJVars_PP_VisShape"       :  [100, 0 , 1000],
-            "RJVars_P1_Mass"           :  [100, 0 , 1000],
-            "RJVars_P1_CosTheta"       :  [100, -1 , 1],
-            "RJVars_P2_Mass"           :  [100, 0 , 1000],
-            "RJVars_P2_CosTheta"       :  [100, -1 , 1],
-            "RJVars_I1_Depth"          :  [100, 0 , 1000],
-            "RJVars_I2_Depth"          :  [100, 0 , 1000],
-            "RJVars_dphiPV1a"  :  [100, -1 , 1],
-            "RJVars_cosV1a"    :  [100, -1 , 1],
-            "RJVars_dphiCV2a"  :  [100, -1 , 1],
-            "RJVars_cosV2a"    :  [100, -1 , 1],
-            "RJVars_dphiPV1b" :  [100, -1 , 1],
-            "RJVars_cosV1b"   :  [100, -1 , 1],
-            "RJVars_dphiCV2b" :  [100, -1 , 1],
-            "RJVars_cosV2b":  [100, -1 , 1],
-            "RJVars_V1_N" :  [100, 0 , 1000],
-            "RJVars_V2_N" :  [100, 0 , 1000],
-            "RJVars_MP"          :  [100, 0 , 1000],
-            "RJVars_DeltaBetaGG" :  [100, -1 , 1],
-            "RJVars_dphiVG"      :  [100, -1 , 1],
-            "RJVars_QCD_dPhiR"    :  [100, -1 , 1],
-            "RJVars_QCD_Rpt"      :  [100, -1 , 1],
-            "RJVars_QCD_Rsib"    :  [100, -1 , 1],
-            "RJVars_QCD_Delta1"   :  [100, -1 , 1],
-            "RJVars_H2PP":  [100, 0 , 4000],
-            "RJVars_H3PP":  [100, 0 , 4000],
-            "RJVars_H4PP":  [100, 0 , 4000],
-            "RJVars_H6PP":  [100, 0 , 4000],
-            "RJVars_H2Pa":  [100, 0 , 4000],
-            "RJVars_H2Pb":  [100, 0 , 4000],
-            "RJVars_H3Pa":  [100, 0 , 4000],
-            "RJVars_H3Pb":  [100, 0 , 4000],
-            "RJVars_H4Pa":  [100, 0 , 4000],
-            "RJVars_H4Pb":  [100, 0 , 4000],
-            "RJVars_H5Pa":  [100, 0 , 4000],
-            "RJVars_H5Pb":  [100, 0 , 4000],
-            "RJVars_H2Ca":  [100, 0 , 4000],
-            "RJVars_H2Cb":  [100, 0 , 4000],
-            "RJVars_H3Ca":  [100, 0 , 4000],
-            "RJVars_H3Cb":  [100, 0 , 4000],
-            "RJVars_HT4PP":  [100, 0 , 4000],
-            "RJVars_HT6PP":  [100, 0 , 4000],
-            "RJVars_minH3P":  [100, 0 , 4000],
-            "RJVars_sangle":  [100, -1 , 1],
-            "RJVars_dangle":  [100, -1 , 1],
-            "RJVars_ddphiPC":  [100, -1 , 1],
-            "RJVars_sdphiPC":  [100, -1 , 1],
-            "RJVars_dH2o3P":  [100, -1 , 1],
-            "RJVars_RPZ_HT4PP":  [100, -1 , 1],
-            "RJVars_RPZ_HT6PP":  [100, -1 , 1],
+            "RJVars_PP_MDeltaR"        :  [100, 0 , 1000, True],
+            "RJVars_PP_Mass"           :  [100, 0 , 1000, True],
+            "RJVars_PP_InvGamma"       :  [100, -1 , 1, False ],
+            "RJVars_PP_dPhiBetaR"      :  [100, -1 , 1, False ],
+            "RJVars_PP_dPhiVis"        :  [100, -1 , 1, False ],
+            "RJVars_PP_CosTheta"       :  [100, -1 , 1, False ],
+            "RJVars_PP_dPhiDecayAngle" :  [100, -1 , 1, False ],
+            "RJVars_PP_VisShape"       :  [100, 0  , 1, False ],
+            "RJVars_P1_Mass"           :  [100, 0 , 1000, True],
+            "RJVars_P1_CosTheta"       :  [100, -1 , 1, False ],
+            "RJVars_P2_Mass"           :  [100, 0 , 1000, True],
+            "RJVars_P2_CosTheta"       :  [100, -1 , 1, False ],
+#            "RJVars_I1_Depth"          :  [100, 0 , 1000,False],
+#            "RJVars_I2_Depth"          :  [100, 0 , 1000,False],
+            "RJVars_dphiPV1a"  :  [100, -1 , 1, False ],
+            "RJVars_cosV1a"    :  [100, -1 , 1, False ],
+            "RJVars_dphiCV2a"  :  [100, -1 , 1, False ],
+            "RJVars_cosV2a"    :  [100, -1 , 1, False ],
+            "RJVars_dphiPV1b" :  [100, -1 , 1, False ],
+            "RJVars_cosV1b"   :  [100, -1 , 1, False ],
+            "RJVars_dphiCV2b" :  [100, -1 , 1, False ],
+            "RJVars_cosV2b":  [100, -1 , 1, False ],
+            "RJVars_V1_N" :  [20, 0 , 20, False],
+            "RJVars_V2_N" :  [20, 0 , 20, False],
+            "RJVars_MP"          :  [100, 0 , 1000, True],
+            "RJVars_DeltaBetaGG" :  [100, -1 , 1, False ],
+            "RJVars_dphiVG"      :  [100, -1 , 1, False ],
+            "RJVars_QCD_dPhiR"    :  [100, -1 , 1, False ],
+            "RJVars_QCD_Rpt"      :  [100, -1 , 1, False ],
+            "RJVars_QCD_Rsib"    :  [100, -1 , 1, False ],
+            "RJVars_QCD_Delta1"   :  [100, -1 , 1, False ],
+            "RJVars_H2PP":  [100, 0 , 4000, True],
+            "RJVars_H3PP":  [100, 0 , 4000, True],
+            "RJVars_H4PP":  [100, 0 , 4000, True],
+            "RJVars_H6PP":  [100, 0 , 4000, True],
+            "RJVars_H2Pa":  [100, 0 , 4000, True],
+            "RJVars_H2Pb":  [100, 0 , 4000, True],
+            "RJVars_H3Pa":  [100, 0 , 4000, True],
+            "RJVars_H3Pb":  [100, 0 , 4000, True],
+            "RJVars_H4Pa":  [100, 0 , 4000, True],
+            "RJVars_H4Pb":  [100, 0 , 4000, True],
+            "RJVars_H5Pa":  [100, 0 , 4000, True],
+            "RJVars_H5Pb":  [100, 0 , 4000, True],
+            "RJVars_H2Ca":  [100, 0 , 4000, True],
+            "RJVars_H2Cb":  [100, 0 , 4000, True],
+            "RJVars_H3Ca":  [100, 0 , 4000, True],
+            "RJVars_H3Cb":  [100, 0 , 4000, True],
+            "RJVars_HT4PP":  [100, 0 , 4000, True],
+            "RJVars_HT6PP":  [100, 0 , 4000, True],
+            "RJVars_minH3P":  [100, 0 , 4000, True],
+            "RJVars_sangle":  [100, -1 , 1, False],
+            "RJVars_dangle":  [100, -1 , 1, False ],
+            "RJVars_ddphiPC":  [100, -1 , 1, False ],
+            "RJVars_sdphiPC":  [100, -1 , 1, False ],
+            "RJVars_dH2o3P":  [100, -1 , 1, True],
+            "RJVars_RPZ_HT4PP":  [100, -1 , 1, False],
+            "RJVars_RPZ_HT6PP":  [100, -1 , 1, False ],
             }
 	#################################################################################################
 
@@ -273,7 +273,6 @@ for mysamplehandlername in sh_bg.keys():
 #            cutstring = "1."
             for varname,limits in RJigsawVariables.items() :
 		print varname
-                print "NTRJigsawVars."+varname+"/1000."
                 print cutstring
                 job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
@@ -282,17 +281,23 @@ for mysamplehandlername in sh_bg.keys():
                                                        limits[2]
                                                        ),
                                                        #100, 0, 1000),#todo make this use the other half of the dictionary
-                                             "NTRJigsawVars."+varname+"/1000.",
+                                             "NTRJigsawVars."+varname+"/1000." if limits[3] else  "NTRJigsawVars."+varname,
                                              cutstring
                                              )
                              )
 
 
+
 	driver = ROOT.EL.DirectDriver()
+#        driver = ROOT.EL.ProofDriver()
+#        driver.numWorkers = 8
+
 	if os.path.exists( tempDirDict[mysamplehandlername] ):
 		shutil.rmtree( tempDirDict[mysamplehandlername] )
         print "submitting to dir : " + tempDirDict[mysamplehandlername]
 	driver.submit(job, tempDirDict[mysamplehandlername] )
+
+
 
         mysamplehandler.printContent()
 #	if mysamplehandler!=sh_data:
