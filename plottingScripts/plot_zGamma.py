@@ -21,7 +21,7 @@ ROOT.gROOT.SetBatch(True)
 AtlasStyle.SetAtlasStyle()
 
 myfiles = {
-	'Znunu'  : root_open('../rundir_znunu_nlo.root'),
+	'Znunu'  : root_open('../rundir_znunu_lo.root'),
 	'Gamma'  : root_open('../rundir_gamma.root'),
 }
 
@@ -40,7 +40,6 @@ for counter, histoKey in enumerate(histoList) :
                 return None
             print histos[name].GetEntries()
 
-
         c1 = ROOT.TCanvas("c1_"+histoKey.GetName(),
                           "c1_"+histoKey.GetName(),
                           600 , 600
@@ -55,6 +54,9 @@ for counter, histoKey in enumerate(histoList) :
         pad1.cd()
 
         histos["Znunu"].SetMarkerColor(ROOT.kRed)
+        histos["Znunu"].SetMarkerStyle(ROOT.kFullCircle)
+        histos["Gamma"].SetMarkerStyle(ROOT.kFullCircle)
+
         histos["Gamma"].Draw()
         histos["Znunu"].Draw("same")
         leg4 = ROOT.TLegend(.6, 0.6, 0.8 , 0.8)
@@ -77,6 +79,7 @@ for counter, histoKey in enumerate(histoList) :
         ratio.GetYaxis().SetTitleOffset(1.55);
         ratio.GetYaxis().SetLabelFont(43);
         ratio.GetYaxis().SetLabelSize(15);
+
         ratio.GetXaxis().SetTitleSize(20);
         ratio.GetXaxis().SetTitleFont(43);
         ratio.GetXaxis().SetTitleOffset(4.);
@@ -84,7 +87,7 @@ for counter, histoKey in enumerate(histoList) :
         ratio.GetXaxis().SetLabelSize(15);
 
         ratio.SetMinimum(0)
-        ratio.SetMaximum(.2)
+        ratio.SetMaximum(1.0)
         ratio.Sumw2()
 
         ratio.Divide(histos["Gamma"])
