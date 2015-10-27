@@ -125,12 +125,14 @@ for mysamplehandlername in sh_bg.keys():
 #	no_cuts["met>0."] = [50,0,1000]
 
 	baseline_cuts = no_cuts.copy()#[]
-	baseline_cuts["met>140"]                                        = [50,0,1000]
-        baseline_cuts["NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300."]     = [50,0,2000]
+	baseline_cuts["met>140"]                                         = [50,0,1000]
+        baseline_cuts["NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300."]      = [50,0,2000]
+        baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<.4"]                 = [50,-1,1]
+        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1 / (1 - NTRJigsawVars.RJVars_QCD_Rsib) > .05"] = [50,-1,1]
 #       baseline_cuts["jetPt[0] > 50"]                                                             = [50,0,500]
 #       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
-        baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]                                          = [50,-1,1]
-        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1>.05 * (1 - NTRJigsawVars.RJVars_QCD_Rsib)"] = [50,-1,1]
+#        baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]                                          = [50,-1,1]
+#        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1/1000./(1 - NTRJigsawVars.RJVars_QCD_Rsib/1000.)>.05"] = [50,-1,1]
 
         cry_cuts = baseline_cuts.copy()
         print cry_cuts
