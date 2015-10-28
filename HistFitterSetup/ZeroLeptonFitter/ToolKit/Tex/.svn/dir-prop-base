@@ -1,0 +1,17 @@
+K 10
+svn:ignore
+V 77
+corr*
+histpull*
+yield*
+MU*
+systtable*
+NP_*
+summary*
+
+*.aux
+*.pdf
+*.dvi
+*.log
+
+END
