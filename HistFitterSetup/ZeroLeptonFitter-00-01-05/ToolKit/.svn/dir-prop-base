@@ -1,0 +1,22 @@
+K 13
+svn:externals
+V 1
+
+
+K 10
+svn:ignore
+V 139
+#can be made from script
+signalPointPickle*.pkl
+
+output*
+Jobs
+config
+results 
+data
+Logs
+
+#in externals, ignore local changes
+NuisanceCheck
+
+END
