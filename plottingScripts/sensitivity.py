@@ -48,8 +48,10 @@ samples = [
 			'Diboson'
 			]
 
-lumiscale = 4
+lumiscale = 8
 writePlots = True
+
+DeltaBGs = [0.2,0.4]
 
 colorpal = sns.color_palette("husl", 4 )
 
@@ -97,12 +99,12 @@ histogramNames = [
 	]
 
 cuts = [
-		# "no_cut",
-		"SR1",
-		"SR2",
+		"SR1A",
+		"SR1B",
+		"SR1C",
+		"SR2A",
+		"SR2B",
 		"SR3",
-		"SR4",
-		"SR5",
 ]
 
 
@@ -150,7 +152,7 @@ fig = plt.figure(figsize=(6,7.5), dpi=100)
 
 from ROOT import RooStats
 
-for DeltaBG in [0.2]:
+for DeltaBG in DeltaBGs:
 
 
 	bestZbi = {}
@@ -235,7 +237,7 @@ for DeltaBG in [0.2]:
 					z.append(myz)
 					# print myz
 				try:
-					if myz > bestZbi[(myx,myy)][0]:
+					if myz > bestZbi[(myx,myy)][0] and BG>1:
 						bestZbi[(myx,myy)] = (myz,tmpcut)
 				except:
 					bestZbi[(myx,myy)] = (myz,tmpcut)

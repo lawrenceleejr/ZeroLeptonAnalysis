@@ -87,16 +87,12 @@ signalsamples = [x for x in signalsamples if "GG_direct" in x]
 # plottedsignals = []
 
 plottedsignals = {}
-plottedsignals["SR1"] = ["_800_600","_900_700","_1000_800" ]
-plottedsignals["SR2"] = ["_1000_600","_1100_700","_1200_800" ]
-plottedsignals["SR3"] = ["_1100_500","_1200_600","_1400_800" ]
-plottedsignals["SR4"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR5"] = ["_1400_0","_1500_100","_1600_0" ]
-
-
-# histogramNames = [
-
-# 	]
+plottedsignals["SR1A"] = ["_800_600","_900_700","_1000_800" ]
+plottedsignals["SR1B"] = ["_1000_600","_1100_700","_1200_800" ]
+plottedsignals["SR1C"] = ["_1000_600","_1100_700","_1200_800" ]
+plottedsignals["SR2A"] = ["_1100_500","_1200_600","_1400_800" ]
+plottedsignals["SR2B"] = ["_1200_400","_1300_500","_1400_600" ]
+plottedsignals["SR3"] = ["_1400_0","_1500_100","_1600_0" ]
 
 
 f = root_open(myfiles['Top'])
@@ -110,6 +106,7 @@ histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_
 # style_mpl()
 fig = plt.figure(figsize=(6,7.5))
 
+outputFile = open("n-1.tex", 'w')
 
 for histogramName in histogramNames:
 
@@ -243,6 +240,20 @@ for histogramName in histogramNames:
 	axes_ratio.set_ylabel('Data/MC')
 
 	print "saving"
-	fig.savefig("N-1_plots/%s.png"%histogramName, dpi=100)
+	fig.savefig("N-1Plots/%s.png"%histogramName, dpi=100)
 
+	outputFile.write(r"""
+\begin{figure}[tbph]
+\begin{center}
+\includegraphics[width=0.49\textwidth]{figures/N-1Plots/%s}
+\end{center}
+\caption{N-1 Plots for %s}
+\label{fig:%s}
+\end{figure}
+
+
+		"""%(histogramName, histogramName.split("_")[0], histogramName.translate(None, "<>")  )
+
+
+		)
 
