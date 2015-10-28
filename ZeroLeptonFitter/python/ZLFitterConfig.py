@@ -147,14 +147,14 @@ class ZLFitterConfig:
         self.validationRegionsList = []
 
         # WARNING: CRY and CRQ are temporary added as validation
-        self.validationRegionsList += ["CRY"]
-        self.validationRegionsList += ["CRQ"]
+        #self.validationRegionsList += ["CRY"]
+        #self.validationRegionsList += ["CRQ"]
 
-        self.validationRegionsList += ["VRZ"]
-        self.validationRegionsList +=["VRZf"]
-        self.validationRegionsList+=["VRWf","VRTf"]
-        self.validationRegionsList+=["VRWM","VRTM"]
-        self.validationRegionsList+=["VRWMf","VRTMf"]
+        # self.validationRegionsList += ["VRZ"]
+        # self.validationRegionsList +=["VRZf"]
+        # self.validationRegionsList+=["VRWf","VRTf"]
+        # self.validationRegionsList+=["VRWM","VRTM"]
+        # self.validationRegionsList+=["VRWMf","VRTMf"]
         ##self.validationRegionsList+=["VRWTplus","VRWTminus"]
         ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
         ##self.validationRegionsList+=["VRT2L"]  
