@@ -5,7 +5,7 @@ __doc__ = """
 
 """
 
-from ChannelsDict import *
+from allChannelsDict import *
 from makeSignalPointPickle import *
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
@@ -31,8 +31,8 @@ def main():
     config = parseCmdLine(sys.argv[1:])
     
     
-    scriptname = os.environ['ZEROLEPTONFITTER']+"/analysis/ZeroLepton_Run2.py" #ATT
-    runList = finalChannelsDict.keys()
+    scriptname = os.environ['ZEROLEPTONFITTER']+"/analysis/ZeroLepton_Run2_RJigsaw.py" #ATT
+    runList = allChannelsDict.keys()
 
 
     option = "-t -w -f "

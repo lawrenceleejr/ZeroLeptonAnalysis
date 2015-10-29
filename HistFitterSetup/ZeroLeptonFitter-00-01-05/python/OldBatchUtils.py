@@ -1,7 +1,7 @@
 import sys, os, string, shutil,pickle,subprocess
 import pprint
 
-from ChannelsDict import *
+from allChannelsDict import *
 from ZLFitterConfig import *
 
 # We are OLD batch utilities function.
@@ -10,7 +10,7 @@ from ZLFitterConfig import *
 ###########################################################################
 #
 ###########################################################################
-myscript= "analysis/ZeroLepton_Paper13.py"
+myscript= "analysis/ZeroLepton_Run2_RJigsaw.py"
 
 MYWORKINGDIR = os.getcwd().strip()+"/"
 HISTFITTERDIR = os.getenv('HISTFITTER')

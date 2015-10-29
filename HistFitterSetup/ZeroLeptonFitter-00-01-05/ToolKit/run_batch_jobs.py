@@ -14,7 +14,7 @@ ToolKit/run_batch_jobs.py --help
 import sys, os, string, shutil,pickle,subprocess
 import pprint
 
-from ChannelsDict import *
+from allChannelsDict import *
 from ZLFitterConfig import *
 
 from OldBatchUtils import *
@@ -159,7 +159,7 @@ if not os.path.exists(config.logdirname):
     pass
 
 # list of channels and settings to run over. 
-anaList =  finalChannelsDict.keys()
+anaList =  allChannelsDict.keys()
 
 jobFilenames = []
 for ana in anaList:
