@@ -222,29 +222,20 @@ anaSRJigsawBasic=ChannelConfig("SRJigsawBasic",regionDict)
 # trigger
 anaSRJigsawBasic.met=100
 anaSRJigsawBasic.MDR=300
+anaSRJigsawBasic.deltaQCD=0
+anaSRJigsawBasic.RPT_upper = 0.4
 allChannelsDict[anaSRJigsawBasic.name]=anaSRJigsawBasic
 
 
 #----------------------------------------------------------
 # RJigsawLoose
 #----------------------------------------------------------
-anaSRJigsawLoose=ChannelConfig("SRJigsawLoose",regionDict)
 
-anaSRJigsawLoose.met=100
-anaSRJigsawLoose.MDR=300
-#anaSRJigsawLoose.H2PP=700
-anaSRJigsawLoose.RPT_upper=0.3
-anaSRJigsawLoose.deltaQCD=0.0
-#anaSRJigsawLoose.minH3P=700
-allChannelsDict[anaSRJigsawLoose.name]=anaSRJigsawLoose
+import copy
 
+anaSRJigsawSR1Loose = copy.deepcopy( anaSRJigsawBasic )
+anaSRJigsawSR1Loose.name = "SRJigsawSR1Loose"
 
-
-anaSRJigsawSR1Loose=ChannelConfig("SRJigsawSR1Loose",regionDict)
-
-
-anaSRJigsawSR1Loose.deltaQCD = 0
-anaSRJigsawSR1Loose.RPT_upper = 0.4
 anaSRJigsawSR1Loose.R_H2PP_H5PP = 0.35
 anaSRJigsawSR1Loose.R_HT5PP_H5PP = 0.8
 anaSRJigsawSR1Loose.RPZ_HT5PP_upper = 0.5
@@ -253,15 +244,24 @@ anaSRJigsawSR1Loose.maxR_H1PPi_H2PPi_upper = 0.95
 anaSRJigsawSR1Loose.dangle_upper = 0.5 
 anaSRJigsawSR1Loose.HT5PP = 0#800
 anaSRJigsawSR1Loose.H2PP = 0#550
-# anaSRJigsawSR1Loose.met=100
-# anaSRJigsawSR1Loose.MDR=300
-# #anaSRJigsawSR1Loose.H2PP=700
-# anaSRJigsawSR1Loose.RPT_upper=0.3
-# anaSRJigsawSR1Loose.deltaQCD=0.0
-# #anaSRJigsawSR1Loose.minH3P=700
 
 allChannelsDict[anaSRJigsawSR1Loose.name]=anaSRJigsawSR1Loose
 
+
+
+anaSRJigsawSR3Loose = copy.deepcopy( anaSRJigsawBasic )
+anaSRJigsawSR3Loose.name = "SRJigsawSR3Loose"
+
+anaSRJigsawSR3Loose.R_H2PP_H5PP = 0.2
+anaSRJigsawSR3Loose.R_HT5PP_H5PP = 0.65
+anaSRJigsawSR3Loose.RPZ_HT5PP_upper = 0.6
+anaSRJigsawSR3Loose.minR_pTj2i_HT3PPi = 0.09
+anaSRJigsawSR3Loose.maxR_H1PPi_H2PPi_upper = 0.98
+anaSRJigsawSR3Loose.dangle_upper = 999 
+anaSRJigsawSR3Loose.HT5PP = 0#800
+anaSRJigsawSR3Loose.H2PP = 0#550
+
+allChannelsDict[anaSRJigsawSR3Loose.name]=anaSRJigsawSR3Loose
 
 #allChannelsDict={}
 #allChannelsDict[anaSR6jl.name]=anaSR6jl

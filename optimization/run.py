@@ -63,14 +63,13 @@ factory = ROOT.TMVA.Factory("TMVAClassification", fout,
 #######################################
 #factory.AddVariable("NTRJigsawVars.RJVars_PP_MDeltaR","F")
 # factory.AddVariable("NTRJigsawVars.RJVars_MG/1000.","F") 
-factory.AddVariable("minH3P/H6PP","F") 
 factory.AddVariable("R_H2PP_H6PP","F") 
-factory.AddVariable("R_HT6PP_H6PP","F") 
-factory.AddVariable("min(R_pTj2a_HT6PP,R_pTj2b_HT6PP)","F") 
-factory.AddVariable("RPZ_HT6PP","F") 
-factory.AddVariable("HT6PP","F") 
+factory.AddVariable("R_HT5PP_H5PP","F") 
+factory.AddVariable("minR_pTj2i_HT3PPi","F") 
+factory.AddVariable("maxR_H1PPi_H2PPi","F") 
+factory.AddVariable("RPZ_HT5PP","F") 
+factory.AddVariable("HT5PP","F") 
 factory.AddVariable("H2PP","F") 
-factory.AddVariable("minH3P","F") 
 
 
 f = {}
@@ -102,11 +101,10 @@ factory.SetBackgroundWeightExpression( "weight" );
 # #preselection += "&&NTRJigsawVars.RJVars_P_0_PInvHS>0.1&&NTRJigsawVars.RJVars_P_1_PInvHS>0.1"
 # #preselection += "&&NTRJigsawVars.RJVars_P_0_CosTheta<0.7&&NTRJigsawVars.RJVars_P_1_CosTheta<0.7"
 # preselection += "&&NTRJigsawVars.RJVars_QCD_Rpt<0.2"
-preselection = "(( deltaQCD/(Rsib-1) < 0.05) && (RPT < 0.4) && (sangle < 0.5)    )"
+preselection = "( ( deltaQCD > 0) && (RPT < 0.4)  && (MDR>300) && (NJet>3) )"
 # preselection = "met>100.&&NTRJigsawVars.RJVars_P_0_Jet1_pT/1000.>100.&&NTRJigsawVars.RJVars_P_1_Jet1_pT/1000.>100."
 factory.PrepareTrainingAndTestTree( ROOT.TCut(preselection), ROOT.TCut(preselection) ,
 									"V:SplitMode=Random:NormMode=EqualNumEvents" )
-
 
 
 
@@ -120,8 +118,16 @@ options = "!H:V:FitMethod=GA:EffSel"
 
 method = factory.BookMethod(ROOT.TMVA.Types.kCuts, "kCuts", options)
 
+factory.BookMethod( ROOT.TMVA.Types.kFisher, "Fisher", "H:!V:Fisher:VarTransform=None:CreateMVAPdfs:PDFInterpolMVAPdf=Spline2:NbinsMVAPdf=50:NsmoothMVAPdf=10" )
+# factory.BookMethod( ROOT.TMVA.Types.kMLP, "MLP",    "H:!V:NeuronType=tanh:VarTransform=N:NCycles=600:HiddenLayers=N+5:TestRate=5:!UseRegulator" );
+
+
 #method.OptimizeTuningParameters("SigEffAtBkgEff001")
 
 factory.TrainAllMethods()
 factory.TestAllMethods()
 factory.EvaluateAllMethods()
+
+
+
+
