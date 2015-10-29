@@ -522,11 +522,22 @@ for point in allpoints:
         #SR_loose = myFitConfig.addChannel("cuts", ["SR_meffcut_relaxed"], 1, 0.5, 1.5)
         
         SR = [myFitConfig.addChannel("cuts", [zlFitterConfig.SRName], 1, 0.5, 1.5)]
-        SR += [myFitConfig.addChannel("NJet", [zlFitterConfig.SRName], 20, 0.0, 20.0)]
-        SR += [myFitConfig.addChannel("MDR", [zlFitterConfig.SRName], 30, 0.0, 1500.0)]  
-        SR += [myFitConfig.addChannel("MET", [zlFitterConfig.SRName], 30, 0.0, 1500.0)]
-        SR += [myFitConfig.addChannel("H2PP", [zlFitterConfig.SRName], 30, 0.0, 2000.0)]
-        SR += [myFitConfig.addChannel("HT5PP", [zlFitterConfig.SRName], 30, 0.0, 4000.0)]
+        #SR += [myFitConfig.addChannel("NJet", [zlFitterConfig.SRName], 20, 0.0, 20.0)]
+
+        #SR += [ myFitConfig.addChannel("R_H2PP_H5PP" , [zlFitterConfig.SRName], 50,0,1) ]
+        #SR += [ myFitConfig.addChannel("R_HT5PP_H5PP" , [zlFitterConfig.SRName], 50,0,1) ]
+        #SR += [ myFitConfig.addChannel("RPZ_HT5PP" , [zlFitterConfig.SRName], 50,0,1) ]
+        #SR += [ myFitConfig.addChannel("minR_pTj2i_HT3PPi" , [zlFitterConfig.SRName], 50,0,0.5) ]
+        #SR += [ myFitConfig.addChannel("maxR_H1PPi_H2PPi" , [zlFitterConfig.SRName], 50,0,1) ]
+        #SR += [ myFitConfig.addChannel("dangle" , [zlFitterConfig.SRName], 50,0,1) ]
+        #SR += [ myFitConfig.addChannel("HT5PP" , [zlFitterConfig.SRName], 50,0,4000) ]
+        SR += [ myFitConfig.addChannel("H2PP" , [zlFitterConfig.SRName], 50,0,2000) ]
+        #SR += [ myFitConfig.addChannel("MET", [zlFitterConfig.SRName], 50,0,1000) ]
+        #SR += [ myFitConfig.addChannel("MDR", [zlFitterConfig.SRName], 50,0,2000) ]
+        #SR += [ myFitConfig.addChannel("deltaQCD", [zlFitterConfig.SRName], 50,-1,1) ]
+        #SR += [ myFitConfig.addChannel("RPT" , [zlFitterConfig.SRName], 50,0,1) ]
+
+
         #SR.remapSystChanName = "cuts_SR_meffcut_relaxed"
     else:
         SR = myFitConfig.addChannel(zlFitterConfig.binVar, [zlFitterConfig.SRName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
@@ -540,10 +551,10 @@ for point in allpoints:
     if myFitType == FitType.Background: 
         myFitConfig.setValidationChannels(SR)
     else:
-        myFitConfig.setSignalChannels([SR])
+        myFitConfig.setSignalChannels(SR)
             
     if myFitType == FitType.Discovery:
-        SR.addDiscoverySamples(["SIG"], [1.], [0.], [1000.], [kMagenta])
+        SR[0].addDiscoverySamples(["SIG"], [1.], [0.], [1000.], [kMagenta])
 
     if zlFitterConfig.useQCDsample:
         SR.addSample(qcdSample)

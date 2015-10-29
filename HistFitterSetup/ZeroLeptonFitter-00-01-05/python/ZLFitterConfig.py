@@ -28,7 +28,7 @@ class ZLFitterConfig:
         self.blindSR = True
         self.blindCR = False
         self.blindVR = False
-        self.useSignalInBlindedData = False
+        self.useSignalInBlindedData = True
 
         #Run hypotests with also with up and down theor. uncert.? False: add uncert. as fit parameter
         self.fixSigXSec = True           
