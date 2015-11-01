@@ -23,12 +23,12 @@ def quite_exit():
 logging.info("loading packages")
 ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 
-# directory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/"
-# datadirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
-# signaldirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_pT50/"
+directory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/"
+datadirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
+signaldirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_pT50/"
 
-directory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Anum_pT50/"
-signaldirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Anum_pT50/"
+# directory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Anum_pT50/"
+# signaldirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Anum_pT50/"
 
 #directory = "/mnt/shared/leejr/Work/WorkshopNtuples/"
 #signaldirectory = directory
@@ -51,7 +51,7 @@ for sampleHandlerName in [
 
 
 for sampleHandlerName in [
-						# "SS_direct",
+						"SS_direct",
 						"GG_direct",
 							]:
 
@@ -81,33 +81,69 @@ limits = {}
 
 ## ZL Team
 
-cuts["SR5j"] = []
-cuts["SR5j"] += ["( MET > 200 )"]
-cuts["SR5j"] += ["( pT_jet1 > 200 )"]
-cuts["SR5j"] += ["( pT_jet2 > 100 )"]
-cuts["SR5j"] += ["( pT_jet3 > 100 )"]
-cuts["SR5j"] += ["( pT_jet4 > 100 )"]
-cuts["SR5j"] += ["( pT_jet5 > 50 )"]
-cuts["SR5j"] += ["( dphi > 0.4 )"]
-cuts["SR5j"] += ["( dphiR > 0.2 )"]
-cuts["SR5j"] += ["( Aplan > 0.04 )"]
-cuts["SR5j"] += ["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
-cuts["SR5j"] += ["( Meff > 1600 )"]
 
 
 
-limits["SR5j"] = []
-limits["SR5j"] +=  [(50,0,1000)]     #["( MET > 200 )"]
-limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
-limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
-limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet3 > 100 )"]
-limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet4 > 100 )"]
-limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet5 > 50 )"]
-limits["SR5j"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
-limits["SR5j"] +=  [(50,0,4)]     #["( dphiR > 0.2 )"]
-limits["SR5j"] +=  [(50,0,0.5)]     #["( Aplan > 0.04 )"]
-limits["SR5j"] +=  [(50,0,1)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
-limits["SR5j"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
+
+cuts["SR2jl"] = []
+cuts["SR2jl"] += ["( MET > 200 )"]
+cuts["SR2jl"] += ["( pT_jet1 > 200 )"]
+cuts["SR2jl"] += ["( pT_jet2 > 200 )"]
+cuts["SR2jl"] += ["( dphi > 0.8 )"]
+cuts["SR2jl"] += ["( dphiR > 0.2 )"]
+cuts["SR2jl"] += ["( MET/sqrt(pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5+pT_jet6) > 15 )"]
+cuts["SR2jl"] += ["( Meff > 1200 )"]
+
+limits["SR2jl"] = []
+limits["SR2jl"] +=  [(50,0,1000)]     #["( MET > 200 )"]
+limits["SR2jl"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
+limits["SR2jl"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
+limits["SR2jl"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
+limits["SR2jl"] +=  [(50,0,4)]     #["( dphiR > 0.2 )"]
+limits["SR2jl"] +=  [(50,0,50)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+limits["SR2jl"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
+
+
+
+cuts["SR2jm"] = []
+cuts["SR2jm"] += ["( MET > 200 )"]
+cuts["SR2jm"] += ["( pT_jet1 > 200 )"]
+cuts["SR2jm"] += ["( pT_jet2 > 50 )"]
+cuts["SR2jm"] += ["( dphi > 0.4 )"]
+cuts["SR2jm"] += ["( dphiR > 0.2 )"]
+cuts["SR2jm"] += ["( MET/sqrt(pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5+pT_jet6) > 20 )"]
+cuts["SR2jm"] += ["( Meff > 1800 )"]
+
+limits["SR2jm"] = []
+limits["SR2jm"] +=  [(50,0,1000)]     #["( MET > 200 )"]
+limits["SR2jm"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
+limits["SR2jm"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
+limits["SR2jm"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
+limits["SR2jm"] +=  [(50,0,4)]     #["( dphiR > 0.2 )"]
+limits["SR2jm"] +=  [(50,0,50)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+limits["SR2jm"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
+
+
+
+cuts["SR2jt"] = []
+cuts["SR2jt"] += ["( MET > 200 )"]
+cuts["SR2jt"] += ["( pT_jet1 > 200 )"]
+cuts["SR2jt"] += ["( pT_jet2 > 200 )"]
+cuts["SR2jt"] += ["( dphi > 0.8 )"]
+cuts["SR2jt"] += ["( dphiR > 0.2 )"]
+cuts["SR2jt"] += ["( MET/sqrt(pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5+pT_jet6) > 20 )"]
+cuts["SR2jt"] += ["( Meff > 2200 )"]
+
+limits["SR2jt"] = []
+limits["SR2jt"] +=  [(50,0,1000)]     #["( MET > 200 )"]
+limits["SR2jt"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
+limits["SR2jt"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
+limits["SR2jt"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
+limits["SR2jt"] +=  [(50,0,4)]     #["( dphiR > 0.2 )"]
+limits["SR2jt"] +=  [(50,0,50)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+limits["SR2jt"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
+
+
 
 
 
@@ -123,8 +159,6 @@ cuts["SR4jt"] += ["( Aplan > 0.04 )"]
 cuts["SR4jt"] += ["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4) > 0.2 )"]
 cuts["SR4jt"] += ["( Meff > 2200 )"]
 
-
-
 limits["SR4jt"] = []
 limits["SR4jt"] +=  [(50,0,1000)]     #["( MET > 200 )"]
 limits["SR4jt"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
@@ -138,8 +172,95 @@ limits["SR4jt"] +=  [(50,0,1)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4
 limits["SR4jt"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
 
 
+cuts["SR5j"] = []
+cuts["SR5j"] += ["( MET > 200 )"]
+cuts["SR5j"] += ["( pT_jet1 > 200 )"]
+cuts["SR5j"] += ["( pT_jet2 > 100 )"]
+cuts["SR5j"] += ["( pT_jet3 > 100 )"]
+cuts["SR5j"] += ["( pT_jet4 > 100 )"]
+cuts["SR5j"] += ["( pT_jet5 > 50 )"]
+cuts["SR5j"] += ["( dphi > 0.4 )"]
+cuts["SR5j"] += ["( dphiR > 0.2 )"]
+cuts["SR5j"] += ["( Aplan > 0.04 )"]
+cuts["SR5j"] += ["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+cuts["SR5j"] += ["( Meff > 1600 )"]
+
+limits["SR5j"] = []
+limits["SR5j"] +=  [(50,0,1000)]     #["( MET > 200 )"]
+limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
+limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
+limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet3 > 100 )"]
+limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet4 > 100 )"]
+limits["SR5j"] +=  [(50,0,1000)]     #["( pT_jet5 > 50 )"]
+limits["SR5j"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
+limits["SR5j"] +=  [(50,0,4)]     #["( dphiR > 0.2 )"]
+limits["SR5j"] +=  [(50,0,0.5)]     #["( Aplan > 0.04 )"]
+limits["SR5j"] +=  [(50,0,1)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+limits["SR5j"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
 
 
+cuts["SR6jm"] = []
+cuts["SR6jm"] += ["( MET > 200 )"]
+cuts["SR6jm"] += ["( pT_jet1 > 200 )"]
+cuts["SR6jm"] += ["( pT_jet2 > 100 )"]
+cuts["SR6jm"] += ["( pT_jet3 > 100 )"]
+cuts["SR6jm"] += ["( pT_jet4 > 100 )"]
+cuts["SR6jm"] += ["( pT_jet5 > 50 )"]
+cuts["SR6jm"] += ["( pT_jet6 > 50 )"]
+cuts["SR6jm"] += ["( dphi > 0.4 )"]
+cuts["SR6jm"] += ["( dphiR > 0.2 )"]
+cuts["SR6jm"] += ["( Aplan > 0.04 )"]
+cuts["SR6jm"] += ["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+cuts["SR6jm"] += ["( Meff > 1600 )"]
+
+limits["SR6jm"] = []
+limits["SR6jm"] +=  [(50,0,1000)]     #["( MET > 200 )"]
+limits["SR6jm"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
+limits["SR6jm"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
+limits["SR6jm"] +=  [(50,0,1000)]     #["( pT_jet3 > 100 )"]
+limits["SR6jm"] +=  [(50,0,1000)]     #["( pT_jet4 > 100 )"]
+limits["SR6jm"] +=  [(50,0,1000)]     #["( pT_jet5 > 50 )"]
+limits["SR6jm"] +=  [(50,0,1000)]     #["( pT_jet5 > 50 )"]
+limits["SR6jm"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
+limits["SR6jm"] +=  [(50,0,4)]     #["( dphiR > 0.2 )"]
+limits["SR6jm"] +=  [(50,0,0.5)]     #["( Aplan > 0.04 )"]
+limits["SR6jm"] +=  [(50,0,1)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+limits["SR6jm"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
+
+
+
+cuts["SR6jt"] = []
+cuts["SR6jt"] += ["( MET > 200 )"]
+cuts["SR6jt"] += ["( pT_jet1 > 200 )"]
+cuts["SR6jt"] += ["( pT_jet2 > 100 )"]
+cuts["SR6jt"] += ["( pT_jet3 > 100 )"]
+cuts["SR6jt"] += ["( pT_jet4 > 100 )"]
+cuts["SR6jt"] += ["( pT_jet5 > 50 )"]
+cuts["SR6jt"] += ["( pT_jet6 > 50 )"]
+cuts["SR6jt"] += ["( dphi > 0.4 )"]
+cuts["SR6jt"] += ["( dphiR > 0.2 )"]
+cuts["SR6jt"] += ["( Aplan > 0.04 )"]
+cuts["SR6jt"] += ["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.2 )"]
+cuts["SR6jt"] += ["( Meff > 2000 )"]
+
+limits["SR6jt"] = []
+limits["SR6jt"] +=  [(50,0,1000)]     #["( MET > 200 )"]
+limits["SR6jt"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
+limits["SR6jt"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
+limits["SR6jt"] +=  [(50,0,1000)]     #["( pT_jet3 > 100 )"]
+limits["SR6jt"] +=  [(50,0,1000)]     #["( pT_jet4 > 100 )"]
+limits["SR6jt"] +=  [(50,0,1000)]     #["( pT_jet5 > 50 )"]
+limits["SR6jt"] +=  [(50,0,1000)]     #["( pT_jet5 > 50 )"]
+limits["SR6jt"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
+limits["SR6jt"] +=  [(50,0,4)]     #["( dphiR > 0.2 )"]
+limits["SR6jt"] +=  [(50,0,0.5)]     #["( Aplan > 0.04 )"]
+limits["SR6jt"] +=  [(50,0,1)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+limits["SR6jt"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
+
+
+
+
+##############################################################
 
 
 cuts["SR1A"] = []
@@ -219,11 +340,6 @@ limits["SR1C"] += [(50,0.5,1)]#["( maxR_H1PPi_H2PPi < 0.95)"]
 limits["SR1C"] += [(50,-1,1)]#["( dangle < 0.5 )"]
 limits["SR1C"] += [(50,0,4000)]#["( HT5PP > 800)"]
 limits["SR1C"] += [(50,0,2000)]#["( H2PP > 550)"]
-
-
-
-
-
 
 
 cuts["SR2A"] = []
@@ -372,73 +488,16 @@ limits["SR3C"] += [(50,0,2000)]#["( H2PP > 550)"]
 
 
 
-
-
-
-
-
-
-# cuts["CRDB1B"] = []
-# cuts["CRDB1B"] += ["( deltaQCD/(Rsib-1) < 0.05)"]
-# cuts["CRDB1B"] += ["( pTCM / ( pTCM + HT5PP) < 0.08  )"]
-# cuts["CRDB1B"] += ["( sangle < 0.5)"]
-# cuts["CRDB1B"] += ["( minH3P/H6PP > 0.2)" ] 
-# cuts["CRDB1B"] += ["( R_H2PP_H6PP > 0.25)" ] 
-# cuts["CRDB1B"] += ["( R_HT6PP_H6PP > 0.8)" ] 
-# cuts["CRDB1B"] += ["( min(R_pTj2a_HT6PP,R_pTj2b_HT6PP) > 0.06 )"  ]
-# cuts["CRDB1B"] += ["( RPZ_HT6PP < 0.5)"]
-# cuts["CRDB1B"] += ["( abs(dangle) < 0.5 )"  ]
-# cuts["CRDB1B"] += ["( R_H2PP_HT6PP < 0.9)" ] 
-# cuts["CRDB1B"] += ["( abs(dH2o3P) < 0.5 )" ] 
-# cuts["CRDB1B"] += ["( HT6PP > 800.  )"  ]
-# cuts["CRDB1B"] += ["( H2PP > 650.  )"  ]
-# cuts["CRDB1B"] += ["( H2PP/H3PP < 1  )"  ]
-# cuts["CRDB1B"] += ["( H2PP/HT6PP < 1  )"  ]
-# cuts["CRDB1B"] += ["( dphiVP > -1  )"  ]
-# cuts["CRDB1B"] += ["( H3PP/HT6PP > 0.8  )"  ]
-# cuts["CRDB1B"] += ["( abs(cosP) > 0  )"  ]
-# cuts["CRDB1B"] += ["( H3PP/HT4PP < 1  )"  ]
-# cuts["CRDB1B"] += ["( max(H2Pa,H2Pb)/HT6PP > 0  )"  ]
-# cuts["CRDB1B"] += ["( min(H2Pa,H2Pb)/HT6PP > 0  )"  ]
-# cuts["CRDB1B"] += ["( min(H2Pa,H2Pb)/minH3P > 0  )"  ]
-# cuts["CRDB1B"] += ["( H3PP/(HT4PP+H2PP) < 0.55  )"  ]
-# cuts["CRDB1B"] += ["( HT4PP/H4PP > 0  )"  ]
-# cuts["CRDB1B"] += ["( min(R_pTj1a_HT4PP,R_pTj1b_HT4PP) > 0 )"  ]
-
-# limits["CRDB1B"] = []
-# limits["CRDB1B"] +=   [(50,-1,1)]    #["( deltaQCD/(Rsib-1) < 0.05)"]
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( pTCM / ( pTCM + HT5PP) < 0.08  )"]
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( sangle < 0.5)"]
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( minH3P/H6PP > 0.2)" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( R_H2PP_H6PP > 0.25)" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( R_HT6PP_H6PP > 0.7)" ] 
-# limits["CRDB1B"] +=   [(50,0,0.2)]    #["( min(R_pTj2a_HT6PP,R_pTj2b_HT6PP) > 0.06 )"  ]
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( RPZ_HT6PP < 0.5)"]
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dangle) < 0.5 )"  ]
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( R_H2PP_HT6PP < 0.9)" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,4000)]    #["( HT6PP > 800.  )"  ]
-# limits["CRDB1B"] +=   [(50,0,4000)]    #["( H2PP > 650.  )"  ]
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,-1,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,-1,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-# limits["CRDB1B"] +=   [(50,0,1)]    #["( abs(dH2o3P) < 0.5 )" ] 
-
-
-
 ## Define your cut strings here....
 regions = {
 	# "no_cut": "(1)",
-	"SR5j": "*".join( ["(%s)"%mycut for mycut in cuts["SR5j"] ]),
+	"SR2jl": "*".join( ["(%s)"%mycut for mycut in cuts["SR2jl"] ]),
+	"SR2jm": "*".join( ["(%s)"%mycut for mycut in cuts["SR2jm"] ]),
+	"SR2jt": "*".join( ["(%s)"%mycut for mycut in cuts["SR2jt"] ]),
 	"SR4jt": "*".join( ["(%s)"%mycut for mycut in cuts["SR4jt"] ]),
+	"SR5j": "*".join( ["(%s)"%mycut for mycut in cuts["SR5j"] ]),
+	"SR6jm": "*".join( ["(%s)"%mycut for mycut in cuts["SR6jm"] ]),
+	"SR6jt": "*".join( ["(%s)"%mycut for mycut in cuts["SR6jt"] ]),
 	"SR1A": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR1A"] ]),
 	"SR1B": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR1B"] ]),
 	"SR1C": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR1C"] ]),
