@@ -1,0 +1,184 @@
+---------------------------------
+SUSY ZeroLeptonFitter package:
+---------------------------------
+Last update: 2015/08/05
+
+
+==================================
+Recommended tags:
+==================================
+
+HistFitter-00-00-49
++ the latest ROOT5 release you have available
+
+OR
+
+HistFitter-00-00-50
++ the most recent ROOT6 release (e.g. from localSetupROOT)
+
+==================================
+Setup:
+==================================
+
+
+export SVNPHYS="svn+ssh://svn.cern.ch/reps/atlasphys-susy/"
+svn co $SVNPHYS/Physics/SUSY/Analyses/HistFitter/tags/HistFitter-00-00-XX/ HistFitter-00-00-XX
+cd HistFitter-00-00-XX
+source setup.sh
+cd src/
+make
+cd ../..
+svn co $SVNPHYS/Physics/SUSY/Analyses/ZeroLeptonFitter/tags/ZeroLeptonFitter-00-00-YY/  ZeroLeptonFitter-00-00-YY
+cd ZeroLeptonFitter-00-00-YY
+source setup.sh    
+
+NOTE: ZeroLeptonFitter's setup.sh script tries to detect ../HistFitter and ../HistFitter-<usedtag> as directories. 
+
+==================================
+Howto:
+==================================
+
+- exclusion fit:
+HistFitter.py -p -t -w -d -f  -r SR6jt -F excl -g "gridmsugra_30_P,2000_300" analysis/ZeroLepton_Run2.py
+
+or if you want to run multiple msugra signal points:
+HistFitter.py -p -t -w -d -f -r SR6jt -F excl -g "gridmsugra_30_P,2000_300,2000_400" analysis/ZeroLepton_Run2.py
+
+
+- background fit with validation region
+HistFitter.py  -t -w -d -f  -r SR2jl -F bkg  -V  analysis/ZeroLepton_Run2.py
+
+
+You can run bkg fit for all analysis in python/anaList.py:
+python ToolKit/runAllAna.py --all --run --fit 0
+
+You can run disc fit for all analysis in python/anaList.py:
+ToolKit/runAllAna.py --all --run --fit 1
+
+Do "ps ux" to see that the jobs are running locally
+
+-------------------------------------------------------------------
+YIELD TABLES AND PULL PLOTS
+
+First of all, you can  run bkg fits for all analysis doing:
+ToolKit/runAllAna.py --run --all
+
+Once it is done:
+python ToolKit/MakePullPlots.py
+
+To produce a pdf file summarizing all results:
+cd ToolKit/Tex
+mv ../../*pdf .;mv ../../*eps .; mv ../../*tex .;
+pdflatex Main.tex;
+
+
+-------------------------------------------------------------------
+P0 AND UPPER LIMIT
+
+#First of all, you can  run discovery fits for all analysis doing:
+python ToolKit/runAllAna.py --run --fit 1
+
+#Once it is done:
+python ToolKit/MakeULP0Tables.py --asymptotic 
+
+#Jobs are running locally (do "ps ux" to check the status)
+#when everything is finished you can merge the files
+python ToolKit/MakeULP0Tables.py -m
+# a file ULp0.tex is produced
+
+-------------------------------------------------------------------
+EXPECTED P0
+It is possible to compute the expected p0 for a given signal hypothesis.
+First of all, the signal region should be blinded and the number of data events should be replaced by the sum of the background and signal prediction by setting in python/ZLFitterConfig.py:
+        self.blindSR=True
+        self.useSignalInBlindedData=True
+
+Then you should run an exclusion fit with the -z option like for instance:
+HistFitter.py -D allPlots -t -w -f -z -F excl -g gridGG_direct,1350_0  -r SR4jAp analysis/ZeroLepton_Run2.py
+
+
+P0 PLOT IN 2D or AS A FUNCTION OF MASS
+after running the fits above for a set of signal points, you can plot discovery p0 values in 2D, or as a function of mass in interest specified in allLines in MakeLines class.
+
+cd macros/contourplot
+python makeContours_Run2.py --all --discovery
+
+DISCOVERY PROJECTION PLOT 
+You can also make 3sigma discovery plot for each/best SR, with p0 2D map overlaied.
+
+root -l makecontourplots_p0.C
+
+-------------------------------------------------------------------
+
+In order to run exclusion fit to an complete grid, batch mode is required:
+
+ Usage: 
+
+cd ToolKit
+python makeSignalPointPickle2012.py
+cd ../
+#you have to make sure that the grid that you want to run on is included in makeSignalPointPickle2012.py
+
+ToolKit/run_batch_jobs.py  --grid SM_SS_direct --allpoints --submit --saveWS
+
+
+
+-------------------------------------------------------------------
+CONTOUR PLOTS
+
+once all jobs are done
+cd macros/contourplot
+./makeContours.py --all --grid SM_SS_direct 
+Only expected exclusion are plotted but the function MakePlots can easily be changed to draw any contour.
+Please note that this macro do not produce quality paper plots  
+Instead, for msugra, see for instance macros/contourmacros/SUSY_m0_vs_m12_all_withBand_cls.C
+
+-------------------------------------------------------------------
+DISTRIBUTION PLOTS
+
+python plot/PlotMaker.py
+
+Various plots are produced Outplots/.
+Set used regions and variables in kindOfCuts: e.g. {"type":"SR","var":{"meffincl"}} 
+For N-1 plots, use type SR_no_XYZcut. For CR plots, use doCRWT=True or doCRY=True.
+Set SRs for plotting in anaImInterestedIn: e.g. ['SR2jvt']
+Set a dataset size to be scaled by: e.g. --lumi 3000 (Default 3 fb-1)
+
+To produce a pdf file summarizing all plots:
+cd ToolKit/Tex
+pdflatex ValPlots.tex
+(If you want to add more plots, modify kindOfCuts in CreateLatex_valplots.py and do "python CreateLatex_valplots.py" to creat a new tex file.)
+
+-------------------------------------------------------------------
+CUTFLOW TABLES
+
+cd plot/cutflow/ 
+python cutflowtables.py
+
+A set of cutflow tables in tex format is produced on a directory Outcutflow/v${version}.
+
+=====================================================================================================
+
+
+WebSVN:
+-------
+https://svnweb.cern.ch/trac/atlasphys/browser/Physics/SUSY/Analyses/ZeroLeptonFitter/trunk
+
+svn package tips:
+----------------
+1. At CERN:
+export SVNPHYS="svn+ssh://svn.cern.ch/reps/atlasphys-susy/"
+svn co $SVNPHYS/Physics/SUSY/Analyses/ZeroLeptonFitter/trunk ZeroLeptonFitter
+
+2. To checkout with a different username (e.g. on your lapton), do:
+export SVNPHYS="svn+ssh://CERNUSERNAME@svn.cern.ch/reps/atlasphys"
+svn co $SVNPHYS/Physics/SUSY/Analyses/ZeroLeptonFitter/trunk ZeroLeptonFitter
+
+... where CERNUSERNAMEHERE is your CERN username.
+
+3. Tagging:
+svn commit -m "before tagging"
+
+svn cp . $SVNPHYS/Physics/SUSY/Analyses/ZeroLeptonFitter/tags/ZeroLeptonFitter-00-01-05 -m "00-01-05"
+
+
