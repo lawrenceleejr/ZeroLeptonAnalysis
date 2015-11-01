@@ -43,7 +43,7 @@ samples = [
 			'Diboson',
 			]
 
-lumiscale = 1
+lumiscale = 4
 
 
 colorpal = sns.color_palette("husl", 4 )
@@ -69,15 +69,15 @@ colors = {
 myfiles = {
 	# 'Data':   'hists/hist-DataMain_periodC.root.root',
 	# 'QCD':    'hists/hist-QCD.root.root',
-	'Top':    'hists/BG/Top/hist-Top.root.root',
-	'W':      'hists/BG/W/hist-Wjets.root.root',
-	'Z':      'hists/BG/Z/hist-Zjets.root.root',
-	'Diboson':'hists/BG/Diboson/hist-Diboson.root.root',
+	'Top':    'hists/output/Top/hist-Top.root.root',
+	'W':      'hists/output/W/hist-Wjets.root.root',
+	'Z':      'hists/output/Z/hist-Zjets.root.root',
+	'Diboson':'hists/output/Diboson/hist-Diboson.root.root',
 }
 
 
 
-signalsamples = os.listdir("hists/signal/")
+signalsamples = os.listdir("hists/output/")
 # print signalsamples
 signalsamples = [x for x in signalsamples if "GG_direct" in x]
 # print signalsamples
@@ -92,13 +92,18 @@ plottedsignals["SR1B"] = ["_1000_600","_1100_700","_1200_800" ]
 plottedsignals["SR1C"] = ["_1000_600","_1100_700","_1200_800" ]
 plottedsignals["SR2A"] = ["_1100_500","_1200_600","_1400_800" ]
 plottedsignals["SR2B"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR3"] = ["_1400_0","_1500_100","_1600_0" ]
+plottedsignals["SR2C"] = ["_1200_400","_1300_500","_1400_600" ]
+plottedsignals["SR3A"] = ["_1400_0","_1500_100","_1600_0" ]
+plottedsignals["SR3B"] = ["_1400_0","_1500_100","_1600_0" ]
+plottedsignals["SR3C"] = ["_1400_0","_1500_100","_1600_0" ]
+
+plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
 
 
 f = root_open(myfiles['Top'])
 # f.ls()
 # print [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
-histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName()  ]
+histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
 
 # myfiles[""]
 
@@ -145,8 +150,10 @@ for histogramName in histogramNames:
 		if tmphist.Integral():
 			stack.Add(tmphist)
 
-
-
+	try:
+		stack.sum.Integral()
+	except:
+		continue
 
 	gs = mpl.gridspec.GridSpec(2,1,height_ratios=[4,1])
 	gs.update(wspace=0.00, hspace=0.00)
@@ -160,8 +167,9 @@ for histogramName in histogramNames:
 
 
 	try:
+
 		axes.set_yscale('log')
-		rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, rasterized=True)
+		rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, rasterized=True, ec='grey', linewidth=1)
 		if hists['Data'].Integral():
 			rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes)
 	except:
@@ -176,7 +184,7 @@ for histogramName in histogramNames:
 		if skip:
 			continue
 
-		signalfile = root_open("hists/signal/%s/hist-GG_direct.root.root"%signalsample)
+		signalfile = root_open("hists/output/%s/hist-GG_direct.root.root"%signalsample)
 
 		hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
 		hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")  )
@@ -184,16 +192,20 @@ for histogramName in histogramNames:
 
 
 		if not("nJet" in histogramName) and not("QCD_Delta" in histogramName):
-			hists[signalsample].Rebin(4)
+			hists[signalsample].Rebin(2)
 		hists[signalsample].color = "red"
 
-		rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0, rasterized=False)
+		if hists[signalsample].Integral():
+			rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0, rasterized=False)
 
 		signalfile.Close()
 
+	# plt.ylim([0.1,10])
 
-	print "BG: %f"%stack.sum.Integral()
-
+	try:
+		print "BG: %f"%stack.sum.Integral()
+	except:
+		break
 
 	# leg = plt.legend(loc="best")
 	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.05,0.95),xycoords='axes fraction') 
@@ -206,9 +218,17 @@ for histogramName in histogramNames:
 	cutvalue = float(cutvalue)
 	boxDirection = 1 if ">" in histogramName else -1
 
-	axes.plot( (cutvalue,cutvalue), (1e-10,1), 'g-' , alpha=0.8)
-	axes.plot( (cutvalue,cutvalue*1e10*boxDirection), (1,1), 'g-' , alpha=0.8)
+	linelength = abs(axes.axis()[0]-axes.axis()[1])/10.
+	linelength = 10e10
+
+	axes.plot( (cutvalue,cutvalue), (1e-10,1e2), 'g-' , alpha=0.8)
+	axes.plot( (cutvalue,cutvalue+linelength*boxDirection), (1e2,1e2), 'g-' , alpha=0.8)
+	# import numpy as np
+	# myx = np.linspace(cutvalue,cutvalue+linelength*boxDirection,2)
+	# myy = array([1,1])
+	# axes.quiver(  myx[:-1], myy[:-1], myx[1:]-myx[:-1], myy[1:]-myy[:-1] , scale_units='xy', angles='xy',scale=1 )#, head_width=0.05, head_length=0.1, fc='g', ec='g' , alpha=0.8)
 	axes.text( cutvalue, 0.01, 'Cut at %.2f'%cutvalue, color="k", size=10, va="top", ha="center", rotation=90)
+
 
 	# axes_ratio.set_xlabel(histogramName.replace("_"," ").replace(">","$>$").replace("<","$<$") )
 
@@ -235,11 +255,37 @@ for histogramName in histogramNames:
 		yticks(arange(0,2.0,0.2))
 		ylim([0,2])
 
-	axes.set_ylabel('Events')
-	axes_ratio.set_xlabel(histogramName.replace("_"," ").replace(">","$>$").replace("<","$<$") )
 	axes_ratio.set_ylabel('Data/MC')
 
+
+
+	if "CRDB" in histogramName:
+
+		ratioplot = Graph.divide(  Graph(hists['Diboson']), stack.sum , 'pois'  )
+		ratioplot.color = "black"
+		axes_ratio.errorbar(list(ratioplot.x()) , 
+							list(ratioplot.y()), 
+							yerr=[ x[0] for x in list(ratioplot.yerr() ) ] , 
+							# xerr=list(ratioplot.y()), 
+							fmt='o-',
+							color="black")
+
+		yticks(arange(0,2.0,0.2))
+		ylim([0,1.0])
+
+		axes_ratio.set_ylabel('Diboson Fraction')
+
+
+
+	axes.set_ylabel('Events')
+	axes_ratio.set_xlabel(histogramName.replace("_"," ").replace(">","$>$").replace("<","$<$") )
+
+	axes.set_ylim([0.0005, 99999])
+
+
+
 	print "saving"
+
 	fig.savefig("N-1Plots/%s.png"%histogramName, dpi=100)
 
 	outputFile.write(r"""

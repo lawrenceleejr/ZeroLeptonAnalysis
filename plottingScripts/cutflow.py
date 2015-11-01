@@ -74,15 +74,15 @@ colors = {
 
 myfiles = {
 	# 'Data':   'hists/hist-DataMain_periodC.root.root',
-	# 'QCD':    'hists/BG/hist-QCD.root.root',
-	'Top':    'hists/BG/Top/hist-Top.root.root',
-	'W': 'hists/BG/W/hist-Wjets.root.root',
-	'Z': 'hists/BG/Z/hist-Zjets.root.root',
-	'Diboson':'hists/BG/Diboson/hist-Diboson.root.root',
+	# 'QCD':    'hists/output/hist-QCD.root.root',
+	'Top':    'hists/output/Top/hist-Top.root.root',
+	'W': 'hists/output/W/hist-Wjets.root.root',
+	'Z': 'hists/output/Z/hist-Zjets.root.root',
+	'Diboson':'hists/output/Diboson/hist-Diboson.root.root',
 }
 
 
-signalsamples = os.listdir("hists/signal/")
+signalsamples = os.listdir("hists/output/")
 # print signalsamples
 signalsamples = [x for x in signalsamples if "GG_direct" in x]
 # print signalsamples
@@ -93,7 +93,12 @@ plottedsignals["SR1B"] = ["_1000_600","_1100_700","_1200_800" ]
 plottedsignals["SR1C"] = ["_1000_600","_1100_700","_1200_800" ]
 plottedsignals["SR2A"] = ["_1100_500","_1200_600","_1400_800" ]
 plottedsignals["SR2B"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR3"] = ["_1400_0","_1500_100","_1600_0" ]
+plottedsignals["SR2C"] = ["_1200_400","_1300_500","_1400_600" ]
+plottedsignals["SR3A"] = ["_1400_0","_1500_100","_1600_0" ]
+plottedsignals["SR3B"] = ["_1400_0","_1500_100","_1600_0" ]
+plottedsignals["SR3C"] = ["_1400_0","_1500_100","_1600_0" ]
+
+plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
 
 
 # style_mpl()
@@ -103,12 +108,17 @@ fig = plt.figure(figsize=(7,7), dpi=100)
 
 
 regions = [
-"SR1A",
-"SR1B",
-"SR1C",
-"SR2A",
-"SR2B",
-"SR3",
+# "SR1A",
+# "SR1B",
+# "SR1C",
+# "SR2A",
+# "SR2B",
+# "SR2C",
+# "SR3A",
+# "SR3B",
+# "SR3C",
+"SR5j",
+# "CRDB1B"
 ]
 
 for region in regions:
@@ -159,11 +169,14 @@ for region in regions:
 	cutflows = {}
 	for tmphist in sortedHistsToStack:
 		if tmphist.Integral():
-			# stack.Add(tmphist)
+			stack.Add(tmphist)
 			rplt.hist(tmphist, alpha=0.5, emptybins=False)
 
 			if makeCutFlowTables:
 				cutflows[tmphist.GetTitle()] = cutFlowTools.histToCutFlow(tmphist)
+
+	for tmphist in sortedHistsToStack:
+		print "%s : %f"%(tmphist.GetTitle(), tmphist.GetBinContent(tmphist.GetNbinsX() ) / stack.sum.GetBinContent(stack.sum.GetNbinsX() ) ) 
 
 
 	cutFlowTools.dictToTable(cutflows, "CutFlowBG%s"%region)
@@ -200,7 +213,7 @@ for region in regions:
 			skip=0
 		if skip:
 			continue
-		signalfile = root_open("hists/signal/%s/hist-GG_direct.root.root"%signalsample)
+		signalfile = root_open("hists/output/%s/hist-GG_direct.root.root"%signalsample)
 		try:
 			hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
 			hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")   )
