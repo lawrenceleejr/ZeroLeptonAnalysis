@@ -18,15 +18,25 @@ import ROOT
 ##########################
 
 # Set observed and expected number of events in counting experiment
-ndata     =  7. 	# Number of events observed in data
-nbkg      =  5.	 	# Number of predicted bkg events
+# ndata     =  7. 	# Number of events observed in data
+# nbkg      =  5.	 	# Number of predicted bkg events
 nsig      =  1.  	# Number of predicted signal events
-nbkgErr   =  1.  	# (Absolute) Statistical error on bkg estimate *from limited MC statistics*
+# nbkgErr   =  1.  	# (Absolute) Statistical error on bkg estimate *from limited MC statistics*
 nsigErr   =  2.  	# (Absolute) Statistical error on signal estimate *from limited MC statistics*
-lumiError = 0.039 	# Relative luminosity uncertainty
+# lumiError = 0.039 	# Relative luminosity uncertainty
+
+nbkg = 37.854172
+nbkgErr = 7.976920
+ndata = 56.030491
+ndataErr = 9.480336
+
+syst = 0.400000
+
+lumiError = 0.028
+
 
 # Set uncorrelated systematics for bkg and signal (1 +- relative uncertainties)
-ucb = Systematic("uncorrl_bkg", configMgr.weights, 1.2,0.8, "user","userOverallSys")  # 20% error up and down
+ucb = Systematic("uncorrl_bkg", configMgr.weights, 1.0+syst,1.0-syst, "user","userOverallSys")  # 20% error up and down
 
 
 # correlated systematic between background and signal (1 +- relative uncertainties)
@@ -40,7 +50,7 @@ configMgr.doExclusion=True # True=exclusion, False=discovery
 #configMgr.nTOYs=5000
 configMgr.calculatorType=2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType=3   # 3=one-sided profile likelihood test statistic (LHC default)
-configMgr.nPoints=20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
+configMgr.nPoints=  200       # number of values scanned of signal-strength for upper-limit determination of signal strength.
 
 configMgr.writeXML = True
 
@@ -65,7 +75,7 @@ bkgSample.buildHisto([nbkg],"UserRegion","cuts",0.5)
 bkgSample.addSystematic(ucb)
 
 sigSample = Sample("Sig",kPink)
-sigSample.setNormFactor("mu_SS",1.,0.,10.)
+sigSample.setNormFactor("mu_SS",nbkgErr,0,ndata)
 #sigSample.setStatConfig(True)
 sigSample.setNormByTheory()
 sigSample.buildHisto([nsig],"UserRegion","cuts",0.5)
