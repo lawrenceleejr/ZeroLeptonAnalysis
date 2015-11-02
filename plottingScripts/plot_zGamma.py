@@ -38,7 +38,8 @@ for counter, histoKey in enumerate(histoList) :
                 return None
             if( not histos[name].GetEntries()) :
                 return None
-            print histos[name].GetEntries()
+            print histoKey.GetName()+ " " + str(name) +  str(histos[name].GetEntries())
+
 
         c1 = ROOT.TCanvas("c1_"+histoKey.GetName(),
                           "c1_"+histoKey.GetName(),
@@ -53,12 +54,13 @@ for counter, histoKey in enumerate(histoList) :
         pad1.SetLogy()
         pad1.cd()
 
+#        histos["Znunu"] = histos["Znunu"]
         histos["Znunu"].SetMarkerColor(ROOT.kRed)
         histos["Znunu"].SetMarkerStyle(ROOT.kFullCircle)
         histos["Gamma"].SetMarkerStyle(ROOT.kFullCircle)
 
-        histos["Gamma"].Draw()
-        histos["Znunu"].Draw("same")
+        histos["Gamma"].Draw("p")
+        histos["Znunu"].Draw("psame")
         leg4 = ROOT.TLegend(.6, 0.6, 0.8 , 0.8)
         leg4.AddEntry(histos["Gamma"] , "Gamma")
         leg4.AddEntry(histos["Znunu"] , "Znunu")
@@ -72,6 +74,12 @@ for counter, histoKey in enumerate(histoList) :
         pad2.cd()
 
         ratio = histos["Znunu"].Clone()
+        ratio.SetMinimum(0)
+        ratio.SetMaximum(5.0)
+        ratio.Sumw2()
+        ratio.Divide(histos["Gamma"])
+
+
         ratio.GetYaxis().SetTitle("Z / gamma");
         ratio.GetYaxis().SetNdivisions(505);
         ratio.GetYaxis().SetTitleSize(20);
@@ -82,15 +90,11 @@ for counter, histoKey in enumerate(histoList) :
 
         ratio.GetXaxis().SetTitleSize(20);
         ratio.GetXaxis().SetTitleFont(43);
-        ratio.GetXaxis().SetTitleOffset(4.);
+        ratio.GetXaxis().SetTitleOffset(2.);
         ratio.GetXaxis().SetLabelFont(43);
         ratio.GetXaxis().SetLabelSize(15);
+        ratio.GetXaxis().SetTitle(histoKey.GetName().replace("RJVars","").replace("cry_tight","").replace("no_cuts","").replace("_","")) #RJVars_QCD_dPhiR_cry_tight
 
-        ratio.SetMinimum(0)
-        ratio.SetMaximum(1.0)
-        ratio.Sumw2()
-
-        ratio.Divide(histos["Gamma"])
         ratio.Draw()
 
         c1.cd()
