@@ -31,7 +31,7 @@ mpl.rcParams['text.latex.preamble'] = [
        r'\usepackage{helvet}',    # set the normal font here
        r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
        r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
-]  
+]
 
 
 makeCutFlowTables = True
@@ -99,6 +99,9 @@ plottedsignals["SR3B"] = ["_1400_0","_1500_100","_1600_0" ]
 plottedsignals["SR3C"] = ["_1400_0","_1500_100","_1600_0" ]
 
 plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
+=======
+plottedsignals["SR3"] = ["_1400_0","_1500_100","_1600_0" ]
+>>>>>>> feature/znunuStudies
 
 
 # style_mpl()
@@ -146,10 +149,7 @@ for region in regions:
 			histsToStack.append( hists[sample] )
 		else:
 			hists[sample].markersize = 1.2
-
 	sortedHistsToStack = sorted(histsToStack, key=lambda x: x.Integral() , reverse=False)
-
-
 	mybinlabels = []
 	for ibin in xrange(1,hists[samples[0]].GetNbinsX()+1 ):
 		# print hists[samples[0]].GetXaxis().GetBinLabel(ibin)
@@ -176,8 +176,7 @@ for region in regions:
 				cutflows[tmphist.GetTitle()] = cutFlowTools.histToCutFlow(tmphist)
 
 	for tmphist in sortedHistsToStack:
-		print "%s : %f"%(tmphist.GetTitle(), tmphist.GetBinContent(tmphist.GetNbinsX() ) / stack.sum.GetBinContent(stack.sum.GetNbinsX() ) ) 
-
+		print "%s : %f"%(tmphist.GetTitle(), tmphist.GetBinContent(tmphist.GetNbinsX() ) / stack.sum.GetBinContent(stack.sum.GetNbinsX() ) )
 
 	cutFlowTools.dictToTable(cutflows, "CutFlowBG%s"%region)
 
@@ -217,7 +216,7 @@ for region in regions:
 		try:
 			hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
 			hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")   )
-			
+
 			if makeCutFlowTables:
 				cutflows[hists[signalsample].GetTitle()] = cutFlowTools.histToCutFlow(hists[signalsample])
 
@@ -232,8 +231,8 @@ for region in regions:
 	cutFlowTools.dictToTable(cutflows, "CutFlowSig%s"%region)
 
 
-	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.4,0.90),xycoords='axes fraction') 
-	axes.annotate(r'$\sqrt{s}$=13 TeV, %s'%region,xy=(0.65,0.90),xycoords='axes fraction') 
+	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.4,0.90),xycoords='axes fraction')
+	axes.annotate(r'$\sqrt{s}$=13 TeV, %s'%region,xy=(0.65,0.90),xycoords='axes fraction')
 
 
 

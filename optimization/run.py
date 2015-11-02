@@ -62,14 +62,14 @@ factory = ROOT.TMVA.Factory("TMVAClassification", fout,
 
 #######################################
 #factory.AddVariable("NTRJigsawVars.RJVars_PP_MDeltaR","F")
-# factory.AddVariable("NTRJigsawVars.RJVars_MG/1000.","F") 
-factory.AddVariable("R_H2PP_H6PP","F") 
-factory.AddVariable("R_HT5PP_H5PP","F") 
-factory.AddVariable("minR_pTj2i_HT3PPi","F") 
-factory.AddVariable("maxR_H1PPi_H2PPi","F") 
-factory.AddVariable("RPZ_HT5PP","F") 
-factory.AddVariable("HT5PP","F") 
-factory.AddVariable("H2PP","F") 
+# factory.AddVariable("NTRJigsawVars.RJVars_MG/1000.","F")
+factory.AddVariable("R_H2PP_H6PP","F")
+factory.AddVariable("R_HT5PP_H5PP","F")
+factory.AddVariable("minR_pTj2i_HT3PPi","F")
+factory.AddVariable("maxR_H1PPi_H2PPi","F")
+factory.AddVariable("RPZ_HT5PP","F")
+factory.AddVariable("HT5PP","F")
+factory.AddVariable("H2PP","F")
 
 
 f = {}

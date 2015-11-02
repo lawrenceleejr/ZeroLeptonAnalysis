@@ -17,6 +17,9 @@ from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 from pylab import *
 import os
 
+import scipy.interpolate
+
+
 from ATLASStyle import *
 
 from interpolateGrid import *
@@ -36,12 +39,9 @@ mpl.rcParams['text.latex.preamble'] = [
        r'\usepackage{helvet}',    # set the normal font here
        r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
        r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
-]  
-
-
+]
 
 # Config ##########################################################
-
 
 samples = [
 			# 'Data',
@@ -69,6 +69,7 @@ MeffRegions = [
 "SR6jt",
 ]
 
+DeltaBGs = [0.2,0.4]
 
 cuts = [
 		"SR1A",
@@ -104,6 +105,7 @@ colors = {
 }
 
 
+
 myfiles = {
 	# 'Data':   'hists/hist-DataMain_periodC.root.root',
 	# 'QCD': 'hists/output/hist-QCD.root.root',
@@ -136,8 +138,6 @@ for DeltaBG in DeltaBGs:
 	bestmeffZbi = {}
 
 	for tmpcut in cuts:
-
-
 		for tmphist in histogramNames:
 			histogramName = tmphist+"_"+tmpcut
 
@@ -243,14 +243,13 @@ for DeltaBG in DeltaBGs:
 		plt.imshow(zi, vmin=z.min(), vmax=z.max(), origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], cmap='jet', alpha=0.8)
 
-
 		plt.colorbar(label=r"Discovery z Value [$\sigma$]")
 
 		CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
 		plt.clabel(CS, fontsize=9, inline=1, colors="white", linecolor="white", fmt='%1.0f $\\sigma$')
-
 		plt.scatter(x, y, c=z)
+
 
 		plt.xlabel(r"$m_{\tilde{g}}$ [GeV]")
 		plt.ylabel(r"$m_{\chi^0_1}$ [GeV]")
@@ -258,11 +257,10 @@ for DeltaBG in DeltaBGs:
 		axes.set_xlim([400,1800])
 		axes.set_ylim([0,1200])
 
+		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction')
 
-		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
-
-		plt.annotate(r"$\Delta$BG/BG=%.1f, %s"%(DeltaBGs[DeltaBG][tmpcut],tmpcut),xy=(420,1150),color="white") 
-		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white") 
+		plt.annotate(r"$\Delta$BG/BG=%.1f, %s"%(DeltaBGs[DeltaBG][tmpcut],tmpcut),xy=(420,1150),color="white")
+		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white")
 		if writePlots:
 			figSens.savefig("plots/massPlaneSensitivity_%d_%d_%s.png"%(DeltaBGs[DeltaBG][tmpcut]*10,lumiscale,tmpcut) )
 
@@ -290,10 +288,10 @@ for DeltaBG in DeltaBGs:
 		axes.set_xlim([400,1800])
 		axes.set_ylim([0,1200])
 
-		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
+		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction')
 
-		plt.annotate(r"$\Delta$BG/BG=%s, Best SR Z - Best MEff SR Z"%(DeltaBG)  ,xy=(420,1150),color="white") 
-		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white") 
+		plt.annotate(r"$\Delta$BG/BG=%s, Best SR Z - Best MEff SR Z"%(DeltaBG)  ,xy=(420,1150),color="white")
+		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white")
 		# plt.show()
 
 		if writePlots:
@@ -325,10 +323,10 @@ for DeltaBG in DeltaBGs:
 		axes.set_xlim([400,1800])
 		axes.set_ylim([0,1200])
 
-		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
+		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction')
 
-		plt.annotate(r"$\Delta$BG/BG=%s, Best SR"%DeltaBG,xy=(420,1150),color="white") 
-		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white") 
+		plt.annotate(r"$\Delta$BG/BG=%s, Best SR"%DeltaBG,xy=(420,1150),color="white")
+		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white")
 		# plt.show()
 
 		if writePlots:
@@ -351,10 +349,10 @@ for DeltaBG in DeltaBGs:
 		axes.set_xlim([400,1800])
 		axes.set_ylim([0,1200])
 
-		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
+		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction')
 
-		plt.annotate(r"$\Delta$BG/BG=%s, Best SR"%DeltaBG,xy=(420,1150)) 
-		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100)) 
+		plt.annotate(r"$\Delta$BG/BG=%s, Best SR"%DeltaBG,xy=(420,1150))
+		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100))
 		# plt.show()
 
 		if writePlots:
@@ -370,10 +368,14 @@ for DeltaBG in DeltaBGs:
 
 		(x,y,z,zSR,xi,yi,zi)=interpolateGridDictionary(bestmeffZbi)
 
-		print zSR 
+		print zSR
 
 		plt.imshow(zi, vmin=z.min(), vmax=z.max(), origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], cmap='jet', alpha=0.8)
+
+		# rplt.hist2d(tmpth2)
+		# rplt.contour(tmpth2, levels = [2,3,4,5])
+
 		plt.colorbar(label=r"Discovery z Value [$\sigma$]")
 
 		CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
@@ -388,11 +390,26 @@ for DeltaBG in DeltaBGs:
 		axes.set_xlim([400,1800])
 		axes.set_ylim([0,1200])
 
-		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
+		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction')
 
-		plt.annotate(r"$\Delta$BG/BG=%s, Best MEff SR"%DeltaBG,xy=(420,1150),color="white") 
-		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white") 
+		plt.annotate(r"$\Delta$BG/BG=%s, Best MEff SR"%DeltaBG,xy=(420,1150),color="white")
+		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white")
 		# plt.show()
+		if writePlots:
+			figSens.savefig("plots/massPlaneSensitivity_%d_%d_%s.png"%(DeltaBG*10,lumiscale,tmpcut) )
+
+
+
+	# print bestZbi
+	# print bestZbi.values()
+	# # print bestZbi.keys()
+
+	plt.clf()
+
+	# print zip(*bestZbi.keys())[0] #gluino mass
+	# print zip(*bestZbi.keys())[1] #LSP mass
+	# print zip(*bestZbi.values())[0] #Zbi
+	# print zip(*bestZbi.values())[1] #SR
 
 		if writePlots:
 			# figSens.savefig("plots/massPlaneSensitivity_%d_%d_BestSR.pdf"%(DeltaBG*10,lumiscale) )
@@ -416,10 +433,10 @@ for DeltaBG in DeltaBGs:
 		axes.set_xlim([400,1800])
 		axes.set_ylim([0,1200])
 
-		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
+		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction')
 
-		plt.annotate(r"$\Delta$BG/BG=%s, Best MEff SR"%DeltaBG,xy=(420,1150)) 
-		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100)) 
+		plt.annotate(r"$\Delta$BG/BG=%s, Best MEff SR"%DeltaBG,xy=(420,1150))
+		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100))
 		# plt.show()
 
 		if writePlots:
@@ -428,10 +445,43 @@ for DeltaBG in DeltaBGs:
 
 
 
+	x =   list( zip( *bestZbi.keys())[0]     )
+	y =   list( zip( *bestZbi.keys())[1]     )
+	z =   list( zip( *bestZbi.values())[0]   )
+	zSR = list( zip( *bestZbi.values())[1]   )
 
 
+	# print x, y, z
+	#for pinning down the diagonal
+	for thing in [400,1200,1800 ]:
+		x.append(thing)
+		y.append(thing)
+		z.append(0)
 
 
+	x = np.array(x)
+	y = np.array(y)
+	z = np.array(z)
+
+	xi, yi = np.linspace(x.min(), x.max(), 100), np.linspace(y.min(), y.max(), 100)
+	xi, yi = np.meshgrid(xi, yi)
+	rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
+
+	plt.xlabel(r"$m_{\tilde{g}}$ [GeV]")
+	plt.ylabel(r"$m_{\chi^0_1}$ [GeV]")
+	axes = plt.gca()
+	axes.set_xlim([400,1800])
+	axes.set_ylim([0,1200])
+
+	plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction')
+
+	plt.annotate(r"$\Delta$BG/BG=%.1f, Best SR"%DeltaBG,xy=(420,1150))
+	plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100))
+	# plt.show()
+
+	if writePlots:
+		figSens.savefig("plots/massPlaneSensitivity_%d_%d_BestSR_Text.pdf"%(DeltaBG*10,lumiscale) )
+		figSens.savefig("plots/massPlaneSensitivity_%d_%d_BestSR_Text.png"%(DeltaBG*10,lumiscale) )
 
 
 

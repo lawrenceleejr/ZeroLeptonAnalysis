@@ -31,7 +31,7 @@ mpl.rcParams['text.latex.preamble'] = [
        r'\usepackage{helvet}',    # set the normal font here
        r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
        r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
-]  
+]
 
 
 samples = [
@@ -74,6 +74,7 @@ myfiles = {
 	'Z':      'hists/output/Z/hist-Zjets.root.root',
 	'Diboson':'hists/output/Diboson/hist-Diboson.root.root',
 }
+
 
 
 
@@ -169,6 +170,7 @@ for histogramName in histogramNames:
 	try:
 
 		axes.set_yscale('log')
+
 		rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, rasterized=True, ec='grey', linewidth=1)
 		if hists['Data'].Integral():
 			rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes)
@@ -208,8 +210,8 @@ for histogramName in histogramNames:
 		break
 
 	# leg = plt.legend(loc="best")
-	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.05,0.95),xycoords='axes fraction') 
-	axes.annotate(r'$\int{L}\sim$ %d pb$^{-1}$, $\sqrt{s}$=13 TeV, N-1, %s'%(lumiscale, histogramName.split("_")[0] ),xy=(0.0,1.01),xycoords='axes fraction') 
+	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.05,0.95),xycoords='axes fraction')
+	axes.annotate(r'$\int{L}\sim$ %d pb$^{-1}$, $\sqrt{s}$=13 TeV, N-1, %s'%(lumiscale, histogramName.split("_")[0] ),xy=(0.0,1.01),xycoords='axes fraction')
 
 
 	cutvalue = histogramName.split(">")[-1].split("<")[-1]
@@ -217,6 +219,7 @@ for histogramName in histogramNames:
 		cutvalue = "0."+cutvalue[1:]
 	cutvalue = float(cutvalue)
 	boxDirection = 1 if ">" in histogramName else -1
+
 
 	linelength = abs(axes.axis()[0]-axes.axis()[1])/10.
 	linelength = 10e10
@@ -245,10 +248,10 @@ for histogramName in histogramNames:
 	if 'Data' in hists:
 		ratioplot = Graph.divide(  Graph(hists['Data']), stack.sum , 'pois'  )
 		ratioplot.color = "black"
-		axes_ratio.errorbar(list(ratioplot.x()) , 
-							list(ratioplot.y()), 
-							yerr=[ x[0] for x in list(ratioplot.yerr() ) ] , 
-							# xerr=list(ratioplot.y()), 
+		axes_ratio.errorbar(list(ratioplot.x()) ,
+							list(ratioplot.y()),
+							yerr=[ x[0] for x in list(ratioplot.yerr() ) ] ,
+							# xerr=list(ratioplot.y()),
 							fmt='o',
 							color="black")
 
@@ -263,10 +266,10 @@ for histogramName in histogramNames:
 
 		ratioplot = Graph.divide(  Graph(hists['Diboson']), stack.sum , 'pois'  )
 		ratioplot.color = "black"
-		axes_ratio.errorbar(list(ratioplot.x()) , 
-							list(ratioplot.y()), 
-							yerr=[ x[0] for x in list(ratioplot.yerr() ) ] , 
-							# xerr=list(ratioplot.y()), 
+		axes_ratio.errorbar(list(ratioplot.x()) ,
+							list(ratioplot.y()),
+							yerr=[ x[0] for x in list(ratioplot.yerr() ) ] ,
+							# xerr=list(ratioplot.y()),
 							fmt='o-',
 							color="black")
 
@@ -286,6 +289,7 @@ for histogramName in histogramNames:
 
 	print "saving"
 
+
 	fig.savefig("N-1Plots/%s.png"%histogramName, dpi=100)
 
 	outputFile.write(r"""
@@ -299,7 +303,5 @@ for histogramName in histogramNames:
 
 
 		"""%(histogramName, histogramName.split("_")[0], histogramName.translate(None, "<>")  )
-
-
 		)
 
