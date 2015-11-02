@@ -63,6 +63,9 @@ sh_bg["gamma"]    = sh_all.find("gamma")
 sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
 #sh_bg["znunu_nlo"] = sh_all.find("znunu_nlo")
 
+sh_bg["gamma"]   .setMetaString("nc_tree","CRY_SRAllNT")
+sh_bg["znunu_lo"].setMetaString("nc_tree","SRAllNT")
+
 print sh_bg
 sh_bg["gamma"]    .printContent()
 sh_bg["znunu_lo" ].printContent()
