@@ -143,7 +143,7 @@ for counter, histoKey in enumerate(histoList) :
     if 'GammaReweight' in histos.keys():
         ratio2 = histos['GammaReweight'].Clone()
         ratio2.Sumw2()
-        ratio2.Divide(histos['GammaReweight'])
+        ratio2.Divide(histos['Gamma'])
         ratio2.Draw('same')
 
     c1.cd()
