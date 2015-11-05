@@ -120,7 +120,7 @@ for counter, histoKey in enumerate(histoList) :
 
     ratio = histos['Znunu'].Clone()
     ratio.SetMinimum(0)
-    ratio.SetMaximum(2.0)
+    ratio.SetMaximum(5.0)
     ratio.Sumw2()
     ratio.Divide(histos['Gamma'])
 

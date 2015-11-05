@@ -11,6 +11,7 @@ import os
 import itertools
 
 import discoverInput
+ROOT.TH1.SetDefaultSumw2(True)
 
 logging.basicConfig(level=logging.INFO)
 from optparse import OptionParser
