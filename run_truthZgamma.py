@@ -20,6 +20,8 @@ import atexit
 def quite_exit():
     ROOT.gSystem.Exit(0)
 
+def cuts_from_dict(cutdict):
+    return "*".join( ["(%s)"%mycut for mycut in cutdict.keys() ])
 
 logging.info("loading packages")
 ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
@@ -31,7 +33,8 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.5  ## in pb-1
-search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies_highPt/"]
+search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/"]
+#search_directories = ["test/"]
 
 ##
 ##
@@ -93,9 +96,10 @@ def scaleMyRootFiles(mysamplehandlername,mylumi):
 		dirList = ROOT.gDirectory.GetListOfKeys()
 		for k1 in dirList:
 			h1 = k1.ReadObj()
-			h1.Scale(m_eventscaling)
-			h1.Scale(mylumi)
-			h1.Write()
+                        if h1.ClassName() == "TH1D" or h1.ClassName() == "TH2D":
+                            h1.Scale(m_eventscaling)
+                            h1.Scale(mylumi)
+                            h1.Write()
 		myfile.Close()
 
 
@@ -125,7 +129,27 @@ for mysamplehandlername in sh_bg.keys():
 
         no_cuts = {}
 	no_cuts["1"] = [50,0,1000]
-#	no_cuts["met>0."] = [50,0,1000]
+
+        met50 = no_cuts.copy()
+        met50["met>50"] = [50,0,1000]
+
+        met100 = no_cuts.copy()
+        met100["met>100"] = [50,0,1000]
+
+        met300 = no_cuts.copy()
+        met300["met>300"] = [50,0,1000]
+
+        met50_2jet = no_cuts.copy()
+        met50_2jet["met>50"] = [50,0,1000]
+        met50_2jet["NTRJigsawVars.RJVars_PP_MDeltaR>0.1"] = [40,0,2000]
+
+        met100_2jet = no_cuts.copy()
+        met100_2jet["met>100"] = [50,0,1000]
+        met100_2jet["NTRJigsawVars.RJVars_PP_MDeltaR>0.1"] = [40,0,2000]
+
+        met300_2jet = no_cuts.copy()
+        met300_2jet["met>300"] = [50,0,1000]
+        met300_2jet["NTRJigsawVars.RJVars_PP_MDeltaR>0.1"] = [40,0,2000]
 
 	baseline_cuts = no_cuts.copy()#[]
 	baseline_cuts["met>140"]                                         = [50,0,1000]
@@ -187,26 +211,32 @@ for mysamplehandlername in sh_bg.keys():
 		# "l1trigger": "(NTVars.nJet>1 && met > 100)",
 #		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300)",
 #		"cry_1200_800": "*".join( ["(%s)"%mycut for mycut in cry_1200_800_cuts ]),
-		"cry_tight": "*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() ]),
-		"no_cuts"  : "*".join( ["(%s)"%mycut for mycut in no_cuts .keys() ])
-	}
+		"cry_tight"   : cuts_from_dict(cry_cuts),
+		"no_cuts"     : cuts_from_dict(no_cuts),
+		"met50"       : cuts_from_dict(met50),
+		"met100"      : cuts_from_dict(met100),
+		"met300"      : cuts_from_dict(met300),
+		"met50_2jet"  : cuts_from_dict(met50_2jet),
+		"met100_2jet" : cuts_from_dict(met100_2jet),
+		"met300_2jet" : cuts_from_dict(met300_2jet)
+                }
 
 
 	#################################################################################################
 
 	## This part sets up both N-1 hists and the cutflow histogram for "cry_tight"
 
-	cutflow = ROOT.TH1F ("cutflow", "cutflow", len(cry_cuts.keys())+1 , 0, len(cry_cuts.keys())+1 );
+	cutflow = ROOT.TH1D ("cutflow", "cutflow", len(cry_cuts.keys())+1 , 0, len(cry_cuts.keys())+1 );
 	cutflow.GetXaxis().SetBinLabel (1, "NTVars.eventWeight");
-
+        
 	for i,cutpart in enumerate(cry_cuts.keys()):
+            
+            cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
+            job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1D("cry_tight_minus_%s"%cutpartname, "cry_tight_%s"%cutpartname, cry_cuts.values()[i][0], cry_cuts.values()[i][1], cry_cuts.values()[i][2] ),
+                                         cutpart.split("<")[0].split(">")[0],
+                                         "NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() if  mycut!=cutpart ]))    )        )
 
-		cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
-		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("cry_tight_minus_%s"%cutpartname, "cry_tight_%s"%cutpartname, cry_cuts.values()[i][0], cry_cuts.values()[i][1], cry_cuts.values()[i][2] ),
-			cutpart.split("<")[0].split(">")[0],
-			"NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() if  mycut!=cutpart ]))    )        )
-
-		cutflow.GetXaxis().SetBinLabel (i+2, cutpart);
+            cutflow.GetXaxis().SetBinLabel (i+2, cutpart);
 
 	job.algsAdd(ROOT.MD.AlgCFlow (cutflow))
 
@@ -270,27 +300,51 @@ for mysamplehandlername in sh_bg.keys():
             "RJVars_RPZ_HT4PP":  [100, -1 , 1, False],
             "RJVars_RPZ_HT6PP":  [100, -1 , 1, False ],
             }
+
+        NTVariables = {
+            "met"  :  [100, 0 , 1000, False, ""],
+            "Nj50" :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
+            "HT50" :  [100, 0 , 1000, False, "Sum$(jetPt*(jetPt>50))"],
+            }
 	#################################################################################################
 
+        metlimits = [100, 0, 1000]
 
+        # Assume that we will want to reweight these
         for cut in cuts:
             cutstring = "NTVars.eventWeight*%s"%cuts[cut]
 #            cutstring = "1."
             for varname,limits in RJigsawVariables.items() :
 		print varname
                 print cutstring
-                job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F(varname+"_%s"%cut,
+                job.algsAdd (ROOT.MD.AlgHist(ROOT.TH2D(varname+"_%s"%cut,
+                                                       varname+"_%s"%cut,
+                                                       limits[0], limits[1], limits[2],
+                                                       metlimits[0], metlimits[1], metlimits[2]
+                                                       ),
+                                                       #100, 0, 1000),#todo make this use the other half of the dictionary
+                                             "NTRJigsawVars."+varname+"/1000." if limits[3] else  "NTRJigsawVars."+varname,
+                                             "met",
+                                             cutstring
+                                             )
+                             )
+
+            # Don't make thiese 2D for now -- we may reweight in them
+            for varname,limits in NTVariables.items() :
+                vartoplot = limits[4] if len(limits[4])>0 else varname
+                print varname, ":", vartoplot
+                print cutstring
+                job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1D(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
                                                        limits[0],
                                                        limits[1],
                                                        limits[2]
                                                        ),
                                                        #100, 0, 1000),#todo make this use the other half of the dictionary
-                                             "NTRJigsawVars."+varname+"/1000." if limits[3] else  "NTRJigsawVars."+varname,
+                                             vartoplot+"/1000." if limits[3] else vartoplot,
                                              cutstring
                                              )
                              )
-
 
 
 	driver = ROOT.EL.DirectDriver()
