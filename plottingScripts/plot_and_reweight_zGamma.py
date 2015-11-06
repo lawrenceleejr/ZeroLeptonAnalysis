@@ -21,8 +21,8 @@ import AtlasStyle
 reweightfile = ROOT.TFile('ratZG.root')
 reweighthist = reweightfile.Get('ratZG_met')
 myfiles = {
-	'Znunu'  : root_open('rundir_znunu_lo.root'),
-	'Gamma'  : root_open('rundir_gamma.root'),
+	'Znunu'  : root_open('outputfiles/rundir_znunu_lo.root'),
+	'Gamma'  : root_open('outputfiles/rundir_gamma.root'),
 }
 
 outputdir =  'plots/'
@@ -48,7 +48,7 @@ for counter, histoKey in enumerate(histoList) :
                 histos[name] = hist2d.ProjectionX(hist2d.GetName()+'_gamma')
                 histos[name+'Reweight'] = hist2d.ProjectionX(hist2d.GetName()+'_gammareweight',1,1)
                 histos[name+'Reweight'].Reset()
-                for ibin in range(1,hist2d.GetYaxis().GetNbins()+1):
+                for ibin in range(1,hist2d.GetYaxis().GetNbins()+2):
                     projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',ibin,ibin)
                     projx.Scale(reweighthist.GetBinContent(ibin))
                     histos[name+'Reweight'].Add(projx)

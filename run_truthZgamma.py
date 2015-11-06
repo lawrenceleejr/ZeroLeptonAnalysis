@@ -348,9 +348,12 @@ for mysamplehandlername in sh_bg.keys():
                              )
 
 
-	driver = ROOT.EL.DirectDriver()
+#	driver = ROOT.EL.DirectDriver()
 #        driver = ROOT.EL.ProofDriver()
-#        driver.numWorkers = 8
+#        driver.numWorkers = 3
+
+	driver = ROOT.EL.CondorDriver()
+        driver.shellInit = 'lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
 
 	if os.path.exists( tempDirDict[mysamplehandlername] ):
 		shutil.rmtree( tempDirDict[mysamplehandlername] )
