@@ -79,7 +79,7 @@ myfiles = {
 
 signalsamples = os.listdir("hists/output/")
 # print signalsamples
-signalsamples = [x for x in signalsamples if "GG_direct" in x]
+signalsamples = [x for x in signalsamples if "GG_direct" in x or "SS_direct" in x or "GG_onestepCC" in x]
 # print signalsamples
 
 # plottedsignals =  ["_1100_300_SRAll","_1100_500_SRAll","_1100_700_SRAll" ]
@@ -87,15 +87,33 @@ signalsamples = [x for x in signalsamples if "GG_direct" in x]
 # plottedsignals = []
 
 plottedsignals = {}
-plottedsignals["SR1A"] = ["_800_600","_900_700","_1000_800" ]
-plottedsignals["SR1B"] = ["_1000_600","_1100_700","_1200_800" ]
-plottedsignals["SR1C"] = ["_1000_600","_1100_700","_1200_800" ]
-plottedsignals["SR2A"] = ["_1100_500","_1200_600","_1400_800" ]
-plottedsignals["SR2B"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR2C"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR3A"] = ["_1400_0","_1500_100","_1600_0" ]
-plottedsignals["SR3B"] = ["_1400_0","_1500_100","_1600_0" ]
-plottedsignals["SR3C"] = ["_1400_0","_1500_100","_1600_0" ]
+
+plottedsignals["SR2jl"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2jm"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2jt"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR4jt"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SR5j"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+
+plottedsignals["SR1ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR1BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR3ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR3BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+
+
+plottedsignals["SR1A"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR1B"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR1C"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
+plottedsignals["SR2A"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
+plottedsignals["SR2B"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
+plottedsignals["SR2C"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
+plottedsignals["SR3A"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SR3B"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SR3C"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+
+
+# plottedsignals["SR3A"] = ["GG_onestepCC_745_625_505"]
 
 plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
 
@@ -115,6 +133,17 @@ outputFile = open("n-1.tex", 'w')
 
 for histogramName in histogramNames:
 
+	# if not("SR5j" in histogramName):
+	# 	continue
+	# if "SR5j" in histogramName:
+	# 	continue
+	# if "SR6j" in histogramName:
+	# 	continue
+	# if not("SR2j" in histogramName):
+	# 	continue
+
+	if not("SR3A" in histogramName):
+		continue
 
 	plt.clf()
 
@@ -135,6 +164,9 @@ for histogramName in histogramNames:
 		hists[sample].fillcolor = colors[sample]
 		hists[sample].linewidth = 0
 		hists[sample].Scale(lumiscale)
+		if "SS_direct" in sample:
+			hists[sample].Scale(0.8)
+
 		if sample != 'Data':
 			histsToStack.append( hists[sample] )
 		else:
@@ -178,13 +210,18 @@ for histogramName in histogramNames:
 		pass
 
 	for signalsample in signalsamples:
+		# print signalsample
+		# print plottedsignals[histogramName.split("_")[0]  ] 
 		skip = 1
 		if any([thissig in signalsample for thissig in plottedsignals[histogramName.split("_")[0]  ] ]):
 			skip=0
 		if skip:
+			# print "skipping"
 			continue
 
-		signalfile = root_open("hists/output/%s/hist-GG_direct.root.root"%signalsample)
+		signalfile = root_open("hists/output/%s/hist-%s.root.root"%(signalsample,  "_".join(signalsample.split("_")[:2])  ) )
+		# print "hists/output/%s/hist-%s.root.root"%(signalsample,  "_".join(signalsample.split("_")[:2])  )
+
 
 		hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
 		hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")  )

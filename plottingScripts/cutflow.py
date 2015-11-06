@@ -84,19 +84,31 @@ myfiles = {
 
 signalsamples = os.listdir("hists/output/")
 # print signalsamples
-signalsamples = [x for x in signalsamples if "GG_direct" in x]
+signalsamples = [x for x in signalsamples if "GG_direct" in x or "SS_direct" in x]
 # print signalsamples
 
 plottedsignals = {}
-plottedsignals["SR1A"] = ["_800_600","_900_700","_1000_800" ]
-plottedsignals["SR1B"] = ["_1000_600","_1100_700","_1200_800" ]
-plottedsignals["SR1C"] = ["_1000_600","_1100_700","_1200_800" ]
-plottedsignals["SR2A"] = ["_1100_500","_1200_600","_1400_800" ]
-plottedsignals["SR2B"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR2C"] = ["_1200_400","_1300_500","_1400_600" ]
-plottedsignals["SR3A"] = ["_1400_0","_1500_100","_1600_0" ]
-plottedsignals["SR3B"] = ["_1400_0","_1500_100","_1600_0" ]
-plottedsignals["SR3C"] = ["_1400_0","_1500_100","_1600_0" ]
+
+
+plottedsignals["SR2jt"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+
+plottedsignals["SR1ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR1BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR3ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR3BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+
+
+plottedsignals["SR1A"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR1B"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR1C"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
+plottedsignals["SR2A"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
+plottedsignals["SR2B"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
+plottedsignals["SR2C"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
+plottedsignals["SR3A"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SR3B"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SR3C"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
 
 plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
 
@@ -108,16 +120,29 @@ fig = plt.figure(figsize=(7,7), dpi=100)
 
 
 regions = [
-# "SR1A",
-# "SR1B",
-# "SR1C",
-# "SR2A",
-# "SR2B",
-# "SR2C",
-# "SR3A",
-# "SR3B",
-# "SR3C",
-"SR5j",
+# "SR2jt",
+
+
+"SR1ASq",
+"SR1BSq",
+"SR2ASq",
+"SR2BSq",
+"SR3ASq",
+"SR3BSq",
+
+
+"SR1A",
+"SR1B",
+"SR1C",
+"SR2A",
+"SR2B",
+"SR2C",
+"SR3A",
+"SR3B",
+"SR3C",
+
+
+# "SR5j",
 # "CRDB1B"
 ]
 
@@ -213,7 +238,7 @@ for region in regions:
 			skip=0
 		if skip:
 			continue
-		signalfile = root_open("hists/output/%s/hist-GG_direct.root.root"%signalsample)
+		signalfile = root_open("hists/output/%s/hist-%s.root.root"%(signalsample,  "_".join(signalsample.split("_")[:2])  ) )
 		try:
 			hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
 			hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")   )
@@ -260,6 +285,6 @@ for region in regions:
 	# plt.show()
 
 	print "saving"
-	fig.savefig("N-1Plots/%s.pdf"%histogramName)
+	fig.savefig("N-1Plots/%s.png"%histogramName)
 
 

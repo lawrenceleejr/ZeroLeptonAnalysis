@@ -81,7 +81,7 @@ def dictToTable(cutflows,label="SRX"):
 \hline
 \end{tabular}
 }
-\caption{Cut Flow Table for %s}
+\caption{Cut Flow Table for %s. Event yields per 1 fb$^{-1}$.}
 \label{table:table%s}
 \end{table}
 		"""%(label,label)  )

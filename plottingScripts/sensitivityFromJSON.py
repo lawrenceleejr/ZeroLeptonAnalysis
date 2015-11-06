@@ -52,12 +52,13 @@ samples = [
 			'Diboson'
 			]
 
-lumiscale = 4
+lumiscale = 1
 writePlots = True
 combineRegions = 1
 
 # SignalGrids = ["SS_direct","GG_direct"]
-SignalGrids = ["GG_onestepCC"]
+SignalGrids = ["GG_direct"]
+# SignalGrids = ["GG_onestepCC"]
 
 
 myxlabel = {}
@@ -65,92 +66,31 @@ myxlabel["SS_direct"] = r"$m_{\tilde{q}}$ [GeV]"
 myxlabel["GG_direct"] = r"$m_{\tilde{g}}$ [GeV]"
 myxlabel["GG_onestepCC"] = r"$m_{\tilde{g}}$ [GeV]"
 
-# MeffRegions = 0
+
 MeffRegions = [
-"SR2jl",
-"SR2jm",
-"SR2jt",
-"SR4jt",
-"SR5j",
-"SR6jm",
-"SR6jt",
+
 ]
 
 
 cuts = [
-		"SR1ASq",
-		"SR1BSq",
-		"SR2ASq",
-		"SR2BSq",
-		"SR3ASq",
-		"SR3BSq",
-
-		"SR1A",
-		"SR1B",
-		"SR1C",
-		"SR2A",
-		"SR2B",
-		"SR2C",
-		"SR3A",
-		"SR3B",
-		"SR3C",
+		"SRJigsawSR1Loose",
 ] + MeffRegions
 
-
-# DeltaBGs = [0.2]
-
-DeltaBGs = {}
-DeltaBGs["BaselineSyst"] = {}
-
-for cut in cuts:
-	DeltaBGs["BaselineSyst"][cut] = 0.1 if ("SR2j" in cut or "Sq" in cut) else 0.2
 
 colorpal = sns.color_palette("husl", 4 )
 
 
-colors = {
-	'Data': 'black',
-	'QCD': 'gray',
-	'Top': colorpal[0],
-	'W': colorpal[1],
-	'Z': colorpal[2],
-	'Diboson': colorpal[3],
-}
 
-
-myfiles = {
-	# 'Data':   'hists/hist-DataMain_periodC.root.root',
-	# 'QCD': 'hists/output/hist-QCD.root.root',
-	'Top': 'hists/output/Top/hist-Top.root.root',
-	'W': 'hists/output/W/hist-Wjets.root.root',
-	'Z': 'hists/output/Z/hist-Zjets.root.root',
-	'Diboson':'hists/output/Diboson/hist-Diboson.root.root',
-}
-
-
-
-histogramNames = [
-		"MET",
-	]
 
 
 fig = plt.figure(figsize=(6,7.5), dpi=100)
 
 from ROOT import RooStats
 
+
+import json
+
 for SignalGrid in SignalGrids:
-
-
-	signalsamples = os.listdir("hists/output/")
-	signalsamples = [x for x in signalsamples if SignalGrid in x]
-	signalsamples = [x for x in signalsamples if "SRAll" in x]
-
-	if SignalGrid == "GG_onestepCC":
-		signalsamples = [x for x in signalsamples if (int(x.split("_")[2])+int(x.split("_")[4]) )/2 == int(x.split("_")[3])  ]
-		# print signalsamples
-
-
-	DeltaBG = "BaselineSyst"
 
 	bestZbi = {}
 	bestmeffZbi = {}
@@ -158,93 +98,28 @@ for SignalGrid in SignalGrids:
 	for tmpcut in cuts:
 
 
-		for tmphist in histogramNames:
-			histogramName = tmphist+"_"+tmpcut
+		with open('JSON/SRJigsawSR1Loose_GG_direct__1_harvest_list.json') as data_file:    
+		    data = json.load(data_file)
 
-			plt.clf()
-
-			hists = {}
-			histsToStack = []
-			stack = HistStack()
-
-			for sample in samples:
-				f = root_open(myfiles[sample])
-				# f.ls()
-				hists[sample] = f.Get(histogramName).Clone(sample)
-				hists[sample].Sumw2()
-				# if not("nJet" in histogramName)  and not("QCD_Delta" in histogramName):
-				# 	hists[sample].Rebin(4)
-				hists[sample].SetTitle(r"%s"%sample)
-				hists[sample].fillstyle = 'solid'
-				hists[sample].fillcolor = colors[sample]
-				hists[sample].linewidth = 0
-				hists[sample].Scale(lumiscale)
-				if sample != 'Data':
-					histsToStack.append( hists[sample] )
-				else:
-					hists[sample].markersize = 1.2
-
-			# print histsToStack[0].Integral()
-			# print histsToStack
-			sortedHistsToStack = sorted(histsToStack, key=lambda x: x.Integral() , reverse=False)
-			# print sortedHistsToStack
-
-			for tmphist in sortedHistsToStack:
-				if tmphist.Integral():
-					stack.Add(tmphist)
 
 		plt.clf()
-		BG = stack.sum.Integral()
-		# print "nBG:    %f --------"%BG
 
 		x = []
 		y = []
 		z = []
 
 		print tmpcut
-		# print len(signalsamples)
 
-		for signalsample in signalsamples:
-			print signalsample
-			# signalfile = root_open("hists/rundir_signal/"+signalsample)
-			# print signalfile.ls()
-			try:
-				signalfile = root_open("hists/output/%s/hist-%s.root.root"%(signalsample,SignalGrid))
-				sig =  signalfile.Get("MET_%s"%tmpcut ).Clone( signalsample )
-				sig.Scale(lumiscale)
-				if SignalGrid == "SS_direct":
-					sig.Scale(0.8)
-				sig = sig.Integral( )
-				# print BG
-				# print sig
-			except:
-				print "Problem getting signal: %s" % signalsample
-				continue
+		for ipoint in data:
 
-			myx = float(signalsample.split("_")[2])
-			myy = float(signalsample.split("_")[3].split(".")[0]  )
+			myx = ipoint["m1"]
+			myy = ipoint["m2"]
+			myz = ROOT.RooStats.PValueToSignificance( ipoint["p0"] )
 
-			if SignalGrid == "GG_onestepCC":
-				myy = float(signalsample.split("_")[4].split(".")[0]  )
+			x.append(myx)
+			y.append(myy)
+			z.append(myz)
 
-
-			# print DeltaBGs[DeltaBG][cut]
-			# print DeltaBG[tmpcut]
-			myz = RooStats.NumberCountingUtils.BinomialExpZ(sig, BG, DeltaBGs[DeltaBG][tmpcut])
-
-			# print myx, myy, myz
-			# print sig, BG, myz
-			if myz==float('inf') or myz > 20:
-				myz = 20
-			if myz < 0:
-				myz = 0
-			if myx<500:
-				continue
-			if myz!=float('inf') and myz>0:
-				x.append(myx)
-				y.append(myy)
-				z.append(myz)
-				# print myz
 
 			# if compareToMeff != tmpcut:
 			try:
@@ -259,10 +134,6 @@ for SignalGrid in SignalGrids:
 					bestmeffZbi[(myx,myy)] = (myz,tmpcut)
 				else:
 					bestZbi[(myx,myy)] = (myz,tmpcut)
-
-
-
-			signalfile.Close()
 
 		(x,y,z,xi,yi,zi) = interpolateGridArray(x,y,z)
 
@@ -289,11 +160,14 @@ for SignalGrid in SignalGrids:
 
 		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
 
-		plt.annotate(r"$\Delta$BG/BG=%.1f, %s, %s"%(DeltaBGs[DeltaBG][tmpcut],tmpcut,SignalGrid.translate(None, "_") ),xy=(420,1150),color="white") 
+		plt.annotate(r"HistFitter, %s, %s"%(tmpcut,SignalGrid.translate(None, "_") ),xy=(420,1150),color="white") 
 		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white") 
 		if writePlots:
-			figSens.savefig("plots/massPlaneSensitivity_%s_%d_%d_%s.png"%(SignalGrid,DeltaBGs[DeltaBG][tmpcut]*10,lumiscale,tmpcut) )
+			figSens.savefig("plots/massPlaneSensitivity_%s_HF_%d_%s.png"%(SignalGrid,lumiscale,tmpcut) )
 
+
+	test = {}
+	test["jd"]
 
 
 	if MeffRegions:
