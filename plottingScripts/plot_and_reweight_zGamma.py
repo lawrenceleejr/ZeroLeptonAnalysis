@@ -21,8 +21,8 @@ import AtlasStyle
 reweightfile = ROOT.TFile('ratZG.root')
 reweighthist = reweightfile.Get('ratZG_met')
 myfiles = {
-	'Znunu'  : root_open('outputfiles/rundir_znunu_lo.root'),
-	'Gamma'  : root_open('outputfiles/rundir_gamma.root'),
+	'Znunu'  : root_open('../rundir_znunu_lo.root'),
+	'Gamma'  : root_open('../rundir_gamma.root'),
 }
 
 outputdir =  'plots/'
@@ -96,7 +96,7 @@ for counter, histoKey in enumerate(histoList) :
         histos['GammaReweight'].SetLineColor(ROOT.kGreen+2)
         histos['GammaReweight'].SetMarkerColor(ROOT.kGreen+2)
         histos['GammaReweight'].SetMarkerStyle(ROOT.kFullCircle)
-        
+
         scalef = histos['GammaReweight'].Integral()/histos['Gamma'].Integral() if histos['Gamma'].Integral()>0. else 0.
         histos['Gamma'].Scale(scalef)
         histos['GammaReweight'].Draw('psame')
