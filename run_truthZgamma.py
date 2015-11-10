@@ -34,7 +34,7 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.5  ## in pb-1
-search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/"]
+search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies_fixSel/"]
 #search_directories = ["test/"]
 
 ##
@@ -229,9 +229,9 @@ for mysamplehandlername in sh_bg.keys():
 
 	cutflow = ROOT.TH1D ("cutflow", "cutflow", len(cry_cuts.keys())+1 , 0, len(cry_cuts.keys())+1 );
 	cutflow.GetXaxis().SetBinLabel (1, "NTVars.eventWeight");
-        
+
 	for i,cutpart in enumerate(cry_cuts.keys()):
-            
+
             cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
             job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1D("cry_tight_minus_%s"%cutpartname, "cry_tight_%s"%cutpartname, cry_cuts.values()[i][0], cry_cuts.values()[i][1], cry_cuts.values()[i][2] ),
                                          cutpart.split("<")[0].split(">")[0],
@@ -348,12 +348,12 @@ for mysamplehandlername in sh_bg.keys():
                              )
 
 
-#	driver = ROOT.EL.DirectDriver()
+	driver = ROOT.EL.DirectDriver()
 #        driver = ROOT.EL.ProofDriver()
 #        driver.numWorkers = 3
 
-	driver = ROOT.EL.CondorDriver()
-        driver.shellInit = 'lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
+#	driver = ROOT.EL.CondorDriver()
+#        driver.shellInit = 'lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
 
 	if os.path.exists( tempDirDict[mysamplehandlername] ):
 		shutil.rmtree( tempDirDict[mysamplehandlername] )
