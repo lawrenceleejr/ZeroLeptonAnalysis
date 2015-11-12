@@ -1,0 +1,11 @@
+./ToolKit/batch/generateOptimisationSRs.py --grid=GG_direct --entire-grid
+./ToolKit/optimisation/runOptimisation.py -f optimisation/optimisation-GG_direct-20151106-115123.json --local
+
+./ToolKit/batch/plotResult.py  -o optimisation-GG_direct-20151106-155906/ -f optimisation/optimisation-GG_direct-20151106-155906.json
+
+
+#cd macros/contourplot
+
+#more ConvertToJSON_RJigsaw.sh 
+
+#python CollectAndWriteHypoTestResults.py -F  ../../optimisation-GG_direct-20151106-165258/Output/SRJigsawSR1A_GG_direct.root  -f "hypo_GG_direct_%f_%f" -c "1" -I "mgl:mlsp"

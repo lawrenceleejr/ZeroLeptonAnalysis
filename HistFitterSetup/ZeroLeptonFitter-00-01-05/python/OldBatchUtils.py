@@ -204,8 +204,8 @@ def writeAndSubmitJob(config, ana, points, jobdirname, counter):
         f.write("/bin/mv results/* "+MYWORKINGDIR+"results/\n")
         #f.write("/bin/mv results/*hypo*root "+MYWORKINGDIR+"results/\n")
         #f.write("/bin/mv results/*upperlimit*root "+MYWORKINGDIR+"results/\n")
-        if config.saveWS:
-            f.write("ls results/ZL2013*/*_model_afterFit.root| awk -F\/ '{print \"mkdir "+MYWORKINGDIR+"/results//\"$2\"; cp \"$0\" "+MYWORKINGDIR+"/results/\"$2\"/\"}'|zsh  \n")#not very nice :-S
+        # if config.saveWS:
+        #     f.write("ls results/*/*_model_afterFit.root| awk -F\/ '{print \"mkdir "+MYWORKINGDIR+"/results//\"$2\"; cp \"$0\" "+MYWORKINGDIR+"/results/\"$2\"/\"}'|zsh  \n")#not very nice :-S
     else:
         #print "Execute separately for each point!"
         for point in points:
@@ -215,11 +215,22 @@ def writeAndSubmitJob(config, ana, points, jobdirname, counter):
             f.write(cmd+" \n")
             ana2name=ana.replace(",","")
             f.write("sleep 2; \n")
-            f.write("/bin/mv results/* "+MYWORKINGDIR+"results/\n")
-            #f.write("/bin/mv results/*hypo*root "+MYWORKINGDIR+"results/\n")
-            #f.write("/bin/mv results/*upperlimit*root "+MYWORKINGDIR+"results/\n")
-            if config.saveWS:
-                f.write("ls results/ZL2013*/*_model_afterFit.root| awk -F\/ '{print \"mkdir "+MYWORKINGDIR+"/results//\"$2\"; cp \"$0\" "+MYWORKINGDIR+"/results/\"$2\"/\"}'|zsh  \n")#not very nice :-S
+            f.write("/bin/cp -r results/* "+MYWORKINGDIR+"results/.\n")
+            # f.write("/bin/mv results/*hypo*root "+MYWORKINGDIR+"results/\n")
+            # f.write("/bin/mv results/*upperlimit*root "+MYWORKINGDIR+"results/\n")
+
+            # tarname=filename.split("/")[-1]+".tar.gz"
+            # dirtarname=MYWORKINGDIR+"/results/"
+            # f.write("cd results/ \n")
+            # f.write("tar -zcvf "+tarname+" * \n")
+            # f.write("mv "+tarname+" "+MYWORKINGDIR+"/results/ \n")
+            #f.write("cd "+MYWORKINGDIR+"/results/  \n")
+            #f.write("tar -zxvf "+tarname+" \n")
+            # f.write("rm -f "+tarname+" \n")
+
+
+            # if config.saveWS:
+            #     f.write("ls results/*/*_model_afterFit.root| awk -F\/ '{print \"mkdir "+MYWORKINGDIR+"/results//\"$2\"; cp \"$0\" "+MYWORKINGDIR+"/results/\"$2\"/\"}'|zsh  \n")#not very nice :-S
 
 
     f.close()
@@ -436,8 +447,8 @@ def writeAndSubmitJobForNikhef(config, ana, points, jobdirname, counter):
            f.write(cmd+" \n")
            ana2name=ana.replace(",","")
            f.write("sleep 2; \n")
-           if config.saveWS:
-               f.write("ls results/ZL2013*/*_model_afterFit.root| awk -F\/ '{print \"mkdir "+MYWORKINGDIR+"/\"$2\"; cp \"$0\" "+MYWORKINGDIR+"/\"$2\"/\"}' ") #not very nice :-S
+           # if config.saveWS:
+           #     f.write("ls results/ZL2013*/*_model_afterFit.root| awk -F\/ '{print \"mkdir "+MYWORKINGDIR+"/\"$2\"; cp \"$0\" "+MYWORKINGDIR+"/\"$2\"/\"}' ") #not very nice :-S
 
    f.write("echo '============================'\n")
    f.write("date\n")

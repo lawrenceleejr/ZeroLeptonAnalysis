@@ -73,7 +73,7 @@ def latexfitresults(filename, poiname='mu_SIG', lumiFB=1.0, nTOYS=3000, asimov=F
   """
   ntoys = 3000
   calctype = 0   # toys = 0, asymptotic (asimov) = 2
-  npoints = int(70*2)
+  npoints = int(300)
 
   if nTOYS != 3000 and nTOYS>0:
     ntoys = nTOYS
@@ -83,8 +83,8 @@ def latexfitresults(filename, poiname='mu_SIG', lumiFB=1.0, nTOYS=3000, asimov=F
   """
   set the range of POI to be scanned and perform HypoTest inversion
   """
-  murangelow = 0
-  murangehigh = 70#40.0 #set here -1. if you want to have automatic determined scan range, if using values != -1, please check the log file if the scan range was large enough
+  murangelow = 200
+  murangehigh = 500#40.0 #set here -1. if you want to have automatic determined scan range, if using values != -1, please check the log file if the scan range was large enough
   hti_result = RooStats.DoHypoTestInversion(w,ntoys,calctype,3,True,npoints,murangelow,murangehigh)
 
   """

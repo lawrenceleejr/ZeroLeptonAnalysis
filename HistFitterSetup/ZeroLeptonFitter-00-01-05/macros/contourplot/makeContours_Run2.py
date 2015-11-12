@@ -337,8 +337,10 @@ def MergeFiles(config):
         grid_name="pMSSM_qL_to_h"
         #extra_filter="_60_Output"
     elif grid_name == "GG_direct" or grid_name == "SS_direct" or grid_name == "GG_onestepCC": 
-        config.anaList = ["SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt150-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt60-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff1600-sljetpt200-34jetpt150-dphi0.4-ap0.02"]
-        config.anaList = ["SR5jbase-MetoMeff0.25-Meff1600-sljetpt100-34jetpt100-dphi0.4-ap0.04", "SR4jbase-MetoMeff0.2-Meff2200-sljetpt100-34jetpt100-dphi0.4-ap0.04"]
+        # config.anaList = ["SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt150-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff2400-sljetpt200-34jetpt60-dphi0.4-ap0.02", "SR4j-MetoMeff0.2-Meff1600-sljetpt200-34jetpt150-dphi0.4-ap0.02"]
+        # config.anaList = ["SR5jbase-MetoMeff0.25-Meff1600-sljetpt100-34jetpt100-dphi0.4-ap0.04", "SR4jbase-MetoMeff0.2-Meff2200-sljetpt100-34jetpt100-dphi0.4-ap0.04"]
+        config.anaList = ["SRJigsawSR1Loose"]
+
     # CHECK: Add your anaList            
     else:
         print "grid_name is not defined."
@@ -1172,13 +1174,14 @@ def MakeLines(config):
                 tlines.append(TLine(MASSMIN,pzerovalue,MASSMAX,pzerovalue))
                 tlines[sigma].SetLineStyle(7)
                 tlines[sigma].SetLineWidth(2)
-                tlines[sigma].SetLineColor(TColor.kRed+2)
+                print TColor
+                tlines[sigma].SetLineColor(ROOT.kRed+2)
                 tlines[sigma].Draw("same")
 
             lsigma=[]
             for sigma, ysigma in enumerate([0.725, 0.65, 0.545, 0.4, 0.22]):
                 lsigma.append(TLatex(0.91,ysigma,str((int(sigma)+1))+" #sigma"))
-                lsigma[sigma].SetTextColor(TColor.kRed+2);
+                lsigma[sigma].SetTextColor(ROOT.kRed+2);
                 lsigma[sigma].SetNDC(kTRUE);
                 lsigma[sigma].SetTextSize(0.04);
                 lsigma[sigma].SetTextFont(42);
@@ -1596,9 +1599,9 @@ def MakePlots(config):
 
         hist.Draw("colz")
         leg_each.SetHeader(legName)
-        DrawContourLine1sigma( leg_each, contour, '1#sigma discovery', TColor.kGreen+3, 3, 2);
-        DrawContourLine2sigma( leg_each, contour, '2#sigma discovery', TColor.kBlue+1,  7, 2);
-        DrawContourLine3sigma( leg_each, contour, '3#sigma discovery', TColor.kRed+2,   1, 2);
+        DrawContourLine1sigma( leg_each, contour, '1#sigma discovery', ROOT.kGreen+3, 3, 2);
+        DrawContourLine2sigma( leg_each, contour, '2#sigma discovery', ROOT.kBlue+1,  7, 2);
+        DrawContourLine3sigma( leg_each, contour, '3#sigma discovery', ROOT.kRed+2,   1, 2);
         
         leg_each.Draw("same")
         frame.Draw("axis,same")        

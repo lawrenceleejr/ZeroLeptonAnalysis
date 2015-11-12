@@ -170,17 +170,17 @@ INPUTDIR_DATA = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT
 #######################################################################
 
 #configMgr.nTOYs = 5000      # number of toys when doing frequentist calculator
-configMgr.nTOYs = 10      # number of toys when doing frequentist calculator
+configMgr.nTOYs = 100      # number of toys when doing frequentist calculator
 configMgr.doExclusion = False
 if myFitType == FitType.Exclusion:
     configMgr.doExclusion = True 
 configMgr.calculatorType = 2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType = 3   # 3=one-sided profile likelihood test statistic (LHC default)
-configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
+configMgr.nPoints = 10       # number of values scanned of signal-strength for upper-limit determination of signal strength.
 
 if configMgr.calculatorType == 2:
-    # configMgr.nPoints = 30 
-    configMgr.nPoints = 5 
+    #configMgr.nPoints = 30 
+    configMgr.nPoints = 10
 
 
 #######################################################################------
@@ -270,9 +270,9 @@ log.info("allpoints = %s" % allpoints)
 log.info("Full cutsDict can be printed with -L DEBUG")
 log.debug(pprint.pformat(configMgr.cutsDict, width=60))
 
-#log.info("Wait 3 seconds for you to panic if these settings are wrong")
-#wait(3)
-#log.info("No panicking detected, continuing...")
+log.info("Wait 3 seconds for you to panic if these settings are wrong")
+wait(3)
+log.info("No panicking detected, continuing...")
 
 
 
@@ -414,6 +414,10 @@ if configMgr.useCacheToTreeFallback:
     log.info("setting configMgr.histBackupCacheFile to %s" % configMgr.histBackupCacheFile)
 
 
+print "*"*50
+print allpoints
+print "*"*50
+
 for point in allpoints:
     if point == "":
         continue
@@ -472,7 +476,7 @@ for point in allpoints:
     if myFitType == FitType.Exclusion or (myFitType == FitType.Discovery and zlFitterConfig.useSignalInBlindedData==True):
 
         sigSample = Sample(sigSampleName, kRed)
-        sigSample.setFileList([INPUTDIR_SIGNAL+grid+".root"])
+        sigSample.setFileList([os.path.join(INPUTDIR_SIGNAL, grid+("_fastsim" if grid=="GG_onestepCC" else "")+".root")]) # tentative hack. Will change the file name soon.
         sigSample.setTreeName("%s_%s_SRAll" % (gridTreeName, point) )
         sigSample.setNormByTheory()
         sigSample.setNormFactor("mu_SIG", 1, 0., 100.)
@@ -531,7 +535,7 @@ for point in allpoints:
         #SR += [ myFitConfig.addChannel("maxR_H1PPi_H2PPi" , [zlFitterConfig.SRName], 50,0,1) ]
         #SR += [ myFitConfig.addChannel("dangle" , [zlFitterConfig.SRName], 50,0,1) ]
         #SR += [ myFitConfig.addChannel("HT5PP" , [zlFitterConfig.SRName], 50,0,4000) ]
-        SR += [ myFitConfig.addChannel("H2PP" , [zlFitterConfig.SRName], 50,0,2000) ]
+        # SR += [ myFitConfig.addChannel("H2PP" , [zlFitterConfig.SRName], 50,0,2000) ]
         #SR += [ myFitConfig.addChannel("MET", [zlFitterConfig.SRName], 50,0,1000) ]
         #SR += [ myFitConfig.addChannel("MDR", [zlFitterConfig.SRName], 50,0,2000) ]
         #SR += [ myFitConfig.addChannel("deltaQCD", [zlFitterConfig.SRName], 50,-1,1) ]
@@ -692,7 +696,7 @@ for point in allpoints:
                     if sam.name==sigSampleName:
                         nameSys="errFlatSig"
 
-                    sam.addSystematic(Systematic(nameSys, configMgr.weights, 1.+flatError, 1-flatError, "user", "userOverallSys"))
+                    # sam.addSystematic(Systematic(nameSys, configMgr.weights, 1.+flatError, 1-flatError, "user", "userOverallSys"))
     
 
 

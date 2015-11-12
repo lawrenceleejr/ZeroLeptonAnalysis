@@ -30,6 +30,8 @@ ROOT.gROOT.SetBatch(True)
 
 import os, string, pickle, copy
 
+from math import sqrt
+
 def getSampleColor(sample):
     """
     Get colour for a sample

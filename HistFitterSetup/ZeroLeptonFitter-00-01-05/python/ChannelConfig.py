@@ -91,6 +91,8 @@ class ChannelConfig:
         # self.RPT_upper=+999     
 
         self.deltaQCD=-1
+        self.RPTHT3PP_upper=+999
+        self.RPTHT5PP_upper=+999
         self.RPT_upper=+999
         self.R_H2PP_H5PP=-1
         self.R_HT5PP_H5PP=-1
@@ -295,6 +297,10 @@ class ChannelConfig:
 
         if self.deltaQCD>=0:
             cutList.append( " deltaQCD >= %f"%self.deltaQCD   )
+        if self.RPTHT3PP_upper<=990:
+            cutList.append( " (pTCM / ( pTCM + HT3PP) ) <= %f"%self.RPTHT3PP_upper   )
+        if self.RPTHT5PP_upper<=990:
+            cutList.append( " (pTCM / ( pTCM + HT5PP) ) <= %f"%self.RPTHT5PP_upper   )
         if self.RPT_upper<=990:
             cutList.append( " RPT <= %f"%self.RPT_upper   )
         if self.R_H2PP_H5PP>=0:

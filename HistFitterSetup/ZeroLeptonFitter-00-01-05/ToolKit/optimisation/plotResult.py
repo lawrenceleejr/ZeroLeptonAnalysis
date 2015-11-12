@@ -161,6 +161,8 @@ files = getFileList(resultsDir, cachefile = os.path.join(dirname, "results.cache
 (grid, regions) = extractData(filename)
 gridConfig = GridConfig(grid, discovery)
 
+regions = ["SRJigsawSR1Loose"]
+
 filesByRegion = groupFilesByRegion(files, regions)
 mergeFilesByRegion(filesByRegion, grid, outputDir)
 

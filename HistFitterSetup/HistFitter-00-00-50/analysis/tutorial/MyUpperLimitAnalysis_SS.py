@@ -25,12 +25,13 @@ nsig      =  1.  	# Number of predicted signal events
 nsigErr   =  2.  	# (Absolute) Statistical error on signal estimate *from limited MC statistics*
 # lumiError = 0.039 	# Relative luminosity uncertainty
 
-nbkg = 37.854172
-nbkgErr = 7.976920
-ndata = 56.030491
-ndataErr = 9.480336
 
-syst = 0.400000
+nbkg = 1669.892944
+nbkgErr = 95.740914
+ndata = 1557.693604
+ndataErr = 55.181976
+
+syst = 0.100000
 
 lumiError = 0.028
 
@@ -75,7 +76,7 @@ bkgSample.buildHisto([nbkg],"UserRegion","cuts",0.5)
 bkgSample.addSystematic(ucb)
 
 sigSample = Sample("Sig",kPink)
-sigSample.setNormFactor("mu_SS",nbkgErr,0,ndata)
+sigSample.setNormFactor("mu_SS",1,0,40)
 #sigSample.setStatConfig(True)
 sigSample.setNormByTheory()
 sigSample.buildHisto([nsig],"UserRegion","cuts",0.5)
