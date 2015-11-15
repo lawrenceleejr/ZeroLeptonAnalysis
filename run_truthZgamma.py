@@ -34,7 +34,7 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.5  ## in pb-1
-search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies_fixSel/"]
+search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies/"]
 #search_directories = ["test/"]
 
 ##
@@ -64,15 +64,15 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 sh_bg["gamma"]    = sh_all.find("gamma")
-sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
+#sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
 #sh_bg["znunu_nlo"] = sh_all.find("znunu_nlo")
 
 sh_bg["gamma"]   .setMetaString("nc_tree","CRY_SRAllNT")
-sh_bg["znunu_lo"].setMetaString("nc_tree","SRAllNT")
+#sh_bg["znunu_lo"].setMetaString("nc_tree","SRAllNT")
 
 print sh_bg
 sh_bg["gamma"]    .printContent()
-sh_bg["znunu_lo" ].printContent()
+#sh_bg["znunu_lo" ].printContent()
 #sh_bg["znunu_nlo"].printContent()
 
 #Creation of output directory names
@@ -333,8 +333,8 @@ for mysamplehandlername in sh_bg.keys():
             # Don't make thiese 2D for now -- we may reweight in them
             for varname,limits in NTVariables.items() :
                 vartoplot = limits[4] if len(limits[4])>0 else varname
-                print varname, ":", vartoplot
-                print cutstring
+#                print varname, ":", vartoplot
+#                print cutstring
                 job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1D(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
                                                        limits[0],
@@ -348,11 +348,16 @@ for mysamplehandlername in sh_bg.keys():
                              )
 
 
-	driver = ROOT.EL.DirectDriver()
+#	driver = ROOT.EL.DirectDriver()
 #        driver = ROOT.EL.ProofDriver()
-#        driver.numWorkers = 3
+#        driver.numWorkers = 6
 
-#	driver = ROOT.EL.CondorDriver()
+        driver = ROOT.EL.LSFDriver()
+        ROOT.SH.scanNEvents(mysamplehandler);
+        mysamplehandler.setMetaDouble(ROOT.EL.Job.optEventsPerWorker, 100000);
+        job.options().setString(ROOT.EL.Job.optSubmitFlags, "-q " + "1nh");
+
+#        driver = ROOT.EL.CondorDriver()
 #        driver.shellInit = 'lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
 
 	if os.path.exists( tempDirDict[mysamplehandlername] ):
