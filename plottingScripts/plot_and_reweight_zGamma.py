@@ -120,7 +120,7 @@ for counter, histoKey in enumerate(histoList) :
 
     ratio = histos['Znunu'].Clone()
     ratio.SetMinimum(0)
-    ratio.SetMaximum(5.0)
+    ratio.SetMaximum(.5)
     ratio.Sumw2()
     ratio.Divide(histos['Gamma'])
 
@@ -142,6 +142,9 @@ for counter, histoKey in enumerate(histoList) :
     ratio.Draw()
     if 'GammaReweight' in histos.keys():
         ratio2 = histos['GammaReweight'].Clone()
+
+        ratio2.SetMaximum(.5)
+        ratio2.SetMaximum(1.5)
         ratio2.Sumw2()
         ratio2.Divide(histos['Gamma'])
         ratio2.Draw('same')
