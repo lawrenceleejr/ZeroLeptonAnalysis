@@ -1,5 +1,5 @@
 ./ToolKit/batch/generateOptimisationSRs.py --grid=GG_direct --entire-grid
-./ToolKit/optimisation/runOptimisation.py -f optimisation/optimisation-GG_direct-20151106-115123.json --local
+./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-GG_direct-20151106-115123.json --local
 
 ./ToolKit/batch/plotResult.py  -o optimisation-GG_direct-20151106-155906/ -f optimisation/optimisation-GG_direct-20151106-155906.json
 
