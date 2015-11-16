@@ -249,22 +249,35 @@ class ChannelConfig:
         #region with inverted metovermeff cuts
         self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2","VRQ4"]
 
-        self.regionsWithInvertedDangleCutList = ["CRTZL"]
-        self.regionsWithInvertedRPZCutList = ["CRTZL"]
-        # self.regionsWithInvertedDangleCutList = ["CRT"]
-        # self.regionsWithInvertedRPZCutList = ["CRT"]
-
         #region where the dphi cut is not applied
         self.regionsWithoutDPHICutList = ["CRWT","CRW","CRT","CRZ","VRZ","VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]
         
         #region where the met/meff cut is not applied
-        self.regionsWithoutMETOVERMEFFCutList = self.regionsWithoutDPHICutList
+        self.regionsWithoutMETOVERMEFFCutList = self.regionsWithoutDPHICutList+["CRQ"]
 
         #region where the met significance cut is not applied
         self.regionsWithoutMETSIGCutList = self.regionsWithoutDPHICutList
 
         # region where the Ap cut is not applied
         self.regionsWithoutApCutList = self.regionsWithoutDPHICutList+["CRY","CRQ","VRQ1","VRQ2","VRQ3","VRQ4"]
+
+
+        ##################################################
+        ## LL RJigsaw
+
+
+        self.regionsWithInvertedDangleCutList = ["CRTZL"]
+        self.regionsWithInvertedRPZCutList = ["CRTZL"]
+        # self.regionsWithInvertedDangleCutList = ["CRT"]
+        # self.regionsWithInvertedRPZCutList = ["CRT"]
+
+        self.regionsWithLooserDeltaQCDCutList = ["CRTZL","CRQ","CRT"]
+        self.regionsWithoutDeltaQCDCutList = self.regionsWithoutMETOVERMEFFCutList
+        self.regionsWithoutRPTCutList = self.regionsWithoutMETOVERMEFFCutList
+        self.regionsWithoutH2PPCutList = ["H2PP"]
+
+        self.regionsWithInvertedDeltaQCDCutList = ["CRQ"]
+        self.regionsWithInvertedRPTCutList = ["CRQ"]
 
         self.WithoutMeffCut = False
         self.WithoutMetOverMeffCut = False 
@@ -463,36 +476,37 @@ class ChannelConfig:
         ###############################################################################
 
         # LL RJigsaw
-        if regionName not in self.regionsWithoutMETOVERMEFFCutList:
-            if regionName not in  ["CRTZL","CRQ"]:
-                if self.deltaQCD>=0:
-                    cutList.append( " deltaQCD >= %f"%self.deltaQCD   )
+
+        if self.deltaQCD>=0:
+            if regionName in self.regionsWithLooserDeltaQCDCutList:
+                cutList.append( " deltaQCD >= -0.5"  )
+            elif regionName in self.regionsWithoutDeltaQCDCutList:
+                pass
+            elif regionName in self.regionsWithInvertedDeltaQCDCutList:
+                cutList.append( " deltaQCD <= %f"%self.deltaQCD )
             else:
-                if self.deltaQCD>=0:
-                    # cutList.append( " deltaQCD <= %f"%self.deltaQCD   )
-                    cutList.append( " deltaQCD >= -0.5"  )
+                cutList.append( " deltaQCD >= %f"%self.deltaQCD )
 
-            if regionName not in  ["CRQ"]:
-                if self.RPTHT3PP_upper<=990:
-                    cutList.append( " RPT_HT3PP <= %f"%self.RPTHT3PP_upper   )
-                if self.RPTHT5PP_upper<=990:
-                    cutList.append( " RPT_HT5PP <= %f"%self.RPTHT5PP_upper   )
+        if regionName in self.regionsWithInvertedRPTCutList:
+            if self.RPTHT3PP_upper<=990:
+                cutList.append( " RPT_HT3PP >= %f"%self.RPTHT3PP_upper   )
+            if self.RPTHT5PP_upper<=990:
+                cutList.append( " RPT_HT5PP >= %f"%self.RPTHT5PP_upper   )
+        elif regionName not in self.regionsWithoutRPTCutList:            
+            if self.RPTHT3PP_upper<=990:
+                cutList.append( " RPT_HT3PP <= %f"%self.RPTHT3PP_upper   )
+            if self.RPTHT5PP_upper<=990:
+                cutList.append( " RPT_HT5PP <= %f"%self.RPTHT5PP_upper   )
 
-            if regionName not in ["CRQ"]:
-                if self.R_H2PP_H5PP>=0:
-                    cutList.append( " R_H2PP_H5PP >= %f"%self.R_H2PP_H5PP   )
-                if self.R_H2PP_H3PP>=0:
-                    cutList.append( " R_H2PP_H3PP >= %f"%self.R_H2PP_H3PP   )
-                if self.R_H2PP_H3PP_upper<=990:
-                    cutList.append( " R_H2PP_H3PP <= %f"%self.R_H2PP_H3PP_upper   )
+        if regionName not in self.regionsWithoutMETOVERMEFFCutList:
+            if self.R_H2PP_H5PP>=0:
+                cutList.append( " R_H2PP_H5PP >= %f"%self.R_H2PP_H5PP   )
+            if self.R_H2PP_H3PP>=0:
+                cutList.append( " R_H2PP_H3PP >= %f"%self.R_H2PP_H3PP   )
+            if self.R_H2PP_H3PP_upper<=990:
+                cutList.append( " R_H2PP_H3PP <= %f"%self.R_H2PP_H3PP_upper   )
                     
-
-        if regionName in ["CRT"]:
-            if self.deltaQCD>=0:
-                cutList.append( " deltaQCD >= -0.5"   )
-
-
-        if regionName not in ["CRTZL"]:
+        if regionName not in self.regionsWithoutH2PPCutList:
             if self.H2PP>=0:
                 cutList.append( " H2PP >= %f"%self.H2PP   )
 
