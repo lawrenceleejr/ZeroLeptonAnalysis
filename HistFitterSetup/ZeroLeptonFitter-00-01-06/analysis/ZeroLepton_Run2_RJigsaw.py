@@ -137,8 +137,10 @@ INPUTDIR = inputConfig.background
 INPUTDIR_SIGNAL = inputConfig.signal
 INPUTDIR_DATA = inputConfig.data
 
-INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/"
-INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_pT50/"
+# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/"
+INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
+# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/"
+INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_nosys_pT50/"
 INPUTDIR_DATA = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
 
 
@@ -190,12 +192,12 @@ if myFitType == FitType.Exclusion:
     configMgr.doExclusion = True 
 configMgr.calculatorType = 2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType = 3   # 3=one-sided profile likelihood test statistic (LHC default)
-# configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
-configMgr.nPoints = 10       # number of values scanned of signal-strength for upper-limit determination of signal strength.
+configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
+#configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
 
 if configMgr.calculatorType == 2:
-    # configMgr.nPoints = 30 
-    configMgr.nPoints = 10 
+    configMgr.nPoints = 30 
+    #configMgr.nPoints = 10 
 
 #######################################################################------
 # Now we start to build the data model
@@ -219,7 +221,7 @@ gammaFiles = []
 if configMgr.readFromTree:
 
     # QCD
-    qcdFiles.append(os.path.join(INPUTDIR, "/BKG/QCD.root"))
+    qcdFiles.append( INPUTDIR+"/BKG/QCD.root")
 
     if zlFitterConfig.useFilteredNtuples:
         for i in range(channel.nJets, 7):
@@ -260,7 +262,7 @@ if configMgr.readFromTree:
             # zFiles.append(INPUTDIR+ "ZMadgraphPythia8.root")
         
         # gamma
-        # gammaFiles.append(INPUTDIR+ "/GammaJet.root")
+        gammaFiles.append(INPUTDIR+ "/GammaJet.root")
     
     #data
     # dataFiles.append(INPUTDIR_DATA, "/DataMain_Nov01.root")
@@ -280,7 +282,8 @@ if configMgr.readFromTree:
 # weights = ["eventWeight", "pileupWeight", "normWeight"]
 weights = ["weight"]
 # if zlFitterConfig.applyKappaCorrection:
-#     weights.append("gammaCorWeight(RunNumber)")
+#     # weights.append("gammaCorWeight(RunNumber)")
+#     weights.append("1./1.6")
 configMgr.weights = weights
 
 #######################################################################
@@ -330,7 +333,7 @@ dibosonSample.setStatConfig(zlFitterConfig.useStat)
 # QCD
 #--------------------------
 qcdSample = Sample(zlFitterConfig.qcdSampleName, kOrange+2)
-qcdSample.setTreeName("QCDdd_SRAll")
+qcdSample.setTreeName("QCD_SRAll")
 qcdSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName, 1., 0., 500.)
 qcdSample.setFileList(qcdFiles)
 qcdSample.setStatConfig(zlFitterConfig.useStat)
@@ -338,10 +341,14 @@ qcdSample.setStatConfig(zlFitterConfig.useStat)
 qcdWeight = 1
 nJets = channel.nJets
 if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList):
-    qcdWeight = zlFitterConfig.qcdWeightList[nJets-1]/ (zlFitterConfig.luminosity*1000)
-    qcdSample.addWeight(str(qcdWeight))
+    qcdWeight = zlFitterConfig.qcdWeightList[nJets-1]/ (zlFitterConfig.luminosity)
+    # qcdSample.addWeight(str(qcdWeight))
     for w in configMgr.weights: #ATT: there is a bug in HistFitter, I have to add the other weight by hand
         qcdSample.addWeight(w)
+
+if zlFitterConfig.doSetNormRegion:
+    if "CRQ" in zlFitterConfig.constrainingRegionsList:
+        qcdSample.setNormRegions([("CRQ", zlFitterConfig.binVar)])
 
 
 
@@ -365,6 +372,11 @@ topSample.setStatConfig(zlFitterConfig.useStat)
 if zlFitterConfig.doSetNormRegion:
     if "CRT" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
         topSample.setNormRegions([("CRT", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
+    if "CRTZL" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
+        topSample.setNormRegions([("CRTZL", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
+    #### LL
+    # if "CRT0L" in zlFitterConfig.constrainingRegionsList:
+    #     topSample.setNormRegions( [ ("CRT0L",zlFitterConfig.binVar)     ]  )
 if not zlFitterConfig.usePreComputedTopGeneratorSys:
     topSample.addSystematic(Systematic("generatorTop",configMgr.weights , "_aMcAtNloHerwigpp", "_aMcAtNloHerwigpp", "tree", "overallNormHistoSysOneSideSym"))
 
@@ -410,6 +422,9 @@ zSample.setNormFactor("mu_"+zlFitterConfig.zSampleName, 1., 0., 500.)
 zSample.setFileList(zFiles)
 zSample.setStatConfig(zlFitterConfig.useStat)
 if zlFitterConfig.doSetNormRegion:
+    if "CRZ" in zlFitterConfig.constrainingRegionsList:
+        zSample.setNormRegions([("CRZ", zlFitterConfig.binVar)])        
+        # zSample.normSampleRemap = "GAMMAjets"
     if "CRY" in zlFitterConfig.constrainingRegionsList:
         zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])        
         zSample.normSampleRemap = "GAMMAjets"
@@ -514,7 +529,7 @@ for point in allpoints:
 
     if "CRQ" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName, True, 1) # fix QCD
-    if "CRY" not in zlFitterConfig.constrainingRegionsList:
+    if "CRY" not in zlFitterConfig.constrainingRegionsList and "CRZ" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.zSampleName, True, 1)
     if "CRW" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.wSampleName, True, 1) 
@@ -704,12 +719,82 @@ for point in allpoints:
             myFitConfig.setValidationChannels(REGION)
 
 
+        
+        if zlFitterConfig.useQCDsample:
+            REGION.addSample(qcdSample)
+
+
+    ######################################################################
+    # Hadronic CRs - LL
+    ######################################################################      
+
+    for regionName in zlFitterConfig.allRegionsList():
+        treeBaseName = regionDict[regionName].suffixTreeName
+
+        # select only regions with leptons
+        if treeBaseName not in ["SRAll"]: 
+            continue
+        if "CR" not in regionName:
+            continue
+
+        #setup region
+        if not zlFitterConfig.useShapeFit:
+            REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
+        else:
+            REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
+            REGION.useOverflowBin = True
+            REGION.useUnderflowBin = False
+
+        #set the treename
+        for sam in REGION.sampleList:
+            sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
+            if "Data" in sam.treeName:
+                sam.setFileList(dataFiles)
+                pass
+
+        # extra weights
+        extraWeightList = regionDict[regionName].extraWeightList
+        for extraWeight in extraWeightList:
+            REGION.addWeight(extraWeight)
+            
+        #bTagging uncertainties        
+        if zlFitterConfig.useBTagUncertainties and "bTagWeight" in regionDict[regionName].extraWeightList:
+
+            btagSystematicList = []
+
+            bTagSystWeightsBUp = myreplace(REGION.weights, ["bTagWeightBUp"] , "bTagWeight")
+            bTagSystWeightsBDown = myreplace(REGION.weights, ["bTagWeightBDown"] , "bTagWeight")
+            btagSystematicList.append(Systematic("bTagSysB", REGION.weights  , bTagSystWeightsBUp, bTagSystWeightsBDown, "weight", "overallNormHistoSys"))
+
+            bTagSystWeightsCUp = myreplace(REGION.weights, ["bTagWeightCUp"] , "bTagWeight")
+            bTagSystWeightsCDown = myreplace(REGION.weights, ["bTagWeightCDown"] , "bTagWeight")
+            btagSystematicList.append(Systematic("bTagSysC", REGION.weights  , bTagSystWeightsCUp, bTagSystWeightsCDown, "weight", "overallNormHistoSys"))
+
+            bTagSystWeightsLUp = myreplace(REGION.weights, ["bTagWeightLUp"] , "bTagWeight")
+            bTagSystWeightsLDown = myreplace(REGION.weights, ["bTagWeightLDown"] , "bTagWeight")
+            btagSystematicList.append(Systematic("bTagSysL", REGION.weights  , bTagSystWeightsLUp, bTagSystWeightsLDown, "weight", "overallNormHistoSys"))
+
+            for sys in btagSystematicList:
+                sam.addSystematic(sys)
+
+        # set region type
+        if regionName in zlFitterConfig.constrainingRegionsList:                    
+            myFitConfig.setBkgConstrainChannels(REGION)
+        else:
+            myFitConfig.setValidationChannels(REGION)
+
+
+        if zlFitterConfig.useQCDsample:
+            REGION.addSample(qcdSample)
+
+
     ######################################################################
     # Regions for QCD
     ######################################################################
 
     for regionName in zlFitterConfig.allRegionsList():
 
+        print regionName
         #select region for QCD
         if not "RQ" in regionName:
             continue
@@ -722,7 +807,10 @@ for point in allpoints:
 
         # setup region
         if not zlFitterConfig.useShapeFit:
-            REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
+            try:
+                REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
+            except:
+                continue
         else:
             REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
             REGION.useOverflowBin = True

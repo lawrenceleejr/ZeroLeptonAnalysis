@@ -156,8 +156,8 @@ class ChannelConfig:
         self.jetPtThreshold = 50
 
         # jet pts - note the threshold above
-        self.jetpt1 = 200
-        self.jetpt2 = 50
+        self.jetpt1 = -1
+        self.jetpt2 = -1
         self.jetpt3 = -1
         self.jetpt4 = -1
         self.jetpt5 = -1
@@ -166,7 +166,7 @@ class ChannelConfig:
         self.jetpt8 = -1
 
         #met based variables
-        self.MET = 200
+        self.MET = -1
         self.MET_upper = -1
         self.METsig = -1
         self.MET_over_meffNj = -1.0
@@ -192,19 +192,45 @@ class ChannelConfig:
         self.ApUpperCut = -1.
 
 
+        ########################################
         #LL RJigsaw Variables
+
+        #Common Variables
+
+        self.MDR=-1
         self.deltaQCD=-1
+        self.H2PP=-1
+
+        #Squark Variables
         self.RPTHT3PP_upper=+999
+
+        self.R_H2PP_H3PP=-1
+        self.R_H2PP_H3PP_upper=+999
+
+        self.RPZ_HT3PP_upper=+999
+
+        self.R_ptj2_HT3PP=-1
+        self.cosP_upper = +999
+        self.HT3PP=-1
+
+        #Gluino Variables
+
         self.RPTHT5PP_upper=+999
-        self.RPT_upper=+999
         self.R_H2PP_H5PP=-1
         self.R_HT5PP_H5PP=-1
-        self.RPZ_upper=+999
+        self.RPZ_HT5PP_upper=+999
         self.minR_pTj2i_HT3PPi=-1
         self.maxR_H1PPi_H2PPi_upper=+999
         self.dangle_upper=+999
         self.HT5PP=-1
-        self.H2PP=-1
+
+
+        #Compressed Variables
+        self.RPTHT1CM_upper=+999
+        self.PIoHT1CM=-1
+        self.cosS=-1
+        self.HT1CM=-1
+
 
 
 
@@ -222,6 +248,11 @@ class ChannelConfig:
 
         #region with inverted metovermeff cuts
         self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2","VRQ4"]
+
+        self.regionsWithInvertedDangleCutList = ["CRTZL"]
+        self.regionsWithInvertedRPZCutList = ["CRTZL"]
+        # self.regionsWithInvertedDangleCutList = ["CRT"]
+        # self.regionsWithInvertedRPZCutList = ["CRT"]
 
         #region where the dphi cut is not applied
         self.regionsWithoutDPHICutList = ["CRWT","CRW","CRT","CRZ","VRZ","VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]
@@ -427,38 +458,94 @@ class ChannelConfig:
             
 
 
+        ###############################################################################
+        ###############################################################################
+        ###############################################################################
+
         # LL RJigsaw
         if regionName not in self.regionsWithoutMETOVERMEFFCutList:
+            if regionName not in  ["CRTZL","CRQ"]:
+                if self.deltaQCD>=0:
+                    cutList.append( " deltaQCD >= %f"%self.deltaQCD   )
+            else:
+                if self.deltaQCD>=0:
+                    # cutList.append( " deltaQCD <= %f"%self.deltaQCD   )
+                    cutList.append( " deltaQCD >= -0.5"  )
+
+            if regionName not in  ["CRQ"]:
+                if self.RPTHT3PP_upper<=990:
+                    cutList.append( " RPT_HT3PP <= %f"%self.RPTHT3PP_upper   )
+                if self.RPTHT5PP_upper<=990:
+                    cutList.append( " RPT_HT5PP <= %f"%self.RPTHT5PP_upper   )
+
+            if regionName not in ["CRQ"]:
+                if self.R_H2PP_H5PP>=0:
+                    cutList.append( " R_H2PP_H5PP >= %f"%self.R_H2PP_H5PP   )
+                if self.R_H2PP_H3PP>=0:
+                    cutList.append( " R_H2PP_H3PP >= %f"%self.R_H2PP_H3PP   )
+                if self.R_H2PP_H3PP_upper<=990:
+                    cutList.append( " R_H2PP_H3PP <= %f"%self.R_H2PP_H3PP_upper   )
+                    
+
+        if regionName in ["CRT"]:
             if self.deltaQCD>=0:
-                cutList.append( " deltaQCD >= %f"%self.deltaQCD   )
-            if self.RPT_upper<=990:
-                cutList.append( " RPT <= %f"%self.RPT_upper   )
+                cutList.append( " deltaQCD >= -0.5"   )
 
-        if self.RPTHT3PP_upper<=990:
-            cutList.append( " (pTCM / ( pTCM + HT3PP) ) <= %f"%self.RPTHT3PP_upper   )
-        if self.RPTHT5PP_upper<=990:
-            cutList.append( " (pTCM / ( pTCM + HT5PP) ) <= %f"%self.RPTHT5PP_upper   )
 
-        if regionName not in self.regionsWithoutMETOVERMEFFCutList:
-            if self.R_H2PP_H5PP>=0:
-                cutList.append( " R_H2PP_H5PP >= %f"%self.R_H2PP_H5PP   )
+        if regionName not in ["CRTZL"]:
+            if self.H2PP>=0:
+                cutList.append( " H2PP >= %f"%self.H2PP   )
 
         if self.R_HT5PP_H5PP>=0:
             cutList.append( " R_HT5PP_H5PP >= %f"%self.R_HT5PP_H5PP   )
-        if self.RPZ_upper<=990:
-            cutList.append( " RPZ <= %f"%self.RPZ_upper   )
         if self.minR_pTj2i_HT3PPi>=0:
             cutList.append( " minR_pTj2i_HT3PPi >= %f"%self.minR_pTj2i_HT3PPi   )
         if self.maxR_H1PPi_H2PPi_upper<=990:
             cutList.append( " maxR_H1PPi_H2PPi <= %f"%self.maxR_H1PPi_H2PPi_upper   )
+
+        if self.RPZ_HT3PP_upper<=990:
+            if regionName not in self.regionsWithInvertedRPZCutList:
+                cutList.append( " RPZ_HT3PP <= %f"%self.RPZ_HT3PP_upper   )
+            else:
+                cutList.append( " RPZ_HT3PP >= %f"%self.RPZ_HT3PP_upper   )
+
+        if self.RPZ_HT5PP_upper<=990:
+            if regionName not in self.regionsWithInvertedRPZCutList:
+                cutList.append( " RPZ_HT5PP <= %f"%self.RPZ_HT5PP_upper   )
+            else:
+                cutList.append( " RPZ_HT5PP >= %f"%self.RPZ_HT5PP_upper   )
+
+
+        if self.R_ptj2_HT3PP>=0:
+            cutList.append( " pT_jet2 / HT3PP >= %f"%self.R_ptj2_HT3PP   )
+
+        if self.cosP_upper<=990:
+            cutList.append( " abs(cosP) <= %f"%self.cosP_upper   )
+
         if self.dangle_upper<=990:
-            cutList.append( " dangle <= %f"%self.dangle_upper   )
+            if regionName not in self.regionsWithInvertedDangleCutList:
+                cutList.append( " dangle <= %f"%self.dangle_upper   )
+            else:
+                cutList.append( " dangle >= %f"%self.dangle_upper   )
+
+        if self.RPTHT1CM_upper<=990:
+            cutList.append(  " RPT_HT1CM <= %f "%self.RPTHT1CM_upper   )
+        if self.PIoHT1CM>=0:
+            cutList.append(  " PIoHT1CM >= %f "%self.PIoHT1CM   )
+        if self.cosS>=0:
+            cutList.append(  " cosS >= %f "%self.cosS   )
+
+
+
+        if self.HT1CM>=0:
+            cutList.append( " HT1CM >= %f"%self.HT1CM   )
         if self.HT5PP>=0:
             cutList.append( " HT5PP >= %f"%self.HT5PP   )
-        if self.H2PP>=0:
-            cutList.append( " H2PP >= %f"%self.H2PP   )
+        if self.HT3PP>=0:
+            cutList.append( " HT3PP >= %f"%self.HT3PP   )
 
-
+        if self.MDR>=0:
+            cutList.append(" MDR >= %f"%self.MDR)
 
 
 

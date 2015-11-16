@@ -112,6 +112,7 @@ def main():
         
         print channel
         hist_data.GetXaxis().SetBinLabel(counter,channel.replace("SR",""))
+        hist_data.GetXaxis().SetLabelSize(0.015)
 
         hist_data.SetBinContent(counter,nobs)        
         graph_data.SetPoint(counter-1,hist_data.GetBinCenter(counter),nobs)

@@ -246,8 +246,8 @@ def main(zlFitterConfig):
         #pull
         if not options.PrintOnly:
             pickleFilename = "yield_%s_all.pickle" % (anaName)
-            makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, doBlind)
-            #makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, True)#ATT Nikola
+            # makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, doBlind)
+            makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, True)#ATT Nikola
 
     makeSummaryPlots(options.PrintOnly)
 

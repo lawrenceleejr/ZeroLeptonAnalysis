@@ -90,6 +90,7 @@ def main():
         dMU[mu]['hist'] = ROOT.TH1F(hname,hname,nChannels,0,nChannels)
         dMU[mu]['histbis'] = ROOT.TH1F(hname,hname,nChannels,0,nChannels)
         dMU[mu]['hist'].GetYaxis().SetTitle('#mu(%s)' % zlFitterConfig.getSampleNiceName(mu))
+        dMU[mu]['hist'].GetXaxis().SetLabelSize(0.02)
         dMU[mu]['hist'].SetFillColor(zlFitterConfig.getSampleColor(mu))
         dMU[mu]['histbis'].SetLineColor(ROOT.kRed)
         dMU[mu]['histbis'].SetLineWidth(1)
@@ -152,12 +153,12 @@ if __name__ == "__main__":
         pad.SetBorderMode(0)
         pad.SetBorderSize(2)
         pad.SetTicks()
-        pad.SetTopMargin(0.)
-        pad.SetRightMargin(0.05)
+        pad.SetTopMargin(0.05)
+        pad.SetRightMargin(0.15)
         if ipad != len(dMU.keys()) - 1:
             pad.SetBottomMargin(0.)
         else:
-            pad.SetBottomMargin(0.15)
+            pad.SetBottomMargin(0.30)
         pad.SetLeftMargin(0.10)
         pad.SetFrameBorderMode(0)
         pad.SetFrameBorderMode(0)
@@ -174,7 +175,7 @@ if __name__ == "__main__":
             continue
 
         dMU[mu]['hist'].GetXaxis().SetLabelOffset(0.02)
-        dMU[mu]['hist'].GetXaxis().SetLabelSize(0.2)
+        dMU[mu]['hist'].GetXaxis().SetLabelSize(0.11)
         dMU[mu]['hist'].GetYaxis().SetTitleOffset(0.25)
         dMU[mu]['hist'].GetYaxis().SetTitleSize(0.15)
         dMU[mu]['hist'].GetYaxis().SetLabelSize(0.15)
@@ -194,7 +195,7 @@ if __name__ == "__main__":
             dMU[mu]['line'].Draw() 
     canvas.Print('summaryMU.eps')
     canvas.Print('summaryMU.png')
-    canvas.Print('summaryMU.pdf')
+    # canvas.Print('summaryMU.pdf')
 
     ## NP plot
     nChannels = len(finalChannelsDict.keys())
@@ -214,7 +215,7 @@ if __name__ == "__main__":
         pad.SetBorderSize(2)
         pad.SetTicks()
         pad.SetTopMargin(0.)
-        pad.SetRightMargin(0.05)
+        pad.SetRightMargin(0.15)
         if ipad != nChannels - 1:
             pad.SetBottomMargin(0.)
         else:
@@ -242,4 +243,4 @@ if __name__ == "__main__":
             graph.Draw("LF")
     canvas.Print('summaryNP.eps')
     canvas.Print('summaryNP.png')
-    canvas.Print('summaryNP.pdf')
+    # canvas.Print('summaryNP.pdf')

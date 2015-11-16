@@ -28,7 +28,7 @@ class ZLFitterConfig:
         self.blindSR = True
         self.blindCR = False
         self.blindVR = False
-        self.useSignalInBlindedData = False
+        self.useSignalInBlindedData = True
 
         #Run hypotests with also with up and down theor. uncert.? False: add uncert. as fit parameter
         self.fixSigXSec = True           
@@ -118,7 +118,7 @@ class ZLFitterConfig:
         # Luminosity
         ##############################################
 
-        self.luminosity = 1.893#unit is fb-1
+        self.luminosity = 2.674#unit is fb-1
         self.luminosityEr = 0.09 # style the run1 error
 
         ##############################################
@@ -141,8 +141,10 @@ class ZLFitterConfig:
         
         # list of constraining regions
         self.constrainingRegionsList = []
-        self.constrainingRegionsList += ["CRT","CRW"] 
-        #self.constrainingRegionsList += ["CRY"]
+        # self.constrainingRegionsList += ["CRT","CRW"] 
+        self.constrainingRegionsList += ["CRTZL","CRW","CRT"] 
+        # self.constrainingRegionsList += ["CRZ"]
+        self.constrainingRegionsList += ["CRY"]
         #self.constrainingRegionsList += ["CRQ"]
 
 
@@ -152,7 +154,7 @@ class ZLFitterConfig:
         self.validationRegionsList = []
 
         # #self.validationRegionsList+=["VRYf"]
-        # self.validationRegionsList += ["VRZ"]
+        self.validationRegionsList += ["VRZ"]
         # self.validationRegionsList +=["VRZf"]
 
         # self.validationRegionsList+=["VRWf","VRTf"]
