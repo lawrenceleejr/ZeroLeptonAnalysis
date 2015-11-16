@@ -19,7 +19,7 @@ class ZLFitterConfig:
     def __init__(self):
 
         self.log = Logger("ZLFitterConfig")
-        
+
         ##############################################
         # Fit config
         ##############################################
@@ -31,7 +31,7 @@ class ZLFitterConfig:
         self.useSignalInBlindedData = True
 
         #Run hypotests with also with up and down theor. uncert.? False: add uncert. as fit parameter
-        self.fixSigXSec = True           
+        self.fixSigXSec = True
 
         # only run nominal fit if fixSigXSec=True ?
         self.runOnlyNominalXSec = True
@@ -48,7 +48,7 @@ class ZLFitterConfig:
 
         # do shape fits
         self.useShapeFit = False
-        
+
         #parameters for shape fits
         self.minbin      = 1000
         self.maxbin      = 2000
@@ -58,7 +58,7 @@ class ZLFitterConfig:
         ##############################################
         # Sample Name
         ##############################################
-        
+
         self.qcdSampleName = "Multijets"
         self.gammaSampleName = "GAMMAjets"
         self.zSampleName = "Zjets"
@@ -66,14 +66,14 @@ class ZLFitterConfig:
         self.topSampleName = "Top"
         self.dibosonSampleName = "Diboson"
         self.sampleNameList = []
-        
+
         self.sampleNameList.append(self.qcdSampleName)
         self.sampleNameList.append(self.wSampleName)
         self.sampleNameList.append(self.zSampleName)
         self.sampleNameList.append(self.gammaSampleName)
         self.sampleNameList.append(self.topSampleName)
         self.sampleNameList.append(self.dibosonSampleName)
-        
+
         ##############################################
         # Systematics
         ##############################################
@@ -88,7 +88,7 @@ class ZLFitterConfig:
 
         # JES,JER,...
         self.useJETUncertainties = True
-        
+
         # MET
         self.useMETUncertainties = True
 
@@ -106,12 +106,12 @@ class ZLFitterConfig:
         ##############################################
         # Statistical error
         ##############################################
-        
+
         # use stat uncertainties on MC - globally
-        self.useStat = True              
-        
+        self.useStat = True
+
         # use MC stat per sample
-        self.useStatPerSample = False    
+        self.useStatPerSample = False
         self.statErrThreshold = 0.02
 
         ##############################################
@@ -129,7 +129,7 @@ class ZLFitterConfig:
         self.useDIBOSONsample = True
 
         # QCD weight- one number per jet multiplicity starting with the monojet channel
-        self.qcdWeightList = [ 0.00192226,0.00192226, 0.00172744, 0.00149138, 0.00129087, 0.00122661, 0.00122661, 0.00122661] 
+        self.qcdWeightList = [ 0.00192226,0.00192226, 0.00172744, 0.00149138, 0.00129087, 0.00122661, 0.00122661, 0.00122661]
 
         ##############################################
         # Signal and control region
@@ -138,11 +138,11 @@ class ZLFitterConfig:
         self.doSetNormRegion=True
 
         self.SRName = "SR"
-        
+
         # list of constraining regions
         self.constrainingRegionsList = []
-        # self.constrainingRegionsList += ["CRT","CRW"] 
-        self.constrainingRegionsList += ["CRTZL","CRW","CRT"] 
+        # self.constrainingRegionsList += ["CRT","CRW"]
+        self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
         #self.constrainingRegionsList += ["CRQ"]
@@ -154,7 +154,7 @@ class ZLFitterConfig:
         self.validationRegionsList = []
 
         # self.validationRegionsList+=["VRYf"]
-        self.validationRegionsList += ["VRZ"]
+#        self.validationRegionsList += ["VRZ"]
         # self.validationRegionsList +=["VRZf"]
 
         # self.validationRegionsList+=["VRWf","VRTf"]
@@ -162,9 +162,9 @@ class ZLFitterConfig:
         # self.validationRegionsList+=["VRWMf","VRTMf"]
         # ##self.validationRegionsList+=["VRWTplus","VRWTminus"]
         # ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
-        # ##self.validationRegionsList+=["VRT2L"] 
-        self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation     
-        self.validationRegionsList+=["VRQ1","VRQ2"]#,"VRQ3","VRQ4"] 
+        # ##self.validationRegionsList+=["VRT2L"]
+#        self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation
+#        self.validationRegionsList+=["VRQ1","VRQ2"]#,"VRQ3","VRQ4"]
 
         self.Print()
 
@@ -215,9 +215,9 @@ class ZLFitterConfig:
         self.log.info("useQCDsample  = %s" % self.useQCDsample )
         self.log.info("useDIBOSONsample  = %s" % self.useDIBOSONsample )
         self.log.info("SRName  = %s" % self.SRName )
-        self.log.info("ConstrainingRegionsList  = %s" %  self.constrainingRegionsList ) 
-        self.log.info("ValidationRegionsList  = %s" %  self.validationRegionsList ) 
-        self.log.info("allRegionsList  = %s" %  self.allRegionsList() ) 
+        self.log.info("ConstrainingRegionsList  = %s" %  self.constrainingRegionsList )
+        self.log.info("ValidationRegionsList  = %s" %  self.validationRegionsList )
+        self.log.info("allRegionsList  = %s" %  self.allRegionsList() )
 
         return
-        
+

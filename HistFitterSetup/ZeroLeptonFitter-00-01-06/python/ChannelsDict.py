@@ -1,4 +1,4 @@
-from ChannelConfig import * 
+from ChannelConfig import *
 
 ###########################################################
 # definition of the control regions
@@ -231,8 +231,8 @@ regionDict["VRZ"] = Region("VRZ", "CRZ", [], [])
 # anaVL=ChannelConfig(name="VLForKappa",regionDict=regionDict)
 # anaVL.nJets=2
 # anaVL.dPhi=0
-# anaVL.MET=200    
-# anaVL.MET_upper=300  
+# anaVL.MET=200
+# anaVL.MET_upper=300
 # anaVL.jetpt1 = 200.
 # #finalChannelsDict[anaVL.name]=anaVL
 
@@ -349,7 +349,7 @@ anaSRJigsawSR1Common.R_HT5PP_H5PP = 0.8
 anaSRJigsawSR1Common.RPZ_HT5PP_upper = 0.5
 anaSRJigsawSR1Common.minR_pTj2i_HT3PPi = 0.125
 anaSRJigsawSR1Common.maxR_H1PPi_H2PPi_upper = 0.95
-anaSRJigsawSR1Common.dangle_upper = 0.5 
+anaSRJigsawSR1Common.dangle_upper = 0.5
 anaSRJigsawSR1Common.nJets = 4
 
 anaSRJigsawSR1A = copy.deepcopy( anaSRJigsawSR1Common )
