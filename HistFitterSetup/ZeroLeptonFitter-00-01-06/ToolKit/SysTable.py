@@ -80,8 +80,8 @@ def makeNicePlots(result,workspace,SRname):
   h_NP.SetMinimum(-2)
   h_NP.SetMaximum(+2)
   h_NP.Draw("E")
-  canvas_NP.Print("NP_"+SRname+".png")
-  canvas_NP.Print("NP_"+SRname+".pdf")
+  # canvas_NP.Print("NP_"+SRname+".png")
+  canvas_NP.Print("plots/NP_"+SRname+".eps")
   fNP = open("NP_"+SRname+".pkl",'w')
   pickle.dump(infoForNPPlots, fNP)
   fNP.close()
@@ -102,10 +102,10 @@ def makeNicePlots(result,workspace,SRname):
   h_MU.SetMinimum(0)
   #h_MU.SetMaximum(+2.5)
   h_MU.Draw("E")
-  canvas_MU.Print("MU_"+SRname+".eps")
-  canvas_MU.Print("MU_"+SRname+".gif")
-  canvas_MU.Print("MU_"+SRname+".pdf")
-  canvas_MU.Print("MU_"+SRname+".png")
+  canvas_MU.Print("plots/MU_"+SRname+".eps")
+  # canvas_MU.Print("MU_"+SRname+".gif")
+  # canvas_MU.Print("MU_"+SRname+".pdf")
+  # canvas_MU.Print("MU_"+SRname+".png")
   fMU = open("MU_"+SRname+".pkl",'w')
   pickle.dump(infoForMUPlots, fMU)
   fMU.close()
@@ -181,10 +181,10 @@ def makeNicePlots(result,workspace,SRname):
   corrMatrix.Draw("colz");
   corrMatrix.Draw("textsame");
 
-  c_corr.SaveAs("corr_"+SRName+".gif");
-  c_corr.SaveAs("corr_"+SRName+".pdf");
-  c_corr.SaveAs("corr_"+SRName+".png");
-  c_corr.SaveAs("corr_"+SRName+".eps");
+  # c_corr.SaveAs("corr_"+SRName+".gif");
+  # c_corr.SaveAs("corr_"+SRName+".pdf");
+  # c_corr.SaveAs("corr_"+SRName+".png");
+  c_corr.SaveAs("plots/corr_"+SRName+".eps");
 
 
 

@@ -238,7 +238,7 @@ class ChannelConfig:
         self.regionsWithInvertedApCutList = []
         
         #region with fully inverted dphi cuts
-        self.regionsWithFullyInvertedDPHICutList = ["CRQ","VRQ1"]
+        self.regionsWithFullyInvertedDPHICutList = ["CRQ"]
 
         #region with intermediate dphi cuts
         self.regionsWithIntermediateDPHICutList = ["VRQ4","VRQ3"]
@@ -271,13 +271,14 @@ class ChannelConfig:
         # self.regionsWithInvertedDangleCutList = ["CRT"]
         # self.regionsWithInvertedRPZCutList = ["CRT"]
 
-        self.regionsWithLooserDeltaQCDCutList = ["CRTZL","CRQ","CRT"]
+        self.regionsWithLooserDeltaQCDCutList = ["CRTZL","CRT"]
         self.regionsWithoutDeltaQCDCutList = self.regionsWithoutMETOVERMEFFCutList
         self.regionsWithoutRPTCutList = self.regionsWithoutMETOVERMEFFCutList
         self.regionsWithoutH2PPCutList = ["H2PP"]
 
-        self.regionsWithInvertedDeltaQCDCutList = ["CRQ"]
-        self.regionsWithInvertedRPTCutList = ["CRQ"]
+        self.regionsWithInvertedDeltaQCDCutList = ["CRQ","VRQ1"]
+        self.regionsWithInvertedRPTCutList = []
+        # self.regionsWithInvertedRPTCutList = ["CRQ"]
 
         self.WithoutMeffCut = False
         self.WithoutMetOverMeffCut = False 
@@ -480,10 +481,10 @@ class ChannelConfig:
         if self.deltaQCD>=0:
             if regionName in self.regionsWithLooserDeltaQCDCutList:
                 cutList.append( " deltaQCD >= -0.5"  )
-            elif regionName in self.regionsWithoutDeltaQCDCutList:
-                pass
             elif regionName in self.regionsWithInvertedDeltaQCDCutList:
                 cutList.append( " deltaQCD <= %f"%self.deltaQCD )
+            elif regionName in self.regionsWithoutDeltaQCDCutList:
+                pass
             else:
                 cutList.append( " deltaQCD >= %f"%self.deltaQCD )
 
@@ -498,7 +499,15 @@ class ChannelConfig:
             if self.RPTHT5PP_upper<=990:
                 cutList.append( " RPT_HT5PP <= %f"%self.RPTHT5PP_upper   )
 
-        if regionName not in self.regionsWithoutMETOVERMEFFCutList:
+        if regionName in self.regionsWithInvertedMETOVERMEFFCutList:
+
+            if self.R_H2PP_H5PP>=0:
+                cutList.append( " R_H2PP_H5PP <= %f"%self.R_H2PP_H5PP   )
+            if self.R_H2PP_H3PP>=0:
+                cutList.append( " R_H2PP_H3PP <= %f"%self.R_H2PP_H3PP   )
+
+        elif regionName not in self.regionsWithoutMETOVERMEFFCutList:
+
             if self.R_H2PP_H5PP>=0:
                 cutList.append( " R_H2PP_H5PP >= %f"%self.R_H2PP_H5PP   )
             if self.R_H2PP_H3PP>=0:

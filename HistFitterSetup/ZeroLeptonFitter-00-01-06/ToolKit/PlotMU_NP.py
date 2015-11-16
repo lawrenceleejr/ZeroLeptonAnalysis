@@ -193,8 +193,8 @@ if __name__ == "__main__":
             dMU[mu]['line'].SetLineStyle(2) 
             dMU[mu]['line'].SetLineWidth(2) 
             dMU[mu]['line'].Draw() 
-    canvas.Print('summaryMU.eps')
-    canvas.Print('summaryMU.png')
+    canvas.Print('plots/summaryMU.eps')
+    # canvas.Print('summaryMU.png')
     # canvas.Print('summaryMU.pdf')
 
     ## NP plot
@@ -241,6 +241,6 @@ if __name__ == "__main__":
             hNP['graph_%s' % channel].append(copy.deepcopy(graph))
         for graph in hNP['graph_%s' % channel]:
             graph.Draw("LF")
-    canvas.Print('summaryNP.eps')
-    canvas.Print('summaryNP.png')
+    canvas.Print('plots/summaryNP.eps')
+    # canvas.Print('summaryNP.png')
     # canvas.Print('summaryNP.pdf')

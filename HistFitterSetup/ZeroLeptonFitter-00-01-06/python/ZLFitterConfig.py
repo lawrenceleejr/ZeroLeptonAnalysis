@@ -153,7 +153,7 @@ class ZLFitterConfig:
         # list of validation regions
         self.validationRegionsList = []
 
-        self.validationRegionsList+=["VRYf"]
+        # self.validationRegionsList+=["VRYf"]
         self.validationRegionsList += ["VRZ"]
         # self.validationRegionsList +=["VRZf"]
 
@@ -164,7 +164,7 @@ class ZLFitterConfig:
         # ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
         # ##self.validationRegionsList+=["VRT2L"] 
         self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation     
-        # self.validationRegionsList+=["VRQ1","VRQ2","VRQ3","VRQ4"] 
+        self.validationRegionsList+=["VRQ1","VRQ2"]#,"VRQ3","VRQ4"] 
 
         self.Print()
 

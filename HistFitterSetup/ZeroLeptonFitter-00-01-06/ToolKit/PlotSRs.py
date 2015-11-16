@@ -388,9 +388,9 @@ def main():
         graph_ratio.Draw("P")
 
 
-    canvas.Print("plotSR.gif")
-    canvas.Print("plotSR.pdf")   
-    canvas.Print("plotSR.eps")    
+    #canvas.Print("plotSR.gif")
+    #canvas.Print("plotSR.pdf")   
+    canvas.Print("plots/plotSR.eps")    
 
 if __name__ == "__main__":
 
