@@ -895,6 +895,7 @@ def MakeLines(config):
     dummy,description = treedescription()
     allpar = description.split(':')
 
+    allLines = []
     config.modeL=config.modeL.replace(" ","")
     if config.grid=="SM_SS_direct":
         allLines=[
