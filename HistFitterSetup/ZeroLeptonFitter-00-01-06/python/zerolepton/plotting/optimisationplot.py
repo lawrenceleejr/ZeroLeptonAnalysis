@@ -27,17 +27,17 @@ import scipy.ndimage
 import pprint
 
 def get_cmap(N):
-    '''Returns a function that maps each index in 0, 1, ... N-1 to a distinct 
+    '''Returns a function that maps each index in 0, 1, ... N-1 to a distinct
     RGB color.'''
     color_norm  = colors.Normalize(vmin=0, vmax=N-1)
-    scalar_map = cmx.ScalarMappable(norm=color_norm, cmap='hsv') 
+    scalar_map = cmx.ScalarMappable(norm=color_norm, cmap='hsv')
     def map_index_to_rgb_color(index):
         return scalar_map.to_rgba(index)
     return map_index_to_rgb_color
 
 class OptimisationPlot:
     # Class to make an optimisation plot. Give it an input dir and it will combine all the files.
-    
+
     def __init__(self, gridConfig, outputFilename, inputDir):
         self.gridConfig = gridConfig
         self.outputFilename = outputFilename
@@ -80,20 +80,23 @@ class OptimisationPlot:
             plt.figtext(0.05, 0.96, 'Cut: {0} = {1:.0f}'.format(cut.key, cut.value), color='grey', size='small')
             plt.figtext(0.05, 0.93, 'Plot written at {:%d/%m/%Y %H:%M}'.format(datetime.datetime.now()), color='grey', size='small')
 
+            xLabel = ""
+
             for f in self.contourData.contributingRegionsFiltered[cut]:
                 data = self.contourData.filteredData[f][cut]
                 label = filterLabel(f, self.gridConfig)
+
 
                 if not cut.isSimple:
                     plt.xticks( np.arange(len(data)), ["%d_%d" % (x[self.gridConfig.x], x[self.gridConfig.y]) for x in data.values()])
                     xLabel = "Grid point"
                 else:
                     var = self.gridConfig.x
-                    if cut.key == var: 
+                    if cut.key == var:
                         var = self.gridConfig.y
                     xLabel = var
                     plt.xticks( np.arange(len(data)), ["%d" % (x[var]) for x in data.values()])
-                
+
                 plt.plot( [x[self.contourData.combineOn] for x in data.values()], label=label )
 
                 plt.plot( [0.05 for x in data.values()], color='r', linestyle='--', linewidth=2)
@@ -155,7 +158,7 @@ class OptimisationPlot:
             rX = np.array([p[self.gridConfig.x] for p in self.contourData.data[f].values() if p[self.contourData.combineOn] is not None])
             rY = np.array([p[self.gridConfig.y] for p in self.contourData.data[f].values() if p[self.contourData.combineOn] is not None])
             rZ = np.array([p[self.contourData.combineOn] for p in self.contourData.data[f].values() if p[self.contourData.combineOn] is not None])
-            
+
             triang = matplotlib.tri.Triangulation(rX, rY)
             # we have exactly 1 contour, so set our tuple to that
             rCS = plt.tricontour(triang, rZ, v, linewidths=1.5, colors=(cmap(i),), linestyle='--', levels=[0.05])
@@ -179,7 +182,7 @@ class OptimisationPlot:
         ax.legend(lines, labels, loc='center left', bbox_to_anchor=(1, 0.5), shadow=False, fontsize='x-small')
 
         #legend = plt.legend(lines, labels, loc='upper right', shadow=False, fontsize='x-small')
-        
+
         if not os.path.exists(os.path.dirname(outputFilename)):
             print("Creating output dir {0}".format(os.path.dirname(outputFilename)))
             os.makedirs(os.path.dirname(outputFilename))
