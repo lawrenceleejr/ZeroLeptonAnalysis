@@ -27,15 +27,15 @@ Plotting
 
 ./ToolKit/optimisation/plotResult.py -o optimisation-GG_direct-20150917-184930
 
-It will automatically collect the results and plot values for the optimisation in a 1D plot. 
+It will automatically collect the results and plot values for the optimisation in a 1D plot.
 
 Missing packages when plotting?
 -------------------------------
 
 You have 3 options:
-1) Try to grab them from sft: 
-    $ lsetup "sft releases/pyanalysis/1.5_python2.7-d641e"
-    $ lsetup "sft releases/pytools/1.9_python2.7-5c0ab"
+1) Try to grab them from sft:
+        lsetup "sft releases/pyanalysis/1.5_python2.7-d641e"
+     	lsetup "sft releases/pytools/1.9_python2.7-5c0ab"
 2) Set up a virtual env (if 'virtualenv' is provided)
 3) Install in your per-user site dir
 
@@ -43,7 +43,7 @@ Set up a virtual env directory in $ZEROLEPTONFITTER: (if you're missing both pip
 
 virtualenv -p `which python` venv
 
-Then activate it using: 
+Then activate it using:
 
 source venv/bin/activate
 
@@ -62,7 +62,7 @@ You might get a prompt for the natgrid package. Download it from the shown locat
 Installing per-user site packages
 ---------------------------------
 
-If you're missing pip _and_ missing virtualenv (as is the case at e.g. Nikhef and NBI), the entire procedure can be bootstrapped. 
+If you're missing pip _and_ missing virtualenv (as is the case at e.g. Nikhef and NBI), the entire procedure can be bootstrapped.
 This will install packages in $HOME/.local (see "per-user site packages" in the python docs), which gets automatically picked up in your PYTHONPATH.
 
 - Setup Python from cvmfs:
@@ -79,7 +79,7 @@ This will install packages in $HOME/.local (see "per-user site packages" in the 
   $ $EDITOR `which pip`
   $ Replace the first line with "#!/usr/bin/env python2.7"
 
-Now you have a working pip. You can do two things: 
+Now you have a working pip. You can do two things:
 1) Install the packages in your own site-packages directory
 2) Install the packages in a virtual environment as above
 
