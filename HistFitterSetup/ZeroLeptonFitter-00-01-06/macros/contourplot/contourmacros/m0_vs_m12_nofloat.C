@@ -5,7 +5,7 @@
 #include "summary_harvest_tree_description.h"
 
 void initialize() {
-  gROOT->ProcessLine(".L summary_harvest_tree_description.h+");
+  //  gROOT->ProcessLine(".L summary_harvest_tree_description.h+");
   gSystem->Load("libSusyFitter.so");
 }
 
