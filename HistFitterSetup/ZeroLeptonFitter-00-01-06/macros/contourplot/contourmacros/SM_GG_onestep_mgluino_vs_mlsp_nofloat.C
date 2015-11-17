@@ -2,10 +2,12 @@
 #include "CombinationGlob.C"
 #include "TROOT.h"
 #include "TColor.h"
+#include "summary_harvest_tree_description.h"
+#include "DrawUtils.h"
 
 void initialize(TString fileName) {
-  gROOT->ProcessLine(".L summary_harvest_tree_description.h+");
-  gSystem->Load("libSusyFitter.so");
+  //  gROOT->ProcessLine(".L summary_harvest_tree_description.h+");
+  //  gSystem->Load("libSusyFitter.so");
 }
 
 
@@ -18,9 +20,9 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
 
    // get the harvested tree
    TTree* tree = harvesttree( textfile!=0 ? textfile : 0 );
-   if (tree==0) { 
+   if (tree==0) {
      cout << "Cannot open list file. Exit." << endl;
-     return;
+     return "";
    }
 
    // store histograms to output file
@@ -37,20 +39,21 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
    cout << "Histograms being written to : " << outfile << endl;
    TFile* output = TFile::Open(outfile,"RECREATE");
    output->cd();
-   
+
    TString correlation="mlsp:mgluino";
    TString fileName= textfile;
-   if (fileName.Contains("SS_onestep")) correlation="mlsp:msquark"; 
-   if (fileName.Contains("SS_twostep")) correlation="mlsp:msquark"; 
-   
-   
+   if (fileName.Contains("SS_onestep")) correlation="mlsp:msquark";
+   if (fileName.Contains("SS_twostep")) correlation="mlsp:msquark";
+
+   TH2D* hist = nullptr;
+
    if (inputHist!=NULL){
      TH2D *clonehclPmin2=(TH2D*)inputHist->Clone();
-     TH2D* hist = DrawUtil::triwsmooth( tree, "p1:"+correlation, "hclPmin2" , "Observed CLsplusb", "p1>=0 && p1<=1", clonehclPmin2 );}
+     hist = DrawUtil::triwsmooth( tree, "p1:"+correlation, "hclPmin2" , "Observed CLsplusb", "p1>=0 && p1<=1", clonehclPmin2 );}
      //TH2D* hist = DrawUtil::triwsmooth( tree, "p1:mlsp:mgluino", "hclPmin2" , "Observed CLsplusb", "p1>=0 && p1<=1", clonehclPmin2 );}
    else{
      //TH2D* hist = DrawUtil::triwsmooth( tree, "p1:mlsp:mgluino", "hclPmin2" , "Observed CLsplusb", "p1>=0 && p1<=1", inputHist);}
-     TH2D* hist = DrawUtil::triwsmooth( tree,"p1:"+correlation , "hclPmin2" , "Observed CLsplusb", "p1>=0 && p1<=1", inputHist);}
+     hist = DrawUtil::triwsmooth( tree,"p1:"+correlation , "hclPmin2" , "Observed CLsplusb", "p1>=0 && p1<=1", inputHist);}
 
 
    if (hist!=0) {
@@ -124,7 +127,7 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
    else{
      //TH2D* sigp1expclsf = DrawUtil::triwsmooth( tree, "StatTools::GetSigma( CLsexp ):mlsp:mgluino", "sigp1expclsf" , "One-sided significalce of expected CLs", "p1>0 && p1<=1", inputHist );}
      TH2D* sigp1expclsf = DrawUtil::triwsmooth( tree, "StatTools::GetSigma( CLsexp ):"+correlation, "sigp1expclsf" , "One-sided significalce of expected CLs", "p1>0 && p1<=1", inputHist );}
-   
+
 
    if (sigp1expclsf!=0) {
      sigp1expclsf->Write();
@@ -184,8 +187,8 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
 
   if (inputHist!=NULL){
      TH2D *clonexsec=(TH2D*)inputHist->Clone();
-     //TH2D* xsec = DrawUtil::triwsmooth( tree, "xsec:mlsp:mgluino", "xsec" , "xsec","1", clonexsec);}   
-     TH2D* xsec = DrawUtil::triwsmooth( tree, "xsec:"+correlation, "xsec" , "xsec","1", clonexsec);}   
+     //TH2D* xsec = DrawUtil::triwsmooth( tree, "xsec:mlsp:mgluino", "xsec" , "xsec","1", clonexsec);}
+     TH2D* xsec = DrawUtil::triwsmooth( tree, "xsec:"+correlation, "xsec" , "xsec","1", clonexsec);}
    else{
      //TH2D* xsec = DrawUtil::triwsmooth( tree, "xsec:mlsp:mgluino", "xsec" , "xsec","1", inputHist);}
      TH2D* xsec = DrawUtil::triwsmooth( tree, "xsec:"+correlation, "xsec" , "xsec","1", inputHist);}
@@ -197,7 +200,7 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
    } else {
      cout << "Cannot make smoothed significance histogram. Exit." << endl;
    }
-   
+
   if (inputHist!=NULL){
      TH2D *cloneexcludedXsec=(TH2D*)inputHist->Clone();
      //TH2D* excludedXsec = DrawUtil::triwsmooth( tree, "excludedXsec:mlsp:mgluino", "excludedXsec" , "excludedXsec","1", cloneexcludedXsec);}
@@ -220,7 +223,7 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
       TH2D* p0exp = DrawUtil::triwsmooth( tree, "StatTools::GetSigma(p0exp):"+correlation, "p0exp" , "One-sided significance p0 (exp)", "(p0exp>0 && p0exp<=1)", clonep0exp );}
    else{
       TH2D* p0exp = DrawUtil::triwsmooth( tree, "StatTools::GetSigma(p0exp):"+correlation, "p0exp" , "One-sided significance p0 (exp)", "(p0exp>0 && p0exp<=1)", inputHist );}
-   
+
    if (p0exp!=0) {
       p0exp->Smooth();
       p0exp->Write();
@@ -230,7 +233,7 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
    }
 
    cout<<"GG_onestep "<<endl;
-   
+
    if (inputHist!=NULL){
       TH2D *clonep0expraw=(TH2D*)inputHist->Clone();
       TH2D* p0expraw = DrawUtil::triwsmooth( tree, "p0exp:"+correlation, "p0expraw" , "One-sided significance p0 (exp)", "(p0exp>0 && p0exp<=1)", clonep0expraw );}
@@ -244,8 +247,8 @@ const char* SM_GG_onestep_mgluino_vs_mlsp_nofloat(const char* textfile = 0, TH2D
    } else {
       cout << "Cannot make smoothed significance histogram. Exit." << endl;
    }
-   
-   
+
+
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    output->Close();
