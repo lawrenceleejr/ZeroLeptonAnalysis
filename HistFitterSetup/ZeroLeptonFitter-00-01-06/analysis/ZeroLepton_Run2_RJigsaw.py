@@ -137,17 +137,11 @@ INPUTDIR = inputConfig.background
 INPUTDIR_SIGNAL = inputConfig.signal
 INPUTDIR_DATA = inputConfig.data
 
-<<<<<<< HEAD
+
 # INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
 INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Nov07_sys_pT50/"
 # INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/"
 # INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_nosys_pT50/"
-=======
-# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/"
-INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Nov07_sys_pT50/"
-#"/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
-# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/"
->>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
 INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Signal_sys_pT50/"
 INPUTDIR_DATA = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
 

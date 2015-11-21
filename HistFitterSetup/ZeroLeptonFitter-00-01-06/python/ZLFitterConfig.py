@@ -153,7 +153,7 @@ class ZLFitterConfig:
         # list of validation regions
         self.validationRegionsList = []
 
-<<<<<<< HEAD
+
         # # # self.validationRegionsList+=["VRYf"]
         # self.validationRegionsList += ["VRZ"]
         # # # self.validationRegionsList +=["VRZf"]
@@ -166,20 +166,7 @@ class ZLFitterConfig:
         # # # ##self.validationRegionsList+=["VRT2L"] 
         # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation     
         # self.validationRegionsList+=["VRQ1","VRQ2"]#,"VRQ3","VRQ4"] 
-=======
-        # self.validationRegionsList+=["VRYf"]
-#        self.validationRegionsList += ["VRZ"]
-        # self.validationRegionsList +=["VRZf"]
 
-        # self.validationRegionsList+=["VRWf","VRTf"]
-        # self.validationRegionsList+=["VRWM","VRTM"]
-        # self.validationRegionsList+=["VRWMf","VRTMf"]
-        # ##self.validationRegionsList+=["VRWTplus","VRWTminus"]
-        # ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
-        # ##self.validationRegionsList+=["VRT2L"]
-#        self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation
-#        self.validationRegionsList+=["VRQ1","VRQ2"]#,"VRQ3","VRQ4"]
->>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
 
         self.Print()
 
