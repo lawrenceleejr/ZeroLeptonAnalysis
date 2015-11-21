@@ -27,9 +27,9 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 
 ROOT.TH1.SetDefaultSumw2() 
 
-directory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/"
+directory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
 # datadirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
-signaldirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_pT50/"
+signaldirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_nosys_pT50/"
 # signaldirectory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Anum_pT50/"
 
 # directory = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Anum_pT50/"
@@ -64,8 +64,8 @@ commonPlots  = {
 
 
 commonPlots2D  = {
-("deltaQCD","R_H2PP_H5PP") : ([50, -1, 1] , [50, 0, 1]   ),      
-("deltaQCD","R_H2PP_H3PP") : ([50, -1, 1] , [50, 0, 1]   ),      
+("MET","Meff") : ([50, 0, 3000] , [50, 0, 3000]   ),      
+# ("deltaQCD","R_H2PP_H3PP") : ([50, -1, 1] , [50, 0, 1]   ),      
 }
 
 
@@ -104,6 +104,23 @@ limits = {}
 ## ZL Team
 
 
+
+
+cuts["SR2jCo"] = []
+cuts["SR2jCo"] += ["( MET > 200 )"]
+cuts["SR2jCo"] += ["( pT_jet1 > 300 )"]
+cuts["SR2jCo"] += ["( pT_jet2 > 50 )"]
+cuts["SR2jCo"] += ["( dphi > 0.4 )"]
+cuts["SR2jCo"] += ["( MET/sqrt(Meff-MET) > 15 )"]
+cuts["SR2jCo"] += ["( Meff > 1600 )"]
+
+limits["SR2jCo"] = []
+limits["SR2jCo"] +=  [(50,0,1000)]     #["( MET > 200 )"]
+limits["SR2jCo"] +=  [(50,0,1000)]     #["( pT_jet1 > 200 )"]
+limits["SR2jCo"] +=  [(50,0,1000)]     #["( pT_jet2 > 100 )"]
+limits["SR2jCo"] +=  [(50,0,4)]     #["( dphi > 0.4 )"]
+limits["SR2jCo"] +=  [(50,0,50)]     #["( MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4+pT_jet5) > 0.25 )"]
+limits["SR2jCo"] +=  [(50,0,4000)]     #["( Meff > 1600 )"]
 
 
 
@@ -457,6 +474,11 @@ cuts["SR2C"] += ["( H2PP > 750)"]
 limits["SR2C"] = deepcopy(limits["SR2"])
 
 
+cuts["SR2D"] = deepcopy(cuts["SR2"])
+cuts["SR2D"] += ["( HT5PP > 2000)"]
+cuts["SR2D"] += ["( H2PP > 850)"]
+limits["SR2D"] = deepcopy(limits["SR2"])
+
 
 cuts["SR3"] = []
 cuts["SR3"] += ["( deltaQCD > 0)"]
@@ -503,8 +525,8 @@ limits["SR3C"] = deepcopy(limits["SR3"])
 
 cuts["SR1Co"] = []
 cuts["SR1Co"] += ["( RPT_HT1CM < 0.15  )"]
-cuts["SR1Co"] += ["( PIoHT1CM > 0.7 )"]
-cuts["SR1Co"] += ["( cosS > 0.7 )"]
+cuts["SR1Co"] += ["( PIoHT1CM > 0.9 )"]
+cuts["SR1Co"] += ["( cosS > 0.8 )"]
 
 limits["SR1Co"] = []
 limits["SR1Co"] += [(50,0,1)]#["( RPT_HT5PP < 0.08  )"]
@@ -526,12 +548,14 @@ limits["SR1BCo"] = deepcopy(limits["SR1Co"])
 cuts["SR2Co"] = []
 cuts["SR2Co"] += ["( RPT_HT1CM < 0.15  )"]
 cuts["SR2Co"] += ["( PIoHT1CM > 0.8 )"]
+cuts["SR2Co"] += ["( MS > 100 )"]
 cuts["SR2Co"] += ["( cosS > 0.8 )"]
 
 limits["SR2Co"] = []
 limits["SR2Co"] += [(50,0,1)]#["( RPT_HT5PP < 0.08  )"]
 limits["SR2Co"] += [(50,0,1)]#["( R_H2PP_H5PP > 0.35)"]
 limits["SR2Co"] += [(50,-1,1)]#["( R_HT5PP_H5PP > 0.8)"]
+limits["SR2Co"] += [(50,0,1000)]# MS
 limits["SR2Co"] += [(50,0,2000)]#["( RPZ_HT5PP < 0.5)"]
 
 
@@ -549,13 +573,15 @@ limits["SR2BCo"] = deepcopy(limits["SR2Co"])
 
 cuts["SR3Co"] = []
 cuts["SR3Co"] += ["( RPT_HT1CM < 0.15  )"]
-cuts["SR3Co"] += ["( PIoHT1CM > 0.9 )"]
-cuts["SR3Co"] += ["( cosS > 0.85 )"]
+cuts["SR3Co"] += ["( PIoHT1CM > 0.7 )"]
+cuts["SR3Co"] += ["( MS > 200 )"]
+cuts["SR3Co"] += ["( cosS > 0.8 )"]
 
 limits["SR3Co"] = []
 limits["SR3Co"] += [(50,0,1)]#["( RPT_HT5PP < 0.08  )"]
 limits["SR3Co"] += [(50,0,1)]#["( R_H2PP_H5PP > 0.35)"]
 limits["SR3Co"] += [(50,-1,1)]#["( R_HT5PP_H5PP > 0.8)"]
+limits["SR3Co"] += [(50,0,1000)]# MS
 limits["SR3Co"] += [(50,0,2000)]#["( RPZ_HT5PP < 0.5)"]
 
 cuts["SR3ACo"] = deepcopy(cuts["SR3Co"])
@@ -566,6 +592,30 @@ cuts["SR3BCo"] = deepcopy(cuts["SR3Co"])
 cuts["SR3BCo"] += ["( HT1CM > 900)"]
 limits["SR3BCo"] = deepcopy(limits["SR3Co"])
 
+
+
+
+
+cuts["SR4Co"] = []
+cuts["SR4Co"] += ["( RPT_HT1CM < 0.15  )"]
+cuts["SR4Co"] += ["( PIoHT1CM > 0.6 )"]
+cuts["SR4Co"] += ["( MS > 400 )"]
+cuts["SR4Co"] += ["( cosS > 0.8 )"]
+
+limits["SR4Co"] = []
+limits["SR4Co"] += [(50,0,1)]#["( RPT_HT5PP < 0.08  )"]
+limits["SR4Co"] += [(50,0,1)]#["( R_H2PP_H5PP > 0.35)"]
+limits["SR4Co"] += [(50,-1,1)]#["( R_HT5PP_H5PP > 0.8)"]
+limits["SR4Co"] += [(50,0,1000)]# MS
+limits["SR4Co"] += [(50,0,2000)]#["( RPZ_HT5PP < 0.5)"]
+
+cuts["SR4ACo"] = deepcopy(cuts["SR4Co"])
+cuts["SR4ACo"] += ["( HT1CM > 700)"]
+limits["SR4ACo"] = deepcopy(limits["SR4Co"])
+
+cuts["SR4BCo"] = deepcopy(cuts["SR4Co"])
+cuts["SR4BCo"] += ["( HT1CM > 900)"]
+limits["SR4BCo"] = deepcopy(limits["SR4Co"])
 
 
 
@@ -607,6 +657,7 @@ limits["CR2SqQCD"].pop(1)
 regions = {
 	# "no_cut": "(1)",
 
+	"SR2jCo": "*".join( ["(%s)"%mycut for mycut in cuts["SR2jCo"] ]),
 	"SR2jl": "*".join( ["(%s)"%mycut for mycut in cuts["SR2jl"] ]),
 	"SR2jm": "*".join( ["(%s)"%mycut for mycut in cuts["SR2jm"] ]),
 	"SR2jt": "*".join( ["(%s)"%mycut for mycut in cuts["SR2jt"] ]),
@@ -628,6 +679,7 @@ regions = {
 	"SR2A": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR2A"] ]),
 	"SR2B": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR2B"] ]),
 	"SR2C": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR2C"] ]),
+	"SR2D": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR2D"] ]),
 	"SR3A": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR3A"] ]),
 	"SR3B": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR3B"] ]),
 	"SR3C": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR3C"] ]),
@@ -639,6 +691,8 @@ regions = {
 	"SR2BCo": baselineMET+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR2BCo"] ]),
 	"SR3ACo": baselineMET+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR3ACo"] ]),
 	"SR3BCo": baselineMET+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR3BCo"] ]),
+	"SR4ACo": baselineMET+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR4ACo"] ]),
+	"SR4BCo": baselineMET+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["SR4BCo"] ]),
 
 
 	"CR1QCD": baseline+"*"+"*".join( ["(%s)"%mycut for mycut in cuts["CR1QCD"] ]),
@@ -698,17 +752,17 @@ for SH_name, mysamplehandler in my_SHs.iteritems():
 					)
 
 
-		if "QCD" in region:
+		# if "QCD" in region:
 
-			for varname,varlimits in commonPlots2D.items():
-				# print varname
-				job.algsAdd(
-	            	ROOT.MD.AlgHist(
-	            		ROOT.TH2F("%s_%s_%s"%(varname[0], varname[1], region), "%s_%s_%s"%(varname[0], varname[1], region), varlimits[0][0], varlimits[0][1], varlimits[0][2], varlimits[1][0], varlimits[1][1], varlimits[1][2]),
-						varname[0], varname[1],
-						"weight*%s"%regions[region]
-						)
+		for varname,varlimits in commonPlots2D.items():
+			# print varname
+			job.algsAdd(
+            	ROOT.MD.AlgHist(
+            		ROOT.TH2F("%s_%s_%s"%(varname[0], varname[1], region), "%s_%s_%s"%(varname[0], varname[1], region), varlimits[0][0], varlimits[0][1], varlimits[0][2], varlimits[1][0], varlimits[1][1], varlimits[1][2]),
+					varname[0], varname[1],
+					"weight*%s"%regions[region]
 					)
+				)
 
 	driver = ROOT.EL.DirectDriver()
 	if os.path.exists( "output/"+SH_name ):

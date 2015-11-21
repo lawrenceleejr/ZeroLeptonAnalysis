@@ -57,7 +57,7 @@ parser.add_argument("--point", default=[], type=str, action='append')
 parser.add_argument("--pointsPerCommand", default=10, type=int)
 parser.add_argument("--entire-grid", default=False, action="store_true", help="use entire grid")
 parser.add_argument("--outputSuffix", default="", type=str, help="output filename suffix. A timestamp is used by default.")
-parser.add_argument('--mode', choices=['discovery', 'exclusion', 'exclusionUL', 'all'], default='discovery', help="Run discovery, exclusion or exclusion ULs to optimise")
+parser.add_argument('--mode', choices=['discovery', 'exclusion', 'exclusionUL', 'all'], default='exclusion', help="Run discovery, exclusion or exclusion ULs to optimise")
 
 args = parser.parse_args()
 modeMap = {"discovery": "-z", "exclusion" : "-p", "exclusionUL" : "-p -l", "all" : "-z -p -l"}
@@ -197,6 +197,23 @@ SignalRegions = [
 "SRJigsawSR3A",
 "SRJigsawSR3B",
 "SRJigsawSR3C",
+
+"SRJigsawSR1ASq",
+"SRJigsawSR1BSq",
+"SRJigsawSR2ASq",
+"SRJigsawSR2BSq",
+"SRJigsawSR3ASq",
+"SRJigsawSR3BSq",
+
+"SRJigsawSR1ACo",
+"SRJigsawSR1BCo",
+"SRJigsawSR2ACo",
+"SRJigsawSR2BCo",
+"SRJigsawSR3ACo",
+"SRJigsawSR3BCo",
+"SRJigsawSR4ACo",
+"SRJigsawSR4BCo",
+
 ]
 
 
@@ -208,10 +225,13 @@ for SignalRegion in SignalRegions:
 
         # ROOT5 has a tendency to crash if we don't run the -t step seperately, so do that
         myCmds = []
-        for HFargs in ("-t", "-w  -z -f {0}".format(modeMap[mode]) ):
-            myCmds.append('HistFitter.py -p {0} -d -F excl -g grid{1},{2} -r {3} {5}/analysis/ZeroLepton_Run2_RJigsaw.py'.format(HFargs, grid, ",".join(subsetPoints), SignalRegion,0, os.getenv('ZEROLEPTONFITTER')))
+        # for HFargs in ("-t", "-w  -z -f {0}".format(modeMap[mode]) ):
+        #     myCmds.append('HistFitter.py -p {0} -d -F excl -g grid{1},{2} -r {3} {5}/analysis/ZeroLepton_Run2_RJigsaw.py'.format(HFargs, grid, ",".join(subsetPoints), SignalRegion,0, os.getenv('ZEROLEPTONFITTER')))
 
-        cmd = " && ".join(myCmds)
+        # cmd = " && ".join(myCmds)
+
+
+        cmd = "HistFitter.py -D allPlots -t -w -f -z -F excl -g grid{0},{1}  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( grid, ",".join(subsetPoints) , SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
 
         # NOTE: I need to become clever enough to recycle histograms for the final discriminating variable.
         # print cmd

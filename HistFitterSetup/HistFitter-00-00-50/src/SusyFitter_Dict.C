@@ -1689,7 +1689,7 @@ namespace {
 "../include",
 "/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/root/6.02.12-x86_64-slc6-gcc48-opt/include",
 "/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/root/6.02.12-x86_64-slc6-gcc48-opt/include",
-"/afs/cern.ch/work/l/leejr/ZeroLeptonAnalysis/HistFitterSetup2/HistFitter-00-00-50/src/",
+"/afs/cern.ch/work/l/leejr/public/ZeroLeptonAnalysis/HistFitterSetup/HistFitter-00-00-50/src/",
 0
     };
     static const char* fwdDeclCode = 

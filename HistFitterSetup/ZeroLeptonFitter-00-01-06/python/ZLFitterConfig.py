@@ -118,14 +118,14 @@ class ZLFitterConfig:
         # Luminosity
         ##############################################
 
-        self.luminosity = 2.674#unit is fb-1
+        self.luminosity = 3.24 # 2.674#unit is fb-1
         self.luminosityEr = 0.09 # style the run1 error
 
         ##############################################
         # samples
         ##############################################
 
-        self.useQCDsample =False
+        self.useQCDsample =True
         self.useDIBOSONsample = True
 
         # QCD weight- one number per jet multiplicity starting with the monojet channel
@@ -145,7 +145,7 @@ class ZLFitterConfig:
         self.constrainingRegionsList += ["CRTZL","CRW","CRT"] 
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
-        #self.constrainingRegionsList += ["CRQ"]
+        # self.constrainingRegionsList += ["CRQ"]
 
 
 
@@ -153,18 +153,18 @@ class ZLFitterConfig:
         # list of validation regions
         self.validationRegionsList = []
 
-        # self.validationRegionsList+=["VRYf"]
-        self.validationRegionsList += ["VRZ"]
-        # self.validationRegionsList +=["VRZf"]
+        # # # self.validationRegionsList+=["VRYf"]
+        # self.validationRegionsList += ["VRZ"]
+        # # # self.validationRegionsList +=["VRZf"]
 
-        # self.validationRegionsList+=["VRWf","VRTf"]
-        # self.validationRegionsList+=["VRWM","VRTM"]
-        # self.validationRegionsList+=["VRWMf","VRTMf"]
-        # ##self.validationRegionsList+=["VRWTplus","VRWTminus"]
-        # ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
-        # ##self.validationRegionsList+=["VRT2L"] 
-        self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation     
-        self.validationRegionsList+=["VRQ1","VRQ2"]#,"VRQ3","VRQ4"] 
+        # # # self.validationRegionsList+=["VRWf","VRTf"]
+        # # # self.validationRegionsList+=["VRWM","VRTM"]
+        # # # self.validationRegionsList+=["VRWMf","VRTMf"]
+        # # # ##self.validationRegionsList+=["VRWTplus","VRWTminus"]
+        # # # ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
+        # # # ##self.validationRegionsList+=["VRT2L"] 
+        # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation     
+        # self.validationRegionsList+=["VRQ1","VRQ2"]#,"VRQ3","VRQ4"] 
 
         self.Print()
 

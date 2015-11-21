@@ -22,7 +22,7 @@ from pprint import pprint
 from zerolepton.colors import colors
 from zerolepton.grids.config import GridConfig
 
-from zerolepton.plotting.optimisationplot import OptimisationPlot
+# from zerolepton.plotting.optimisationplot import OptimisationPlot
 
 from zerolepton.contours.data import ContourData, OptimisationCut
 from zerolepton.contours.utils import getFileList, createPlainTextListFileFromJSON
@@ -179,12 +179,25 @@ regions = [
 
 ]
 
+
+
+
 filesByRegion = groupFilesByRegion(files, regions)
+
+# print "*"*1000
+# print filesByRegion
+# print outputDir
+# print "*"*1000
+
 mergeFilesByRegion(filesByRegion, grid, outputDir)
 
 createContours(gridConfig, regions, outputDir)
 
 plotFilename = os.path.join(dirname, "plots", os.path.splitext(os.path.basename(filename))[0] + ".pdf")
+
+
+
+
 optimisationPlot = OptimisationPlot(gridConfig, plotFilename, outputDir)
 optimisationPlot.write()
 

@@ -137,10 +137,11 @@ INPUTDIR = inputConfig.background
 INPUTDIR_SIGNAL = inputConfig.signal
 INPUTDIR_DATA = inputConfig.data
 
-# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Oct17_pT50/"
-INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
+# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
+INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Nov07_sys_pT50/"
 # INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/"
-INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_nosys_pT50/"
+# INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_nosys_pT50/"
+INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Signal_sys_pT50/"
 INPUTDIR_DATA = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
 
 
@@ -258,6 +259,7 @@ if configMgr.readFromTree:
 
         # Z
         zFiles.append(INPUTDIR+ "/BKG/Zjets.root")
+        # zFiles.append(INPUTDIR+ "/Zjets.root")
         # if not zlFitterConfig.usePreComputedZGeneratorSys:
             # zFiles.append(INPUTDIR+ "ZMadgraphPythia8.root")
         
@@ -266,7 +268,9 @@ if configMgr.readFromTree:
     
     #data
     # dataFiles.append(INPUTDIR_DATA, "/DataMain_Nov01.root")
-    dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
+    # dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
+    dataFiles.append(INPUTDIR_DATA+ "/Data_Nov11.root")
+
 
     log.info("Using the following inputs:")
     log.info("topFiles = %s" % topFiles) 
