@@ -1,3 +1,5 @@
+#ifndef __HARVEST_TREE__
+#define __HARVEST_TREE__
 
 #include "TTree.h"
 #include "TFile.h"
@@ -10,7 +12,7 @@ TTree* harvesttree(const char* textfile=0) {
   //const char* description = "p0:p1:CLs:mode:nexp:seed:CLsexp:fID:sigma0:sigma1:clsu1s:clsd1s:clsu2s:clsd2s:p0exp:p0u1s:p0d1s:p0u2s:p0d2s:upperLimit:upperLimitEstimatedError:expectedUpperLimit:expectedUpperLimitPlus1Sig:expectedUpperLimitPlus2Sig:expectedUpperLimitMinus1Sig:expectedUpperLimitMinus2Sig:xsec:excludedXsec:covqual:dodgycov:failedcov:failedfit:failedp0:failedstatus:fitstatus:mgluino:mlsp:nofit";
   const char* description = "p0:p1:CLs:mode:nexp:seed:CLsexp:fID:sigma0:sigma1:clsu1s:clsd1s:clsu2s:clsd2s:p0exp:p0u1s:p0d1s:p0u2s:p0d2s:upperLimit:upperLimitEstimatedError:expectedUpperLimit:expectedUpperLimitPlus1Sig:expectedUpperLimitPlus2Sig:expectedUpperLimitMinus1Sig:expectedUpperLimitMinus2Sig:xsec:excludedXsec:covqual:dodgycov:failedcov:failedfit:failedp0:failedstatus:fitstatus:m0:m12:nofit";
   //const char* description = "p0:p1:CLs:mode:nexp:seed:CLsexp:fID:sigma0:sigma1:clsu1s:clsd1s:clsu2s:clsd2s:p0exp:p0u1s:p0d1s:p0u2s:p0d2s:upperLimit:upperLimitEstimatedError:expectedUpperLimit:expectedUpperLimitPlus1Sig:expectedUpperLimitPlus2Sig:expectedUpperLimitMinus1Sig:expectedUpperLimitMinus2Sig:xsec:excludedXsec:covqual:dodgycov:failedcov:failedfit:failedp0:failedstatus:fitstatus:mchargino:mgluino:mlsp:nofit";
-  
+
   TTree* tree = new TTree("tree","data from ascii file");
   Long64_t nlines(0);
   if (textfile!=0) {
@@ -44,3 +46,4 @@ void summary_harvest_tree_description() {
   gDirectory->Add(tree);
 }
 
+#endif

@@ -21,7 +21,7 @@ from collections import namedtuple
 from collections import OrderedDict
 
 from functools import partial
-from multiprocessing.dummy import Pool as ThreadPool 
+from multiprocessing.dummy import Pool as ThreadPool
 
 def buildCutString(cuts):
     # helper to ensure we alwasy have the same order. bit ugly.
@@ -117,8 +117,12 @@ def groupFilesByRegion(files, regions):
     filesByRegion = {}
     for r in regions:
         filesByRegion[r] = []
+<<<<<<< HEAD
         print r
    
+=======
+
+>>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
     os.system('setterm -cursor off')
 
     # inverted loops - this is faster
@@ -127,9 +131,10 @@ def groupFilesByRegion(files, regions):
     for f in files:
         i += 1
         drawProgressBar(i, N, 30)
-        
+
         # we are only interested in comparing stuff that actually is a hypotest
         if not f.endswith(".root"): continue
+<<<<<<< HEAD
         if not "hypotest" in f and not "upperlimit" in f: 
             print f
             print "not a hypo apparently..."
@@ -137,6 +142,10 @@ def groupFilesByRegion(files, regions):
 
 
         # print "I got something!"
+=======
+        if not "hypotest" in f and not "upperlimit" in f: continue
+
+>>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
         for r in regions:
             if r in f:
                 filesByRegion[r].append(f)
@@ -169,8 +178,13 @@ def groupFilesByRegion(files, regions):
 
 
 def init_worker():
+<<<<<<< HEAD
     return
 #signal.signal(signal.SIGINT, signal.SIG_IGN)
+=======
+#    signal.signal(signal.SIGINT, signal.SIG_IGN)
+    pass
+>>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
 
 def mergeFilesByRegion(filesByRegion, grid, outputDir):
     # Merge a set of files by region into the specified dir
@@ -179,19 +193,19 @@ def mergeFilesByRegion(filesByRegion, grid, outputDir):
     filesToWrite = {}
     for r in filesByRegion:
         for key in filesByRegion[r]:
-            if filesByRegion[r][key] == []: 
+            if filesByRegion[r][key] == []:
                 if key == "Nominal":
                     print("WARNING: no input files for region {0} key {1}".format(r, key))
                 continue
-            
+
             filePrefix = "%s_%s" % (r, grid)
             filename = os.path.join(outputDir, "%s.root" % (filePrefix) )
             if os.path.exists(filename):
                 print("Output file {0} exists - skipping".format(os.path.basename(filename)))
                 continue
-            
+
             filesToWrite[filename] = {"region" : r, "files" : filesByRegion[r][key]}
-            N += 1 
+            N += 1
 
     # Got anything?
     if filesToWrite == {}:
@@ -202,13 +216,13 @@ def mergeFilesByRegion(filesByRegion, grid, outputDir):
     for filename in filesToWrite:
         N -= 1
         args.append((filename, filesToWrite[filename]['files'], False, filesToWrite[filename]['region'], N,))
-    
-    pool = ThreadPool(8, init_worker) 
+
+    pool = ThreadPool(8, init_worker)
     try:
         #results = pool.map(mergeFiles, args)
         results = pool.imap_unordered(mergeFiles, args)
-        pool.close() 
-        pool.join() 
+        pool.close()
+        pool.join()
     except KeyboardInterrupt:
         print "Caught KeyboardInterrupt, terminating workers"
         pool.terminate()
@@ -222,7 +236,7 @@ def mergeFilesByRegion(filesByRegion, grid, outputDir):
         for key in filesByRegion[r]:
             if filesByRegion[r][key] == []: continue
 
-            N -= 1 
+            N -= 1
 
             # Merge the files in chunks of 50, and then merge these chunks
 
@@ -236,7 +250,7 @@ def mergeFilesByRegion(filesByRegion, grid, outputDir):
                 continue
 
             mergeFiles(filename, filesByRegion[r][key])
-            
+
             #fileMerger = ROOT.TFileMerger()
             #fileMerger.OutputFile(filename)
             #for f in filesByRegion[r][key]:
@@ -288,23 +302,23 @@ def _mergeFiles(outputFilename, inputFilenames, ignoreDuplicates=False, label=""
     for n in inputFilenames:
         if not os.path.exists(n) or os.path.abspath(outputFilename) == os.path.abspath(n):
             inputFilenames.remove(n)
-    
+
     # Anything left?
     if len(inputFilenames) == 0: return
 
     # Start with a copy of the first file
     firstFile = inputFilenames.pop()
     shutil.copyfile(firstFile, outputFilename)
-    
+
     # Nothing left - exit
     if len(inputFilenames) == 0:
         print("=> Created file for {0}; {1} files remaining".format(label, remaining))
         return
-    
+
     # We now have the output file that we have to update
     fOut = ROOT.TFile(outputFilename, "UPDATE")
     processedKeys = []
-    if ignoreDuplicates: 
+    if ignoreDuplicates:
         processedKeys = f.GetListOfKeys() # the keys of the first file are the ones we processed
     for n in inputFilenames:
         f = ROOT.TFile(n, "READ")
@@ -317,7 +331,7 @@ def _mergeFiles(outputFilename, inputFilenames, ignoreDuplicates=False, label=""
         for k in keys:
             name = k.GetName()
             if "Process" in name: continue # boring
-            if ignoreDuplicates and name in processedKeys: 
+            if ignoreDuplicates and name in processedKeys:
                 print "mergeFiles(): {0}: skipping duplicate {1}".format(n, name)
                 continue
             objects.append(f.Get(name))
@@ -326,7 +340,7 @@ def _mergeFiles(outputFilename, inputFilenames, ignoreDuplicates=False, label=""
         fOut.cd()
         for obj in objects:
             obj.Write()
-            if ignoreDuplicates: 
+            if ignoreDuplicates:
                 processedKeys.append(obj.GetName())
             del obj
 
@@ -361,7 +375,7 @@ def createListFileForRegion(gridConfig, region, outputDir):
         fmt = gridConfig.format_discovery
 
     listMaker = ListMaker(inputFilename=filename, interpretation=gridConfig.interpretation, format=fmt, cutStr=gridConfig.cutStr, outputDir=outputDir)
-    listMaker.automaticRejection = False 
+    listMaker.automaticRejection = False
     if gridConfig.useDiscovery:
         listMaker.prefix = "discovery"
 

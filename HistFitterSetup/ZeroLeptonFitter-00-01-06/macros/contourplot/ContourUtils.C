@@ -65,21 +65,21 @@ void SetBorders( TH2 &hist, Double_t val=0 ) {
 
 
 TH2F* FixAndSetBorders( const TH2& hist, const char* name=0, const char* title=0, Double_t val=0 ) {
-    TH2F* hist0 = hist.Clone(); // histogram we can modify
+  TH2F* hist0 = static_cast<TH2F*>(hist.Clone()); // histogram we can modify
 
     MirrorBorders( *hist0 );    // mirror values of border bins into overflow bins
 
-    TH2F* hist1 = AddBorders( *hist0, "hist1", "hist1" );   
+    TH2F* hist1 = AddBorders( *hist0, "hist1", "hist1" );
     // add new border of bins around original histogram,
     // ... so 'overflow' bins become normal bins
-    SetBorders( *hist1, val );                              
+    SetBorders( *hist1, val );
     // set overflow bins to value 1
 
-    TH2F* histX = AddBorders( *hist1, "histX", "histX" );   
+    TH2F* histX = AddBorders( *hist1, "histX", "histX" );
     // add new border of bins around original histogram,
     // ... so 'overflow' bins become normal bins
 
-    TH2F* hist3 = histX->Clone();
+    TH2F* hist3 = static_cast<TH2F*>(histX->Clone());
     hist3->SetName( name!=0 ? name : "hist3" );
     hist3->SetTitle( title!=0 ? title : "hist3" );
 
@@ -90,7 +90,7 @@ TH2F* FixAndSetBorders( const TH2& hist, const char* name=0, const char* title=0
 
 void DrawContourSameColor( TLegend *leg, TH2F* hist, Int_t nsigma, TString color, Bool_t second=kFALSE, TH2F* inverse=0, Bool_t linesOnly=kFALSE, Bool_t isnobs=kFALSE ) {
     if (nsigma < 1 || nsigma > 3) {
-        cout << "*** Error in CombinationGlob::DrawContour: nsigma out of range: " << nsigma 
+        cout << "*** Error in CombinationGlob::DrawContour: nsigma out of range: " << nsigma
             << "==> abort" << endl;
         exit(1);
     }
@@ -160,12 +160,12 @@ void DrawContourSameColor( TLegend *leg, TH2F* hist, Int_t nsigma, TString color
         if(nsigma==1){ leg->AddEntry(h,"exp. 95% CL limit","l");}
 
     if (isnobs)
-        if(nsigma==1){ leg->AddEntry(h,"obs. 95% CL limit","l");}  
+        if(nsigma==1){ leg->AddEntry(h,"obs. 95% CL limit","l");}
 
     if (!linesOnly) {
         if(nsigma==0){ leg->AddEntry(h,"- 1 #sigma expectation","l"); }
         if(nsigma==2){ leg->AddEntry(h,"+ 1 #sigma expectation","l");}
-    } 
+    }
 }
 
 void DrawContourLine95( TLegend *leg, TH2F* hist, const TString& text="", Int_t linecolor=1, Int_t linestyle=2, Int_t linewidth=2 ) {
@@ -183,7 +183,7 @@ void DrawContourLine95( TLegend *leg, TH2F* hist, const TString& text="", Int_t 
     h->SetLineStyle( linestyle );
     h->Draw( "samecont3" );
 
-    if (!text.IsNull() && leg) leg->AddEntry(h,text.Data(),"l"); 
+    if (!text.IsNull() && leg) leg->AddEntry(h,text.Data(),"l");
     //return h;
 }
 
@@ -202,7 +202,7 @@ void DrawContourLine99( TLegend *leg, TH2F* hist, const TString& text="", Int_t 
     h->SetLineStyle( linestyle );
     h->Draw( "samecont3" );
 
-    if (!text.IsNull() && leg) leg->AddEntry(h,text.Data(),"l"); 
+    if (!text.IsNull() && leg) leg->AddEntry(h,text.Data(),"l");
     //return h;
 }
 
@@ -221,7 +221,7 @@ void DrawContourLine68( TLegend *leg, TH2F* hist, const TString& text="", Int_t 
     h->SetLineStyle( linestyle );
     h->Draw( "samecont3" );
 
-    if (!text.IsNull() && leg) leg->AddEntry(h,text.Data(),"l"); 
+    if (!text.IsNull() && leg) leg->AddEntry(h,text.Data(),"l");
     //return h;
 }
 
@@ -277,20 +277,16 @@ void DrawContourLine3sigma( TLegend *leg, TH2F* hist, const TString& text="", In
    h->Draw( "samecont3" );
 
    if (!text.IsNull()) leg->AddEntry(h,text.Data(),"l");
-}     
+}
 
 void drawBand(TString fname1){
     TFile* f0 = TFile::Open( fname1, "READ" );
 
     TString name0_1su = "sigclsu1s";
     TString hname0_1sd = "sigclsd1s";
-    
-    TH2F* hist0_1su; 
-    TH2F* hist0_1sd; 
 
-    hist0_1su = (TH2F*)f0->Get( hname0_1su );
-    hist0_1sd = (TH2F*)f0->Get( hname0_1sd );
-
+    TH2F* hist0_1su = (TH2F*)f0->Get( "hname0_1su" );
+    TH2F* hist0_1sd = (TH2F*)f0->Get( "hname0_1sd" );
 
 }
 
@@ -302,7 +298,7 @@ TGraph* ContourGraph( TH2F* hist,double xmin=16, double xmax=90) {
 
     TGraph* gr0 = new TGraph();
     TH2F* h = (TH2F*)hist->Clone();
-    gr = (TGraph*)gr0->Clone(TString::Format("gr_%s", h->GetName()));
+    TGraph * gr = (TGraph*)gr0->Clone(TString::Format("gr_%s", h->GetName()));
 
     cout << "==> Will dumb histogram: " << h->GetName() << " into a graph" <<endl;
 
@@ -312,14 +308,14 @@ TGraph* ContourGraph( TH2F* hist,double xmin=16, double xmax=90) {
     //h->GetYaxis()->SetRangeUser(2,50);
 
     double pval = CombinationGlob::cl_percent[1];
-    std::cout << pval << std::endl; 
+    std::cout << pval << std::endl;
     double signif = TMath::NormQuantile(1-pval);
     h->SetContourLevel( 0, signif );
     h->Draw("CONT LIST");
     h->SetDirectory(0);
     gPad->Update();
 
-    TObjArray *contours = gROOT->GetListOfSpecials()->FindObject("contours");
+    TObjArray *contours = static_cast<TObjArray*>(gROOT->GetListOfSpecials()->FindObject("contours"));
     Int_t ncontours     = contours->GetSize();
     cout << "Found " << ncontours << " contours " << endl;
 
@@ -338,7 +334,7 @@ TGraph* ContourGraph( TH2F* hist,double xmin=16, double xmax=90) {
         gr->GetPoint(j,x0,y0);
         cout << j << " : " << x0 << " : "<<y0 << endl;
     }
-    //  //  gr->SetMarkerSize(2.0);    
+    //  //  gr->SetMarkerSize(2.0);
     //gr->Draw("ALP");
 
     delete MOO;
@@ -373,11 +369,11 @@ TGraph* DrawExpectedBand( TGraph *gr1,  TGraph *gr2, Int_t fillColor, Int_t fill
         y1[j] = yy0;
     }
     //if (gr1N < N && gr1N != 0) {
-    if (gr1N < N){ 
+    if (gr1N < N){
         for(int i=gr1N; i<N; i++) {
             x1[i] = x1[gr1N-1];
             y1[i] = y1[gr1N-1];
-        }      
+        }
     }
 
     Double_t xx1, yy1;
@@ -391,7 +387,7 @@ TGraph* DrawExpectedBand( TGraph *gr1,  TGraph *gr2, Int_t fillColor, Int_t fill
         for(int i=gr2N; i<N; i++) {
             x2[i] = x2[gr1N-1];
             y2[i] = y2[gr1N-1];
-        }      
+        }
     }
 
 
@@ -439,7 +435,7 @@ TGraph* DrawExpectedBand( TGraph *gr1,  TGraph *gr2, Int_t fillColor, Int_t fill
         //cout << "Punkt " << j << ": " << x0 << "," << y0 << endl;
     //}
 
-    // Now draw the plot... 
+    // Now draw the plot...
     grshade->SetFillStyle(fillStyle);
     grshade->SetFillColor(fillColor);
     //  grshade->SetMarkerStyle(21);
@@ -450,16 +446,16 @@ TGraph* DrawExpectedBand( TGraph *gr1,  TGraph *gr2, Int_t fillColor, Int_t fill
 }
 
 void Q_test() {
-    TFile *file = TFile::Open("msugra_0_10_P_SREtight_fixSigXSecNominal__1_harvest_list.root");  
-    //  TFile *file = TFile::Open("combined_msugra_Nominal_1_harvest_list.root");  
-    TH2F* hist =file->Get("sigp1expclsf");
-    //  hist->Draw("colz");  
+    TFile *file = TFile::Open("msugra_0_10_P_SREtight_fixSigXSecNominal__1_harvest_list.root");
+    //  TFile *file = TFile::Open("combined_msugra_Nominal_1_harvest_list.root");
+    TH2F* hist =static_cast<TH2F*>(file->Get("sigp1expclsf"));
+    //  hist->Draw("colz");
     TH2F* contour = FixAndSetBorders( *hist, "test", "test", 0 );
-    canvas = TCanvas();
-    contour->Draw("colz"); 
+    TCanvas canvas; //= TCanvas();
+    contour->Draw("colz");
     TLegend* leg = new TLegend();
-    DrawContourLine95( leg, contour, "", 1, 1 ); 
-    canvas.Print("toto.gif")
+    DrawContourLine95( leg, contour, "", 1, 1 );
+    canvas.Print("toto.gif");
 }
 
 

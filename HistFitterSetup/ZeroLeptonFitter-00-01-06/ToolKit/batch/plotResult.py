@@ -111,7 +111,7 @@ def createHistogramForRegion(gridConfig, region, outputDir):
     # Now build the histogram
     basename = os.path.basename(filename)
     dirname = os.path.dirname(os.path.abspath(filename))
-    
+
     histMaker = HistMaker(inputFilename=filename, interpretation=gridConfig.interpretation, outputDir=dirname)
     # add additional histograms here if needed
     histMaker.addHistogram(variable="p0exp", name="p0exp", title="Expected p0", cuts="p0>=0 && p0<=1")
@@ -150,7 +150,7 @@ try:
 except:
     print("Input JSON filename {0} cannot be found.".format(filename))
     sys.exit()
-    
+
 try:
     assert(os.path.exists(dirname))
 except:
@@ -205,7 +205,7 @@ optimisationPlot.write()
 combinedFilename = os.path.join(outputDir, "combined_{0}{1}".format(gridConfig.name, gridConfig.getSuffix()))
 combinedFilenameJSON = "{0}.json".format(combinedFilename)
 try:
-    # no default return for max() in case of empty list 
+    # no default return for max() in case of empty list
     lastFile = max(glob.iglob(os.path.join(outputDir,'SR*.json')), key=os.path.getmtime)
 except:
     lastFile = None
@@ -214,14 +214,14 @@ if not os.path.exists(combinedFilenameJSON) or (lastFile and os.path.getmtime(co
 
 optimisationPlot.writeContour()
 
-# write to TH2D 
-if os.path.exists(combinedFilenameJSON) and not os.path.exists(combinedFilename) or os.path.getmtime(combinedFilename) < os.path.getmtime(combinedFilenameJSON):
-    createPlainTextListFileFromJSON(combinedFilenameJSON, combinedFilename)
-histMaker = HistMaker(inputFilename=combinedFilename, interpretation=gridConfig.interpretation, outputDir=outputDir)
-histMaker.addHistogram(variable="p0exp", name="p0exp", title="Expected p0", cuts="p0>=0 && p0<=1")
+# write to TH2D
+#if os.path.exists(combinedFilenameJSON) and not os.path.exists(combinedFilename) or os.path.getmtime(combinedFilename) < os.path.getmtime(combinedFilenameJSON):
+#    createPlainTextListFileFromJSON(combinedFilenameJSON, combinedFilename)
+#histMaker = HistMaker(inputFilename=combinedFilename, interpretation=gridConfig.interpretation, outputDir=outputDir)
+#histMaker.addHistogram(variable="p0exp", name="p0exp", title="Expected p0", cuts="p0>=0 && p0<=1")
 
-combinedFilenameROOT = "{0}.root".format(combinedFilename)
-if not os.path.exists(combinedFilenameROOT) or os.path.getmtime(combinedFilenameROOT) < os.path.getmtime(combinedFilename):
-    histMaker.process()
-else:
-    print "Output file {0} already exists and is newer; not overwriting".format(combinedFilenameROOT)
+# combinedFilenameROOT = "{0}.root".format(combinedFilename)
+# if not os.path.exists(combinedFilenameROOT) or os.path.getmtime(combinedFilenameROOT) < os.path.getmtime(combinedFilename):
+#     histMaker.process()
+# else:
+#     print "Output file {0} already exists and is newer; not overwriting".format(combinedFilenameROOT)

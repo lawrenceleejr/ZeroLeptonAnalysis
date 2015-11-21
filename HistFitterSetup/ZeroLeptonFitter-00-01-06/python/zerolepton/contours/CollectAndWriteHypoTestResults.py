@@ -8,6 +8,9 @@ import sys
 import ROOT
 ROOT.gROOT.SetBatch(True)
 ROOT.PyConfig.IgnoreCommandLineOptions = True
+#ROOT.gInterpreter.GenerateDictionary("map<TString, float>","stdmap");
+ROOT.gInterpreter.GenerateDictionary("std::map<TString, float>", "map;TString;float")
+
 
 from json import encoder
 encoder.FLOAT_REPR = lambda o: format(o, 'e') # we want 7-decimal floats
@@ -20,7 +23,7 @@ log = Logger("CollectAndWriteHypoTestResults")
 def CollectAndWriteHypoTestResults(filename, format, interpretation, cuts="1", rejectFailedPrefit=True, outputDir="", prefix=""):
     if outputDir == "":
         outputDir = os.getcwd()
-   
+
     if not os.path.exists(outputDir):
         try:
             os.makedirs(outputDir)
@@ -39,7 +42,7 @@ def CollectAndWriteHypoTestResults(filename, format, interpretation, cuts="1", r
     cutString = cutString.replace("!","N")
 
     # collect p-values, store rootfile if needed
-    summary = CollectHypoTestResults( filename, format, interpretation, cuts, rejectFailedPrefit ) 
+    summary = CollectHypoTestResults( filename, format, interpretation, cuts, rejectFailedPrefit )
 
     # store harvest in text file
     (listname, ext) = os.path.splitext(os.path.basename(filename))
@@ -65,7 +68,7 @@ def GetMatchingWorkspaces(f, filename, format, interpretation, cutString):
         searchFilename = True;
 
     log.debug("2   format = {0}".format(format))
-    
+
     fullWSName = ""
     if searchFilename:
         split = format.split(":")
@@ -74,15 +77,15 @@ def GetMatchingWorkspaces(f, filename, format, interpretation, cutString):
     log.debug("3   fullWSName = {0}".format(fullWSName))
 
     # Does format have as many placeholders as interpretation?
-    if format.count("%") != len(interpretation.split(":")): 
+    if format.count("%") != len(interpretation.split(":")):
         log.error("No valid interpretation string <{0}> with format <{1}>, for file <{2}>".format(interpretation, format, filename))
         return wsNameMap
-   
+
     wsidVec = interpretation.split(":")
     log.debug("4   len(wsidVec) = {0}".format(len(wsidVec)))
     for i, x in enumerate(wsidVec):
         log.debug("    wsidVec[{0}] = {1}".format(i, x))
-    
+
     listOfKeys = f.GetListOfKeys()
     log.debug("4   len(listOfKeys) = {0}".format(listOfKeys.GetEntries()))
 
@@ -113,13 +116,13 @@ def GetMatchingWorkspaces(f, filename, format, interpretation, cutString):
             log.debug(" 5.3   TString(key->GetName())) = {0}".format(keyName))
             if fullWSName != keyName:
                 continue
-        
+
         log.debug(" 5.4  searchFilename = {0}".format(searchFilename))
         if searchFilename:
             wsNameSearch = "{0}_{1}".format(infile, wsNameSearch)
-        
+
         log.debug(" 5.5  wsnameSearch = {0}".format(wsNameSearch))
-        
+
         # Now actually find the pieces in the name
         args = ()
         match = rx.match(wsNameSearch.split(";")[0]) # the cycle is not important
@@ -133,7 +136,7 @@ def GetMatchingWorkspaces(f, filename, format, interpretation, cutString):
             # Set the cut
             for (str, val) in zip(wsidVec, args):
                 cut.SetValue(str, float(val))
-        
+
             # Do we pass the cut?
             if not cut.GetBoolValue(): continue
 
@@ -142,7 +145,7 @@ def GetMatchingWorkspaces(f, filename, format, interpretation, cutString):
 
     if cutString != "1":
         del cut
-   
+
     del listOfKeys
     return wsNameMap
 
@@ -154,7 +157,7 @@ def ParseWorkspaceID(idString):
     for x in idString.split("_"):
         data = x.split("=")
         if len(data) == 1: continue
-        
+
         retval[data[0]] = float(data[1])
 
     return retval
@@ -169,10 +172,10 @@ def CollectHypoTestResults( filename, format, interpretation, cutString="1", rej
         log.error("Cannot open file {0}".format(filename))
         f.Close()
         return limitResults
-    
+
     # collect all hypotest results in input file
     wsNameMap = GetMatchingWorkspaces(f, filename, format, interpretation, cutString)
-    if len(wsNameMap) == 0: 
+    if len(wsNameMap) == 0:
         f.Close()
         return limitResults
 
@@ -184,7 +187,7 @@ def CollectHypoTestResults( filename, format, interpretation, cutString="1", rej
 
     for wsId in wsNameMap:
         name = wsNameMap[wsId]
-       
+
         ht = GetHypoTestResultFromFile(f, name)
         if ht is None:
             continue
@@ -225,7 +228,7 @@ def CollectHypoTestResults( filename, format, interpretation, cutString="1", rej
                 counter_badcovquality += 1
                 failed_cov = True
             elif covQual < 2.1:
-                log.warning("Fit result {0} has mediocre covariance matrix quality. Result has been flagged as failed cov matrix.".format(fitName)) 
+                log.warning("Fit result {0} has mediocre covariance matrix quality. Result has been flagged as failed cov matrix.".format(fitName))
                 counter_not_great_fits += 1
                 dodgy_cov = True
 
@@ -259,18 +262,24 @@ def CollectHypoTestResults( filename, format, interpretation, cutString="1", rej
         failMap["failedp0"]     = float(failed_p0half);
 
         coords = ParseWorkspaceID(wsId)
-        for k in coords:
-            result.AddMetaData(k, coords[k])
+        coords_map = ROOT.std.map('TString, float')()
 
-        for k in failMap:
-            result.AddMetaData(k, failMap[k])
+        failMap_map = ROOT.std.map('TString, float')()
+
+        for key,value in coords.items() :
+            coords_map[key] = value
+        for key,value in failMap.items() :
+            failMap_map[key] = value
+
+        result.AddMetaData(coords_map)
+        result.AddMetaData(failMap_map)
 
         # Now get the data - this segfaults if we do it directly
-        keys = result.GetKeys()
-        data = result.GetData()
-        summary = {k: data[k] for k in keys}
+#        keys = result.GetKeys()
+#        data = result.GetData()
+#        summary = {k: data[k] for k in keys}
 
-        limitResults.append(summary)
+#        limitResults.append(summary)
 
         ht.IsA().Destructor(ht)
         del ht
@@ -318,7 +327,7 @@ def WriteResultSetJSON(limitResults, filename ):
     for result in limitResults:
         del result
     del limitResults
-    
+
     pass
 
 def GetHypoTestResultFromFile(f, name):
@@ -335,5 +344,5 @@ def GetObjectFromFile(f, name, type):
     if not result or result is None or result.ClassName() != type:
         log.error("Cannot open {1} {0}".format(name, type))
         return None
-    
+
     return result
