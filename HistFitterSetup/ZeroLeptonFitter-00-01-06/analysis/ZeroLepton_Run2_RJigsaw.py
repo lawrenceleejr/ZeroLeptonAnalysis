@@ -137,13 +137,14 @@ INPUTDIR = inputConfig.background
 INPUTDIR_SIGNAL = inputConfig.signal
 INPUTDIR_DATA = inputConfig.data
 
+print inputConfig
 
-# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
-INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Nov07_sys_pT50/"
-# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/"
-# INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_nosys_pT50/"
-INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Signal_sys_pT50/"
-INPUTDIR_DATA = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
+# # INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_Nov07_nosys_pT50/"
+# INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Nov07_sys_pT50/"
+# # INPUTDIR = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/"
+# # INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v51_SIG_nosys_pT50/"
+# INPUTDIR_SIGNAL = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/Systematics/v51_Signal_sys_pT50/"
+# INPUTDIR_DATA = "/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/"
 
 
 # sigSamples is set by the "-g" HistFitter option

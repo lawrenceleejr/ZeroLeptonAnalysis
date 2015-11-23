@@ -85,7 +85,7 @@ def latexfitresults(filename, poiname='mu_SIG', lumiFB=1.0, nTOYS=3000, asimov=F
   set the range of POI to be scanned and perform HypoTest inversion
   """
   murangelow = 0
-  murangehigh = 10 #40.0 #set here -1. if you want to have automatic determined scan range, if using values != -1, please check the log file if the scan range was large enough
+  murangehigh = 100 #40.0 #set here -1. if you want to have automatic determined scan range, if using values != -1, please check the log file if the scan range was large enough
 
   npoints = int((murangehigh-murangelow)*2.)
 
