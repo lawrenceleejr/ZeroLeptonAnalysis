@@ -28,7 +28,7 @@ class ZLFitterConfig:
         self.blindSR = True
         self.blindCR = False
         self.blindVR = False
-        self.useSignalInBlindedData = True
+        self.useSignalInBlindedData = False
 
         #Run hypotests with also with up and down theor. uncert.? False: add uncert. as fit parameter
         self.fixSigXSec = True
@@ -141,8 +141,8 @@ class ZLFitterConfig:
 
         # list of constraining regions
         self.constrainingRegionsList = []
-        # self.constrainingRegionsList += ["CRT","CRW"]
-        self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
+        self.constrainingRegionsList += ["CRT","CRW"]
+        #self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
         # self.constrainingRegionsList += ["CRQ"]

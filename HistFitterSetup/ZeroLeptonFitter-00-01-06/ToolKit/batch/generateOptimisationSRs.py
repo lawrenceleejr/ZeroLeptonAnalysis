@@ -231,7 +231,7 @@ for SignalRegion in SignalRegions:
         # cmd = " && ".join(myCmds)
 
 
-        cmd = "HistFitter.py -D allPlots -t -w -f -z -F excl -g grid{0},{1}  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( grid, ",".join(subsetPoints) , SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
+        cmd = "HistFitter.py -D allPlots -t -w -f -z -p -l -F excl -g grid{0},{1}  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( grid, ",".join(subsetPoints) , SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
 
         # NOTE: I need to become clever enough to recycle histograms for the final discriminating variable.
         # print cmd

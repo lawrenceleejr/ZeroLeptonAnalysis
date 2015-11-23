@@ -117,12 +117,6 @@ def groupFilesByRegion(files, regions):
     filesByRegion = {}
     for r in regions:
         filesByRegion[r] = []
-<<<<<<< HEAD
-        print r
-   
-=======
-
->>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
     os.system('setterm -cursor off')
 
     # inverted loops - this is faster
@@ -134,18 +128,8 @@ def groupFilesByRegion(files, regions):
 
         # we are only interested in comparing stuff that actually is a hypotest
         if not f.endswith(".root"): continue
-<<<<<<< HEAD
-        if not "hypotest" in f and not "upperlimit" in f: 
-            print f
-            print "not a hypo apparently..."
-            continue
-
-
-        # print "I got something!"
-=======
         if not "hypotest" in f and not "upperlimit" in f: continue
 
->>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
         for r in regions:
             if r in f:
                 filesByRegion[r].append(f)
@@ -178,13 +162,8 @@ def groupFilesByRegion(files, regions):
 
 
 def init_worker():
-<<<<<<< HEAD
-    return
-#signal.signal(signal.SIGINT, signal.SIG_IGN)
-=======
-#    signal.signal(signal.SIGINT, signal.SIG_IGN)
     pass
->>>>>>> 05469550e86796dd5bcc100f83a720bd7b259753
+
 
 def mergeFilesByRegion(filesByRegion, grid, outputDir):
     # Merge a set of files by region into the specified dir

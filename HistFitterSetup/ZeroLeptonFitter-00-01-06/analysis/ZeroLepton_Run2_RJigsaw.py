@@ -192,6 +192,8 @@ configMgr.nTOYs = 100      # number of toys when doing frequentist calculator
 configMgr.doExclusion = False
 if myFitType == FitType.Exclusion:
     configMgr.doExclusion = True
+configMgr.useCLs = True #LL
+configMgr.cppMgr.doUpperLimitAll()
 configMgr.calculatorType = 2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType = 3   # 3=one-sided profile likelihood test statistic (LHC default)
 configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.

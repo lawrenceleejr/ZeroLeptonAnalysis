@@ -19,5 +19,5 @@ chmod +x Jobs/*sh
 
 # Then you can convert these into json with
 
-python makeJSON.py optimisation-XXXXXXXX/results/
+python makeJSON.py optimisation-XXXXXXXX/
 
