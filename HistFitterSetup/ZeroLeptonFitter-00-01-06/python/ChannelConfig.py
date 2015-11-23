@@ -335,11 +335,11 @@ class ChannelConfig:
         
         #effective mass cut              
         if self.meffIncl >= 0 and not(self.WithoutMeffCut): 
-            cutList.append(" meffInc >= %f " % (self.meffIncl))
+            cutList.append(" Meff >= %f " % (self.meffIncl))
 
         #effective mass cut upper cut              
         if self.meffInclUpperCut >= 0:
-            cutList.append(" meffInc <= %f " % (self.meffInclUpperCut))
+            cutList.append(" Meff <= %f " % (self.meffInclUpperCut))
         
         # met cuts
         if self.MET > 0:
@@ -407,20 +407,20 @@ class ChannelConfig:
             #first the dphi cut
             if self.dPhiCRQ<0: self.dPhiCRQ=self.dPhi/2 # if PhiCRQ is not defined, take the half: 0.4==>0.2
             if regionName in self.regionsWithFullyInvertedDPHICutList:
-                myString += " dPhi < %f" % (self.dPhiCRQ)
+                myString += " dphi < %f" % (self.dPhiCRQ)
             elif regionName in self.regionsWithIntermediateDPHICutList:
-                myString += "( dPhi > %f && dPhi < %f )" % (self.dPhiCRQ, self.dPhi)
+                myString += "( dphi > %f && dphi < %f )" % (self.dPhiCRQ, self.dPhi)
             else:
-                myString += " dPhi >= %f " % (self.dPhi)
+                myString += " dphi >= %f " % (self.dPhi)
                 
             # add also the dphiR cut
             if self.dPhiR >= 0 and self.nJets >= 4:  
                 if self.dPhiRCRQ < 0: 
                     self.dPhiRCRQ = self.dPhiR/2 # if dPhiRCRQ is not defined, take the half: 0.2==>0.1
                 if regionName in self.regionsWithFullyInvertedDPHICutList+self.regionsWithIntermediateDPHICutList:                
-                    myString += " || dPhiR < %f" % (self.dPhiRCRQ)
+                    myString += " || dphiR < %f" % (self.dPhiRCRQ)
                 else:
-                    myString += " && dPhiR >= %f" % (self.dPhiR)
+                    myString += " && dphiR >= %f" % (self.dPhiR)
                                     
             myString += ")"
             if not(self.WithoutdPhiCut):
@@ -438,7 +438,7 @@ class ChannelConfig:
                 else:
                     self.METsigCRQ = self.METsig-6
 
-            varName = "met/sqrt(meffInc-met)"
+            varName = "MET/sqrt(Meff-MET)"
             if regionName in self.regionsWithInvertedMETSIGCutList:
                 cutList.append("%s >= %f && %s < %f" % (varName, self.METsigCRQ, varName, self.METsig)) 
             else:
@@ -447,10 +447,10 @@ class ChannelConfig:
 
         # Aplanary upper cut   
         if self.Ap>=0 and regionName not in self.regionsWithoutApCutList:
-            cutList.append("Ap >= %f" % (self.Ap))
+            cutList.append("Aplan >= %f" % (self.Ap))
 
         if regionName in self.regionsWithInvertedApCutList:
-            cutList.append(" Ap < %f" % (self.ApUpperCut))
+            cutList.append(" Aplan < %f" % (self.ApUpperCut))
 
         #met over meff
         if regionName not in self.regionsWithoutMETOVERMEFFCutList and self.MET_over_meffNj > 0:
@@ -464,9 +464,9 @@ class ChannelConfig:
                 else:
                     self.MET_over_meffNjCRQ = self.MET_over_meffNj-0.15
 
-            varName="met/(met"
+            varName="MET/(MET"
             for ijet in range(self.nJets):
-                varName += " + jetPt[%d]" % ijet
+                varName += " + pT_jet%d" % ijet+1
             varName += ")"
             
             if regionName in self.regionsWithInvertedMETOVERMEFFCutList:
