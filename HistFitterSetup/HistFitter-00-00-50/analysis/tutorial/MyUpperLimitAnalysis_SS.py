@@ -48,7 +48,7 @@ ucb = Systematic("uncorrl_bkg", configMgr.weights, 1.0+syst,1.0-syst, "user","us
 
 # Setting the parameters of the hypothesis test
 configMgr.doExclusion=True # True=exclusion, False=discovery
-#configMgr.nTOYs=5000
+configMgr.nTOYs=2000
 configMgr.calculatorType=2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType=3   # 3=one-sided profile likelihood test statistic (LHC default)
 configMgr.nPoints=  200       # number of values scanned of signal-strength for upper-limit determination of signal strength.
