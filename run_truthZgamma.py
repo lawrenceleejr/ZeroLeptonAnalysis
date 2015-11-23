@@ -14,7 +14,20 @@ import discoverInput
 ROOT.TH1.SetDefaultSumw2(True)
 
 logging.basicConfig(level=logging.INFO)
+
 from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("--driver"      , help="select where to run", choices=("direct","lsf", "prooflite", "grid"), default="direct")
+parser.add_option('--isTest', action="store_true", default=False)
+#parser.add_argument('--no-isTest', dest='isTest', action='store_false')
+parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("znunu_lo","gamma","both")         , default="both")
+#parser.add_option("--nevents", type=int, help="number of events to process for all the datasets")
+#parser.add_option("--skip-events", type=int, help="skip the first n events")
+#parser.add_option("--runTag", help="", default="Test_XXYYZZa")
+
+(options, args) = parser.parse_args()
+
 
 import atexit
 @atexit.register
@@ -61,18 +74,26 @@ discoverInput.addTags(sh_all)
 #sh_signal = sh_all.find("signal")
 sh_bg = {}
 
+if options.samplesToRun == "znunu_lo" :
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
-sh_bg["gamma"]    = sh_all.find("gamma")
-#sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
 #sh_bg["znunu_nlo"] = sh_all.find("znunu_nlo")
+    sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
+    sh_bg["znunu_lo"].setMetaString("nc_tree","SRAllNT")
+    sh_bg["znunu_lo"].printContent()
+if options.samplesToRun == "gamma" :
+    sh_bg["gamma"] = sh_all.find("gamma")
+    sh_bg["gamma"].setMetaString("nc_tree","CRY_SRAllNT")
+    sh_bg["gamma"].printContent()
+if options.samplesToRun == "both" :
+    sh_bg["gamma"] = sh_all.find("gamma")
+    sh_bg["gamma"].setMetaString("nc_tree","CRY_SRAllNT")
+    sh_bg["gamma"].printContent()
+    sh_bg["znunu_lo"] = sh_all.find("znunu_lo")
+    sh_bg["znunu_lo"].setMetaString("nc_tree","SRAllNT")
+    sh_bg["znunu_lo"].printContent()
 
-sh_bg["gamma"]   .setMetaString("nc_tree","CRY_SRAllNT")
-#sh_bg["znunu_lo"].setMetaString("nc_tree","SRAllNT")
-
-print sh_bg
-sh_bg["gamma"]    .printContent()
-#sh_bg["znunu_lo" ].printContent()
+#print sh_bg
 #sh_bg["znunu_nlo"].printContent()
 
 #Creation of output directory names
@@ -243,63 +264,101 @@ for mysamplehandlername in sh_bg.keys():
 
 #include all these
         RJigsawVariables = {
-            "RJVars_PP_MDeltaR"        :  [100, 0 , 1000, True],
-            "RJVars_PP_Mass"           :  [100, 0 , 1000, True],
-            "RJVars_PP_InvGamma"       :  [100, -1 , 1, False ],
-            "RJVars_PP_dPhiBetaR"      :  [100, -1 , 1, False ],
-            "RJVars_PP_dPhiVis"        :  [100, -1 , 1, False ],
-            "RJVars_PP_CosTheta"       :  [100, -1 , 1, False ],
-            "RJVars_PP_dPhiDecayAngle" :  [100, -1 , 1, False ],
-            "RJVars_PP_VisShape"       :  [100, 0  , 1, False ],
-            "RJVars_P1_Mass"           :  [100, 0 , 1000, True],
-            "RJVars_P1_CosTheta"       :  [100, -1 , 1, False ],
-            "RJVars_P2_Mass"           :  [100, 0 , 1000, True],
-            "RJVars_P2_CosTheta"       :  [100, -1 , 1, False ],
-#            "RJVars_I1_Depth"          :  [100, 0 , 1000,False],
-#            "RJVars_I2_Depth"          :  [100, 0 , 1000,False],
-            "RJVars_dphiPV1a"  :  [100, -1 , 1, False ],
-            "RJVars_cosV1a"    :  [100, -1 , 1, False ],
-            "RJVars_dphiCV2a"  :  [100, -1 , 1, False ],
-            "RJVars_cosV2a"    :  [100, -1 , 1, False ],
-            "RJVars_dphiPV1b" :  [100, -1 , 1, False ],
-            "RJVars_cosV1b"   :  [100, -1 , 1, False ],
-            "RJVars_dphiCV2b" :  [100, -1 , 1, False ],
-            "RJVars_cosV2b":  [100, -1 , 1, False ],
-            "RJVars_V1_N" :  [20, 0 , 20, False],
-            "RJVars_V2_N" :  [20, 0 , 20, False],
-            "RJVars_MP"          :  [100, 0 , 1000, True],
-            "RJVars_DeltaBetaGG" :  [100, -1 , 1, False ],
-            "RJVars_dphiVG"      :  [100, -1 , 1, False ],
-            "RJVars_QCD_dPhiR"    :  [100, -1 , 1, False ],
-            "RJVars_QCD_Rpt"      :  [100, -1 , 1, False ],
-            "RJVars_QCD_Rsib"    :  [100, -1 , 1, False ],
-            "RJVars_QCD_Delta1"   :  [100, -1 , 1, False ],
-            "RJVars_H2PP":  [100, 0 , 4000, True],
-            "RJVars_H3PP":  [100, 0 , 4000, True],
-            "RJVars_H4PP":  [100, 0 , 4000, True],
-            "RJVars_H6PP":  [100, 0 , 4000, True],
-            "RJVars_H2Pa":  [100, 0 , 4000, True],
-            "RJVars_H2Pb":  [100, 0 , 4000, True],
-            "RJVars_H3Pa":  [100, 0 , 4000, True],
-            "RJVars_H3Pb":  [100, 0 , 4000, True],
-            "RJVars_H4Pa":  [100, 0 , 4000, True],
-            "RJVars_H4Pb":  [100, 0 , 4000, True],
-            "RJVars_H5Pa":  [100, 0 , 4000, True],
-            "RJVars_H5Pb":  [100, 0 , 4000, True],
-            "RJVars_H2Ca":  [100, 0 , 4000, True],
-            "RJVars_H2Cb":  [100, 0 , 4000, True],
-            "RJVars_H3Ca":  [100, 0 , 4000, True],
-            "RJVars_H3Cb":  [100, 0 , 4000, True],
-            "RJVars_HT4PP":  [100, 0 , 4000, True],
-            "RJVars_HT6PP":  [100, 0 , 4000, True],
-            "RJVars_minH3P":  [100, 0 , 4000, True],
-            "RJVars_sangle":  [100, -1 , 1, False],
-            "RJVars_dangle":  [100, -1 , 1, False ],
-            "RJVars_ddphiPC":  [100, -1 , 1, False ],
-            "RJVars_sdphiPC":  [100, -1 , 1, False ],
-            "RJVars_dH2o3P":  [100, -1 , 1, True],
-            "RJVars_RPZ_HT4PP":  [100, -1 , 1, False],
-            "RJVars_RPZ_HT6PP":  [100, -1 , 1, False ],
+            "HT1CM"                                            :  [100, 0 , 1000, True],
+            }
+        if not options.isTest :
+            RJigsawVariables = {
+            "HT1CM"                                            :  [100, 0 , 1000, True],
+            "PIoHT1CM"                                         :  [100, 0 , 1000, True],
+            "cosS"                                             :  [100, -1 , 1, False ],
+            "NVS"                                              :  [100, -1 , 1, False ],
+            "RPT_HT1CM"                                        :  [100, -1 , 1, False ],
+            "MS"                                               :  [100, -1 , 1, False ],
+            "ddphiP"                                           :  [100, -1 , 1, False ],
+            "sdphiP"                                           :  [100, 0  , 1, False ],
+            "pPP_Ia"                                           :  [100, 0 , 1000, True],
+            "pPP_Ib"                                           :  [100, -1 , 1, False ],
+            "pT_jet1a"                                         :  [100, 0 , 1000, True],
+            "pT_jet1b"                                         :  [100, -1 , 1, False ],
+            "pT_jet2a"                                         :  [100, 0 , 1000,False],
+            "pT_jet2b"                                         :  [100, 0 , 1000,False],
+            "pTPP_jet1"                                         :  [100, -1 , 1, False ],
+            "pTPP_jet2"                                         :  [100, -1 , 1, False ],
+            "pTPP_jet1a"                                        :  [100, -1 , 1, False ],
+            "pTPP_jet1b"                                        :  [100, -1 , 1, False ],
+            "pTPP_jet2a"                                       :  [100, -1 , 1, False ],
+            "pTPP_jet2b"                                       :  [100, -1 , 1, False ],
+            "pTPP_jet3a"                                       :  [100, -1 , 1, False ],
+            "pTPP_jet3b"                                      :  [100, -1 , 1, False ],
+            "pPP_jet1a"                                       :  [20, 0 , 20, False],
+            "pPP_jet1b"                                       :  [20, 0 , 20, False],
+            "pPP_jet2a"                                             :  [100, 0 , 1000, True],
+            "pPP_jet2b"                                        :  [100, -1 , 1, False ],
+            "pPP_jet3a"                                        :  [100, -1 , 1, False ],
+            "pPP_jet3b"                                         :  [100, -1 , 1, False ],
+            "R_H2PP_H3PP"                                       :  [100, -1 , 1, False ],
+            "R_pTj2_HT3PP"                                     :  [100, -1 , 1, False ],
+            "R_HT5PP_H5PP"                                      :  [100, -1 , 1, False ],
+            "R_H2PP_H5PP"             :  [100, 0 , 4000, True],
+            "minR_pTj2i_HT3PPi"       :  [100, 0 , 4000, True],
+            "maxR_H1PPi_H2PPi"        :  [100, 0 , 4000, True],
+            "R_HT9PP_H9PP"            :  [100, 0 , 4000, True],
+            "R_H2PP_H9PP"             :  [100, 0 , 4000, True],
+            "RPZ_HT3PP"               :  [100, 0 , 4000, True],
+            "RPZ_HT5PP"               :  [100, 0 , 4000, True],
+            "RPZ_HT9PP"               :  [100, 0 , 4000, True],
+            "RPT_HT3PP"               :  [100, 0 , 4000, True],
+            "RPT_HT5PP"               :  [100, 0 , 4000, True],
+            "RPT_HT9PP"               :  [100, 0 , 4000, True],
+            "PP_InvGamma"             :  [100, 0 , 4000, True],
+            "PP_dPhiBetaR"            :  [100, 0 , 4000, True],
+            "PP_dPhiVis"              :  [100, 0 , 4000, True],
+            "PP_CosTheta"             :  [100, 0 , 4000, True],
+            "PP_dPhiDecayAngle"       :  [100, 0 , 4000, True],
+            "PP_VisShape"             :  [100, 0 , 4000, True],
+            "PP_MDeltaR"              :  [100, 0 , 4000, True],
+            "P1_Mass"                 :  [100, 0 , 4000, True],
+            "P1_CosTheta"             :  [100, -1 , 1, False],
+            "P2_Mass"                 :  [100, -1 , 1, False ],
+            "P2_CosTheta"             :  [100, -1 , 1, False ],
+            "I1_Depth"                :  [100, -1 , 1, False ],
+            "I2_Depth"                :  [100, -1 , 1, True],
+            "dphiPV1a"                :  [100, -1 , 1, False],
+            "cosV1a"                  :  [100, -1 , 1, False ],
+            "dphiCV2a"                            :  [100, 0 , 1000, True],
+            "cosV2a"                              :  [100, 0 , 1000, True],
+            "dphiPV1b"                            :  [100, -1 , 1, False ],
+            "cosV1b"                              :  [100, -1 , 1, False ],
+            "dphiCV2b"                            :  [100, -1 , 1, False ],
+            "cosV2b"                              :  [100, -1 , 1, False ],
+            "NJa"                                 :  [100, -1 , 1, False ],
+            "NJb"                                 :  [100, 0  , 1, False ],
+            "dphiVG"                              :  [100, 0 , 1000, True],
+            "QCD_dPhiR"                           :  [100, -1 , 1, False ],
+            "QCD_Rsib"                            :  [100, 0 , 1000, True],
+            "QCD_Delta1"                          :  [100, -1 , 1, False ],
+            "H2PP"                   :  [100, 0 , 1000,False],
+            "H3PP"                   :  [100, 0 , 1000,False],
+            "H4PP"                                 :  [100, -1 , 1, False ],
+            "H6PP"                                 :  [100, -1 , 1, False ],
+            "H10PP"                                :  [100, -1 , 1, False ],
+            "HT10PP"                               :  [100, -1 , 1, False ],
+            "H2Pa"                                :  [100, -1 , 1, False ],
+            "H2Pb"                                :  [100, -1 , 1, False ],
+            "H3Pa"                                :  [100, -1 , 1, False ],
+            "H3Pb"                                :  [100, -1 , 1, False ],
+            "H4Pa"                                :  [20, 0 , 20, False],
+            "H4Pb"                                :  [20, 0 , 20, False],
+            "H5Pa"                                :  [100, 0 , 1000, True],
+            "H5Pb"                                :  [100, -1 , 1, False ],
+            "H2Ca"                                :  [100, -1 , 1, False ],
+            "H2Cb"                                 :  [100, -1 , 1, False ],
+            "H3Ca"                                 :  [100, -1 , 1, False ],
+            "H3Cb"                                :  [100, -1 , 1, False ],
+            "HT4PP"                                :  [100, -1 , 1, False ],
+            "HT6PP"                               :  [100, 0 , 4000, True],
+            "sangle"                              :  [100, 0 , 4000, True],
+            "dangle"                              :  [100, 0 , 4000, True],
             }
 
         NTVariables = {
@@ -348,14 +407,16 @@ for mysamplehandlername in sh_bg.keys():
                              )
 
 
-#	driver = ROOT.EL.DirectDriver()
-#        driver = ROOT.EL.ProofDriver()
-#        driver.numWorkers = 6
-
-        driver = ROOT.EL.LSFDriver()
-        ROOT.SH.scanNEvents(mysamplehandler);
-        mysamplehandler.setMetaDouble(ROOT.EL.Job.optEventsPerWorker, 100000);
-        job.options().setString(ROOT.EL.Job.optSubmitFlags, "-q " + "1nh");
+#        driver = None
+	driver = ROOT.EL.DirectDriver()
+        if options.driver == "prooflite" :
+            driver = ROOT.EL.ProofDriver()
+            driver.numWorkers = 6
+        elif options.driver == "lsf" :
+            driver = ROOT.EL.LSFDriver()
+            ROOT.SH.scanNEvents(mysamplehandler);
+            mysamplehandler.setMetaDouble(ROOT.EL.Job.optEventsPerWorker, 100000);
+            job.options().setString(ROOT.EL.Job.optSubmitFlags, "-q " + "1nh");
 
 #        driver = ROOT.EL.CondorDriver()
 #        driver.shellInit = 'lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
