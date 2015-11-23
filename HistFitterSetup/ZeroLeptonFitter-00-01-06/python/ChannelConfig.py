@@ -200,6 +200,7 @@ class ChannelConfig:
         self.MDR=-1
         self.deltaQCD=-1
         self.H2PP=-1
+        self.H2PP_loose=-1
 
         #Squark Variables
         self.RPTHT3PP_upper=+999
@@ -212,6 +213,7 @@ class ChannelConfig:
         self.R_ptj2_HT3PP=-1
         self.cosP_upper = +999
         self.HT3PP=-1
+        self.HT3PP_loose=-1
 
         #Gluino Variables
 
@@ -223,6 +225,7 @@ class ChannelConfig:
         self.maxR_H1PPi_H2PPi_upper=+999
         self.dangle_upper=+999
         self.HT5PP=-1
+        self.HT5PP_loose=-1
 
 
         #Compressed Variables
@@ -231,6 +234,7 @@ class ChannelConfig:
         self.cosS=-1
         self.MS=-1
         self.HT1CM=-1
+        self.HT1CM_loose=-1
 
 
 
@@ -275,17 +279,18 @@ class ChannelConfig:
         self.regionsWithLooserDeltaQCDCutList = ["CRTZL"]
         self.regionsWithoutDeltaQCDCutList = []
         self.regionsWithoutRPTCutList = ["CRQ","VRQ1","VRQ2"]
-        self.regionsWithLooserH2PPCutList = []#["CRQ","VRQ1","VRQ2"]
 
         self.regionsWithInvertedDeltaQCDCutList = ["CRQ","VRQ1"]
         self.regionsWithInvertedRPTCutList = []
         # self.regionsWithInvertedRPTCutList = ["CRQ"]
 
-        self.regionsWithoutMSCutList = []
         self.regionsWithInvertedMSCutList = []
         self.regionsWithInvertedPIoHT1CMCutList = []#["CRQ"]
 
-        self.regionsWithLooserScaleCuts = ["CRQ","VRQ1","VRQ2"]
+        self.regionsWithLooserScaleCuts = ["CRTZL","CRT","CRW","CRY"]
+        self.regionsWithoutMSCutList = self.regionsWithLooserScaleCuts
+        self.regionsWithLooserH2PPCutList = self.regionsWithLooserScaleCuts
+
 
         self.WithoutMeffCut = False
         self.WithoutMetOverMeffCut = False 
@@ -535,12 +540,6 @@ class ChannelConfig:
             if self.R_H2PP_H3PP_upper<=990:
                 cutList.append( " R_H2PP_H3PP <= %f"%self.R_H2PP_H3PP_upper   )
                     
-        if regionName in self.regionsWithLooserH2PPCutList:
-            if self.H2PP>=0:
-                cutList.append( " H2PP >= 1000"   )
-        else:
-            if self.H2PP>=0:
-                cutList.append( " H2PP >= %f"%self.H2PP   )
 
         if self.R_HT5PP_H5PP>=0:
             cutList.append( " R_HT5PP_H5PP >= %f"%self.R_HT5PP_H5PP   )
@@ -583,14 +582,23 @@ class ChannelConfig:
             cutList.append(  " cosS >= %f "%self.cosS   )
 
 
+
+        if regionName in self.regionsWithLooserH2PPCutList:
+            if self.H2PP>=0:
+                cutList.append( " H2PP >= %f"%self.H2PP_loose   )
+        else:
+            if self.H2PP>=0:
+                cutList.append( " H2PP >= %f"%self.H2PP   )
+
+
         if regionName in self.regionsWithLooserScaleCuts:
 
             if self.HT1CM>=0:
-                cutList.append( " HT1CM >= 500")
+                cutList.append( " HT1CM >= %f"%self.HT1CM_loose   )
             if self.HT5PP>=0:
-                cutList.append( " HT5PP >= 1000")
+                cutList.append( " HT5PP >= %f"%self.HT5PP_loose   )
             if self.HT3PP>=0:
-                cutList.append( " HT3PP >= 1000")
+                cutList.append( " HT3PP >= %f"%self.HT3PP_loose   )
 
         else:
             if self.HT1CM>=0:
