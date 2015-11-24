@@ -400,8 +400,8 @@ anaSRJigsawSRG2Common.RPZ_HT5PP_upper = 0.55
 anaSRJigsawSRG2Common.minR_pTj2i_HT3PPi = 0.11
 anaSRJigsawSRG2Common.maxR_H1PPi_H2PPi_upper = 0.97
 anaSRJigsawSRG2Common.nJets = 4
-anaSRJigsawSRG2Common.HT5PP_loose = 1400
-anaSRJigsawSRG2Common.H2PP_loose = 750
+anaSRJigsawSRG2Common.HT5PP_loose = 800
+anaSRJigsawSRG2Common.H2PP_loose = 550
 
 anaSRJigsawSRG2a = copy.deepcopy( anaSRJigsawSRG2Common )
 anaSRJigsawSRG2a.name = "SRJigsawSRG2a"
@@ -439,8 +439,8 @@ anaSRJigsawSRG3Common.RPZ_HT5PP_upper = 0.6
 anaSRJigsawSRG3Common.minR_pTj2i_HT3PPi = 0.09
 anaSRJigsawSRG3Common.maxR_H1PPi_H2PPi_upper = 0.98
 anaSRJigsawSRG3Common.nJets = 4
-anaSRJigsawSRG3Common.HT5PP_loose = 2000
-anaSRJigsawSRG3Common.H2PP_loose = 850
+anaSRJigsawSRG3Common.HT5PP_loose = 800
+anaSRJigsawSRG3Common.H2PP_loose = 550
 
 anaSRJigsawSRG3a = copy.deepcopy( anaSRJigsawSRG3Common )
 anaSRJigsawSRG3a.name = "SRJigsawSRG3a"
@@ -512,8 +512,8 @@ anaSRJigsawSRS2Common.RPZ_HT3PP_upper = 0.6
 anaSRJigsawSRS2Common.R_ptj2_HT3PP = 0.15
 anaSRJigsawSRS2Common.cosP_upper = 0.7
 anaSRJigsawSRS2Common.nJets = 2
-anaSRJigsawSRS2Common.HT3PP_loose = 1300
-anaSRJigsawSRS2Common.H2PP_loose = 1100
+anaSRJigsawSRS2Common.HT3PP_loose = 1100
+anaSRJigsawSRS2Common.H2PP_loose = 900
 
 anaSRJigsawSRS2a = copy.deepcopy( anaSRJigsawSRS2Common )
 anaSRJigsawSRS2a.name = "SRJigsawSRS2a"
@@ -541,8 +541,8 @@ anaSRJigsawSRS3Common.RPZ_HT3PP_upper = 0.63
 anaSRJigsawSRS3Common.R_ptj2_HT3PP = 0.13
 anaSRJigsawSRS3Common.cosP_upper = 0.8
 anaSRJigsawSRS3Common.nJets = 2
-anaSRJigsawSRS3Common.HT3PP_loose = 1600
-anaSRJigsawSRS3Common.H2PP_loose = 1350
+anaSRJigsawSRS3Common.HT3PP_loose = 1100
+anaSRJigsawSRS3Common.H2PP_loose = 900
 
 anaSRJigsawSRS3a = copy.deepcopy( anaSRJigsawSRS3Common )
 anaSRJigsawSRS3a.name = "SRJigsawSRS3a"
@@ -575,7 +575,8 @@ anaSRJigsawSRC1Common.RPTHT1CM_upper = 0.15
 anaSRJigsawSRC1Common.PIoHT1CM = 0.9
 anaSRJigsawSRC1Common.cosS = 0.8
 anaSRJigsawSRC1Common.nJets = 2
-anaSRJigsawSRC1Common.HT1CM_looser = 700
+anaSRJigsawSRC1Common.HT1CM_loose = 700
+anaSRJigsawSRC1Common.MS_loose = 100
 
 
 anaSRJigsawSRC1a = copy.deepcopy( anaSRJigsawSRC1Common )
@@ -598,7 +599,8 @@ anaSRJigsawSRC2Common.PIoHT1CM = 0.8
 anaSRJigsawSRC2Common.MS = 100
 anaSRJigsawSRC2Common.cosS = 0.8
 anaSRJigsawSRC2Common.nJets = 2
-anaSRJigsawSRC2Common.HT1CM_looser = 700
+anaSRJigsawSRC2Common.HT1CM_loose = 700
+anaSRJigsawSRC2Common.MS_loose = 100
 
 
 anaSRJigsawSRC2a = copy.deepcopy( anaSRJigsawSRC2Common )
@@ -621,7 +623,8 @@ anaSRJigsawSRC3Common.PIoHT1CM = 0.7
 anaSRJigsawSRC3Common.MS = 200
 anaSRJigsawSRC3Common.cosS = 0.8
 anaSRJigsawSRC3Common.nJets = 2
-anaSRJigsawSRC3Common.HT1CM_looser = 700
+anaSRJigsawSRC3Common.HT1CM_loose = 700
+anaSRJigsawSRC3Common.MS_loose = 100
 
 
 anaSRJigsawSRC3a = copy.deepcopy( anaSRJigsawSRC3Common )
@@ -645,7 +648,8 @@ anaSRJigsawSRC4Common.PIoHT1CM = 0.6
 anaSRJigsawSRC4Common.MS = 400
 anaSRJigsawSRC4Common.cosS = 0.8
 anaSRJigsawSRC4Common.nJets = 2
-anaSRJigsawSRC4Common.HT1CM_looser = 700
+anaSRJigsawSRC4Common.MS_loose = 100
+anaSRJigsawSRC4Common.HT1CM_loose = 700
 
 
 anaSRJigsawSRC4a = copy.deepcopy( anaSRJigsawSRC4Common )

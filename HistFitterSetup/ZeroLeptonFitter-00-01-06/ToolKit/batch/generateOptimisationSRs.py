@@ -188,6 +188,16 @@ if nChunks != 1:
 i=0
 
 SignalRegions = [
+
+"SR2jl",
+"SR2jm",
+"SR2jt",
+"SR4jt",
+"SR5j",
+"SR6jm",
+"SR6jt",
+
+
 "SRJigsawSRG1a",
 "SRJigsawSRG1b",
 "SRJigsawSRG1c",

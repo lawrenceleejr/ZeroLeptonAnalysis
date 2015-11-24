@@ -233,6 +233,7 @@ class ChannelConfig:
         self.PIoHT1CM=-1
         self.cosS=-1
         self.MS=-1
+        self.MS_loose=-1
         self.HT1CM=-1
         self.HT1CM_loose=-1
 
@@ -288,7 +289,8 @@ class ChannelConfig:
         self.regionsWithInvertedPIoHT1CMCutList = []#["CRQ"]
 
         self.regionsWithLooserScaleCuts = ["CRTZL","CRT","CRW","CRY"]
-        self.regionsWithoutMSCutList = self.regionsWithLooserScaleCuts
+        self.regionsWithoutMSCutList = []#self.regionsWithLooserScaleCuts
+        self.regionsWithLooserMSCutList = self.regionsWithLooserScaleCuts
         self.regionsWithLooserH2PPCutList = self.regionsWithLooserScaleCuts
 
 
@@ -496,6 +498,8 @@ class ChannelConfig:
                 cutList.append( " MS <= %f"%self.MS )
             elif regionName in self.regionsWithoutMSCutList:
                 pass
+            elif regionName in self.regionsWithLooserMSCutList:
+                cutList.append( " MS >= %f"%self.MS_loose )
             else:
                 cutList.append( " MS >= %f"%self.MS )
 
