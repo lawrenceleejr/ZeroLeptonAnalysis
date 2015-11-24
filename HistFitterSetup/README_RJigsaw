@@ -1,5 +1,7 @@
 #LL
 
+#Make sure you compile HistFitter by going into the src directory and running mak. Then...
+
 # Basically just run 
 source setup.sh
 
