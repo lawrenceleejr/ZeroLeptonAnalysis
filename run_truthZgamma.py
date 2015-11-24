@@ -20,6 +20,7 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("--driver"      , help="select where to run", choices=("direct","lsf", "prooflite", "grid"), default="direct")
 parser.add_option('--isTest', action="store_true", default=False)
+parser.add_option('--dryRun', action="store_true", default=False)
 #parser.add_argument('--no-isTest', dest='isTest', action='store_false')
 parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("znunu_lo","gamma","both")         , default="both")
 #parser.add_option("--nevents", type=int, help="number of events to process for all the datasets")
@@ -421,10 +422,13 @@ for mysamplehandlername in sh_bg.keys():
 #        driver = ROOT.EL.CondorDriver()
 #        driver.shellInit = 'lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
 
-	if os.path.exists( tempDirDict[mysamplehandlername] ):
-		shutil.rmtree( tempDirDict[mysamplehandlername] )
-        print "submitting to dir : " + tempDirDict[mysamplehandlername]
-	driver.submit(job, tempDirDict[mysamplehandlername] )
+        if options.dryRun :
+            quite_exit()
+
+        if os.path.exists( tempDirDict[mysamplehandlername] ):
+            shutil.rmtree( tempDirDict[mysamplehandlername] )
+            print "submitting to dir : " + tempDirDict[mysamplehandlername]
+            driver.submit(job, tempDirDict[mysamplehandlername] )
 
 
 
