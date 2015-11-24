@@ -649,7 +649,7 @@ anaSRJigsawSRC4Common.HT1CM_looser = 700
 
 
 anaSRJigsawSRC4a = copy.deepcopy( anaSRJigsawSRC4Common )
-anaSRJigsawSRC4a.name = "SRJigsawSRC4aCo"
+anaSRJigsawSRC4a.name = "SRJigsawSRC4a"
 anaSRJigsawSRC4a.HT1CM = 700
 finalChannelsDict[anaSRJigsawSRC4a.name]=anaSRJigsawSRC4a
 
