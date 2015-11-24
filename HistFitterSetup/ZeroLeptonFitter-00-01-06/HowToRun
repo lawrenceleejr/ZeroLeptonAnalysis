@@ -4,20 +4,28 @@
 
 ./ToolKit/batch/generateOptimisationSRs.py --grid=GG_direct --entire-grid
 
-# This is a bit sloppy, but run the submission script in a "dry_run" mode to create the worker scripts
-# Run on the json file produced by the above command
 
-./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXX.json --dry_run
+# IF USING LXBATCH OR AN LSF SYSTEM:
 
-# This thing is making scripts that aren't excecutable which pisses off lxbatch. So fix it with...
+  # This is a bit sloppy, but run the submission script in a "dry_run" mode to create the worker scripts
+  # Run on the json file produced by the above command
 
-chmod +x Jobs/*sh 
+  ./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXX.json --dry_run
+
+  # This thing is making scripts that aren't excecutable which pisses off lxbatch. So fix it with...
+
+  chmod +x Jobs/*sh 
+
+# FI
+
 
 # Then you can submit it. 
 
-./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXXXX.json 
+./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXXXX.json  # add a "site=Oz" or "Columbia"
+ or whatever if not running on LSF.
 
 # Then you can convert these into json with
 
 python makeJSON.py optimisation-XXXXXXXX/
 
+# then there's a sensitivityFromJSON.py script in the plottingScripts directory that you can play with. 
