@@ -3,6 +3,7 @@
 # This generates the commands to run. Change grid to whatever signal grid you want...
 
 ./ToolKit/batch/generateOptimisationSRs.py --grid=GG_direct --entire-grid
+./ToolKit/batch/generateOptimisationSRs.py --grid=SS_direct --entire-grid
 
 
 # IF USING LXBATCH OR AN LSF SYSTEM:
@@ -21,7 +22,7 @@
 
 # Then you can submit it. 
 
-./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXXXX.json  # add a "site=Oz" or "Columbia"
+./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXXXX.json  # add a "--site=Oz" or "Columbia"
  or whatever if not running on LSF.
 
 # Then you can convert these into json with
