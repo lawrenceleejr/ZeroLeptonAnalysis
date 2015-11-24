@@ -99,6 +99,13 @@ plottedsignals["SR2BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_
 plottedsignals["SR3ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 plottedsignals["SR3BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 
+plottedsignals["SR1ACo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR1BCo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR2ACo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR2BCo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR3ACo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR3BCo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+
 
 plottedsignals["SR1A"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
 plottedsignals["SR1B"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
@@ -123,13 +130,19 @@ regions = [
 # "SR2jt",
 
 
-"SR1ASq",
-"SR1BSq",
-"SR2ASq",
-"SR2BSq",
-"SR3ASq",
-"SR3BSq",
+# "SR1ASq",
+# "SR1BSq",
+# "SR2ASq",
+# "SR2BSq",
+# "SR3ASq",
+# "SR3BSq",
 
+# "SR1ACo",
+# "SR1BCo",
+# "SR2ACo",
+# "SR2BCo",
+# "SR3ACo",
+# "SR3BCo",
 
 "SR1A",
 "SR1B",
@@ -285,6 +298,6 @@ for region in regions:
 	# plt.show()
 
 	print "saving"
-	fig.savefig("N-1Plots/%s.png"%histogramName)
+	fig.savefig("N-1Plots/%s.png"%histogramName, dpi=300)
 
 

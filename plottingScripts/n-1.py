@@ -102,6 +102,16 @@ plottedsignals["SR3ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_
 plottedsignals["SR3BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 
 
+plottedsignals["SR1ACo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR1BCo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR2ACo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR2BCo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR3ACo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR3BCo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR4ACo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SR4BCo"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+
+
 plottedsignals["SR1A"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
 plottedsignals["SR1B"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
 plottedsignals["SR1C"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
@@ -142,7 +152,10 @@ for histogramName in histogramNames:
 	# if not("SR2j" in histogramName):
 	# 	continue
 
-	if not("SR3A" in histogramName):
+	# if not("SR3A" in histogramName):
+	# 	continue
+
+	if not("Co" in histogramName):
 		continue
 
 	plt.clf()
