@@ -231,6 +231,7 @@ class ChannelConfig:
         #Compressed Variables
         self.RPTHT1CM_upper=+999
         self.PIoHT1CM=-1
+        self.PIoHT1CM_CR=-1
         self.cosS=-1
         self.MS=-1
         self.MS_loose=-1
@@ -292,6 +293,8 @@ class ChannelConfig:
         self.regionsWithoutMSCutList = []#self.regionsWithLooserScaleCuts
         self.regionsWithLooserMSCutList = self.regionsWithLooserScaleCuts
         self.regionsWithLooserH2PPCutList = self.regionsWithLooserScaleCuts
+
+        self.CRList = ["CRTZL","CRT","CRW","CRY"]
 
 
         self.WithoutMeffCut = False
@@ -473,7 +476,7 @@ class ChannelConfig:
 
             varName="MET/(MET"
             for ijet in range(self.nJets):
-                varName += " + pT_jet%d" % ijet+1
+                varName += " + pT_jet%s"%(str(ijet+1) )
             varName += ")"
             
             if regionName in self.regionsWithInvertedMETOVERMEFFCutList:
@@ -577,7 +580,9 @@ class ChannelConfig:
             else:
                 cutList.append( " dangle >= %f"%self.dangle_upper   )
 
-        if self.PIoHT1CM>=0:
+        if self.PIoHT1CM_CR>=0 and regionName in self.CRList:
+            cutList.append(  " PIoHT1CM >= %f "%self.PIoHT1CM_CR   )
+        elif self.PIoHT1CM>=0:
             if regionName in self.regionsWithInvertedPIoHT1CMCutList:
                 cutList.append(  " PIoHT1CM <= %f "%self.PIoHT1CM   )
             else:
