@@ -102,8 +102,8 @@ elif configMgr.userArg != "" and args.optimisationRegion is not None:
     channel.regionDict = regionDict
     log.info("Using optimisation region defined from %s" % args.optimisationRegion)
 
-    zlFitterConfig.luminosity = 4.0
-    log.warning("Forcing optimisation luminosity to {0} fb-1".format(zlFitterConfig.luminosity))
+    # zlFitterConfig.luminosity = 4.0
+    # log.warning("Forcing optimisation luminosity to {0} fb-1".format(zlFitterConfig.luminosity))
 
 if zlFitterConfig.useFilteredNtuples:
     channel.useFilteredNtuples = True
@@ -736,64 +736,64 @@ for point in allpoints:
     # Hadronic CRs - LL
     ######################################################################
 
-    for regionName in zlFitterConfig.allRegionsList():
-        treeBaseName = regionDict[regionName].suffixTreeName
+    # for regionName in zlFitterConfig.allRegionsList():
+    #     treeBaseName = regionDict[regionName].suffixTreeName
 
-        # select only regions with leptons
-        if treeBaseName not in ["SRAll"]:
-            continue
-        if "CR" not in regionName:
-            continue
+    #     # select only regions with leptons
+    #     if treeBaseName not in ["SRAll"]:
+    #         continue
+    #     if "CR" not in regionName:
+    #         continue
 
-        #setup region
-        if not zlFitterConfig.useShapeFit:
-            REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
-        else:
-            REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
-            REGION.useOverflowBin = True
-            REGION.useUnderflowBin = False
+    #     #setup region
+    #     if not zlFitterConfig.useShapeFit:
+    #         REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
+    #     else:
+    #         REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
+    #         REGION.useOverflowBin = True
+    #         REGION.useUnderflowBin = False
 
-        #set the treename
-        for sam in REGION.sampleList:
-            sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
-            if "Data" in sam.treeName:
-                sam.setFileList(dataFiles)
-                pass
+    #     #set the treename
+    #     for sam in REGION.sampleList:
+    #         sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
+    #         if "Data" in sam.treeName:
+    #             sam.setFileList(dataFiles)
+    #             pass
 
-        # extra weights
-        extraWeightList = regionDict[regionName].extraWeightList
-        for extraWeight in extraWeightList:
-            REGION.addWeight(extraWeight)
+    #     # extra weights
+    #     extraWeightList = regionDict[regionName].extraWeightList
+    #     for extraWeight in extraWeightList:
+    #         REGION.addWeight(extraWeight)
 
-        #bTagging uncertainties
-        if zlFitterConfig.useBTagUncertainties and "bTagWeight" in regionDict[regionName].extraWeightList:
+    #     #bTagging uncertainties
+    #     if zlFitterConfig.useBTagUncertainties and "bTagWeight" in regionDict[regionName].extraWeightList:
 
-            btagSystematicList = []
+    #         btagSystematicList = []
 
-            bTagSystWeightsBUp = myreplace(REGION.weights, ["bTagWeightBUp"] , "bTagWeight")
-            bTagSystWeightsBDown = myreplace(REGION.weights, ["bTagWeightBDown"] , "bTagWeight")
-            btagSystematicList.append(Systematic("bTagSysB", REGION.weights  , bTagSystWeightsBUp, bTagSystWeightsBDown, "weight", "overallNormHistoSys"))
+    #         bTagSystWeightsBUp = myreplace(REGION.weights, ["bTagWeightBUp"] , "bTagWeight")
+    #         bTagSystWeightsBDown = myreplace(REGION.weights, ["bTagWeightBDown"] , "bTagWeight")
+    #         btagSystematicList.append(Systematic("bTagSysB", REGION.weights  , bTagSystWeightsBUp, bTagSystWeightsBDown, "weight", "overallNormHistoSys"))
 
-            bTagSystWeightsCUp = myreplace(REGION.weights, ["bTagWeightCUp"] , "bTagWeight")
-            bTagSystWeightsCDown = myreplace(REGION.weights, ["bTagWeightCDown"] , "bTagWeight")
-            btagSystematicList.append(Systematic("bTagSysC", REGION.weights  , bTagSystWeightsCUp, bTagSystWeightsCDown, "weight", "overallNormHistoSys"))
+    #         bTagSystWeightsCUp = myreplace(REGION.weights, ["bTagWeightCUp"] , "bTagWeight")
+    #         bTagSystWeightsCDown = myreplace(REGION.weights, ["bTagWeightCDown"] , "bTagWeight")
+    #         btagSystematicList.append(Systematic("bTagSysC", REGION.weights  , bTagSystWeightsCUp, bTagSystWeightsCDown, "weight", "overallNormHistoSys"))
 
-            bTagSystWeightsLUp = myreplace(REGION.weights, ["bTagWeightLUp"] , "bTagWeight")
-            bTagSystWeightsLDown = myreplace(REGION.weights, ["bTagWeightLDown"] , "bTagWeight")
-            btagSystematicList.append(Systematic("bTagSysL", REGION.weights  , bTagSystWeightsLUp, bTagSystWeightsLDown, "weight", "overallNormHistoSys"))
+    #         bTagSystWeightsLUp = myreplace(REGION.weights, ["bTagWeightLUp"] , "bTagWeight")
+    #         bTagSystWeightsLDown = myreplace(REGION.weights, ["bTagWeightLDown"] , "bTagWeight")
+    #         btagSystematicList.append(Systematic("bTagSysL", REGION.weights  , bTagSystWeightsLUp, bTagSystWeightsLDown, "weight", "overallNormHistoSys"))
 
-            for sys in btagSystematicList:
-                sam.addSystematic(sys)
+    #         for sys in btagSystematicList:
+    #             sam.addSystematic(sys)
 
-        # set region type
-        if regionName in zlFitterConfig.constrainingRegionsList:
-            myFitConfig.setBkgConstrainChannels(REGION)
-        else:
-            myFitConfig.setValidationChannels(REGION)
+    #     # set region type
+    #     if regionName in zlFitterConfig.constrainingRegionsList:
+    #         myFitConfig.setBkgConstrainChannels(REGION)
+    #     else:
+    #         myFitConfig.setValidationChannels(REGION)
 
 
-        if zlFitterConfig.useQCDsample:
-            REGION.addSample(qcdSample)
+    #     if zlFitterConfig.useQCDsample:
+    #         REGION.addSample(qcdSample)
 
 
     ######################################################################
