@@ -19,10 +19,10 @@ ROOT.gROOT.SetBatch(True)
 import AtlasStyle
 
 reweightfile = ROOT.TFile('ratZG.root')
-reweighthist = reweightfile.Get('ratZG_met')
+reweighthist = reweightfile.Get('met_met50')
 myfiles = {
-	'Znunu'  : root_open('outputfiles/rundir_znunu_lo.root'),
-	'Gamma'  : root_open('outputfiles/rundir_gamma.root'),
+	'Znunu'  : root_open('rundir_znunu_lo.root'),
+	'Gamma'  : root_open('rundir_gamma.root'),
 }
 
 outputdir =  'plots/'
@@ -88,6 +88,10 @@ for counter, histoKey in enumerate(histoList) :
     leg4.SetBorderSize(0)
     leg4.AddEntry(histos['Znunu'] , 'Znunu')
 
+    if histos['Gamma'].GetNbinsX() > 30 :
+        histos['Gamma'].Rebin(10)
+        histos['Znunu'].Rebin(10)
+
     histos['Gamma'].Draw('p')
     histos['Znunu'].Draw('psame')
 
@@ -96,7 +100,7 @@ for counter, histoKey in enumerate(histoList) :
         histos['GammaReweight'].SetLineColor(ROOT.kGreen+2)
         histos['GammaReweight'].SetMarkerColor(ROOT.kGreen+2)
         histos['GammaReweight'].SetMarkerStyle(ROOT.kFullCircle)
-        
+
         scalef = histos['GammaReweight'].Integral()/histos['Gamma'].Integral() if histos['Gamma'].Integral()>0. else 0.
         histos['Gamma'].Scale(scalef)
         histos['GammaReweight'].Draw('psame')
@@ -120,7 +124,7 @@ for counter, histoKey in enumerate(histoList) :
 
     ratio = histos['Znunu'].Clone()
     ratio.SetMinimum(0)
-    ratio.SetMaximum(5.0)
+    ratio.SetMaximum(3)
     ratio.Sumw2()
     ratio.Divide(histos['Gamma'])
 
@@ -142,9 +146,12 @@ for counter, histoKey in enumerate(histoList) :
     ratio.Draw()
     if 'GammaReweight' in histos.keys():
         ratio2 = histos['GammaReweight'].Clone()
+
+        ratio2.SetMaximum(.5)
+        ratio2.SetMaximum(1.5)
         ratio2.Sumw2()
-        ratio2.Divide(histos['Gamma'])
-        ratio2.Draw('same')
+#        ratio2.Divide(histos['Gamma'])
+#        ratio2.Draw('same')
 
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')

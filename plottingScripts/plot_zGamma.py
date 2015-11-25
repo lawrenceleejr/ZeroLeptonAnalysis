@@ -15,19 +15,21 @@ from rootpy.io import root_open
 # from pylab import *
 import os
 
-ROOT.gROOT.SetBatch(True)
 import AtlasStyle
 
+ROOT.gROOT.SetBatch(True)
+#AtlasStyle.SetAtlasStyle()
+
 myfiles = {
-	'Znunu'  : root_open('rundir_znunu_lo.root'),
-	'Gamma'  : root_open('rundir_gamma.root'),
+	'Znunu'  : root_open('../rundir_znunu_lo.root'),
+	'Gamma'  : root_open('../rundir_gamma.root'),
 }
 
 histoList = myfiles["Znunu"].GetListOfKeys()
 #histoList.Print()
 
 for counter, histoKey in enumerate(histoList) :
-#    def printHisto( key ) :
+    def printHisto( key ) :
         histos = {}
         for name, ifile in myfiles.items() :
             histos[name] = ifile.Get(histoKey.GetName())
@@ -36,7 +38,7 @@ for counter, histoKey in enumerate(histoList) :
                 return None
             if( not histos[name].GetEntries()) :
                 return None
-            print histoKey.GetName()+ " " + str(name) +  " " + str(histos[name].GetEntries())
+            print histoKey.GetName()+ " " + str(name) +  str(histos[name].GetEntries())
 
 
         c1 = ROOT.TCanvas("c1_"+histoKey.GetName(),
@@ -71,14 +73,9 @@ for counter, histoKey in enumerate(histoList) :
         pad2.Draw()
         pad2.cd()
 
-        if "cutflow" in histos["Znunu"].GetName():
-            pad2.SetBottomMargin(0.6)
-            pad2.SetRightMargin(0.3)
-            pad1.SetRightMargin(0.3)
-
         ratio = histos["Znunu"].Clone()
         ratio.SetMinimum(0)
-        ratio.SetMaximum(1.0)
+        ratio.SetMaximum(.5)
         ratio.Sumw2()
         ratio.Divide(histos["Gamma"])
 
@@ -105,7 +102,7 @@ for counter, histoKey in enumerate(histoList) :
         histos = None
         return
 
-#    printHisto(histoKey)
+    printHisto(histoKey)
 
 import time
 #time.sleep(120)
