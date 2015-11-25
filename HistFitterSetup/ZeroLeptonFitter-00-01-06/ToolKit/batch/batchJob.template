@@ -10,6 +10,7 @@ echo "Using gcc from:"
 which gcc
 echo "Using ROOT from:"
 echo $ROOTSYS
+echo $PYTHONPATH
 source $HISTFITTER/setup.sh
 source $ZEROLEPTONFITTER/setup.sh
 ls -ltr

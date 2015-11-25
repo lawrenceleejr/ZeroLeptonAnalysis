@@ -728,8 +728,8 @@ for point in allpoints:
 
 
 
-        if zlFitterConfig.useQCDsample:
-            REGION.addSample(qcdSample)
+#        if zlFitterConfig.useQCDsample:
+#            REGION.addSample(qcdSample)
 
 
     ######################################################################
