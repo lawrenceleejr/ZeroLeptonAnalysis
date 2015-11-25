@@ -178,6 +178,18 @@ anaSRFAR.meffIncl = 2000
 finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ###########################################################
 # # definition of the channels for plotting purpose
 # ###########################################################
@@ -576,8 +588,10 @@ anaSRJigsawSRC1Common.PIoHT1CM = 0.9
 anaSRJigsawSRC1Common.cosS = 0.8
 anaSRJigsawSRC1Common.nJets = 2
 anaSRJigsawSRC1Common.MS = 0
-anaSRJigsawSRC1Common.HT1CM_loose = 700
-anaSRJigsawSRC1Common.MS_loose = 100
+anaSRJigsawSRC1Common.HT1CM_loose = 300
+anaSRJigsawSRC1Common.MS_loose = 0
+anaSRJigsawSRC1Common.R_H2PP_H3PP = 0
+anaSRJigsawSRC1Common.dPhi = 0.4
 
 
 anaSRJigsawSRC1a = copy.deepcopy( anaSRJigsawSRC1Common )
@@ -600,8 +614,10 @@ anaSRJigsawSRC2Common.PIoHT1CM = 0.8
 anaSRJigsawSRC2Common.MS = 100
 anaSRJigsawSRC2Common.cosS = 0.8
 anaSRJigsawSRC2Common.nJets = 2
-anaSRJigsawSRC2Common.HT1CM_loose = 700
-anaSRJigsawSRC2Common.MS_loose = 100
+anaSRJigsawSRC2Common.HT1CM_loose = 300
+anaSRJigsawSRC2Common.MS_loose = 0
+anaSRJigsawSRC2Common.R_H2PP_H3PP = 0
+anaSRJigsawSRC2Common.dPhi = 0.4
 
 
 anaSRJigsawSRC2a = copy.deepcopy( anaSRJigsawSRC2Common )
@@ -624,8 +640,10 @@ anaSRJigsawSRC3Common.PIoHT1CM = 0.7
 anaSRJigsawSRC3Common.MS = 200
 anaSRJigsawSRC3Common.cosS = 0.8
 anaSRJigsawSRC3Common.nJets = 2
-anaSRJigsawSRC3Common.HT1CM_loose = 700
-anaSRJigsawSRC3Common.MS_loose = 100
+anaSRJigsawSRC3Common.HT1CM_loose = 300
+anaSRJigsawSRC3Common.MS_loose = 0
+anaSRJigsawSRC3Common.R_H2PP_H3PP = 0
+anaSRJigsawSRC3Common.dPhi = 0.4
 
 
 anaSRJigsawSRC3a = copy.deepcopy( anaSRJigsawSRC3Common )
@@ -649,10 +667,11 @@ anaSRJigsawSRC4Common.PIoHT1CM = 0.6
 anaSRJigsawSRC4Common.MS = 400
 anaSRJigsawSRC4Common.cosS = 0.8
 anaSRJigsawSRC4Common.nJets = 2
-anaSRJigsawSRC4Common.MS_loose = 100
-anaSRJigsawSRC4Common.HT1CM_loose = 700
+anaSRJigsawSRC4Common.MS_loose = 0
+anaSRJigsawSRC4Common.HT1CM_loose = 300
 anaSRJigsawSRC4Common.PIoHT1CM_CR = 0.7
-
+anaSRJigsawSRC4Common.R_H2PP_H3PP = 0
+anaSRJigsawSRC4Common.dPhi = 0.4
 
 anaSRJigsawSRC4a = copy.deepcopy( anaSRJigsawSRC4Common )
 anaSRJigsawSRC4a.name = "SRJigsawSRC4a"

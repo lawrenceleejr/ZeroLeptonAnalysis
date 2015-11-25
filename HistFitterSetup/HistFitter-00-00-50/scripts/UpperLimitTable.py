@@ -87,7 +87,7 @@ def latexfitresults(filename, poiname='mu_SIG', lumiFB=1.0, nTOYS=3000, asimov=F
   murangelow = 200
   murangehigh = 350 #40.0 #set here -1. if you want to have automatic determined scan range, if using values != -1, please check the log file if the scan range was large enough
 
-  npoints = int((murangehigh-murangelow)*40.)
+  npoints = int((murangehigh-murangelow)*2.)
 
 
   hti_result = RooStats.DoHypoTestInversion(w,ntoys,calctype,3,True,npoints,murangelow,murangehigh)
