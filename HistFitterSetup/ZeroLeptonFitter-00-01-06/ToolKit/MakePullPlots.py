@@ -203,7 +203,7 @@ def makeSummaryPlots(doPrintOnly=False):
 ##############################################################################
 def main(zlFitterConfig): 
     
-    doBlind = True
+    doBlind = False #unfortunately blinds everything.......LL
     useVRWTM = False
     useChargeAsymmetry = False
 

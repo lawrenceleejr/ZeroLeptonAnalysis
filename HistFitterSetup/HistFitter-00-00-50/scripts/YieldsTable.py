@@ -211,8 +211,14 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   """
   if blinded: 
     for index, nobs in enumerate(nobs_regionListWithBins):
+      if index==len(nobs_regionListWithBins)-1:
+        continue
       nobs_regionListWithBins[index] = -1
+
     tablenumbers['nobs'] = nobs_regionListWithBins
+
+  # LL Blinding?!?
+  tablenumbers['nobs'][-1] = -1
 
 
   """
