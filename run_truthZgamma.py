@@ -34,7 +34,7 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.5  ## in pb-1
-search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/"]
+search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/truth/"]
 #search_directories = ["test/"]
 
 ##
