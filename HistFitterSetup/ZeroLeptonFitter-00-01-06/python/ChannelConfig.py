@@ -257,16 +257,16 @@ class ChannelConfig:
         self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2"]
 
         #region where the dphi cut is not applied
-        self.regionsWithoutDPHICutList = []#["VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]
+        self.regionsWithoutDPHICutList = ["CRWT","CRW","CRT","CRZ","VRZ","VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]+self.regionForVeryLooseCRList
         
         #region where the met/meff cut is not applied
-        self.regionsWithoutMETOVERMEFFCutList = []#self.regionsWithoutDPHICutList
+        self.regionsWithoutMETOVERMEFFCutList = self.regionsWithoutDPHICutList
 
         #region where the met significance cut is not applied
-        self.regionsWithoutMETSIGCutList = []#[]self.regionsWithoutDPHICutList
+        self.regionsWithoutMETSIGCutList = self.regionsWithoutDPHICutList
 
         # region where the Ap cut is not applied
-        self.regionsWithoutApCutList = []#self.regionsWithoutDPHICutList+["CRY","CRQ","VRQ1","VRQ2","VRQ3","VRQ4"]
+        self.regionsWithoutApCutList = self.regionsWithoutDPHICutList+["CRY","CRQ","VRQ1","VRQ2","VRQ3","VRQ4"]
 
 
         ##################################################
