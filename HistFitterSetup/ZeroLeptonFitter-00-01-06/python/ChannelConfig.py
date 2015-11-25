@@ -363,20 +363,20 @@ class ChannelConfig:
         
         #LH commenting out 
         #jets cuts
-        cutList.append("nJet>="+str(self.nJet))
-        if self.nJet>0:
-            max(self.pt0,self.jetPtThreshold)
-            cutList.append(" pT_jet1>="+str(max(self.pt0,self.jetPtThreshold)))
-        if self.nJet>1:
-            cutList.append(" pT_jet2>="+str(max(self.pt1,self.jetPtThreshold)))
-        if self.nJet>2:
-            cutList.append(" pT_jet3>="+str(max(self.pt2,self.jetPtThreshold)))
-        if self.nJet>3:
-            cutList.append(" pT_jet4>="+str(max(self.pt3,self.jetPtThreshold)))
-        if self.nJet>4:
-            cutList.append(" pT_jet5>="+str(max(self.pt4,self.jetPtThreshold)))
-        if self.nJet>5:
-            cutList.append(" pT_jet6>="+str(max(self.pt5,self.jetPtThreshold)))
+        cutList.append("NJet>="+str(self.nJets))
+        if self.nJets>0:
+            # max(self.pt0,self.jetPtThreshold)
+            cutList.append(" pT_jet1>="+str(self.jetpt1  ))
+        if self.nJets>1:
+            cutList.append(" pT_jet2>="+str(self.jetpt2  ))
+        if self.nJets>2:
+            cutList.append(" pT_jet3>="+str(self.jetpt3  ))
+        if self.nJets>3:
+            cutList.append(" pT_jet4>="+str(self.jetpt4  ))
+        if self.nJets>4:
+            cutList.append(" pT_jet5>="+str(self.jetpt5  ))
+        if self.nJets>5:
+            cutList.append(" pT_jet6>="+str(self.jetpt6  ))
         # if self.nJet>6:
         #     cutList.append(" jetP>="+str(max(self.pt6,self.jetPtThreshold)))
         # if self.nJet>7:
