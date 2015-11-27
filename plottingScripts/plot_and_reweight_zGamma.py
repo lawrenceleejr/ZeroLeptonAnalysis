@@ -88,12 +88,14 @@ for counter, histoKey in enumerate(histoList) :
     leg4.SetBorderSize(0)
     leg4.AddEntry(histos['Znunu'] , 'Znunu')
 
-    if histos['Gamma'].GetNbinsX() > 30 :
-        histos['Gamma'].Rebin(10)
-        histos['Znunu'].Rebin(10)
-
+    histos['Gamma'].SetMinimum(0.01)
     histos['Gamma'].Draw('p')
     histos['Znunu'].Draw('psame')
+
+    ratio = histos['Znunu'].Clone(histos['Znunu'].GetName()+'_rat')
+    ratio.SetMinimum(0)
+    ratio.SetMaximum(2)
+    ratio.Sumw2()    
 
     scalef = 1.
     if 'GammaReweight' in histos.keys():
@@ -106,8 +108,11 @@ for counter, histoKey in enumerate(histoList) :
         histos['GammaReweight'].Draw('psame')
         leg4.AddEntry(histos['Gamma'] , 'Gamma#bullet{0:.3f}'.format(scalef))
         leg4.AddEntry(histos['GammaReweight'] , 'Gamma#bulletR(Z/#gamma)')
+
+        ratio.Divide(histos['GammaReweight'])
     else:
         leg4.AddEntry(histos['Gamma'] , 'Gamma')
+        ratio.Divide(histos['Gamma'])
     leg4.Draw('same')
 
     c1.cd()
@@ -121,12 +126,6 @@ for counter, histoKey in enumerate(histoList) :
         pad2.SetBottomMargin(0.6)
         pad2.SetRightMargin(0.3)
         pad1.SetRightMargin(0.3)
-
-    ratio = histos['Znunu'].Clone()
-    ratio.SetMinimum(0)
-    ratio.SetMaximum(3)
-    ratio.Sumw2()
-    ratio.Divide(histos['Gamma'])
 
     ratio.GetYaxis().SetTitle('Z / gamma');
     ratio.GetYaxis().SetNdivisions(505);
@@ -145,13 +144,13 @@ for counter, histoKey in enumerate(histoList) :
 
     ratio.Draw()
     if 'GammaReweight' in histos.keys():
-        ratio2 = histos['GammaReweight'].Clone()
+        ratio2 = histos['Gamma'].Clone(histos['Gamma'].GetName()+'_rat')
 
-        ratio2.SetMaximum(.5)
-        ratio2.SetMaximum(1.5)
+#        ratio2.SetMaximum(.5)
+#        ratio2.SetMaximum(1.5)
         ratio2.Sumw2()
-#        ratio2.Divide(histos['Gamma'])
-#        ratio2.Draw('same')
+        ratio2.Divide(histos['GammaReweight'])
+        ratio2.Draw('same')
 
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')

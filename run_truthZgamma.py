@@ -34,7 +34,7 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.5  ## in pb-1
-search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/truth/"]
+search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/truth.vvFast/"]
 #search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies/"]
 #search_directories = ["test/"]
 
@@ -143,75 +143,75 @@ for mysamplehandlername in sh_bg.keys():
 
         met50_2jet = no_cuts.copy()
         met50_2jet["met>50"] = [50,0,1000]
-        met50_2jet["NTRJigsawVars.RJVars_PP_MDeltaR>0.1"] = [40,0,2000]
+        met50_2jet["NTRJigsawVars.PP_MDeltaR>0.1"] = [40,0,2000]
 
         met100_2jet = no_cuts.copy()
         met100_2jet["met>100"] = [50,0,1000]
-        met100_2jet["NTRJigsawVars.RJVars_PP_MDeltaR>0.1"] = [40,0,2000]
+        met100_2jet["NTRJigsawVars.PP_MDeltaR>0.1"] = [40,0,2000]
 
         met300_2jet = no_cuts.copy()
         met300_2jet["met>300"] = [50,0,1000]
-        met300_2jet["NTRJigsawVars.RJVars_PP_MDeltaR>0.1"] = [40,0,2000]
+        met300_2jet["NTRJigsawVars.PP_MDeltaR>0.1"] = [40,0,2000]
 
 	baseline_cuts = no_cuts.copy()#[]
 	baseline_cuts["met>140"]                                         = [50,0,1000]
-        baseline_cuts["NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300."]      = [50,0,2000]
-        baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<.4"]                 = [50,-1,1]
-        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1 / (1 - NTRJigsawVars.RJVars_QCD_Rsib) > .05"] = [50,-1,1]
+        baseline_cuts["NTRJigsawVars.PP_MDeltaR/1000.>300."]      = [50,0,2000]
+        baseline_cuts["NTRJigsawVars.QCD_Rpt<.4"]                 = [50,-1,1]
+        baseline_cuts["NTRJigsawVars.QCD_Delta1 / (1 - NTRJigsawVars.QCD_Rsib) > .05"] = [50,-1,1]
 #       baseline_cuts["jetPt[0] > 50"]                                                             = [50,0,500]
 #       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
-#        baseline_cuts["NTRJigsawVars.RJVars_QCD_Rpt<0.4"]                                          = [50,-1,1]
-#        baseline_cuts["NTRJigsawVars.RJVars_QCD_Delta1/1000./(1 - NTRJigsawVars.RJVars_QCD_Rsib/1000.)>.05"] = [50,-1,1]
+#        baseline_cuts["NTRJigsawVars.QCD_Rpt<0.4"]                                          = [50,-1,1]
+#        baseline_cuts["NTRJigsawVars.QCD_Delta1/1000./(1 - NTRJigsawVars.QCD_Rsib/1000.)>.05"] = [50,-1,1]
 
         cry_cuts = baseline_cuts.copy()
         print cry_cuts
-#        cry_cuts += ["NTRJigsawVars.RJVars_QCD_Delta1>*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
+#        cry_cuts += ["NTRJigsawVars.QCD_Delta1>*NTRJigsawVars.QCD_Rpsib>-0.7"   ]
 	#
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>150."   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>150."   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>110."   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>110."   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_0_PInvHS>0.25"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_1_PInvHS>0.25"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_dphiVG>0.3 && NTRJigsawVars.RJVars_dphiVG<2.7"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_C_0_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_C_1_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_1_CosTheta<0.8"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_0_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_0_CosTheta<0.7"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_G_1_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_1_CosTheta<0.7"   ]
-	# cry_cuts += ["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.7"]
-	# cry_cuts += ["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_1_dPhiGC)<0.7"]
-	# cry_cuts += ["abs(NTRJigsawVars.RJVars_PP_CosTheta)<0.9"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_PP_VisShape>0.1"   ]
-	# cry_cuts += ["NTRJigsawVars.RJVars_MG/1000.>800"   ]
+	# cry_cuts += ["NTRJigsawVars.G_0_Jet1_pT/1000.>150."   ]
+	# cry_cuts += ["NTRJigsawVars.G_1_Jet1_pT/1000.>150."   ]
+	# cry_cuts += ["NTRJigsawVars.G_0_Jet2_pT/1000.>110."   ]
+	# cry_cuts += ["NTRJigsawVars.G_1_Jet2_pT/1000.>110."   ]
+	# cry_cuts += ["NTRJigsawVars.G_0_PInvHS>0.25"   ]
+	# cry_cuts += ["NTRJigsawVars.G_1_PInvHS>0.25"   ]
+	# cry_cuts += ["NTRJigsawVars.dphiVG>0.3 && NTRJigsawVars.dphiVG<2.7"   ]
+	# cry_cuts += ["NTRJigsawVars.C_0_CosTheta>-0.75 && NTRJigsawVars.C_0_CosTheta<0.8"   ]
+	# cry_cuts += ["NTRJigsawVars.C_1_CosTheta>-0.75 && NTRJigsawVars.C_1_CosTheta<0.8"   ]
+	# cry_cuts += ["NTRJigsawVars.G_0_CosTheta>-0.7 && NTRJigsawVars.G_0_CosTheta<0.7"   ]
+	# cry_cuts += ["NTRJigsawVars.G_1_CosTheta>-0.7 && NTRJigsawVars.G_1_CosTheta<0.7"   ]
+	# cry_cuts += ["cos(NTRJigsawVars.G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.G_0_dPhiGC)<0.7"]
+	# cry_cuts += ["cos(NTRJigsawVars.G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.G_1_dPhiGC)<0.7"]
+	# cry_cuts += ["abs(NTRJigsawVars.PP_CosTheta)<0.9"   ]
+	# cry_cuts += ["NTRJigsawVars.PP_VisShape>0.1"   ]
+	# cry_cuts += ["NTRJigsawVars.MG/1000.>800"   ]
 
 	# cry_limits = []
 	# cry_limits += [ (50,0,1000) ]  #["met>100"]
-	# cry_limits += [ (50,0,2000) ]  #["NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300"   ]
-	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_0_Jet1_pT/1000.>150."   ]
-	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_1_Jet1_pT/1000.>150."   ]
-	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_0_Jet2_pT/1000.>110."   ]
-	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.RJVars_G_1_Jet2_pT/1000.>110."   ]
-	# cry_limits += [ (50,0,1) ]  #["abs(NTRJigsawVars.RJVars_PP_CosTheta)<0.9"   ]
-	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_G_0_PInvHS>0.25 && NTRJigsawVars.RJVars_G_0_PInvHS<1"   ]
-	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_G_1_PInvHS>0.25 && NTRJigsawVars.RJVars_G_0_PInvHS<1"   ]
-	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_G_0_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_0_CosTheta<0.7"   ]
-	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_G_1_CosTheta>-0.7 && NTRJigsawVars.RJVars_G_0_CosTheta<0.7"   ]
-	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_C_0_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
-	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_C_1_CosTheta>-0.75 && NTRJigsawVars.RJVars_C_0_CosTheta<0.8"   ]
-	# cry_limits += [ (50,-1,1) ]  #["cos(NTRJigsawVars.RJVars_G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_0_dPhiGC)<0.7"]
-	# cry_limits += [ (50,-1,1) ]  #["cos(NTRJigsawVars.RJVars_G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.RJVars_G_1_dPhiGC)<0.7"]
-	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_DeltaBetaGG>0.2" ]
-	# cry_limits += [ (50,0,4) ]  #["NTRJigsawVars.RJVars_dphiVG>0.3 && NTRJigsawVars.RJVars_dphiVG<2.7"   ]
-	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.RJVars_QCD_Rpt<0.3"]
-	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
+	# cry_limits += [ (50,0,2000) ]  #["NTRJigsawVars.PP_MDeltaR/1000.>300"   ]
+	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.G_0_Jet1_pT/1000.>150."   ]
+	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.G_1_Jet1_pT/1000.>150."   ]
+	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.G_0_Jet2_pT/1000.>110."   ]
+	# cry_limits += [ (50,0,500) ]  #["NTRJigsawVars.G_1_Jet2_pT/1000.>110."   ]
+	# cry_limits += [ (50,0,1) ]  #["abs(NTRJigsawVars.PP_CosTheta)<0.9"   ]
+	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.G_0_PInvHS>0.25 && NTRJigsawVars.G_0_PInvHS<1"   ]
+	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.G_1_PInvHS>0.25 && NTRJigsawVars.G_0_PInvHS<1"   ]
+	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.G_0_CosTheta>-0.7 && NTRJigsawVars.G_0_CosTheta<0.7"   ]
+	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.G_1_CosTheta>-0.7 && NTRJigsawVars.G_0_CosTheta<0.7"   ]
+	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.C_0_CosTheta>-0.75 && NTRJigsawVars.C_0_CosTheta<0.8"   ]
+	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.C_1_CosTheta>-0.75 && NTRJigsawVars.C_0_CosTheta<0.8"   ]
+	# cry_limits += [ (50,-1,1) ]  #["cos(NTRJigsawVars.G_0_dPhiGC)>-0.8 && cos(NTRJigsawVars.G_0_dPhiGC)<0.7"]
+	# cry_limits += [ (50,-1,1) ]  #["cos(NTRJigsawVars.G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.G_1_dPhiGC)<0.7"]
+	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.DeltaBetaGG>0.2" ]
+	# cry_limits += [ (50,0,4) ]  #["NTRJigsawVars.dphiVG>0.3 && NTRJigsawVars.dphiVG<2.7"   ]
+	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.QCD_Rpt<0.3"]
+	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.QCD_Delta1*NTRJigsawVars.QCD_Rpsib>-0.7"   ]
 	# cry_limits += [ (50,0,1) ]  #visshape
-	# cry_limits += [ (50,0,2000) ]  #["NTRJigsawVars.RJVars_QCD_Delta1*NTRJigsawVars.RJVars_QCD_Rpsib>-0.7"   ]
+	# cry_limits += [ (50,0,2000) ]  #["NTRJigsawVars.QCD_Delta1*NTRJigsawVars.QCD_Rpsib>-0.7"   ]
 
 	## Define your cut strings here....
 	cuts = {
-		# "no_cut": "(NTRJigsawVars.RJVars_G_0_Jet1_pT/1000. > 250)",
+		# "no_cut": "(NTRJigsawVars.G_0_Jet1_pT/1000. > 250)",
 		# "l1trigger": "(NTVars.nJet>1 && met > 100)",
-#		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.RJVars_PP_MDeltaR/1000.>300)",
+#		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.PP_MDeltaR/1000.>300)",
 #		"cry_1200_800": "*".join( ["(%s)"%mycut for mycut in cry_1200_800_cuts ]),
 		"cry_tight"   : cuts_from_dict(cry_cuts),
 		"no_cuts"     : cuts_from_dict(no_cuts),
@@ -244,69 +244,74 @@ for mysamplehandlername in sh_bg.keys():
 
 #include all these
         RJigsawVariables = {
-            "RJVars_PP_MDeltaR"        :  [100, 0 , 1000, True],
-            "RJVars_PP_Mass"           :  [100, 0 , 1000, True],
-            "RJVars_PP_InvGamma"       :  [100, -1 , 1, False ],
-            "RJVars_PP_dPhiBetaR"      :  [100, -1 , 1, False ],
-            "RJVars_PP_dPhiVis"        :  [100, -1 , 1, False ],
-            "RJVars_PP_CosTheta"       :  [100, -1 , 1, False ],
-            "RJVars_PP_dPhiDecayAngle" :  [100, -1 , 1, False ],
-            "RJVars_PP_VisShape"       :  [100, 0  , 1, False ],
-            "RJVars_P1_Mass"           :  [100, 0 , 1000, True],
-            "RJVars_P1_CosTheta"       :  [100, -1 , 1, False ],
-            "RJVars_P2_Mass"           :  [100, 0 , 1000, True],
-            "RJVars_P2_CosTheta"       :  [100, -1 , 1, False ],
-#            "RJVars_I1_Depth"          :  [100, 0 , 1000,False],
-#            "RJVars_I2_Depth"          :  [100, 0 , 1000,False],
-            "RJVars_dphiPV1a"  :  [100, -1 , 1, False ],
-            "RJVars_cosV1a"    :  [100, -1 , 1, False ],
-            "RJVars_dphiCV2a"  :  [100, -1 , 1, False ],
-            "RJVars_cosV2a"    :  [100, -1 , 1, False ],
-            "RJVars_dphiPV1b" :  [100, -1 , 1, False ],
-            "RJVars_cosV1b"   :  [100, -1 , 1, False ],
-            "RJVars_dphiCV2b" :  [100, -1 , 1, False ],
-            "RJVars_cosV2b":  [100, -1 , 1, False ],
-            "RJVars_V1_N" :  [20, 0 , 20, False],
-            "RJVars_V2_N" :  [20, 0 , 20, False],
-            "RJVars_MP"          :  [100, 0 , 1000, True],
-            "RJVars_DeltaBetaGG" :  [100, -1 , 1, False ],
-            "RJVars_dphiVG"      :  [100, -1 , 1, False ],
-            "RJVars_QCD_dPhiR"    :  [100, -1 , 1, False ],
-            "RJVars_QCD_Rpt"      :  [100, -1 , 1, False ],
-            "RJVars_QCD_Rsib"    :  [100, -1 , 1, False ],
-            "RJVars_QCD_Delta1"   :  [100, -1 , 1, False ],
-            "RJVars_H2PP":  [100, 0 , 4000, True],
-            "RJVars_H3PP":  [100, 0 , 4000, True],
-            "RJVars_H4PP":  [100, 0 , 4000, True],
-            "RJVars_H6PP":  [100, 0 , 4000, True],
-            "RJVars_H2Pa":  [100, 0 , 4000, True],
-            "RJVars_H2Pb":  [100, 0 , 4000, True],
-            "RJVars_H3Pa":  [100, 0 , 4000, True],
-            "RJVars_H3Pb":  [100, 0 , 4000, True],
-            "RJVars_H4Pa":  [100, 0 , 4000, True],
-            "RJVars_H4Pb":  [100, 0 , 4000, True],
-            "RJVars_H5Pa":  [100, 0 , 4000, True],
-            "RJVars_H5Pb":  [100, 0 , 4000, True],
-            "RJVars_H2Ca":  [100, 0 , 4000, True],
-            "RJVars_H2Cb":  [100, 0 , 4000, True],
-            "RJVars_H3Ca":  [100, 0 , 4000, True],
-            "RJVars_H3Cb":  [100, 0 , 4000, True],
-            "RJVars_HT4PP":  [100, 0 , 4000, True],
-            "RJVars_HT6PP":  [100, 0 , 4000, True],
-            "RJVars_minH3P":  [100, 0 , 4000, True],
-            "RJVars_sangle":  [100, -1 , 1, False],
-            "RJVars_dangle":  [100, -1 , 1, False ],
-            "RJVars_ddphiPC":  [100, -1 , 1, False ],
-            "RJVars_sdphiPC":  [100, -1 , 1, False ],
-            "RJVars_dH2o3P":  [100, -1 , 1, True],
-            "RJVars_RPZ_HT4PP":  [100, -1 , 1, False],
-            "RJVars_RPZ_HT6PP":  [100, -1 , 1, False ],
+            "Nj50" :               [10,  0 , 10,   False, "Sum$(jetPt>50)"],
+            "HT50" :               [100, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
+            "RJVars_PP_MDeltaR"        :  [100, 0 , 5000, True, ""],
+            "RJVars_PP_Mass"           :  [100, 0 , 5000, True, ""],
+            "RJVars_PP_InvGamma"       :  [100, 0 , 1, False , ""],
+            "RJVars_PP_dPhiBetaR"      :  [100, 0 , 6.4, False , ""],
+            "RJVars_PP_dPhiVis"        :  [100, 0 , 6.4, False , ""],
+            "RJVars_PP_CosTheta"       :  [100, -1 , 1, False , ""],
+            "RJVars_PP_dPhiDecayAngle" :  [100, -3.2 , 3.2, False , ""],
+            "RJVars_PP_VisShape"       :  [100, 0  , 1, False , ""],
+            "RJVars_P1_Mass"           :  [100, 0 , 1000, True, ""],
+            "RJVars_P1_CosTheta"       :  [100, -1 , 1, False , ""],
+            "RJVars_P2_Mass"           :  [100, 0 , 1000, True, ""],
+            "RJVars_P2_CosTheta"       :  [100, -1 , 1, False , ""],
+#           "RJVars_I1_Depth"          :  [100, 0 , 1000,False, ""],
+#           "RJVars_I2_Depth"          :  [100, 0 , 1000,False, ""],
+            "RJVars_dphiPV1a"  :          [100, 0 , 3.2, False , ""],
+            "RJVars_cosV1a"    :          [100, -1 , 1, False , ""],
+            "RJVars_dphiCV2a"  :          [100, 0 , 3.2, False , ""],
+            "RJVars_cosV2a"    :          [100, -1 , 1, False , ""],
+            "RJVars_dphiPV1b" :           [100, 0 , 3.2, False , ""],
+            "RJVars_cosV1b"   :           [100, -1 , 1, False , ""],
+            "RJVars_dphiCV2b" :           [100, 0 , 3.2, False , ""],
+            "RJVars_cosV2b":              [100, -1 , 1, False , ""],
+            "RJVars_V1_N" :               [20, 0 , 20, False, ""],
+            "RJVars_V2_N" :               [20, 0 , 20, False, ""],
+            "RJVars_MP"          :        [100, 0 , 1000, True, ""],
+            "RJVars_dphiVG"      :        [100, -1 , 1, False , ""],
+            "RJVars_QCD_dPhiR"    :       [100, -1 , 1, False , ""],
+            "RJVars_QCD_Rpt"      :       [100, -1 , 1, False , ""],
+            "RJVars_QCD_Rsib"    :        [100, -1 , 1, False , ""],
+            "RJVars_QCD_Delta1"   :       [100, -1 , 1, False , ""],
+            "RJVars_H2PP":                [100, 0 , 5000, True, ""],
+            "RJVars_H3PP":                [100, 0 , 5000, True, ""],
+            "RJVars_H4PP":                [100, 0 , 5000, True, ""],
+            "RJVars_H6PP":                [100, 0 , 5000, True, ""],
+            "RJVars_H2Pa":                [100, 0 , 5000, True, ""],
+            "RJVars_H2Pb":                [100, 0 , 5000, True, ""],
+            "RJVars_H3Pa":                [100, 0 , 5000, True, ""],
+            "RJVars_H3Pb":                [100, 0 , 5000, True, ""],
+            "RJVars_H4Pa":                [100, 0 , 5000, True, ""],
+            "RJVars_H4Pb":                [100, 0 , 5000, True, ""],
+            "RJVars_H5Pa":                [100, 0 , 5000, True, ""],
+            "RJVars_H5Pb":                [100, 0 , 5000, True, ""],
+            "RJVars_H2Ca":                [100, 0 , 5000, True, ""],
+            "RJVars_H2Cb":                [100, 0 , 5000, True, ""],
+            "RJVars_H3Ca":                [100, 0 , 5000, True, ""],
+            "RJVars_H3Cb":                [100, 0 , 5000, True, ""],
+            "RJVars_HT4PP":               [100, 0 , 5000, True, ""],
+            "RJVars_HT6PP":               [100, 0 , 5000, True, ""],
+            "RJVars_minH3P":              [100, 0 , 5000, True, ""],
+            "RJVars_sangle":              [100, 0 , 1, False, ""],
+            "RJVars_dangle":              [100, -1 , 1, False , ""],
+            "RJVars_ddphiPC":             [100, -1 , 1, False , ""],
+            "RJVars_sdphiPC":             [100, -1 , 1, False , ""],
+            "RJVars_RPZ_HT3PP":           [100, 0 , 1, False , ""],
+            "RJVars_RPZ_HT5PP":           [100, 0 , 1, False , ""],
+            "RJVars_R_H2PP_H3PP":         [100, 0 , 1, False, ""],
+            "RJVars_R_H2PP_H5PP":         [100, 0 , 1, False, ""],
+            "RJVars_R_pTj2_H3PP":         [100, 0 , 1, False , ""],
+            "RJVars_minR_pTj2i_H3PPi":    [100, 0 , 1, False , ""],
+            "RJVars_maxR_H1PPi_H2PPi":    [100, 0 , 1, False , ""],
             }
 
         NTVariables = {
             "met"  :  [100, 0 , 1000, False, ""],
             "Nj50" :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
-            "HT50" :  [100, 0 , 1000, False, "Sum$(jetPt*(jetPt>50))"],
+            "HT50" :  [100, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
             }
 	#################################################################################################
 
@@ -314,18 +319,19 @@ for mysamplehandlername in sh_bg.keys():
 
         # Assume that we will want to reweight these
         for cut in cuts:
-            cutstring = "NTVars.eventWeight*%s"%cuts[cut]
+            cutstring = "NTVars.eventWeight*(%s)"%cuts[cut]
 #            cutstring = "1."
             for varname,limits in RJigsawVariables.items() :
 		print varname
-                print cutstring
+                vartoplot = limits[4] if len(limits[4])>0 else varname.replace('RJVars_','NTRJigsawVars.')
+                print varname, ":", vartoplot
                 job.algsAdd (ROOT.MD.AlgHist(ROOT.TH2D(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
                                                        limits[0], limits[1], limits[2],
                                                        metlimits[0], metlimits[1], metlimits[2]
                                                        ),
                                                        #100, 0, 1000),#todo make this use the other half of the dictionary
-                                             "NTRJigsawVars."+varname+"/1000." if limits[3] else  "NTRJigsawVars."+varname,
+                                             vartoplot+"/1000." if limits[3] else vartoplot,
                                              "met",
                                              cutstring
                                              )
@@ -335,12 +341,9 @@ for mysamplehandlername in sh_bg.keys():
             for varname,limits in NTVariables.items() :
                 vartoplot = limits[4] if len(limits[4])>0 else varname
                 print varname, ":", vartoplot
-                print cutstring
                 job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1D(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
-                                                       limits[0],
-                                                       limits[1],
-                                                       limits[2]
+                                                       limits[0], limits[1], limits[2]
                                                        ),
                                                        #100, 0, 1000),#todo make this use the other half of the dictionary
                                              vartoplot+"/1000." if limits[3] else vartoplot,
