@@ -21,8 +21,8 @@ import AtlasStyle
 reweightfile = ROOT.TFile('ratZG.root')
 reweighthist = reweightfile.Get('met_met50')
 myfiles = {
-	'Znunu'  : root_open('rundir_znunu_lo.root'),
-	'Gamma'  : root_open('rundir_gamma.root'),
+	'Znunu'  : root_open('rundir_truth_znunu_lo.root'),
+	'Gamma'  : root_open('rundir_truth_gamma.root'),
 }
 
 outputdir =  'plots/'

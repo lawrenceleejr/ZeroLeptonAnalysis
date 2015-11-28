@@ -94,7 +94,7 @@ sh_bg["znunu_lo" ].printContent()
 tempDirDict = {}
 
 for key in sh_bg.keys() :
-    tempDirDict[key] = "rundir_" + key
+    tempDirDict[key] = "rundir_truth_" + key
 
 #To scale the histograms in the files after the event loop is done...
 def scaleMyRootFiles(mysamplehandlername,mylumi):
@@ -173,11 +173,11 @@ for mysamplehandlername in sh_bg.keys():
 	baseline_cuts = no_cuts.copy()#[]
 	baseline_cuts["met>140"]                                         = [50,0,1000]
         baseline_cuts["NTRJigsawVars.PP_MDeltaR/1000.>300."]      = [50,0,2000]
-        baseline_cuts["NTRJigsawVars.QCD_Rpt<.4"]                 = [50,-1,1]
+        baseline_cuts["NTRJigsawVars.RPT_HT5PP<.4"]                 = [50,-1,1]
         baseline_cuts["NTRJigsawVars.QCD_Delta1 / (1 - NTRJigsawVars.QCD_Rsib) > .05"] = [50,-1,1]
 #       baseline_cuts["jetPt[0] > 50"]                                                             = [50,0,500]
 #       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
-#        baseline_cuts["NTRJigsawVars.QCD_Rpt<0.4"]                                          = [50,-1,1]
+#        baseline_cuts["NTRJigsawVars.RPT_HT5PP<0.4"]                                          = [50,-1,1]
 #        baseline_cuts["NTRJigsawVars.QCD_Delta1/1000./(1 - NTRJigsawVars.QCD_Rsib/1000.)>.05"] = [50,-1,1]
 
         cry_cuts = baseline_cuts.copy()
@@ -219,7 +219,7 @@ for mysamplehandlername in sh_bg.keys():
 	# cry_limits += [ (50,-1,1) ]  #["cos(NTRJigsawVars.G_1_dPhiGC)>-0.8 && cos(NTRJigsawVars.G_1_dPhiGC)<0.7"]
 	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.DeltaBetaGG>0.2" ]
 	# cry_limits += [ (50,0,4) ]  #["NTRJigsawVars.dphiVG>0.3 && NTRJigsawVars.dphiVG<2.7"   ]
-	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.QCD_Rpt<0.3"]
+	# cry_limits += [ (50,0,1) ]  #["NTRJigsawVars.RPT_HT5PP<0.3"]
 	# cry_limits += [ (50,-1,1) ]  #["NTRJigsawVars.QCD_Delta1*NTRJigsawVars.QCD_Rpsib>-0.7"   ]
 	# cry_limits += [ (50,0,1) ]  #visshape
 	# cry_limits += [ (50,0,2000) ]  #["NTRJigsawVars.QCD_Delta1*NTRJigsawVars.QCD_Rpsib>-0.7"   ]

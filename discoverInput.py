@@ -15,7 +15,7 @@ def discover(sh, search_directories):
 
 
 	logging.info("%d different datasets found scanning all directories", len(sh))
-#	sh.printContent()
+	sh.printContent()
 
 	return sh
 
@@ -24,6 +24,7 @@ def discover(sh, search_directories):
 def addTags(sh_all):
 	for sample in sh_all:
 		name = sample.getMetaString("sample_name")
+		print "NAME: ", name
 #		short_name = sample.getMetaString("sample_name").split(".")[4]
 #		sample.setMetaString( "short_name" , short_name )
 #		print short_name
@@ -68,3 +69,11 @@ def addTags(sh_all):
 #			sample.addTag("zjets")
 		if "Sherpa_Wqq" in name:
 			sample.addTag("zjets")
+
+# For merged files
+		if "Zjets" in name:
+			print name, ">>", "zjets"
+			sample.addTag("zjets")
+		if "GammaJet" in name:
+			print name, ">>", "gamma"
+			sample.addTag("gamma")
