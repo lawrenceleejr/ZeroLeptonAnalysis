@@ -35,7 +35,7 @@ for counter, histoKey in enumerate(histoList) :
     histos = {}
     for name, ifile in myfiles.items() :
         hist=ifile.Get(histoKey.GetName())
-        if hist.ClassName() == "TH2D":
+        if hist.ClassName().startswith("TH2"):
             hist2d = hist
             if( not hist2d ) :
                 continue
@@ -53,7 +53,7 @@ for counter, histoKey in enumerate(histoList) :
                     projx.Scale(reweighthist.GetBinContent(ibin))
                     histos[name+'Reweight'].Add(projx)
                 print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
-        elif hist.ClassName() == "TH1D":
+        elif hist.ClassName().startswith("TH1"):# and name.startswith('met'):
             histos[name] = hist
             if( not histos[name] ) :
                 continue
@@ -88,14 +88,17 @@ for counter, histoKey in enumerate(histoList) :
     leg4.SetBorderSize(0)
     leg4.AddEntry(histos['Znunu'] , 'Znunu')
 
-    histos['Gamma'].SetMinimum(0.01)
+    if histos['Gamma'].GetNbinsX() ==100 :
+        for proc in histos.keys():
+            histos[proc].Rebin(4)
+
     histos['Gamma'].Draw('p')
     histos['Znunu'].Draw('psame')
 
-    ratio = histos['Znunu'].Clone(histos['Znunu'].GetName()+'_rat')
+    ratio = histos['Znunu'].Clone(histos['Znunu'].GetName()+'_ratZg')
     ratio.SetMinimum(0)
     ratio.SetMaximum(2)
-    ratio.Sumw2()    
+    ratio.Sumw2()
 
     scalef = 1.
     if 'GammaReweight' in histos.keys():
@@ -108,7 +111,6 @@ for counter, histoKey in enumerate(histoList) :
         histos['GammaReweight'].Draw('psame')
         leg4.AddEntry(histos['Gamma'] , 'Gamma#bullet{0:.3f}'.format(scalef))
         leg4.AddEntry(histos['GammaReweight'] , 'Gamma#bulletR(Z/#gamma)')
-
         ratio.Divide(histos['GammaReweight'])
     else:
         leg4.AddEntry(histos['Gamma'] , 'Gamma')
@@ -126,8 +128,9 @@ for counter, histoKey in enumerate(histoList) :
         pad2.SetBottomMargin(0.6)
         pad2.SetRightMargin(0.3)
         pad1.SetRightMargin(0.3)
+        histos['Gamma'].SetMinimum(1)
 
-    ratio.GetYaxis().SetTitle('Z / gamma');
+    ratio.GetYaxis().SetTitle('Z / #gamma (reweighted)');
     ratio.GetYaxis().SetNdivisions(505);
     ratio.GetYaxis().SetTitleSize(20);
     ratio.GetYaxis().SetTitleFont(43);
@@ -144,13 +147,12 @@ for counter, histoKey in enumerate(histoList) :
 
     ratio.Draw()
     if 'GammaReweight' in histos.keys():
-        ratio2 = histos['Gamma'].Clone(histos['Gamma'].GetName()+'_rat')
-
-#        ratio2.SetMaximum(.5)
-#        ratio2.SetMaximum(1.5)
+        ratio2 = histos['Gamma'].Clone(histos['Gamma'].GetName()+'_ratGg')
         ratio2.Sumw2()
         ratio2.Divide(histos['GammaReweight'])
         ratio2.Draw('same')
+    else:
+        ratio.SetMaximum(0.5)
 
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
