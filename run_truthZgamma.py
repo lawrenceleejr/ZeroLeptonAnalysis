@@ -171,16 +171,18 @@ for mysamplehandlername in sh_bg.keys():
         met300_2jet["NTRJigsawVars.PP_MDeltaR>0.1"] = [40,0,2000]
 
 	baseline_cuts = no_cuts.copy()#[]
-	baseline_cuts["met>140"]                                         = [50,0,1000]
-        baseline_cuts["NTRJigsawVars.PP_MDeltaR/1000.>300."]      = [50,0,2000]
-        baseline_cuts["NTRJigsawVars.RPT_HT5PP<.4"]                 = [50,-1,1]
-        baseline_cuts["NTRJigsawVars.QCD_Delta1 / (1 - NTRJigsawVars.QCD_Rsib) > .05"] = [50,-1,1]
+        baseline_cuts["Max$(jetPt) > 100"] = [50,0,500]
+	baseline_cuts["met>160"]                                         = [50,0,1000]
+        baseline_cuts["meffInc>800"] = [50,0,5000]
 #       baseline_cuts["jetPt[0] > 50"]                                                             = [50,0,500]
 #       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
 #        baseline_cuts["NTRJigsawVars.RPT_HT5PP<0.4"]                                          = [50,-1,1]
 #        baseline_cuts["NTRJigsawVars.QCD_Delta1/1000./(1 - NTRJigsawVars.QCD_Rsib/1000.)>.05"] = [50,-1,1]
 
         cry_cuts = baseline_cuts.copy()
+        cry_cuts["NTRJigsawVars.PP_MDeltaR/1000.>300."]      = [50,0,2000]
+        cry_cuts["NTRJigsawVars.RPT_HT5PP<.4"]                 = [50,-1,1]
+        cry_cuts["NTRJigsawVars.QCD_Delta1 / (1 - NTRJigsawVars.QCD_Rsib) > .05"] = [50,-1,1]
         print cry_cuts
 #        cry_cuts += ["NTRJigsawVars.QCD_Delta1>*NTRJigsawVars.QCD_Rpsib>-0.7"   ]
 	#
@@ -230,6 +232,7 @@ for mysamplehandlername in sh_bg.keys():
 		# "l1trigger": "(NTVars.nJet>1 && met > 100)",
 #		"hlttrigger": "(NTVars.nJet>1 && met > 100)*(NTRJigsawVars.PP_MDeltaR/1000.>300)",
 #		"cry_1200_800": "*".join( ["(%s)"%mycut for mycut in cry_1200_800_cuts ]),
+		"base_meff"   : cuts_from_dict(baseline_cuts),
 		"cry_tight"   : cuts_from_dict(cry_cuts),
 		"no_cuts"     : cuts_from_dict(no_cuts),
 		"met50"       : cuts_from_dict(met50),
@@ -302,9 +305,9 @@ for mysamplehandlername in sh_bg.keys():
             "maxR_H1PPi_H2PPi"       :  [100, 0 , 1, False],
             "R_HT9PP_H9PP"           :  [100, 0 , 1, False],
             "R_H2PP_H9PP"            :  [100, 0 , 1, False],
-            "RPZ_HT3PP"              :  [100, 0 , 1, False],
-            "RPZ_HT5PP"              :  [100, 0 , 1, False],
-            "RPZ_HT9PP"              :  [100, 0 , 1, False],
+            "RPZ_HT3PP"              :  [100, -1 , 1, False],
+            "RPZ_HT5PP"              :  [100, -1 , 1, False],
+            "RPZ_HT9PP"              :  [100, -1 , 1, False],
             "RPT_HT3PP"              :  [100, 0 , 1, False],
             "RPT_HT5PP"              :  [100, 0 , 1, False],
             "RPT_HT9PP"              :  [100, 0 , 1, False],
@@ -359,6 +362,8 @@ for mysamplehandlername in sh_bg.keys():
             "dangle"                 :  [100, -1 , 1, False],
             "Nj50"                   :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
             "HT50"                   :  [100, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
+            "dphi"                   :  [64,  0,  3.2, False, "NTVars.dPhi"],
+            "dphiR"                  :  [64,  0,  3.2, False, "NTVars.dPhiR"],
             }
 
         NTVariables = {

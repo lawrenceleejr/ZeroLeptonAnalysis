@@ -169,23 +169,24 @@ for mysamplehandlername in sh_bg.keys():
         met300_2jet["MDR>0.1"] = [40,0,2000]
 
 	baseline_cuts = no_cuts.copy()#[]
-	baseline_cuts["MET>140"]                                         = [50,0,1000]
-        baseline_cuts["MDR/1000.>300."]      = [50,0,2000]
-        baseline_cuts["RPT_HT5PP<.4"]                 = [50,-1,1]
-        baseline_cuts["deltaQCD / (1 - Rsib) > .05"] = [50,-1,1]
-#       baseline_cuts["jetPt[0] > 50"]                                                             = [50,0,500]
+        baseline_cuts["pT_jet1 > 100"] = [50,0,500]
+	baseline_cuts["MET>160"] = [50,0,1000]
+        baseline_cuts["Meff>800"] = [50,0,5000]
 #       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
 #        baseline_cuts["RPT_HT5PP<0.4"]                                          = [50,-1,1]
-#        baseline_cuts["deltaQCD/1000./(1 - Rsib/1000.)>.05"] = [50,-1,1]
+#        baseline_cuts["deltaQCD./(1 - Rsib.)>.05"] = [50,-1,1]
 
         cry_cuts = baseline_cuts.copy()
+        cry_cuts["MDR.>300."]      = [50,0,2000]
+        cry_cuts["RPT_HT5PP<.4"]                 = [50,-1,1]
+        cry_cuts["deltaQCD / (1 - Rsib) > .05"] = [50,-1,1]
         print cry_cuts
 #        cry_cuts += ["deltaQCD>*QCD_Rpsib>-0.7"   ]
 	#
-	# cry_cuts += ["G_0_Jet1_pT/1000.>150."   ]
-	# cry_cuts += ["G_1_Jet1_pT/1000.>150."   ]
-	# cry_cuts += ["G_0_Jet2_pT/1000.>110."   ]
-	# cry_cuts += ["G_1_Jet2_pT/1000.>110."   ]
+	# cry_cuts += ["G_0_Jet1_pT.>150."   ]
+	# cry_cuts += ["G_1_Jet1_pT.>150."   ]
+	# cry_cuts += ["G_0_Jet2_pT.>110."   ]
+	# cry_cuts += ["G_1_Jet2_pT.>110."   ]
 	# cry_cuts += ["G_0_PInvHS>0.25"   ]
 	# cry_cuts += ["G_1_PInvHS>0.25"   ]
 	# cry_cuts += ["dphiVG>0.3 && dphiVG<2.7"   ]
@@ -197,15 +198,15 @@ for mysamplehandlername in sh_bg.keys():
 	# cry_cuts += ["cos(G_1_dPhiGC)>-0.8 && cos(G_1_dPhiGC)<0.7"]
 	# cry_cuts += ["abs(PP_CosTheta)<0.9"   ]
 	# cry_cuts += ["PP_VisShape>0.1"   ]
-	# cry_cuts += ["MG/1000.>800"   ]
+	# cry_cuts += ["MG.>800"   ]
 
 	# cry_limits = []
 	# cry_limits += [ (50,0,1000) ]  #["MET>100"]
-	# cry_limits += [ (50,0,2000) ]  #["MDR/1000.>300"   ]
-	# cry_limits += [ (50,0,500) ]  #["G_0_Jet1_pT/1000.>150."   ]
-	# cry_limits += [ (50,0,500) ]  #["G_1_Jet1_pT/1000.>150."   ]
-	# cry_limits += [ (50,0,500) ]  #["G_0_Jet2_pT/1000.>110."   ]
-	# cry_limits += [ (50,0,500) ]  #["G_1_Jet2_pT/1000.>110."   ]
+	# cry_limits += [ (50,0,2000) ]  #["MDR.>300"   ]
+	# cry_limits += [ (50,0,500) ]  #["G_0_Jet1_pT.>150."   ]
+	# cry_limits += [ (50,0,500) ]  #["G_1_Jet1_pT.>150."   ]
+	# cry_limits += [ (50,0,500) ]  #["G_0_Jet2_pT.>110."   ]
+	# cry_limits += [ (50,0,500) ]  #["G_1_Jet2_pT.>110."   ]
 	# cry_limits += [ (50,0,1) ]  #["abs(PP_CosTheta)<0.9"   ]
 	# cry_limits += [ (50,0,1) ]  #["G_0_PInvHS>0.25 && G_0_PInvHS<1"   ]
 	# cry_limits += [ (50,0,1) ]  #["G_1_PInvHS>0.25 && G_0_PInvHS<1"   ]
@@ -224,10 +225,11 @@ for mysamplehandlername in sh_bg.keys():
 
 	## Define your cut strings here....
 	cuts = {
-		# "no_cut": "(G_0_Jet1_pT/1000. > 250)",
+		# "no_cut": "(G_0_Jet1_pT. > 250)",
 		# "l1trigger": "(nJet>1 && met > 100)",
-#		"hlttrigger": "(nJet>1 && met > 100)*(MDR/1000.>300)",
+#		"hlttrigger": "(nJet>1 && met > 100)*(MDR.>300)",
 #		"cry_1200_800": "*".join( ["(%s)"%mycut for mycut in cry_1200_800_cuts ]),
+		"base_meff"   : cuts_from_dict(baseline_cuts),
 		"cry_tight"   : cuts_from_dict(cry_cuts),
 		"no_cuts"     : cuts_from_dict(no_cuts),
 		"met50"       : cuts_from_dict(met50),
@@ -344,6 +346,8 @@ for mysamplehandlername in sh_bg.keys():
             "HT6PP"                  :  [100, 0 , 5000, True],
             "sangle"                 :  [100, 0 , 1, False],
             "dangle"                 :  [100, -1 , 1, False],
+            "dphi"                   :  [64,  0 , 3.2, False],
+            "dphiR"                   :  [64,  0 , 3.2, False],
             #"Nj50"                   :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
             #"HT50"                   :  [100, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
             }
@@ -365,7 +369,7 @@ for mysamplehandlername in sh_bg.keys():
 		# print varname
                 # print cutstring
                 vartoplot = limits[4] if len(limits)>4 else varname
-                if limits[3]: vartoplot += '/1000.'
+                #if limits[3]: vartoplot += '/1000.'
                 job.algsAdd (ROOT.MD.AlgHist(ROOT.TH2D(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
                                                        limits[0], limits[1], limits[2],
@@ -388,7 +392,7 @@ for mysamplehandlername in sh_bg.keys():
                                                        limits[0], limits[1], limits[2]
                                                        ),
                                                        #100, 0, 1000),#todo make this use the other half of the dictionary
-                                             vartoplot+"/1000." if limits[3] else vartoplot,
+                                             vartoplot, #+"/1000." if limits[3] else vartoplot,
                                              cutstring
                                              )
                              )
@@ -405,7 +409,7 @@ for mysamplehandlername in sh_bg.keys():
             job.options().setString(ROOT.EL.Job.optSubmitFlags, "-q " + "1nh");
         elif options.driver == "condor":
             driver = ROOT.EL.CondorDriver()
-            driver.shellInit = 'lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
+            #driver.shellInit = 'source /var/clus/usera/khoo/scripts/khoo_setup.sh; lsetup root; lsetup "sft pyanalysis1.4_python2.7"';
 
         if options.dryRun :
             quiet_exit()

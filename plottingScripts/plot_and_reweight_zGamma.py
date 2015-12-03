@@ -18,14 +18,28 @@ import os
 ROOT.gROOT.SetBatch(True)
 import AtlasStyle
 
-reweightfile = ROOT.TFile('ratZG.root')
-reweighthist = reweightfile.Get('met_met50')
-myfiles = {
-	'Znunu'  : root_open('rundir_truth_znunu_lo.root'),
-	'Gamma'  : root_open('rundir_truth_gamma.root'),
-}
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("--dataSource" , help="select reco or truth inputs", choices=("truth","reco"), default="truth")
+(options, args) = parser.parse_args()
 
-outputdir =  'plots/'
+if options.dataSource == 'truth':
+    myfiles = {
+	'Znunu'  : ROOT.TFile('rundir_truth_znunu_lo.root'),
+	'Gamma'  : ROOT.TFile('rundir_truth_gamma.root'),
+        }
+    reweightfile = ROOT.TFile('ratZG.root')
+    reweighthist = reweightfile.Get('met_met50')
+
+elif options.dataSource == 'reco':
+    myfiles = {
+	'Znunu'  : ROOT.TFile('rundir_reco_zjets/hist-Zjets.root'),
+	'Gamma'  : ROOT.TFile('rundir_reco_gamma/hist-GammaJet.root'),
+        }
+    reweightfile = ROOT.TFile('ratZG_reco.root')
+    reweighthist = reweightfile.Get('ratMET_reco')
+
+outputdir =  'plots/'+options.dataSource+'/'
 
 histoList = myfiles['Znunu'].GetListOfKeys()
 #histoList.Print()
@@ -33,6 +47,9 @@ histoList = myfiles['Znunu'].GetListOfKeys()
 for counter, histoKey in enumerate(histoList) :
 #    def printHisto( key ) :
     histos = {}
+    if "PROOF" in histoKey.GetName(): continue
+    if "EventLoop" in histoKey.GetName(): continue
+    if "Missing" in histoKey.GetName(): continue
     for name, ifile in myfiles.items() :
         hist=ifile.Get(histoKey.GetName())
         if hist.ClassName().startswith("TH2"):
@@ -64,15 +81,15 @@ for counter, histoKey in enumerate(histoList) :
     if( not name in histos ) :
         continue
 
-    c1 = ROOT.TCanvas('c1_'+histoKey.GetName(),
-                      'c1_'+histoKey.GetName(),
+    c1 = ROOT.TCanvas('c1_'+histoKey.GetName().replace('$',''),
+                      'c1_'+histoKey.GetName().replace('$',''),
                       600 , 600
                       )
     c1.Draw()
 
     pad1 = ROOT.TPad('pad1','pad1',0. ,0.3, 1.,1.)
     pad1.SetBottomMargin(0);
-    pad1.SetGrid(1,1)
+    #pad1.SetGrid(1,1)
     pad1.Draw()
     pad1.SetLogy()
     pad1.cd()
@@ -97,8 +114,8 @@ for counter, histoKey in enumerate(histoList) :
 
     ratio = histos['Znunu'].Clone(histos['Znunu'].GetName()+'_ratZg')
     ratio.SetMinimum(0)
-    ratio.SetMaximum(2)
-    ratio.Sumw2()
+    ratio.SetMaximum(2.5)
+    #ratio.Sumw2()
 
     scalef = 1.
     if 'GammaReweight' in histos.keys():
@@ -120,7 +137,7 @@ for counter, histoKey in enumerate(histoList) :
     c1.cd()
     pad2 = ROOT.TPad('pad2','pad2',0. ,0.0, 1.,0.3  )
     pad2.SetTopMargin(0);
-    pad2.SetGrid(1,1)
+    #pad2.SetGrid(1,1)
     pad2.Draw()
     pad2.cd()
 
@@ -143,7 +160,7 @@ for counter, histoKey in enumerate(histoList) :
     ratio.GetXaxis().SetTitleOffset(2.);
     ratio.GetXaxis().SetLabelFont(43);
     ratio.GetXaxis().SetLabelSize(15);
-    ratio.GetXaxis().SetTitle(histoKey.GetName().replace('RJVars','').replace('cry_tight','').replace('no_cuts','').replace('_','')) #RJVars_QCD_dPhiR_cry_tight
+    ratio.GetXaxis().SetTitle(histoKey.GetName().replace('RJVars','').replace('cry_tight','').replace('no_cuts','').replace('_','').replace('$','')) #RJVars_QCD_dPhiR_cry_tight
 
     ratio.Draw()
     if 'GammaReweight' in histos.keys():
@@ -152,7 +169,7 @@ for counter, histoKey in enumerate(histoList) :
         ratio2.Divide(histos['GammaReweight'])
         ratio2.Draw('same')
     else:
-        ratio.SetMaximum(0.5)
+        ratio.SetMaximum(1)
 
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
