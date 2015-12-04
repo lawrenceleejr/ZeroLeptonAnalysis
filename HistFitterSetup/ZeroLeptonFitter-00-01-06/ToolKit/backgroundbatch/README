@@ -1,0 +1,99 @@
+Defining SRs
+------------
+
+Generate the optimisation points with e.g.:
+
+./ToolKit/optimisation/generateOptimisationSRs.py --grid=GG_direct --point 1350_250 --nJets 2 3 4 5 --MET 200 400 --jetpt1 200 --jetpt2 200 400 --meff 1400 --point 1500_100 --MET_over_meffNj 0.3 --dPhi 0.4 --point 625_575
+
+If you get a Python crash for a dictionary comprehension, your python version is too old. Make sure you have Python 2.7+ (the default localSetupPyton does this, and so does setup_afs.sh in HistFitter.)
+
+Running
+-------
+
+Then they can all be run using:
+
+./ToolKit/optimisation/runOptimisation.py -f optimisation-GG_direct-20150917-184930.json
+
+This command will NOT overwrite the directory if it already exists. Use -F/--force to do so.
+
+Use --dry_run for tests. Use --local to run locally.
+
+The batch submission behaviour is controlled by the settings in optimisation.cfg. The queue name can be specified on the command line and will overrule the default.
+The submission command can use $QUEUE, $LOG and $SCRIPT, which contain the name of the queue, the name of the output and the name of the script.
+(Note that these files are by default locked for committing to SVN - you should NOT commit changes to them to the repository! For a local edit, you will need an svn lock on the file. Again, do NOT commit the changes to svn, unless you are absolutely sure you will not break things for other users.)
+
+Plotting
+--------
+
+./ToolKit/optimisation/plotResult.py -o optimisation-GG_direct-20150917-184930
+
+It will automatically collect the results and plot values for the optimisation in a 1D plot.
+
+Missing packages when plotting?
+-------------------------------
+
+You have 3 options:
+1) Try to grab them from sft:
+        lsetup "sft releases/pyanalysis/1.5_python2.7-d641e"
+     	lsetup "sft releases/pytools/1.9_python2.7-5c0ab"
+2) Set up a virtual env (if 'virtualenv' is provided)
+3) Install in your per-user site dir
+
+Set up a virtual env directory in $ZEROLEPTONFITTER: (if you're missing both pip and virtualenv, see below)
+
+virtualenv -p `which python` venv
+
+Then activate it using:
+
+source venv/bin/activate
+
+(The setup.sh script in ZeroLeptonFitter does this for you if you call the dir 'venv').
+
+And install any missing packages there. For lxplus, this should suffice:
+
+pip install numpy
+pip install setuptools --upgrade
+pip install mock
+pip install matplotlib
+pip install scipy
+
+You might get a prompt for the natgrid package. Download it from the shown location and run 'python setup.py install'
+
+Installing per-user site packages
+---------------------------------
+
+If you're missing pip _and_ missing virtualenv (as is the case at e.g. Nikhef and NBI), the entire procedure can be bootstrapped.
+This will install packages in $HOME/.local (see "per-user site packages" in the python docs), which gets automatically picked up in your PYTHONPATH.
+
+- Setup Python from cvmfs:
+  $ setupATLAS
+  $ lsetup "python 2.7.9-x86_64-slc6-gcc48"
+  $ lsetup "gcc gcc484_x86_64_slc6"
+- Then, grab setuptools:
+  $ wget https://bootstrap.pypa.io/ez_setup.py -O - | python - --user
+- Grab pip:
+  $ wget https://pypi.python.org/packages/source/p/pip/pip-7.1.2.tar.gz#md5=3823d2343d9f3aaab21cf9c917710196
+  $ tar xvfz pip-7.1.2.tar && cd pip-7.1.2
+  $ python setup.py install --user
+- Fix the shebang line in pip (it exceeds the bash limit):
+  $ $EDITOR `which pip`
+  $ Replace the first line with "#!/usr/bin/env python2.7"
+
+Now you have a working pip. You can do two things:
+1) Install the packages in your own site-packages directory
+2) Install the packages in a virtual environment as above
+
+To install the required packages, do:
+$ CXX=g++ CC=gcc LDSHARED="gcc -shared" pip install --user numpy
+$ CXX=g++ CC=gcc LDSHARED="gcc -shared" pip install --user scipy
+$ CXX=g++ CC=gcc LDSHARED="gcc -shared" pip install --user matplotlib
+
+And finally, test the installation with a simple import:
+$ python -c "import numpy; import scipy; import matplotlib;"
+
+TODO
+----
+- generateOptimisationSRs should be able to split by #points per job
+- a simple script to do the ORing (again functionality needs to go in a module) should exist for all the newly defined SRs
+- selection on points to plot
+

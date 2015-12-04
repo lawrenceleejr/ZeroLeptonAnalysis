@@ -273,12 +273,12 @@ class ChannelConfig:
         ## LL RJigsaw
 
 
-        self.regionsWithInvertedDangleCutList = ["CRTZL","CRQ","VRQ1","VRQ2"]
-        self.regionsWithInvertedRPZCutList = ["CRTZL"]
+        self.regionsWithInvertedDangleCutList = ["VRTZL","CRQ","VRQ1","VRQ2"]
+        self.regionsWithInvertedRPZCutList = ["VRTZL"]
         # self.regionsWithInvertedDangleCutList = ["CRT"]
         # self.regionsWithInvertedRPZCutList = ["CRT"]
 
-        self.regionsWithLooserDeltaQCDCutList = ["CRTZL"]
+        self.regionsWithLooserDeltaQCDCutList = ["VRTZL"]
         self.regionsWithoutDeltaQCDCutList = []
         self.regionsWithoutRPTCutList = ["CRQ","VRQ1","VRQ2"]
 
@@ -289,12 +289,16 @@ class ChannelConfig:
         self.regionsWithInvertedMSCutList = []
         self.regionsWithInvertedPIoHT1CMCutList = []#["CRQ"]
 
-        self.regionsWithLooserScaleCuts = ["CRTZL","CRT","CRW","CRY"]
-        self.regionsWithoutMSCutList = []#self.regionsWithLooserScaleCuts
-        self.regionsWithLooserMSCutList = self.regionsWithLooserScaleCuts
-        self.regionsWithLooserH2PPCutList = self.regionsWithLooserScaleCuts
+        # self.regionsWithLooserScaleCuts = ["VRTZL","CRT","CRW","CRY", "VRZa","VRWa","VRTa"]
+        # self.regionsWithLooserMSCutList = ["VRTZL","CRT","CRW","CRY", "VRZb","VRWb","VRTb"]
+        # self.regionsWithLooserH2PPCutList = ["VRTZL","CRT","CRW","CRY", "VRZb","VRWb","VRTb"]
 
-        self.CRList = ["CRTZL","CRT","CRW","CRY"]
+        self.regionsWithLooserScaleCuts = ["VRTZL","CRT","CRW", "VRZa","VRWa","VRTa"]
+        self.regionsWithoutMSCutList = []#self.regionsWithLooserScaleCuts
+        self.regionsWithLooserMSCutList = ["VRTZL","CRT","CRW", "VRZb","VRWb","VRTb"]
+        self.regionsWithLooserH2PPCutList = ["VRTZL","CRT","CRW", "VRZb","VRWb","VRTb"]
+
+        self.CRList = ["CRT","CRW","CRY"]
 
 
         self.WithoutMeffCut = False
@@ -649,17 +653,12 @@ class ChannelConfig:
         print "Regions with inverted met/meff cut : ", self.regionsWithInvertedMETOVERMEFFCutList
         print "Using LL's RJigsaw Version........"
 
-        #region with fully inverted dphi cuts
-        self.regionsWithFullyInvertedDPHICutList = ["CRQ","VRQ1"]
+        print "Regions with self.regionsWithLooserScaleCuts   : ", self.regionsWithLooserScaleCuts           
+        print "Regions with self.regionsWithoutMSCutList      : ", self.regionsWithoutMSCutList           
+        print "Regions with self.regionsWithLooserMSCutList   : ", self.regionsWithLooserMSCutList           
+        print "Regions with self.regionsWithLooserH2PPCutList : ", self.regionsWithLooserH2PPCutList           
 
-        #region with intermediate dphi cuts
-        self.regionsWithIntermediateDPHICutList = ["VRQ4","VRQ3"]
 
-        #region with inverted metsig cuts
-        self.regionsWithInvertedMETSIGCutList = ["CRQ","VRQ2","VRQ4"]
-
-        #region with inverted metovermeff cuts
-        self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2","VRQ4"]
 
         print "=================================================="
         print "Cuts:" 

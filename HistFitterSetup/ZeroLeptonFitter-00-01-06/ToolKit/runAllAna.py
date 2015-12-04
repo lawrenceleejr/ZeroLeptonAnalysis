@@ -32,7 +32,7 @@ def main():
     
     
     scriptname = os.environ['ZEROLEPTONFITTER']+"/analysis/ZeroLepton_Run2_RJigsaw.py" #ATT
-    runList = finalChannelsDict.keys()
+    runList = finalChannelsDict.keys()[:5]
 
 
     option = "-t -w -f "

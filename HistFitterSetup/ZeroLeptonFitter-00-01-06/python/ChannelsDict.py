@@ -12,7 +12,6 @@ regionDict["SR"] = Region("SR", "SRAll", [cleaningCut], [])
 regionDict["CRW"] = Region("CRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
 regionDict["CRT"] = Region("CRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
 # regionDict["CRT"] = Region("CRT", "SRAll", ["nBJet>0"], ["bTagWeight"])
-# regionDict["CRTZL"] = Region("CRTZL", "SRAll", ["nBJet>0", cleaningCut], ["bTagWeight"])
 #regionDict["CRTZL"] = Region("CRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
 regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
 
@@ -25,7 +24,7 @@ regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
 # regionDict["VRWM"] = Region("VRWM", "VRWT", ["nBJet==0"], ["bTagWeight"])
 # regionDict["VRTM"] = Region("VRTM", "VRWT", ["nBJet>0"], ["bTagWeight"])
 
-regionDict["CRZ"] = Region("CRZ", "CRZ", [], [])
+# regionDict["CRZ"] = Region("CRZ", "CRZ", [], [])
 
 # regionDict["VRWTplus"] = Region("VRWTplus", "CRWT", ["lep1sign>0"], ["bTagWeight"])
 # regionDict["VRWTminus"] = Region("VRWTminus", "CRWT", ["lep1sign<0"], ["bTagWeight"])
@@ -43,16 +42,24 @@ regionDict["VRQ2"] = Region("VRQ2", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ4"] = Region("VRQ4", "SRAll", [cleaningCut])#ATT: qcd weight
 
 regionDict["VRZ"] = Region("VRZ", "CRZ", [], [])
+regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
+regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
+regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
+
 # regionDict["VRZf"] = Region("VRZf", "CRZ", [], [])
 
 # regionDict["VRT2L"] = Region("VRT2L", "CRZ_VR1b", ["(mll>116000 &&  lep1Pt<200000 && lep2Pt<100000)"], [])#ATT: qcd weight
 
 
 # ##for data-driven BG estimation##
-# regionDict["VRW"] = Region("VRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
+regionDict["VRW"] = Region("VRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
+regionDict["VRWa"] = Region("VRWa", "CRWT", ["nBJet==0"], ["bTagWeight"])
+regionDict["VRWb"] = Region("VRWb", "CRWT", ["nBJet==0"], ["bTagWeight"])
 # regionDict["CRWL"] = Region("VRWL", "CRWT", ["nBJet==0"], ["bTagWeight"])
 # regionDict["CRWVL"] = Region("VRWVL", "CRWT", ["nBJet==0"], ["bTagWeight"])
-# regionDict["VRT"] = Region("VRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
+regionDict["VRT"] = Region("VRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
+regionDict["VRTa"] = Region("VRTa", "CRWT", ["nBJet>0"], ["bTagWeight"])
+regionDict["VRTb"] = Region("VRTb", "CRWT", ["nBJet>0"], ["bTagWeight"])
 # regionDict["CRTL"] = Region("VRTL", "CRWT", ["nBJet>0"], ["bTagWeight"])
 # regionDict["CRTVL"] = Region("VRTVL", "CRWT", ["nBJet>0"], ["bTagWeight" ])
 # regionDict["CRYL"] = Region("CRYL", "CRY", ["(phSignal==1 && phPt>130."], [])#extra weights should be applied only to gamma+jets

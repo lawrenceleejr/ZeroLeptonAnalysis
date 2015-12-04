@@ -618,7 +618,14 @@ for point in allpoints:
         #SR_loose = myFitConfig.addChannel("cuts", ["SR_meffcut_relaxed"], 1, 0.5, 1.5)
 
         SR = myFitConfig.addChannel("cuts", [zlFitterConfig.SRName], 1, 0.5, 1.5)
+        # myFitConfig.addChannel("Meff", [zlFitterConfig.SRName], 50, 0, 3000)
+        # myFitConfig.addChannel("MET", [zlFitterConfig.SRName], 50, 0, 3000)
         #SR.remapSystChanName = "cuts_SR_meffcut_relaxed"
+
+
+
+
+
     else:
         SR = myFitConfig.addChannel(zlFitterConfig.binVar, [zlFitterConfig.SRName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
         SR.useOverflowBin = True

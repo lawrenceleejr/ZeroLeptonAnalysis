@@ -115,6 +115,8 @@ def GetFrame(outFileNamePrefix,Npar,horizontal=False):
     
         # global style settings
         gPad.SetTicks();
+        # gPad.SetLogy()
+        # gPad.SetGrid()
         frame.SetLabelFont(42,"X");
         frame.SetTitleFont(42,"X");
         frame.SetLabelFont(42,"Y");
@@ -243,9 +245,11 @@ def MakeHist(regionList, renamedRegions, results, hdata, hbkg, hbkgUp, hbkgDown,
         hbkgDown.SetBinContent(counter+1, nExp-nExpTotErDo)
 
     hdata.SetMaximum(1.3*max)
+    # if gPad:
+    #     gPad.SetLogy()
     #if min<=0: min=0.5
     #hdata.SetMinimum(0.95*min)
-    hdata.SetMinimum(0.)
+    hdata.SetMinimum(-1.)
     #hdata.SetMinimum(0.1)
     return
 
@@ -324,6 +328,9 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     upperPad.cd()  
 
     hdata.Draw("E")
+    # if hdata.Integral():
+    #     gPad.SetLogy()
+        
     stack = THStack("stack","stack")
     for h in hbkgComponents:
         stack.Add(h)
@@ -337,7 +344,7 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     graph_data.Draw("P")
     hdata.Draw("E,same")
     hdata.Draw("same,axis")
-   
+
     lowerPad.cd()
     
     # Draw frame with pulls
@@ -348,8 +355,8 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     all = []
     GetBoxes(all, hresults, renamedRegions, frame, doBlind, True)
 
-    c.Print("histpull_"+outFileNamePrefix+".eps")
-    c.Print("histpull_"+outFileNamePrefix+".png")
+    # c.Print("histpull_"+outFileNamePrefix+".eps")
+    # c.Print("histpull_"+outFileNamePrefix+".png")
     c.Print("histpull_"+outFileNamePrefix+".pdf")
     
     return
