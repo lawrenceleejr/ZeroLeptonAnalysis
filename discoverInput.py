@@ -63,17 +63,27 @@ def addTags(sh_all):
 
 		if "PowHP8EvG_W" in name:
 			sample.addTag("wjets")
-		if "PowHP8EvG_Z" in name:
-			sample.addTag("zjets")
+		if "Sherpa_Znunu" in name :
+			if "SUSY1" in name :
+				sample.addTag("zjets_reco")
+			if "TRUTH1" in name :
+				sample.addTag("zjets_truth")
+
+		if "Sherpa_1Gam" in name :
+			if "SUSY1" in name :
+				sample.addTag("gamma_reco")
+			if "TRUTH1" in name :
+				sample.addTag("gamma_truth")
+
 #		if "Znunu" in name:
 #			sample.addTag("zjets")
 		if "Sherpa_Wqq" in name:
 			sample.addTag("zjets")
 
 # For merged files
-		if "Zjets" in name:
-			print name, ">>", "zjets"
-			sample.addTag("zjets")
-		if "GammaJet" in name:
-			print name, ">>", "gamma"
-			sample.addTag("gamma")
+		# if "Zjets" in name:
+		# 	print name, ">>", "zjets"
+		# 	sample.addTag("zjets")
+		# if "GammaJet" in name:
+		# 	print name, ">>", "gamma"
+		# 	sample.addTag("gamma")
