@@ -36,6 +36,12 @@ def quiet_exit():
 def cuts_from_dict(cutdict):
     return "*".join( ["(%s)"%mycut for mycut in cutdict.keys() ])
 
+def checkBranchExists(branchname, chain) :
+    checkBranchExistsBool = False
+    for branch in mychain.GetListOfBranches() :
+        if varname == branch.GetName() : checkBranchExistsBool = True
+    return checkBranchExistsBool
+
 logging.info("loading packages")
 ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 
@@ -128,22 +134,23 @@ def scaleMyRootFiles(mysamplehandlername,mylumi):
 
 for mysamplehandlername in sh_bg.keys():
         mysamplehandler = sh_bg[mysamplehandlername]
+        mychain = None
         for sample in mysamplehandler:
                 mychain = sample.makeTChain()
                 print sample
                 print mychain.GetEntries()
 #                print mychain.Print()
-		# m_nevt = 0
-		# m_sumw = 0
-		# for ifile in xrange(sample.numFiles() ):
-		# 	myfile = ROOT.TFile(sample.fileName(ifile))
-		# 	try:
-		# 		m_nevt += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(1)
-		# 		m_sumw += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(2)
-		# 	except:
-		# 		pass
-		# sample.setMetaDouble("nc_nevt",m_nevt)
-		# sample.setMetaDouble("nc_sumw",m_sumw)
+		m_nevt = 0
+		m_sumw = 0
+		for ifile in xrange(sample.numFiles() ):
+			myfile = ROOT.TFile(sample.fileName(ifile))
+			try:
+				m_nevt += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(1)
+				m_sumw += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(2)
+			except:
+				pass
+		sample.setMetaDouble("nc_nevt",m_nevt)
+		sample.setMetaDouble("nc_sumw",m_sumw)
 
 
 	job = ROOT.EL.Job()
@@ -372,13 +379,15 @@ for mysamplehandlername in sh_bg.keys():
 
         # Assume that we will want to reweight these
         for cut in cuts:
-            cutstring = "weight*(%s)"%cuts[cut]
+            cutstring = "NTVars.eventWeight*(%s)"%cuts[cut]
 #            cutstring = "1."
             for varname,limits in RJigsawVariables.items() :
 		# print varname
                 # print cutstring
                 vartoplot = limits[4] if len(limits)>4 else varname
                 #if limits[3]: vartoplot += '/1000.'
+#                if not checkBranchExists(varname, mychain) : continue
+
                 job.algsAdd (ROOT.MD.AlgHist(ROOT.TH2D(varname+"_%s"%cut,
                                                        varname+"_%s"%cut,
                                                        limits[0], limits[1], limits[2],
@@ -430,7 +439,7 @@ for mysamplehandlername in sh_bg.keys():
 
         mysamplehandler.printContent()
 #	if mysamplehandler!=sh_data:
-        #scaleMyRootFiles(mysamplehandlername,lumi)
-        #os.system('hadd -f %s.root %s/hist*root*'%(tempDirDict[mysamplehandlername] ,tempDirDict[mysamplehandlername] ) )
+        scaleMyRootFiles(mysamplehandlername,lumi)
+        os.system('hadd -f %s.root %s/hist*root*'%(tempDirDict[mysamplehandlername] ,tempDirDict[mysamplehandlername] ) )
 
 #	if mysamplehandler!=sh_signal:
