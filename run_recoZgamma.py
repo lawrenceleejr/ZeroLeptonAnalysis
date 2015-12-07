@@ -63,10 +63,12 @@ sh_all = ROOT.SH.SampleHandler()
 
 discoverInput.discover(sh_all, search_directories)
 
-sh_all.setMetaString("nc_tree", "GAMMA_CRY")
+sh_all.setMetaString("nc_tree", "CRY_SRAllNT")
 
 logging.info("adding my tags defined in discoverInput.py")
 discoverInput.addTags(sh_all)
+
+ROOT.SH.readSusyMeta(sh_all,"optimization/susy_crosssections_13TeV.txt")
 
 ## Split up samplehandler into per-BG SH's based on tag metadata
 
@@ -76,16 +78,22 @@ sh_bg = {}
 
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
-sh_bg["gamma"] = sh_all.find("gamma")
-sh_bg["zjets"] = sh_all.find("zjets")
-#sh_bg["znunu_nlo"] = sh_all.find("znunu_nlo")
 
-sh_bg["gamma"].setMetaString("nc_tree","GAMMA_CRY")
-sh_bg["zjets"].setMetaString("nc_tree","Z_SRAll")
+#sh_bg["gamma_reco"] = sh_all.find("gamma_reco")
+sh_bg["zjets_reco"] = sh_all.find("zjets_reco")
+#sh_bg["zjets_truth"] = sh_all.find("zjets_truth")
+#sh_bg["gamma_truth"] = sh_all.find("gamma_truth")
+
+#sh_bg["gamma_reco"].setMetaString("nc_tree", "CRY_SRAllNT")
+#sh_bg["gamma"].setMetaString("nc_tree","GAMMA_CRY")
+#sh_bg["zjets_truth"].setMetaString("nc_tree","SRAllNT"    )
+#sh_bg["gamma_truth"].setMetaString("nc_tree","CRY_SRAllNT")
+sh_bg["zjets_reco"].setMetaString("nc_tree","SRAllNT")
 
 print sh_bg
-sh_bg["gamma"].printContent()
-sh_bg["zjets" ].printContent()
+#sh_bg["gamma_reco"].printContent()
+#sh_bg["zjets_reco" ].printContent()
+#sh_bg["zjets_truth" ].printContent()
 #sh_bg["znunu_nlo"].printContent()
 
 #Creation of output directory names
@@ -145,43 +153,43 @@ for mysamplehandlername in sh_bg.keys():
 	no_cuts["1"] = [50,0,1000]
 
         met50 = no_cuts.copy()
-        met50["MET>50"] = [50,0,1000]
+        met50["met>50"] = [50,0,1000]
 
         met100 = no_cuts.copy()
-        met100["MET>100"] = [50,0,1000]
+        met100["met>100"] = [50,0,1000]
 
         met160 = no_cuts.copy()
-        met160["MET>160"] = [50,0,1000]
+        met160["met>160"] = [50,0,1000]
 
         met300 = no_cuts.copy()
-        met300["MET>300"] = [50,0,1000]
+        met300["met>300"] = [50,0,1000]
 
         met50_2jet = no_cuts.copy()
-        met50_2jet["MET>50"] = [50,0,1000]
-        met50_2jet["MDR>0.1"] = [40,0,2000]
+        met50_2jet["met>50"] = [50,0,1000]
+        met50_2jet["PP_MDeltaR>0.1"] = [40,0,2000]
 
         met100_2jet = no_cuts.copy()
-        met100_2jet["MET>100"] = [50,0,1000]
-        met100_2jet["MDR>0.1"] = [40,0,2000]
+        met100_2jet["met>100"] = [50,0,1000]
+        met100_2jet["PP_MDeltaR>0.1"] = [40,0,2000]
 
         met300_2jet = no_cuts.copy()
-        met300_2jet["MET>300"] = [50,0,1000]
-        met300_2jet["MDR>0.1"] = [40,0,2000]
+        met300_2jet["met>300"] = [50,0,1000]
+        met300_2jet["PP_MDeltaR>0.1"] = [40,0,2000]
 
 	baseline_cuts = no_cuts.copy()#[]
-        baseline_cuts["pT_jet1 > 100"] = [50,0,500]
-	baseline_cuts["MET>160"] = [50,0,1000]
-        baseline_cuts["Meff>800"] = [50,0,5000]
+#        baseline_cuts["jetPt[0] > 100"] = [50,0,500]
+	baseline_cuts["met>160"] = [50,0,1000]
+        baseline_cuts["meffInc>800"] = [50,0,5000]
 #       baseline_cuts["jetPt[1] > 50"]                                                             = [50,0,500]
 #        baseline_cuts["RPT_HT5PP<0.4"]                                          = [50,-1,1]
-#        baseline_cuts["deltaQCD./(1 - Rsib.)>.05"] = [50,-1,1]
+#        baseline_cuts["QCD_Delta1./(1 - QCD_Rsib.)>.05"] = [50,-1,1]
 
         cry_cuts = baseline_cuts.copy()
-        cry_cuts["MDR.>300."]      = [50,0,2000]
+        cry_cuts["PP_MDeltaR>300."]      = [50,0,2000]
         cry_cuts["RPT_HT5PP<.4"]                 = [50,-1,1]
-        cry_cuts["deltaQCD / (1 - Rsib) > .05"] = [50,-1,1]
+        cry_cuts["QCD_Delta1 / (1 - QCD_Rsib) > .05"] = [50,-1,1]
         print cry_cuts
-#        cry_cuts += ["deltaQCD>*QCD_Rpsib>-0.7"   ]
+#        cry_cuts += ["QCD_Delta1>*QCD_Rpsib>-0.7"   ]
 	#
 	# cry_cuts += ["G_0_Jet1_pT.>150."   ]
 	# cry_cuts += ["G_1_Jet1_pT.>150."   ]
@@ -201,7 +209,7 @@ for mysamplehandlername in sh_bg.keys():
 	# cry_cuts += ["MG.>800"   ]
 
 	# cry_limits = []
-	# cry_limits += [ (50,0,1000) ]  #["MET>100"]
+	# cry_limits += [ (50,0,1000) ]  #["met>100"]
 	# cry_limits += [ (50,0,2000) ]  #["MDR.>300"   ]
 	# cry_limits += [ (50,0,500) ]  #["G_0_Jet1_pT.>150."   ]
 	# cry_limits += [ (50,0,500) ]  #["G_1_Jet1_pT.>150."   ]
@@ -219,9 +227,9 @@ for mysamplehandlername in sh_bg.keys():
 	# cry_limits += [ (50,0,1) ]  #["DeltaBetaGG>0.2" ]
 	# cry_limits += [ (50,0,4) ]  #["dphiVG>0.3 && dphiVG<2.7"   ]
 	# cry_limits += [ (50,0,1) ]  #["RPT_HT5PP<0.3"]
-	# cry_limits += [ (50,-1,1) ]  #["deltaQCD*QCD_Rpsib>-0.7"   ]
+	# cry_limits += [ (50,-1,1) ]  #["QCD_Delta1*QCD_Rpsib>-0.7"   ]
 	# cry_limits += [ (50,0,1) ]  #visshape
-	# cry_limits += [ (50,0,2000) ]  #["deltaQCD*QCD_Rpsib>-0.7"   ]
+	# cry_limits += [ (50,0,2000) ]  #["QCD_Delta1*QCD_Rpsib>-0.7"   ]
 
 	## Define your cut strings here....
 	cuts = {
@@ -247,14 +255,14 @@ for mysamplehandlername in sh_bg.keys():
 	## This part sets up both N-1 hists and the cutflow histogram for "cry_tight"
 
 	cutflow = ROOT.TH1D ("cutflow", "cutflow", len(cry_cuts.keys())+1 , 0, len(cry_cuts.keys())+1 );
-	cutflow.GetXaxis().SetBinLabel (1, "weight");
+	cutflow.GetXaxis().SetBinLabel (1, "NTVars.eventWeight");
 
 	for i,cutpart in enumerate(cry_cuts.keys()):
 
             cutpartname = cutpart.split("/")[0].replace("*","x").split("<")[0].split(">")[0]
             job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1D("cry_tight_minus_%s"%cutpartname, "cry_tight_%s"%cutpartname, cry_cuts.values()[i][0], cry_cuts.values()[i][1], cry_cuts.values()[i][2] ),
                                          cutpart.split("<")[0].split(">")[0],
-                                         "weight*%s"%("*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() if  mycut!=cutpart ]))    )        )
+                                         "NTVars.eventWeight*%s"%("*".join( ["(%s)"%mycut for mycut in cry_cuts.keys() if  mycut!=cutpart ]))    )        )
 
             cutflow.GetXaxis().SetBinLabel (i+2, cutpart);
 
@@ -272,7 +280,7 @@ for mysamplehandlername in sh_bg.keys():
             "NVS"                    :  [10,  0 , 10, False ],
             "RPT_HT1CM"              :  [100, 0 , 1, False ],
             "MS"                     :  [100,  0, 5000, True ],
-            "ddphiP"                 :  [100, -1 , 1, False ],
+           "ddphiP"                 :  [100, -1 , 1, False ],
             "sdphiP"                 :  [100, 0 , 1, False ],
             "pPP_Ia"                 :  [100, 0 , 5000, True],
             "pPP_Ib"                 :  [100, 0 , 5000, True ],
@@ -308,26 +316,27 @@ for mysamplehandlername in sh_bg.keys():
             "RPT_HT3PP"              :  [100, 0 , 1, False],
             "RPT_HT5PP"              :  [100, 0 , 1, False],
             "RPT_HT9PP"              :  [100, 0 , 1, False],
-            "cosPP"            :  [100, -1 , 1, False],
+#           "cosPP"            :  [100, -1 , 1, False],
+           "PP_CosTheta"            :  [100, -1 , 1, False],
             "PP_VisShape"            :  [100, 0 , 1, True],
-            "MDR"             :  [100, 0 , 2000, True],
+            "PP_MDeltaR"             :  [100, 0 , 2000, True],
             "dphiPV1a"               :  [64, 0, 6.4, False],
             "cosV1a"                 :  [100, -1 , 1, False ],
             "dphiCV2a"               :  [64, 0 , 6.4, False],
             "cosV2a"                 :  [100, -1 , 1, False],
             "dphiPV1b"               :  [64, 0 , 6.4, False ],
             "cosV1b"                 :  [100, -1 , 1, False ],
-            "dphiCV2b"               :  [64, 0 , 6.4, False ],
+           "dphiCV2b"               :  [64, 0 , 6.4, False ],
             "cosV2b"                 :  [100, -1 , 1, False ],
             "NJa"                    :  [10, 0 , 10, False ],
             "NJb"                    :  [10, 0 , 10, False ],
-#            "QCD_dPhiR"              :  [100, -1 , 1, False ], # always -100
-            "Rsib"               :  [100, 0 , 1, False ],
-            "deltaQCD"             :  [100, -1 , 1, False ],
+           "QCD_dPhiR"              :  [100, -1 , 1, False ], # always -100
+            "QCD_Rsib"               :  [100, 0 , 1, False ],
+            "QCD_Delta1"             :  [100, -1 , 1, False ],
             "H2PP"                   :  [100, 0 , 5000, True ],
             "H3PP"                   :  [100, 0 , 5000, True ],
             "H4PP"                   :  [100, 0 , 5000, True ],
-            "H6PP"                   :  [100, 0 , 5000, True ],
+           "H6PP"                   :  [100, 0 , 5000, True ],
             "H10PP"                  :  [100, 0 , 5000, True ],
             "HT10PP"                 :  [100, 0 , 5000, True ],
             "H2Pa"                   :  [100, 0 , 5000, True ],
@@ -346,14 +355,14 @@ for mysamplehandlername in sh_bg.keys():
             "HT6PP"                  :  [100, 0 , 5000, True],
             "sangle"                 :  [100, 0 , 1, False],
             "dangle"                 :  [100, -1 , 1, False],
-            "dphi"                   :  [64,  0 , 3.2, False],
-            "dphiR"                   :  [64,  0 , 3.2, False],
+            "dPhi"                   :  [64,  0 , 3.2, False],
+            "QCD_dPhiR"              :  [64,  0 , 3.2, False],
             #"Nj50"                   :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
             #"HT50"                   :  [100, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
             }
 
         NTVariables = {
-            "MET"  :  [100, 0 , 1000, False],
+            "met"  :  [100, 0 , 1000, False],
 #            "Nj50" :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
 #            "HT50" :  [100, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
             }
@@ -377,7 +386,7 @@ for mysamplehandlername in sh_bg.keys():
                                                        ),
                                                        #100, 0, 1000),#todo make this use the other half of the dictionary
                                              vartoplot,
-                                             "MET",
+                                             "met",
                                              cutstring
                                              )
                              )
