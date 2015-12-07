@@ -21,7 +21,7 @@ parser.add_option("--driver"      , help="select where to run", choices=("direct
 parser.add_option('--isTest', action="store_true", default=False)
 parser.add_option('--dryRun', action="store_true", default=False)
 #parser.add_argument('--no-isTest', dest='isTest', action='store_false')
-parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("Zjets","GammaJet","both")         , default="both")
+parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("z_reco","gamma_reco","z_truth", "gamma_truth","all")         , default="all")
 #parser.add_option("--nevents", type=int, help="number of events to process for all the datasets")
 #parser.add_option("--skip-events", type=int, help="skip the first n events")
 #parser.add_option("--runTag", help="", default="Test_XXYYZZa")
@@ -85,22 +85,41 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 
-#sh_bg["gamma_reco"] = sh_all.find("gamma_reco")
-sh_bg["zjets_reco"] = sh_all.find("zjets_reco")
-#sh_bg["zjets_truth"] = sh_all.find("zjets_truth")
-#sh_bg["gamma_truth"] = sh_all.find("gamma_truth")
+if   options.samplesToRun == "gamma_reco" :
+    sh_bg["gamma_reco"] = sh_all.find("gamma_reco")
+    sh_bg["gamma_reco"].setMetaString("nc_tree", "CRY_SRAllNT")
+elif options.samplesToRun == "z_reco" :
+    sh_bg["z_reco"] = sh_all.find("z_reco")
+    sh_bg["z_reco"].setMetaString("nc_tree", "SRAllNT")
+elif options.samplesToRun == "z_truth" :
+    sh_bg["z_truth"] = sh_all.find("z_truth")
+    sh_bg["z_truth"].setMetaString("nc_tree", "SRAllNT")
+elif options.samplesToRun == "gamma_truth" :
+    sh_bg["gamma_truth"] = sh_all.find("gamma_truth")
+    sh_bg["gamma_truth"].setMetaString("nc_tree", "CRY_SRAllNT")
+elif options.samplesToRun == "all" :
+    sh_bg["gamma_reco"] = sh_all.find("gamma_reco")
+    sh_bg["gamma_reco"].setMetaString("nc_tree", "CRY_SRAllNT")
 
-#sh_bg["gamma_reco"].setMetaString("nc_tree", "CRY_SRAllNT")
-#sh_bg["gamma"].setMetaString("nc_tree","GAMMA_CRY")
-#sh_bg["zjets_truth"].setMetaString("nc_tree","SRAllNT"    )
-#sh_bg["gamma_truth"].setMetaString("nc_tree","CRY_SRAllNT")
-sh_bg["zjets_reco"].setMetaString("nc_tree","SRAllNT")
+    sh_bg["z_reco"] = sh_all.find("z_reco")
+    sh_bg["z_reco"].setMetaString("nc_tree", "SRAllNT")
+
+    sh_bg["z_truth"] = sh_all.find("z_truth")
+    sh_bg["z_truth"].setMetaString("nc_tree", "SRAllNT")
+
+    sh_bg["gamma_truth"] = sh_all.find("gamma_truth")
+    sh_bg["gamma_truth"].setMetaString("nc_tree", "CRY_SRAllNT")
+else :
+    print 'please give a sample to run on.  Exiting.'
+    quiet_exit()
+
+
 
 print sh_bg
-#sh_bg["gamma_reco"].printContent()
-#sh_bg["zjets_reco" ].printContent()
-#sh_bg["zjets_truth" ].printContent()
-#sh_bg["znunu_nlo"].printContent()
+
+for key, sh in sh_bg.iteritems() :
+    print key
+    sh.printContent()
 
 #Creation of output directory names
 tempDirDict = {}
