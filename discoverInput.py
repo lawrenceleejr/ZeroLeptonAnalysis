@@ -65,9 +65,9 @@ def addTags(sh_all):
 			sample.addTag("wjets")
 		if "Sherpa_Znunu" in name :
 			if "SUSY1" in name :
-				sample.addTag("zjets_reco")
+				sample.addTag("z_reco")
 			if "TRUTH1" in name :
-				sample.addTag("zjets_truth")
+				sample.addTag("z_truth")
 
 		if "Sherpa_1Gam" in name :
 			if "SUSY1" in name :
