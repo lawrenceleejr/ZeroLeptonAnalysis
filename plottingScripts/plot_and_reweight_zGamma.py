@@ -3,16 +3,6 @@ import rootpy.ROOT as ROOT
 import numpy as np
 from rootpy.io import root_open
 
-# from rootpy.plotting import Hist, HistStack, Legend, Canvas, Graph
-# from rootpy.plotting.style import get_style, set_style
-# from rootpy.plotting.utils import get_limits
-# from rootpy.interactive import wait
-# from rootpy.io import root_open
-# import rootpy.plotting.root2matplotlib as rplt
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
-# from matplotlib.ticker import AutoMinorLocator, MultipleLocator
-# from pylab import *
 import os
 
 ROOT.gROOT.SetBatch(True)
@@ -21,23 +11,23 @@ import AtlasStyle
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("--dataSource" , help="select reco or truth inputs", choices=("truth","reco"), default="truth")
+parser.add_option("--meOrder" , help="select lo or nlo Z", choices=("lo","nlo"), default="lo")
 (options, args) = parser.parse_args()
 
+reweightfile = ROOT.TFile('ratZG.root')
+reweighthist = None
 if options.dataSource == 'truth':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_truth_znunu_lo.root'),
-	'Gamma'  : ROOT.TFile('rundir_truth_gamma.root'),
+	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_truth.root'),
+	'Gamma'  : ROOT.TFile('rundir_gamma_truth.root'),
         }
-    reweightfile = ROOT.TFile('ratZG.root')
-    reweighthist = reweightfile.Get('met_met50')
-
+    reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
 elif options.dataSource == 'reco':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_reco_zjets/hist-Zjets.root'),
-	'Gamma'  : ROOT.TFile('rundir_reco_gamma/hist-GammaJet.root'),
+	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_reco.root'),
+	'Gamma'  : ROOT.TFile('rundir_gamma_reco.root'),
         }
-    reweightfile = ROOT.TFile('ratZG_reco.root')
-    reweighthist = reweightfile.Get('ratMET_reco')
+    reweighthist = reweightfile.Get('reco/Rzg_bosonPt_no_cuts')
 
 outputdir =  'plots/'+options.dataSource+'/'
 
@@ -58,7 +48,7 @@ for counter, histoKey in enumerate(histoList) :
                 continue
             if( not hist2d.GetEntries()) :
                 continue
-            print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(hist2d.GetEntries())
+            #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(hist2d.GetEntries())
             if name=='Znunu':
                 histos[name] = hist2d.ProjectionX(hist2d.GetName()+'_znunu')
             else:
@@ -69,14 +59,14 @@ for counter, histoKey in enumerate(histoList) :
                     projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',ibin,ibin)
                     projx.Scale(reweighthist.GetBinContent(ibin))
                     histos[name+'Reweight'].Add(projx)
-                print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
+                #print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
         elif hist.ClassName().startswith("TH1"):# and name.startswith('met'):
             histos[name] = hist
             if( not histos[name] ) :
                 continue
             if( not histos[name].GetEntries()) :
                 continue
-            print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
+            #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
 
     if( not name in histos ) :
         continue
@@ -97,17 +87,19 @@ for counter, histoKey in enumerate(histoList) :
 #    histos['Znunu'] = histos['Znunu']
     histos['Znunu'].SetLineColor(ROOT.kRed)
     histos['Znunu'].SetMarkerColor(ROOT.kRed)
-    histos['Znunu'].SetMarkerStyle(ROOT.kFullCircle)
+    histos['Znunu'].SetMarkerStyle(ROOT.kFullSquare)
     histos['Gamma'].SetMarkerStyle(ROOT.kOpenCircle)
+    histos['Znunu'].SetMarkerSize(0.7)
+    histos['Gamma'].SetMarkerSize(0.7)
 
     leg4 = ROOT.TLegend(.6, 0.6, 0.9, 0.8) if 'GammaReweight' in histos.keys() else ROOT.TLegend(.6, 0.6, 0.8, 0.8)
     leg4.SetFillStyle(0)
     leg4.SetBorderSize(0)
     leg4.AddEntry(histos['Znunu'] , 'Znunu')
 
-    if histos['Gamma'].GetNbinsX() ==100 :
-        for proc in histos.keys():
-            histos[proc].Rebin(4)
+    # if histos['Gamma'].GetNbinsX() ==100 :
+    #     for proc in histos.keys():
+    #         histos[proc].Rebin(4)
 
     histos['Gamma'].Draw('p')
     histos['Znunu'].Draw('psame')
@@ -122,6 +114,7 @@ for counter, histoKey in enumerate(histoList) :
         histos['GammaReweight'].SetLineColor(ROOT.kGreen+2)
         histos['GammaReweight'].SetMarkerColor(ROOT.kGreen+2)
         histos['GammaReweight'].SetMarkerStyle(ROOT.kFullCircle)
+        histos['GammaReweight'].SetMarkerSize(0.7)
 
         scalef = histos['GammaReweight'].Integral()/histos['Gamma'].Integral() if histos['Gamma'].Integral()>0. else 0.
         histos['Gamma'].Scale(scalef)
