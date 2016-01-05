@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rootpy.ROOT as ROOT
-import numpy as np
+#import numpy as np
 from rootpy.io import root_open
 
 import os
@@ -10,8 +10,9 @@ import AtlasStyle
 
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option("--dataSource" , help="select reco or truth inputs", choices=("truth","reco"), default="truth")
-parser.add_option("--meOrder" , help="select lo or nlo Z", choices=("lo","nlo"), default="lo")
+parser.add_option('--dataSource' , help='select reco or truth inputs', choices=('truth','reco'), default='truth')
+parser.add_option('--meOrder' , help='select lo or nlo Z', choices=('lo','nlo'), default='lo')
+parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
 (options, args) = parser.parse_args()
 
 reweightfile = ROOT.TFile('ratZG.root')
@@ -21,13 +22,18 @@ if options.dataSource == 'truth':
 	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_truth.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_truth.root'),
         }
-    reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
+    reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts)
+    #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts+'_alt')
+    #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
 elif options.dataSource == 'reco':
     myfiles = {
 	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_reco.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_reco.root'),
         }
-    reweighthist = reweightfile.Get('reco/Rzg_bosonPt_no_cuts')
+    reweighthist = reweightfile.Get('reco/Rzg_bosonPt_dPhi_'+options.reweightCuts)
+#    reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts)
+    zeffhist = reweightfile.Get('efficiency/Eff_bosonPt_z_'+options.reweightCuts)
+    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
 
 outputdir =  'plots/'+options.dataSource+'/'
 
@@ -37,30 +43,48 @@ histoList = myfiles['Znunu'].GetListOfKeys()
 for counter, histoKey in enumerate(histoList) :
 #    def printHisto( key ) :
     histos = {}
-    if "PROOF" in histoKey.GetName(): continue
-    if "EventLoop" in histoKey.GetName(): continue
-    if "Missing" in histoKey.GetName(): continue
+    if 'PROOF' in histoKey.GetName(): continue
+    if 'EventLoop' in histoKey.GetName(): continue
+    if 'Missing' in histoKey.GetName(): continue
     for name, ifile in myfiles.items() :
         hist=ifile.Get(histoKey.GetName())
-        if hist.ClassName().startswith("TH2"):
-            hist2d = hist
-            if( not hist2d ) :
+        if hist.ClassName().startswith('TH3'):
+            hist3d = hist
+            if( not hist3d ) :
                 continue
-            if( not hist2d.GetEntries()) :
+            if( not hist3d.GetEntries()) :
                 continue
             #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(hist2d.GetEntries())
-            if name=='Znunu':
-                histos[name] = hist2d.ProjectionX(hist2d.GetName()+'_znunu')
-            else:
-                histos[name] = hist2d.ProjectionX(hist2d.GetName()+'_gamma')
-                histos[name+'Reweight'] = hist2d.ProjectionX(hist2d.GetName()+'_gammareweight',1,1)
+            if name=='Gamma':
+                histos[name] = hist3d.ProjectionX(hist3d.GetName()+'_gamma')
+                hist2d = hist3d.Project3D('xz')
+
+                #print hist2d.GetYaxis().GetNbins(), hist2d.GetXaxis().GetNbins()
+                hist2d.SetName(hist2d.GetName()+'_rw1')
+                hist2d.Reset()
+                histos[name+'Reweight'] = hist3d.ProjectionX(hist3d.GetName()+'_gammareweight')
                 histos[name+'Reweight'].Reset()
-                for ibin in range(1,hist2d.GetYaxis().GetNbins()+2):
-                    projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',ibin,ibin)
-                    projx.Scale(reweighthist.GetBinContent(ibin))
-                    histos[name+'Reweight'].Add(projx)
-                #print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
-        elif hist.ClassName().startswith("TH1"):# and name.startswith('met'):
+                for ibin in range(1,hist3d.GetYaxis().GetNbins()+2):
+                    yval = hist3d.GetYaxis().GetBinCenter(ibin)
+                    if yval > reweighthist.GetXaxis().GetXmax(): yval = reweighthist.GetXaxis().GetXmax()*0.99
+                    hist3d.GetYaxis().SetRange(ibin,ibin)
+                    hist2d = hist3d.Project3D('zx')
+                    # if options.dataSource=='reco':
+                    #     if zeffhist.Interpolate(yval)*geffhist.Interpolate(yval)>0:
+                    #         hist2d.Scale(zeffhist.Interpolate(yval)/geffhist.Interpolate(yval))
+                    #         #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
+                    for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
+                        zval = hist3d.GetZaxis().GetBinCenter(jbin)
+                        if zval > reweighthist.GetYaxis().GetXmax(): zval = reweighthist.GetYaxis().GetXmax()*0.99
+                        projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',jbin,jbin)
+                        prescaleint = projx.Integral()
+                        projx.Scale(reweighthist.Interpolate(yval,zval))
+#                        print ibin, jbin, yval, zval
+#                        print reweighthist.Interpolate(yval,zval), prescaleint, '==>', projx.Integral()
+                        histos[name+'Reweight'].Add(projx)
+                print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
+            else: print 'Not supposed to have TH3 for type', name
+        elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
             histos[name] = hist
             if( not histos[name] ) :
                 continue
@@ -70,6 +94,7 @@ for counter, histoKey in enumerate(histoList) :
 
     if( not name in histos ) :
         continue
+    print histoKey
 
     c1 = ROOT.TCanvas('c1_'+histoKey.GetName().replace('$',''),
                       'c1_'+histoKey.GetName().replace('$',''),
@@ -103,6 +128,8 @@ for counter, histoKey in enumerate(histoList) :
 
     histos['Gamma'].Draw('p')
     histos['Znunu'].Draw('psame')
+    histos['Gamma'].SetMaximum(2*max(histos['Gamma'].GetMaximum(),histos['Znunu'].GetMaximum()))
+    histos['Gamma'].SetMinimum(2*max(1e-3,min(histos['Gamma'].GetMinimum(),histos['Znunu'].GetMinimum())))
 
     ratio = histos['Znunu'].Clone(histos['Znunu'].GetName()+'_ratZg')
     ratio.SetMinimum(0)
@@ -130,7 +157,7 @@ for counter, histoKey in enumerate(histoList) :
     c1.cd()
     pad2 = ROOT.TPad('pad2','pad2',0. ,0.0, 1.,0.3  )
     pad2.SetTopMargin(0);
-    #pad2.SetGrid(1,1)
+    pad2.SetGrid(0,1)
     pad2.Draw()
     pad2.cd()
 
