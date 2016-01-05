@@ -64,14 +64,11 @@ def addTags(sh_all):
 		if "PowHP8EvG_W" in name:
 			sample.addTag("wjets")
 		if "Sherpa_Znunu" in name :
-			print name
 			if 'LO' in name :
 				if "SUSY1" in name :
 					sample.addTag("z_lo_reco")
-					print "z_lo_reco"
 				if "TRUTH1" in name :
 					sample.addTag("z_lo_truth")
-					print "z_lo_truth"
 			else:
 				if "SUSY1" in name :
 					sample.addTag("z_nlo_reco")
