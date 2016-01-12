@@ -189,7 +189,7 @@ for processname in sh_bg.keys():
     met300_2jet["PP_MDeltaR>0.1"] = [10,0,2000]
 
     baseline_cuts = no_cuts.copy()#[]
-    #        baseline_cuts["jetPt[0] > 100"] = [10,0,500]
+    # baseline_cuts["jetPt[0] > 100"] = [10,0,500]
     baseline_cuts["met>160"] = [10,0,1000]
     baseline_cuts["meffInc>800"] = [10,0,5000]
 
@@ -285,7 +285,7 @@ for processname in sh_bg.keys():
             "RPT_HT3PP"              :  [25, 0 , 1, False],
             "RPT_HT5PP"              :  [25, 0 , 1, False],
             "RPT_HT9PP"              :  [25, 0 , 1, False],
-            #           "cosPP"            :  [25, -1 , 1, False],
+            # "cosPP"                  :  [25, -1 , 1, False],
             "PP_CosTheta"            :  [25, -1 , 1, False],
             "PP_VisShape"            :  [25, 0 , 1, True],
             "PP_MDeltaR"             :  [25, 0 , 2000, True],
@@ -373,7 +373,7 @@ for processname in sh_bg.keys():
                                     dphilimits[0], dphilimits[1], dphilimits[2])
                 job.algsAdd(ROOT.MD.AlgHist(thehist,vartoplot,NTVariables["bosonPt"][4]+"/1000","dPhi",cutstring))
 
-        # Don"t make thiese 2D for now -- we may reweight in them
+        # Don't make these 2D for now -- we may reweight in them
         for varname,limits in NTVariables.items() :
             vartoplot = limits[4] if len(limits)>4 else varname
             if limits[3]: vartoplot += "/1e3"
@@ -398,10 +398,9 @@ for processname in sh_bg.keys():
 
             therwhist = ROOT.TH2D("bosonPt_bosonEta_%s"%cut,"bosonPt_bosonEta_%s"%cut,
                                   etlimits[0], etlimits[1], etlimits[2],
-                                  dphilimits[0], dphilimits[1], dphilimits[2],
+                                  etalimits[0], etalimits[1], etalimits[2],
                                   )
             job.algsAdd(ROOT.MD.AlgHist(therwhist, NTVariables["bosonPt"][4]+"/1000",NTVariables["bosonEta"][4], cutstring ))
-
  
     driver = None
     if options.driver == "prooflite" :
