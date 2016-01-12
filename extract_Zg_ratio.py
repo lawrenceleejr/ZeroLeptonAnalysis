@@ -53,4 +53,12 @@ for process in ['z','gamma']:
             outfile.cd('efficiency')
             eff.Write()
 
+        for effpair in [('bosonPt','bosonEta')]:
+            recohist = reco_in.Get(effpair[0]+'_'+effpair[1]+'_'+level)
+            truthhist = truth_in.Get(effpair[0]+'_'+effpair[1]+'_'+level)
+            eff = recohist.Clone('Eff_{0}_{1}_{2}_{3}'.format(effpair[0],effpair[1],process,level))
+            eff.Divide(truthhist)
+            outfile.cd('efficiency')
+            eff.Write()
+
 outfile.Close()
