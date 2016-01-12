@@ -52,10 +52,13 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 
 lumi = 3.32  ## in pb-1
-search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies/"]
+search_directories = [] #["/afs/cern.ch/work/r/rsmith/photonTruthStudies/"]
 import os
 if os.getenv("USER")=="khoo":
     search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/addZkine"]
+if "bnl" in os.getenv("HOSTNAME") :
+#    search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies/"]
+    search_directories +=["/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/" ] 
 #search_directories = ["test/"]
 
 ##
@@ -197,7 +200,7 @@ for processname in sh_bg.keys():
     cry_cuts["PP_MDeltaR>300."]      = [10,0,2000]
     cry_cuts["RPT_HT5PP<.4"]                 = [10,-1,1]
     cry_cuts["QCD_Delta1 / (1 - QCD_Rsib) > .05"] = [10,-1,1]
-    print cry_cuts
+#    print cry_cuts
 
     ## Define your cut strings here....
     if options.isTest:
@@ -377,8 +380,8 @@ for processname in sh_bg.keys():
         for varname,limits in NTVariables.items() :
             vartoplot = limits[4] if len(limits)>4 else varname
             if limits[3]: vartoplot += "/1e3"
-            print varname, ":", vartoplot
-            print cutstring
+#            print varname, ":", vartoplot
+#            print cutstring
             thehist = ROOT.TH1D(varname+"_%s"%cut,varname+"_%s"%cut,
                                 limits[0], limits[1], limits[2])
             job.algsAdd(ROOT.MD.AlgHist(thehist, vartoplot, cutstring ))
@@ -417,6 +420,8 @@ for processname in sh_bg.keys():
         ROOT.SH.scanNEvents(process);
         process.setMetaDouble(ROOT.EL.Job.optEventsPerWorker, 100000);
         driver.options().setString(ROOT.EL.Job.optCondorConf, "notification=never");
+        if "bnl" in os.getenv("HOSTNAME") : job.options().setString (ROOT.EL.Job.optCondorConf, "accounting_group = group_atlas.general");
+
         #driver.shellInit = "source /var/clus/usera/khoo/scripts/khoo_setup.sh; lsetup root; lsetup "sft pyanalysis/1.4_python2.7"";
     else:
         driver = ROOT.EL.DirectDriver()
