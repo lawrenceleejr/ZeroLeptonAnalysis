@@ -8,8 +8,8 @@ parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=(
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
 cry_chain = ROOT.TChain('Data_CRY')
-for i in sorted(os.listdir(inputdir)):
-    cry_chain.Add(inputdir+i)
+#for i in sorted(os.listdir(inputdir)):
+cry_chain.Add(inputdir+'Data_Nov11.root')
 
 reweightfile = ROOT.TFile('ratZG.root')
 reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts)
