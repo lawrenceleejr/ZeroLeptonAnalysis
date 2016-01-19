@@ -242,11 +242,11 @@ for counter, histoKey in enumerate(histoList) :
     leg4.Draw('same')
 
     if 'Data' in  histos.keys():
-        histos['Gamma'].SetMaximum(10*max(histos['Data'].GetMaximum(),histos['Znunu'].GetMaximum()))
-        histos['Gamma'].SetMinimum(2*max(1,min(histos['Data'].GetMinimum(),histos['Znunu'].GetMinimum())))
+        histos['Gamma'].SetMaximum(4*max(histos['Data'].GetMaximum(),histos['Znunu'].GetMaximum()))
+        histos['Gamma'].SetMinimum(0.5*max(1,min(histos['Data'].GetMinimum(),histos['Znunu'].GetMinimum())))
     else:
-        histos['Gamma'].SetMaximum(10*max(histos['Gamma'].GetMaximum(),histos['Znunu'].GetMaximum()))
-        histos['Gamma'].SetMinimum(2*max(1,min(histos['Gamma'].GetMinimum(),histos['Znunu'].GetMinimum())))
+        histos['Gamma'].SetMaximum(4*max(histos['Gamma'].GetMaximum(),histos['Znunu'].GetMaximum()))
+        histos['Gamma'].SetMinimum(0.5*max(1,min(histos['Gamma'].GetMinimum(),histos['Znunu'].GetMinimum())))
 
     ratio = histos['Gamma'].Clone(histos['Gamma'].GetName()+'_ratgZ')
     ratio.Sumw2()
@@ -289,7 +289,7 @@ for counter, histoKey in enumerate(histoList) :
         ratio2.Divide(histos['Znunu'])
         ratio2.Draw('psame')
     else:
-        ratio.SetMaximum(1)
+        ratio.SetMaximum(15)
     if 'Data' in histos.keys():
         ratio3 = histos['Data'].Clone(histos['Data'].GetName()+'_ratDZ')
         ratio3.Sumw2()
