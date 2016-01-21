@@ -15,9 +15,8 @@ weighttree = weightfile.Get('CRY_weights_RZG')
 
 cry_chain.AddFriend(weighttree)
 
-cry_chain.Draw("deltaQCD>>deltaQCD_noRW(100,0,1)")
-cry_chain.Draw("deltaQCD>>deltaQCD_noRW(100,-1,1)")
-cry_chain.Draw("deltaQCD>>deltaQCD_RW(100,-1,1)","weight_RZG","same")
+cry_chain.Draw('deltaQCD>>deltaQCD_noRW(100,-1,1)')
+cry_chain.Draw('deltaQCD>>deltaQCD_RW(100,-1,1)','weight_RZG','same')
 
 ROOT.deltaQCD_RW.SetMarkerSize(0.5)
 ROOT.deltaQCD_RW.SetMarkerColor(ROOT.kRed)
