@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import rootpy.ROOT as ROOT
+import ROOT
 #import numpy as np
-from rootpy.io import root_open
+#from rootpy.io import root_open
 
 import os
 

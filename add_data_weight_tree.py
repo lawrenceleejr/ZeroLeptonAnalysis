@@ -7,6 +7,7 @@ parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=(
 (options, args) = parser.parse_args()
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
+if 'bnl' in os.getenv('HOSTNAME') : inputdir = '/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/v53_Data_pT50/'
 cry_chain = ROOT.TChain('Data_CRY')
 for i in sorted(os.listdir(inputdir)):
     cry_chain.Add(inputdir+i)

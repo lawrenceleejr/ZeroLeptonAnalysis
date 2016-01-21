@@ -21,7 +21,7 @@ parser.add_option("--driver"      , help="select where to run", choices=("direct
 parser.add_option("--isTest", action="store_true", default=False)
 parser.add_option("--dryRun", action="store_true", default=False)
 #parser.add_argument("--no-isTest", dest="isTest", action="store_false")
-parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("z_nlo_reco","gamma_reco","z_lo_truth","z_nlo_truth","gamma_truth","all")         , default="all")
+parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("znunu_nlo_reco","gamma_reco","znunu_lo_truth","znunu_nlo_truth","zee_nlo_reco","gamma_truth","all")         , default="all")
 #parser.add_option("--nevents", type=int, help="number of events to process for all the datasets")
 #parser.add_option("--skip-events", type=int, help="skip the first n events")
 #parser.add_option("--runTag", help="", default="Test_XXYYZZa")
@@ -57,8 +57,8 @@ import os
 if os.getenv("USER")=="khoo":
     search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/addZkine"]
 if "bnl" in os.getenv("HOSTNAME") :
-#    search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies/"]
-    search_directories +=["/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/" ] 
+    search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG_test/"]
+#    search_directories +=["/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/" ] 
 #search_directories = ["test/"]
 
 ##
@@ -88,12 +88,15 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 
-sampleslist = ["z_lo_truth","z_nlo_reco","z_nlo_truth","z_lo_truth","gamma_reco","gamma_truth"] if options.samplesToRun == "all" else [options.samplesToRun]
+sampleslist = ["znunu_lo_truth","znunu_nlo_reco","zee_nlo_reco",
+               "znunu_nlo_truth","znunu_lo_truth","gamma_reco","gamma_truth"] if options.samplesToRun == "all" else [options.samplesToRun]
 for sample in sampleslist:
     sh_bg[sample] = sh_all.find(sample)
-    if "z" in sample:
+    if "znunu" in sample:
         sh_bg[sample].setMetaString("nc_tree", "SRAllNT")
-    elif "g" in sample:
+    if "zee" in sample:
+        sh_bg[sample].setMetaString("nc_tree", "CRZ_SRAllNT")
+    elif "gamma" in sample:
         sh_bg[sample].setMetaString("nc_tree", "CRY_SRAllNT")
 
 if len(sh_bg)==0:
@@ -104,7 +107,7 @@ if len(sh_bg)==0:
 
 for key, sh in sh_bg.iteritems() :
     print key
-    #sh.printContent()
+    sh.printContent()
 
 #Creation of output directory names
 tempDirDict = {}

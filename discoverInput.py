@@ -58,6 +58,11 @@ def addTags(sh_all):
 		if "Znunu_Pt" in name:
 			sample.addTag("znunu_nlo")
 
+
+		if "Sherpa_Zee" in name:
+			if "SUSY1" in name :
+				sample.addTag("zee_nlo_reco")
+
 		if "Znunu_LO" in name:
 			sample.addTag("znunu_lo")
 
@@ -66,14 +71,14 @@ def addTags(sh_all):
 		if "Sherpa_Znunu" in name :
 			if 'LO' in name :
 				if "SUSY1" in name :
-					sample.addTag("z_lo_reco")
+					sample.addTag("znunu_lo_reco")
 				if "TRUTH1" in name :
-					sample.addTag("z_lo_truth")
+					sample.addTag("znunu_lo_truth")
 			else:
 				if "SUSY1" in name :
-					sample.addTag("z_nlo_reco")
+					sample.addTag("znunu_nlo_reco")
 				if "TRUTH1" in name :
-					sample.addTag("z_nlo_truth")
+					sample.addTag("znunu_nlo_truth")
 
 		if "Sherpa_1Gam" in name :
 			if "SUSY1" in name :
