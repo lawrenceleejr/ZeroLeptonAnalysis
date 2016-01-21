@@ -21,7 +21,7 @@ parser.add_option("--driver"      , help="select where to run", choices=("direct
 parser.add_option("--isTest", action="store_true", default=False)
 parser.add_option("--dryRun", action="store_true", default=False)
 #parser.add_argument("--no-isTest", dest="isTest", action="store_false")
-parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("z_nlo_reco","gamma_reco","z_lo_truth","z_nlo_truth","gamma_truth","all")         , default="all")
+parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("zvv_nlo_reco","zll_nlo_reco","gamma_reco","zvv_lo_truth","zvv_nlo_truth","zll_nlo_truth","gamma_truth","all")         , default="all")
 #parser.add_option("--nevents", type=int, help="number of events to process for all the datasets")
 #parser.add_option("--skip-events", type=int, help="skip the first n events")
 #parser.add_option("--runTag", help="", default="Test_XXYYZZa")
@@ -55,7 +55,7 @@ lumi = 3320  ## in pb-1
 search_directories = ["/afs/cern.ch/work/r/rsmith/photonTruthStudies/"]
 import os
 if os.getenv("USER")=="khoo":
-    search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/addZkine"]
+    search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/zG_180116"]
 #search_directories = ["test/"]
 
 ##
@@ -71,9 +71,6 @@ discoverInput.discover(sh_all, search_directories)
 
 sh_all.setMetaString("nc_tree", "CRY_SRAllNT")
 
-logging.info("adding my tags defined in discoverInput.py")
-discoverInput.addTags(sh_all)
-
 ROOT.SH.readSusyMeta(sh_all,"optimization/susy_crosssections_13TeV.txt")
 
 ## Split up samplehandler into per-BG SH"s based on tag metadata
@@ -85,11 +82,14 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 
-sampleslist = ["z_lo_truth","z_nlo_reco","z_nlo_truth","z_lo_truth","gamma_reco","gamma_truth"] if options.samplesToRun == "all" else [options.samplesToRun]
+sampleslist = ["zvv_lo_truth","zvv_nlo_reco","zvv_nlo_truth","zll_nlo_reco","gamma_reco","gamma_truth"] if options.samplesToRun == "all" else [options.samplesToRun]
 for sample in sampleslist:
     sh_bg[sample] = sh_all.find(sample)
-    if "z" in sample:
+    sh_bg[sample].printContent()
+    if "zvv" in sample:
         sh_bg[sample].setMetaString("nc_tree", "SRAllNT")
+    elif "zll" in sample:
+        sh_bg[sample].setMetaString("nc_tree", "CRZ_SRAllNT")
     elif "g" in sample:
         sh_bg[sample].setMetaString("nc_tree", "CRY_SRAllNT")
 
@@ -99,9 +99,9 @@ if len(sh_bg)==0:
 
 #print sh_bg
 
-for key, sh in sh_bg.iteritems() :
-    print key
-    #sh.printContent()
+# for key, sh in sh_bg.iteritems() :
+#     print key
+#     sh.printContent()
 
 #Creation of output directory names
 tempDirDict = {}
@@ -135,18 +135,20 @@ for processname in sh_bg.keys():
     process = sh_bg[processname]
     emptylist = []
     for sample in process:
-        # mychain = sample.makeTChain()
+        mychain = sample.makeTChain()
         # print sample
         # print mychain.GetEntries()
+        if mychain.GetEntries()==0:
+            emptylist.append(sample)
         m_nevt = 0
         m_sumw = 0
         # filter out empty files, because BatchDriver fails on them
         for ifile in xrange(sample.numFiles()):
             myfile = ROOT.TFile(sample.fileName(ifile))
-            mytree = myfile.Get("SRAllNT") if processname.split("_")[0]=="z" else myfile.Get("CRY_SRAllNT")
-            if mytree.GetEntries()==0:
-                emptylist.append(sample)
-                continue
+            mytree = myfile.Get("SRAllNT") if processname.split("_")[0]=="zvv" else myfile.Get("CRZ_SRAllNT") if processname.split("_")[0]=="zll" else myfile.Get("CRY_SRAllNT")
+            # if mytree.GetEntries()==0:
+            #     emptylist.append(sample)
+            #     continue
             try:
                 m_nevt += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(1)
                 m_sumw += myfile.Get("Counter_JobBookeeping_JobBookeeping").GetBinContent(2)
@@ -156,6 +158,7 @@ for processname in sh_bg.keys():
             sample.setMetaDouble("nc_nevt",m_nevt)
             sample.setMetaDouble("nc_sumw",m_sumw)
     for emptysample in emptylist:
+        print emptysample
         process.remove(emptysample)
 
     job = ROOT.EL.Job()
@@ -332,15 +335,15 @@ for processname in sh_bg.keys():
     bosonType = processname.split("_")[0]
     if options.isTest:
         NTVariables = {
-            "bosonPt"                    :  [25, 0 , 2000, True, "NTExtraVars.ZvvPt" if bosonType=="z" else "NTCRYVars.phPt"],
+            "bosonPt"                    :  [25, 0 , 2000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
             "dPhi"                       :  [32,  0 , 3.2, False],
             }
     else:
         NTVariables = {
             "met"                        :  [25, 0 , 2000, False],
-            "bosonPt"                    :  [25, 0 , 1000, True, "NTExtraVars.ZvvPt" if bosonType=="z" else "NTCRYVars.phPt"],
-            "bosonEta"                   :  [25, -5,    5, False, "NTExtraVars.ZvvEta" if bosonType=="z" else "NTCRYVars.phEta"],
-            "bosonEt"                    :  [25, 0 , 1000, True, "sqrt(NTExtraVars.ZvvPt**2+min(NTExtraVars.ZvvM,120e3)**2)" if bosonType=="z" else "NTCRYVars.phPt"],
+            "bosonPt"                    :  [25, 0 , 1000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
+            "bosonEta"                   :  [25, -5,    5, False, "NTExtraVars.ZvvEta" if bosonType=="zvv" else "0" if bosonType=="zll" else "NTCRYVars.phEta"],
+            "bosonEt"                    :  [25, 0 , 1000, True, "sqrt(NTExtraVars.ZvvPt**2+min(NTExtraVars.ZvvM,120e3)**2)" if bosonType=="zvv" else "sqrt(NTCRZVars.Zpt**2+NTCRZVars.mll**2)" if bosonType=="zll" else "NTCRYVars.phPt"],
             "dPhi"                       :  [32,  0 , 3.2, False],
             #            "Nj50" :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
             #            "HT50" :  [25, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],

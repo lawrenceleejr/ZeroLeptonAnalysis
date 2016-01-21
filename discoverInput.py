@@ -15,14 +15,14 @@ def discover(sh, search_directories):
 
 
 	logging.info("%d different datasets found scanning all directories", len(sh))
+	addTags(sh)
 	#sh.printContent()
 
 	return sh
 
-
-
-def addTags(sh_all):
-	for sample in sh_all:
+def addTags(sh):
+	logging.info("adding my tags defined in discoverInput.py")
+	for sample in sh:
 		name = sample.getMetaString("sample_name")
 		#print "NAME: ", name
 #		short_name = sample.getMetaString("sample_name").split(".")[4]
@@ -55,25 +55,31 @@ def addTags(sh_all):
 		if "1Gam" in name:
 			sample.addTag("gamma")
 
-		if "Znunu_Pt" in name:
-			sample.addTag("znunu_nlo")
-
-		if "Znunu_LO" in name:
-			sample.addTag("znunu_lo")
-
 		if "PowHP8EvG_W" in name:
 			sample.addTag("wjets")
 		if "Sherpa_Znunu" in name :
 			if 'LO' in name :
 				if "SUSY1" in name :
-					sample.addTag("z_lo_reco")
+					sample.addTag("zvv_lo_reco")
 				if "TRUTH1" in name :
-					sample.addTag("z_lo_truth")
+					sample.addTag("zvv_lo_truth")
 			else:
 				if "SUSY1" in name :
-					sample.addTag("z_nlo_reco")
+					sample.addTag("zvv_nlo_reco")
 				if "TRUTH1" in name :
-					sample.addTag("z_nlo_truth")
+					sample.addTag("zvv_nlo_truth")
+
+		if ("Sherpa_Zee" in name or "Sherpa_Zmumu" in name or "Sherpa_Ztautau" in name):
+			if 'LO' in name :
+				if "SUSY1" in name :
+					sample.addTag("zll_lo_reco")
+				if "TRUTH1" in name :
+					sample.addTag("zll_lo_truth")
+			else:
+				if "SUSY1" in name :
+					sample.addTag("zll_nlo_reco")
+				if "TRUTH1" in name :
+					sample.addTag("zll_nlo_truth")
 
 		if "Sherpa_1Gam" in name :
 			if "SUSY1" in name :
