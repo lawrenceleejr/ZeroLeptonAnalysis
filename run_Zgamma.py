@@ -338,15 +338,15 @@ for processname in sh_bg.keys():
     bosonType = processname.split("_")[0]
     if options.isTest:
         NTVariables = {
-            "bosonPt"                    :  [25, 0 , 2000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
+            "bosonPt"                    :  [25, 0 , 2000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "1000.*NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
             "dPhi"                       :  [32,  0 , 3.2, False],
             }
     else:
         NTVariables = {
             "met"                        :  [25, 0 , 2000, False],
-            "bosonPt"                    :  [25, 0 , 1000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
+            "bosonPt"                    :  [25, 0 , 1000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "1000.*NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
             "bosonEta"                   :  [25, -5,    5, False, "NTExtraVars.ZvvEta" if bosonType=="zvv" else "0" if bosonType=="zll" else "NTCRYVars.phEta"],
-            "bosonEt"                    :  [25, 0 , 1000, True, "sqrt(NTExtraVars.ZvvPt**2+min(NTExtraVars.ZvvM,120e3)**2)" if bosonType=="zvv" else "sqrt(NTCRZVars.Zpt**2+NTCRZVars.mll**2)" if bosonType=="zll" else "NTCRYVars.phPt"],
+            "bosonEt"                    :  [25, 0 , 1000, True, "sqrt(NTExtraVars.ZvvPt**2+min(NTExtraVars.ZvvM,120e3)**2)" if bosonType=="zvv" else "1000.*sqrt(NTCRZVars.Zpt**2+NTCRZVars.mll**2)" if bosonType=="zll" else "NTCRYVars.phPt"],
             "dPhi"                       :  [32,  0 , 3.2, False],
             #            "Nj50" :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
             #            "HT50" :  [25, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
