@@ -57,7 +57,7 @@ import os
 if os.getenv("USER")=="khoo":
     search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/zG_180116"]
 if "bnl" in os.getenv("HOSTNAME") :
-    search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG_test/"]
+    search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG/"]
 
 #search_directories = ["test/"]
 
