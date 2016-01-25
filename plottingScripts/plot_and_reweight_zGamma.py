@@ -71,24 +71,28 @@ parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=(
 (options, args) = parser.parse_args()
 
 reweightfile = ROOT.TFile('ratZG.root')
-reweighthist = None
+reweighthists = {}
 if options.dataSource == 'truth':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_truth.root'),
+	'Znunu'  : ROOT.TFile('rundir_zvv_'+options.meOrder+'_truth.root'),
+	'Zll'  : ROOT.TFile('rundir_zll_'+options.meOrder+'_truth.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_truth.root'),
         }
-    reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts)
+    reweighthists['Znunu'] = reweightfile.Get('truth/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
+    reweighthists['Zll'] = reweightfile.Get('truth/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts+'_alt')
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
 elif options.dataSource == 'reco':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_reco.root'),
+	'Znunu'  : ROOT.TFile('rundir_zvv_'+options.meOrder+'_reco.root'),
+	'Zll'  : ROOT.TFile('rundir_zll_'+options.meOrder+'_reco.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_reco.root'),
         }
-#    reweighthist = reweightfile.Get('reco/Rzg_bosonPt_dPhi_'+options.reweightCuts)
-    reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts)
-    zeffhist = reweightfile.Get('efficiency/Eff_bosonPt_z_'+options.reweightCuts)
-    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
+    reweighthists['Znunu'] = reweightfile.Get('reco/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
+    reweighthist['Zll'] = reweightfile.Get('truth/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
+#    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
+#    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
+#    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
 
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
