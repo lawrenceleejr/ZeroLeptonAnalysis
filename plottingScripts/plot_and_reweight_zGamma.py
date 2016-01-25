@@ -8,6 +8,15 @@ import os
 ROOT.gROOT.SetBatch(True)
 import AtlasStyle
 
+def memory_usage_resource():
+    import resource
+    rusage_denom = 1024.
+    # if sys.platform == 'darwin':
+    #     # ... it seems that in OSX the output is different units ...
+    #     rusage_denom = rusage_denom * rusage_denom
+    mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / rusage_denom
+    return mem
+
 # Translate TJ/Russell vars to Chris vars
 varmappings = {
 'HT1CM':'HT1CM',
@@ -74,7 +83,7 @@ reweightfile = ROOT.TFile('ratZG.root')
 reweighthist = None
 if options.dataSource == 'truth':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_truth.root'),
+	'Znunu'  : ROOT.TFile('rundir_zvv_'+options.meOrder+'_truth.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_truth.root'),
         }
     reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts)
@@ -82,7 +91,7 @@ if options.dataSource == 'truth':
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
 elif options.dataSource == 'reco':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_z_'+options.meOrder+'_reco.root'),
+	'Znunu'  : ROOT.TFile('rundir_zvv_'+options.meOrder+'_reco.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_reco.root'),
         }
 #    reweighthist = reweightfile.Get('reco/Rzg_bosonPt_dPhi_'+options.reweightCuts)
@@ -92,6 +101,8 @@ elif options.dataSource == 'reco':
 
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
+if 'bnl' in os.getenv('HOSTNAME') :
+    inputdir = '/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/v53_Data_pT50/'
 cry_chain = ROOT.TChain('Data_CRY')
 #for i in sorted(os.listdir(inputdir)):
 #    cry_chain.Add(inputdir+i)
@@ -113,9 +124,16 @@ for counter, histoKey in enumerate(histoList) :
     if 'PROOF' in histoKey.GetName(): continue
     if 'EventLoop' in histoKey.GetName(): continue
     if 'Missing' in histoKey.GetName(): continue
+    if 'minus' in histoKey.GetName(): continue
     for name, ifile in myfiles.items() :
-        hist=ifile.Get(histoKey.GetName())
-        if hist.ClassName().startswith('TH3'):
+       print histoKey.GetName()
+       print name
+       print memory_usage_resource()
+       hist=ifile.Get(histoKey.GetName())
+       print memory_usage_resource()
+       print "got histo"
+       if hist.ClassName().startswith('TH3'):
+            continue
             hist3d = hist
             if( not hist3d ) :
                 continue
@@ -151,14 +169,15 @@ for counter, histoKey in enumerate(histoList) :
                         histos[name+'Reweight'].Add(projx)
                 print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
             else: print 'Not supposed to have TH3 for type', name
-        elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
+       elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
+            print histoKey.GetName()+ ' ' + str(name)
             histos[name] = hist
             if( not histos[name] ) :
                 continue
             if( not histos[name].GetEntries()) :
                 continue
-            #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
-
+            print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
+#    ifile.Close()
     if( not name in histos ) :
         continue
     print histoKey
@@ -298,6 +317,7 @@ for counter, histoKey in enumerate(histoList) :
 
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
+    del histos
     histos = None
 
 #    printHisto(histoKey)
