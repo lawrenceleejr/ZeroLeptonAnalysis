@@ -18,8 +18,8 @@ from optparse import OptionParser
 
 sampleChoices = (        "zvv_nlo_reco" ,"zll_nlo_reco","gamma_reco",
                          "zvv_lo_truth" ,"zll_lo_truth",
-                         "zvv_nlo_truth","zll_nlo_truth","gamma_truth",
-                         "all")
+                         "zvv_nlo_truth","zll_nlo_truth","gamma_truth"
+                         )
 
 parser = OptionParser()
 parser.add_option("--driver"      , help="select where to run", choices=("direct","lsf", "prooflite", "grid", "condor"), default="direct")
@@ -27,7 +27,7 @@ parser.add_option("--isTest", action="store_true", default=False)
 parser.add_option("--dryRun", action="store_true", default=False)
 #parser.add_argument("--no-isTest", dest="isTest", action="store_false")
 parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", 
-                  choices=sampleChoices,
+#                  choices=(sampleChoices+('all',)),
                   default="all")
 
 
@@ -94,9 +94,15 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 
-sampleslist = list(sampleChoices) if options.samplesToRun == "all" else [options.samplesToRun]
+sampleslist = (list(sampleChoices)) if options.samplesToRun == 'all' else [sample for sample in list(sampleChoices) if options.samplesToRun in sample]#can do any combos here
 print sampleslist 
-quiet_exit()
+if not sampleslist :
+    print 'your expression isn\' a substring of any of the following sample choices :' 
+    print sampleChoices
+    print 'Exiting'
+    quiet_exit()
+
+
 for sample in sampleslist:
     sh_bg[sample] = sh_all.find(sample)
     sh_bg[sample].printContent()
