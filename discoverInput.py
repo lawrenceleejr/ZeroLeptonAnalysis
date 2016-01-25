@@ -52,8 +52,8 @@ def addTags(sh):
 		if "jetjet" in name:
 			sample.addTag("qcd")
 
-		if "1Gam" in name:
-			sample.addTag("gamma")
+		# if "1Gam" in name:
+		# 	sample.addTag("gamma")
 
 		if "PowHP8EvG_W" in name:
 			sample.addTag("wjets")

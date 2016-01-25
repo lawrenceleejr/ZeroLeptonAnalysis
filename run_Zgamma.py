@@ -16,12 +16,21 @@ ROOT.TH1.SetDefaultSumw2(True)
 logging.basicConfig(level=logging.INFO)
 from optparse import OptionParser
 
+sampleChoices = (        "zvv_nlo_reco" ,"zll_nlo_reco","gamma_reco",
+                         "zvv_lo_truth" ,"zll_lo_truth",
+                         "zvv_nlo_truth","zll_nlo_truth","gamma_truth",
+                         "all")
+
 parser = OptionParser()
 parser.add_option("--driver"      , help="select where to run", choices=("direct","lsf", "prooflite", "grid", "condor"), default="direct")
 parser.add_option("--isTest", action="store_true", default=False)
 parser.add_option("--dryRun", action="store_true", default=False)
 #parser.add_argument("--no-isTest", dest="isTest", action="store_false")
-parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", choices=("zvv_nlo_reco","zll_nlo_reco","gamma_reco","zvv_lo_truth","zvv_nlo_truth","zll_nlo_truth","gamma_truth","all")         , default="all")
+parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", 
+                  choices=sampleChoices,
+                  default="all")
+
+
 #parser.add_option("--nevents", type=int, help="number of events to process for all the datasets")
 #parser.add_option("--skip-events", type=int, help="skip the first n events")
 #parser.add_option("--runTag", help="", default="Test_XXYYZZa")
@@ -85,7 +94,9 @@ sh_bg = {}
 #sh_bg["qcd"  ] = sh_all.find("qcd"  )
 #sh_bg["top"  ] = sh_all.find("top"  )
 
-sampleslist = ["zvv_lo_truth","zvv_nlo_reco","zvv_nlo_truth","zll_nlo_reco","gamma_reco","gamma_truth"] if options.samplesToRun == "all" else [options.samplesToRun]
+sampleslist = list(sampleChoices) if options.samplesToRun == "all" else [options.samplesToRun]
+print sampleslist 
+quiet_exit()
 for sample in sampleslist:
     sh_bg[sample] = sh_all.find(sample)
     sh_bg[sample].printContent()
