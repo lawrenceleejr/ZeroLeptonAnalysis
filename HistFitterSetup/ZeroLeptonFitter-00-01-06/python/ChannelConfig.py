@@ -141,6 +141,8 @@ class ChannelConfig:
 
         # self.commonWeightList = ["pileupWeight", "normWeight", "genWeight"] # Note: eventweight has been moved to sysweight
         self.commonWeightList = ["weight"] # Note: eventweight has been moved to sysweight
+        self.commonWeightList = ["(weight*(weight>0) + 1*(weight==0) )"] # Note: eventweight has been moved to sysweight
+        self.commonWeightList = ["1"]
 
         #cuts common to all regions (CR,SR,...=
         self.commonCutList = ["veto==0"]

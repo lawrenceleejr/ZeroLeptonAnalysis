@@ -250,22 +250,24 @@ if configMgr.readFromTree:
 
         # Top
         topFiles.append(INPUTDIR+ "/BKG/Top.root")
-        # if not zlFitterConfig.usePreComputedTopGeneratorSys:
-        #     zFiles.append(INPUTDIR+ "TopaMcAtNloHerwigpp.root")
-        # if not zlFitterConfig.usePreComputedTopFragmentationSys:
-        #     topFiles.append(INPUTDIR+ "TopPowhegHerwigpp.root")
+        if not zlFitterConfig.usePreComputedTopGeneratorSys:
+            topFiles.append(INPUTDIR+ "/BKG/TopaMcAtNloHerwigpp.root")
+        if not zlFitterConfig.usePreComputedTopFragmentationSys:
+            topFiles.append(INPUTDIR+ "/BKG/TopPowhegHerwigpp.root")
 
 
         # W
         wFiles.append(INPUTDIR+ "/BKG/Wjets.root")
-        # if not zlFitterConfig.usePreComputedWGeneratorSys:
-            # wFiles.append(INPUTDIR+ "WMadgraphPythia8.root")
+        if not zlFitterConfig.usePreComputedWGeneratorSys:
+            wFiles.append(INPUTDIR+ "/BKG/WMadgraphPythia8.root")
 
         # Z
-        zFiles.append(INPUTDIR+ "/BKG/Zjets.root")
+        # zFiles.append(INPUTDIR+ "/BKG/Zjets.root")
         # zFiles.append(INPUTDIR+ "/Zjets.root")
         # if not zlFitterConfig.usePreComputedZGeneratorSys:
-            # zFiles.append(INPUTDIR+ "ZMadgraphPythia8.root")
+        #     zFiles.append(INPUTDIR+ "/BKG/ZMadgraphPythia8.root")
+        zFiles.append(INPUTDIR_DATA+ "/Zjets.root")
+
 
         # gamma
         gammaFiles.append(INPUTDIR+ "/GammaJet.root")
@@ -412,14 +414,14 @@ if zlFitterConfig.doSetNormRegion:
 #--------------------------
 # Gamma
 #--------------------------
-gammaSample = Sample(zlFitterConfig.gammaSampleName,kYellow)
-gammaSample.setTreeName("GAMMA_SRAll")
-gammaSample.setNormFactor("mu_"+zlFitterConfig.zSampleName,1.,0.,500.)
-gammaSample.setFileList(gammaFiles)
-gammaSample.setStatConfig(zlFitterConfig.useStat)
-if zlFitterConfig.doSetNormRegion:
-    if "CRY" in zlFitterConfig.constrainingRegionsList:
-        gammaSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
+# gammaSample = Sample(zlFitterConfig.gammaSampleName,kYellow)
+# gammaSample.setTreeName("GAMMA_SRAll")
+# gammaSample.setNormFactor("mu_"+zlFitterConfig.zSampleName,1.,0.,500.)
+# gammaSample.setFileList(gammaFiles)
+# gammaSample.setStatConfig(zlFitterConfig.useStat)
+# if zlFitterConfig.doSetNormRegion:
+#     if "CRY" in zlFitterConfig.constrainingRegionsList:
+#         gammaSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
 
 #--------------------------
 # Z
@@ -429,15 +431,15 @@ zSample.setTreeName("Z_SRAll")
 zSample.setNormFactor("mu_"+zlFitterConfig.zSampleName, 1., 0., 500.)
 zSample.setFileList(zFiles)
 zSample.setStatConfig(zlFitterConfig.useStat)
-if zlFitterConfig.doSetNormRegion:
-    if "CRZ" in zlFitterConfig.constrainingRegionsList:
-        zSample.setNormRegions([("CRZ", zlFitterConfig.binVar)])
-        # zSample.normSampleRemap = "GAMMAjets"
-    if "CRY" in zlFitterConfig.constrainingRegionsList:
-        zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
-        zSample.normSampleRemap = "GAMMAjets"
-if not zlFitterConfig.usePreComputedZGeneratorSys:
-    zSample.addSystematic(Systematic("generatorZ",configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
+# if zlFitterConfig.doSetNormRegion:
+#     if "CRZ" in zlFitterConfig.constrainingRegionsList:
+#         zSample.setNormRegions([("CRZ", zlFitterConfig.binVar)])
+#         # zSample.normSampleRemap = "GAMMAjets"
+#     if "CRY" in zlFitterConfig.constrainingRegionsList:
+#         zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
+#         zSample.normSampleRemap = "GAMMAjets"
+# if not zlFitterConfig.usePreComputedZGeneratorSys:
+#     zSample.addSystematic(Systematic("generatorZ",configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
 
 
 #--------------------------
@@ -527,9 +529,15 @@ for point in allpoints:
     # fix diboson to MC prediction
     meas.addParamSetting("mu_"+zlFitterConfig.dibosonSampleName, True, 1)
 
+    # "fixing" Z contributions to "MC" which is actually reweighted photons....
+    meas.addParamSetting("mu_"+zlFitterConfig.zSampleName, True, 1)
+
     # fix Lumi if not exclusion fit
     if myFitType != FitType.Exclusion:
         meas.addParamSetting("Lumi", True, zlFitterConfig.luminosity)
+
+
+
 
     # fix error on signal
     if configMgr.fixSigXSec:
@@ -569,6 +577,32 @@ for point in allpoints:
         myFitConfig.setSignalSample(sigSample)
 
 
+
+    # for regionName in zlFitterConfig.allRegionsList():
+    #     treeBaseName = regionDict[regionName].suffixTreeName
+
+    #     if "SR" in regionName:
+    #         REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
+    #         SR = REGION
+    #     else:
+    #         continue
+    #         REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
+
+
+    #     for sam in REGION.sampleList:
+    #         sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
+    #         if "SRAll" in sam.treeName:
+    #             sam.setTreeName(sam.treeName.replace("SRAll", "CRY"))
+    #         if sam.treeName.find("Data") >= 0:
+    #             sam.setFileList(dataFiles)
+    #             # sam.addWeight("CRY_weights_RZG.weight_RZG*0.") ## LL - Extra weighting for gamma/Z from TJ's friend tree. ########
+    #         # if sam.name.find("Data") >=0 :
+    #         #     sam.addWeight("0.0000001")
+    #         if sam.name.find("GAMMA") >= 0: #ATT: should define to which samples the extra-weight should be applied
+    #             for extraWeight in extraWeightList:
+    #                 sam.addWeight(extraWeight)
+
+
     ######################################################################
     # CR photon
     ######################################################################
@@ -599,9 +633,14 @@ for point in allpoints:
             sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
             if sam.treeName.find("Data") >= 0:
                 sam.setFileList(dataFiles)
+                # sam.addWeight("CRY_weights_RZG.weight_RZG*0.") ## LL - Extra weighting for gamma/Z from TJ's friend tree. ########
+            # if sam.name.find("Data") >=0 :
+            #     sam.addWeight("0.0000001")
             if sam.name.find("GAMMA") >= 0: #ATT: should define to which samples the extra-weight should be applied
                 for extraWeight in extraWeightList:
                     sam.addWeight(extraWeight)
+                    # print sam.treeName + "8"*800
+                    # sam.addWeight("0.")
 
         # set region type
         if regionName in zlFitterConfig.constrainingRegionsList:
@@ -617,12 +656,12 @@ for point in allpoints:
     if not zlFitterConfig.useShapeFit:
         #SR_loose = myFitConfig.addChannel("cuts", ["SR_meffcut_relaxed"], 1, 0.5, 1.5)
 
-        SR = myFitConfig.addChannel("cuts", [zlFitterConfig.SRName], 1, 0.5, 1.5)
+        SR = myFitConfig.addChannel("cuts", [zlFitterConfig.SRName], 1, 0.5, 1.5) #LL
         # myFitConfig.addChannel("Meff", [zlFitterConfig.SRName], 50, 0, 3000)
         # myFitConfig.addChannel("MET", [zlFitterConfig.SRName], 50, 0, 3000)
         #SR.remapSystChanName = "cuts_SR_meffcut_relaxed"
 
-
+        pass
 
 
 

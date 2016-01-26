@@ -144,7 +144,7 @@ class ZLFitterConfig:
         self.constrainingRegionsList += ["CRT","CRW"]
         #self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
         # self.constrainingRegionsList += ["CRZ"]
-        self.constrainingRegionsList += ["CRY"]
+        # self.constrainingRegionsList += ["CRY"]
         # self.constrainingRegionsList += ["CRQ"]
 
 
@@ -155,10 +155,10 @@ class ZLFitterConfig:
 
 
         # # # self.validationRegionsList+=["VRYf"]
-        self.validationRegionsList += ["VRZ","VRW","VRT"]
+        # self.validationRegionsList += ["VRZ","VRW","VRT"]
         # self.validationRegionsList += ["VRTZL"]
-        self.validationRegionsList += ["VRZa","VRWa","VRTa"]
-        self.validationRegionsList += ["VRZb","VRWb","VRTb"]
+        # self.validationRegionsList += ["VRZa","VRWa","VRTa"]
+        # self.validationRegionsList += ["VRZb","VRWb","VRTb"]
         # # # self.validationRegionsList +=["VRZf"]
 
         # # # self.validationRegionsList+=["VRWf","VRTf"]

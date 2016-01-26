@@ -5,13 +5,49 @@ echo '============================'
 date
 hostname
 echo '============================'
-cd $ZEROLEPTONFITTER
+
+#cd $HISTFITTER/src
+#make clean
+#make
+
+setupATLAS
+cd $PBS_O_WORKDIR/..
+
+#export ZEROLEPTONFITTERORIG=$ZEROLEPTONFITTER
+
+#ZEROLEPTONFITTER=ZeroLeptonFitter-00-01-06
+#HISTFITTER=HistFitter-00-00-50
+
+#tempdirectory=/data/larryl/temp/`hostname`/
+
+#mkdir $tempdirectory
+#cp -r $PBS_O_WORKDIR/../* $tempdirectory/.
+
+#cd $tempdirectory
+source setup.sh
+
+#export ZEROLEPTONFITTER=$tempdirectory/ZeroLeptonFitter-00-01-06/
+#export HISTFITTER=$tempdirectory/HistFitter-00-00-50/
+
+# cd $ZEROLEPTONFITTER
+
+# source $HISTFITTER/setup.sh
+# source $ZEROLEPTONFITTER/setup.sh
+
+
 echo "Using gcc from:"
 which gcc
 echo "Using ROOT from:"
 echo $ROOTSYS
-source $HISTFITTER/setup.sh
-source $ZEROLEPTONFITTER/setup.sh
+echo "PYTHONPATH:"
+echo $PYTHONPATH
+
+echo "HISTFITTER:"
+echo $HISTFITTER
+
+echo "ZEROLEPTONFITTER:"
+echo $ZEROLEPTONFITTER
+
 ls -ltr
 echo '============='
 mkdir -p $DIR
@@ -21,3 +57,10 @@ echo '============================'
 date
 echo '============================'
 echo "Done running job!"
+
+#echo "Copying output back!"
+
+#cd ..
+#cp -r ${DIR}/* ${PBS_O_WORKDIR}/${DIR}/.
+
+

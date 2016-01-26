@@ -1137,6 +1137,8 @@ class ConfigManager(object):
                     self.prepare.read(treeName, sam.files)
         else:
             self.prepare.weights = "1."
+            if "CRY" in regionString and "Data" in sam.name:  #CRY_weights_RZG.weight_RZG
+                self.prepare.weights = "CRY_weights_RZG.weight_RZG"    ### LL Trying to implement TJ's friend tree to data requires some bad stuff...
             if self.readFromTree or self.useCacheToTreeFallback:
                 treeName = sam.treeName
                 if treeName == '': 

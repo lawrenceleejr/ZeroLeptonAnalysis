@@ -160,12 +160,17 @@ class PrepareHistos(object):
         chainID = treeName
         for fileName in fileList: chainID += '_' +fileName
         self.currentChainName = chainID
-        
+
+        import os
+
         ## MB : no need to recreate chain if it already exists
         if not self.configMgr.chains.has_key(chainID):
             self.configMgr.chains[chainID] = TChain(treeName)
             for fileName in fileList:
                 self.configMgr.chains[self.currentChainName].Add(fileName)
+                # if "Zjets" in fileName and "SR" in treeName and os.environ.get('ZEROLEPTONFITTER'):
+                #     print "Adding Friend * " * 20
+                #     self.configMgr.chains[self.currentChainName].AddFriend("CRY_weights_RZG",os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
 
         return
 
@@ -216,7 +221,34 @@ class PrepareHistos(object):
                     
                     tempName = "%stemp%s" % (name, str(iReg))
                     tempHist = TH1F(tempName, tempName, 1, 0.5, 1.5)
-                    self.configMgr.chains[self.currentChainName].Project(tempName, self.cuts, self.weights)
+                    # print "LL "*100
+                    # print tempName
+                    # print name
+                    # print reg
+                    # print self.cuts
+                    # print self.weights
+                    # print "LL "*100
+
+                    print name
+                    tempweight = self.weights
+                    if  "hZjetsNom_SR_obs_cuts" == name:
+                        print self.configMgr.chains[self.currentChainName].AddFriend("CRY_weights_RZG",os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
+                        # print self.configMgr.chains[self.currentChainName]
+                        # print os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root"
+
+                        # tempf = TFile(os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
+                        # tempf.ls()
+
+                        # print self.configMgr.chains[self.currentChainName].GetEntries() 
+                        # print tempf.Get("CRY_weights_RZG").GetEntries()
+                        # print self.cuts
+                        tempweight = "1."
+                        tempweight = "weight_RZG"
+                        self.cuts = self.cuts+"*(phSignal[0]==1 && phPt[0]>130.)*((cleaning&15) == 0)"
+                        # print self.configMgr.chains[self.currentChainName].Project(tempName, self.cuts, self.weights)#"(CRY_weights_RZG.weight_RZG)")
+
+                    print tempweight
+                    print self.configMgr.chains[self.currentChainName].Project(tempName, self.cuts, tempweight)
                     
                     error = Double()
                     integral = tempHist.IntegralAndError(1, tempHist.GetNbinsX(), error)

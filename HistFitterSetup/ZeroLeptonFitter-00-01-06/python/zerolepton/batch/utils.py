@@ -140,6 +140,8 @@ def runBatchCommands(args, outputDir, commands, forceOverwrite=False):
 
         if not useMultiple:
             submitFile(args, filename, batchConfig)
+            #time.sleep(20)
+
 
         jobFilenames.append(filename)
     
@@ -163,3 +165,4 @@ def runBatchCommands(args, outputDir, commands, forceOverwrite=False):
 
             print("Wrote combined file %s" % filename)
             submitFile(args, filename, batchConfig)
+            #time.sleep(20)
