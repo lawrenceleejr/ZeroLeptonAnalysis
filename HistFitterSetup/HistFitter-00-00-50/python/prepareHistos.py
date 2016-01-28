@@ -233,17 +233,14 @@ class PrepareHistos(object):
                     tempweight = self.weights
                     if  "hZjetsNom_SR_obs_cuts" == name:
                         print self.configMgr.chains[self.currentChainName].AddFriend("CRY_weights_RZG",os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
-                        # print self.configMgr.chains[self.currentChainName]
-                        # print os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root"
-
-                        # tempf = TFile(os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
-                        # tempf.ls()
-
-                        # print self.configMgr.chains[self.currentChainName].GetEntries() 
-                        # print tempf.Get("CRY_weights_RZG").GetEntries()
-                        # print self.cuts
-                        tempweight = "1."
-                        tempweight = "weight_RZG"
+                        #tempweight = "1."
+                        tempweight = "weight_RZvvG"
+                        self.cuts = self.cuts+"*(phSignal[0]==1 && phPt[0]>130.)*((cleaning&15) == 0)"
+                        # print self.configMgr.chains[self.currentChainName].Project(tempName, self.cuts, self.weights)#"(CRY_weights_RZG.weight_RZG)")
+                    if  "hZjetsNom_CRZ_obs_cuts" == name or  "hZjetsNom_VRZ_obs_cuts" == name:
+                        print self.configMgr.chains[self.currentChainName].AddFriend("CRY_weights_RZG",os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
+                        #tempweight = "1."
+                        tempweight = "weight_RZllG"
                         self.cuts = self.cuts+"*(phSignal[0]==1 && phPt[0]>130.)*((cleaning&15) == 0)"
                         # print self.configMgr.chains[self.currentChainName].Project(tempName, self.cuts, self.weights)#"(CRY_weights_RZG.weight_RZG)")
 
