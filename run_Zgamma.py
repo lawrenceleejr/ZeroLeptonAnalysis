@@ -293,7 +293,7 @@ for processname in sh_bg.keys():
             'RPT_HT9PP'              :  [26, 0, 1.04, False],
             #           'cosPP'            :  [26, -1 , 1.04, False],
             'PP_CosTheta'            :  [26, -1 , 1.04, False],
-            'PP_VisShape'            :  [26, 0, 1.04, True],
+            'PP_VisShape'            :  [26, 0, 1.04, False],
             'PP_MDeltaR'             :  [25, 0 , 2000, True],
             # 'dphiPV1a'               :  [32, 0, 6.4, False],
             # 'cosV1a'                 :  [26, -1 , 1.04, False ],
