@@ -8,6 +8,15 @@ import os
 ROOT.gROOT.SetBatch(True)
 import AtlasStyle
 
+def memory_usage_resource():
+    import resource
+    rusage_denom = 1024.
+    # if sys.platform == 'darwin':
+    #     # ... it seems that in OSX the output is different units ...
+    #     rusage_denom = rusage_denom * rusage_denom
+    mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / rusage_denom
+    return mem
+
 # Translate TJ/Russell vars to Chris vars
 varmappings = {
 'HT1CM':'HT1CM',
@@ -94,6 +103,8 @@ elif options.dataSource == 'reco':
 #    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
+if 'bnl' in os.getenv('HOSTNAME') :
+    inputdir = '/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/v53_Data_pT50/'
 cry_chain = ROOT.TChain('Data_CRY')
 cry_chain.Add(inputdir+'Data_Nov11.root')
 
@@ -116,9 +127,16 @@ for counter, histoKey in enumerate(histoList) :
     if 'PROOF' in histoKey.GetName(): continue
     if 'EventLoop' in histoKey.GetName(): continue
     if 'Missing' in histoKey.GetName(): continue
+    if 'minus' in histoKey.GetName(): continue
     for name, ifile in myfiles.items() :
-        hist=ifile.Get(histoKey.GetName())
-        if hist.ClassName().startswith('TH3'):
+       print histoKey.GetName()
+       print name
+       print memory_usage_resource()
+       hist=ifile.Get(histoKey.GetName())
+       print memory_usage_resource()
+       print "got histo"
+       if hist.ClassName().startswith('TH3'):
+            continue
             hist3d = hist
             if( not hist3d ) :
                 continue
@@ -155,8 +173,7 @@ for counter, histoKey in enumerate(histoList) :
                 continue
             if( not histos[name].GetEntries()) :
                 continue
-            #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
-
+            print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
     print histoKey
     if not options.targetZ in histos:
         continue
@@ -317,7 +334,7 @@ for counter, histoKey in enumerate(histoList) :
 
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
-
+    del histos
     histos = None
 
 import time
