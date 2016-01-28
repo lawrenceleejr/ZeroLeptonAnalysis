@@ -68,14 +68,14 @@ parser = OptionParser()
 parser.add_option('--dataSource' , help='select reco or truth inputs', choices=('truth','reco'), default='truth')
 parser.add_option('--meOrder' , help='select lo or nlo Z', choices=('lo','nlo'), default='lo')
 parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
+parser.add_option('--targetZ', help='Z process to which to reweight', choices=('Znunu','Zll'),default='Znunu')
 (options, args) = parser.parse_args()
 
 reweightfile = ROOT.TFile('ratZG.root')
 reweighthists = {}
 if options.dataSource == 'truth':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_zvv_'+options.meOrder+'_truth.root'),
-	'Zll'  : ROOT.TFile('rundir_zll_'+options.meOrder+'_truth.root'),
+	options.targetZ  : ROOT.TFile('rundir_'+options.targetZ.replace('Z','z').replace('nu','v')+'_'+options.meOrder+'_truth.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_truth.root'),
         }
     reweighthists['Znunu'] = reweightfile.Get('truth/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
@@ -84,35 +84,34 @@ if options.dataSource == 'truth':
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
 elif options.dataSource == 'reco':
     myfiles = {
-	'Znunu'  : ROOT.TFile('rundir_zvv_'+options.meOrder+'_reco.root'),
-	'Zll'  : ROOT.TFile('rundir_zll_'+options.meOrder+'_reco.root'),
+	options.targetZ  : ROOT.TFile('rundir_'+options.targetZ.replace('Z','z').replace('nu','v')+'_'+options.meOrder+'_reco.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_reco.root'),
         }
     reweighthists['Znunu'] = reweightfile.Get('reco/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
-    reweighthist['Zll'] = reweightfile.Get('truth/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
+    reweighthists['Zll'] = reweightfile.Get('reco/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
 #    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
 #    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
 #    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
 
-
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
 cry_chain = ROOT.TChain('Data_CRY')
-#for i in sorted(os.listdir(inputdir)):
-#    cry_chain.Add(inputdir+i)
 cry_chain.Add(inputdir+'Data_Nov11.root')
+
+crz_chain = ROOT.TChain('Data_CRZ')
+crz_chain.Add(inputdir+'Data_Nov11.root')
 
 weightfile = ROOT.TFile('CRY_weights_RZG.root')
 weighttree = weightfile.Get('CRY_weights_RZG')
 
 cry_chain.AddFriend(weighttree)
+crz_chain.AddFriend(weighttree)
 
-outputdir =  'plots/'+options.dataSource+'/'
+outputdir =  'plots/'+options.targetZ+'_'+options.dataSource+'/'
 
-histoList = myfiles['Znunu'].GetListOfKeys()
+histoList = myfiles[options.targetZ].GetListOfKeys()
 #histoList.Print()
 
 for counter, histoKey in enumerate(histoList) :
-#    def printHisto( key ) :
     histos = {}
     if 'PROOF' in histoKey.GetName(): continue
     if 'EventLoop' in histoKey.GetName(): continue
@@ -128,44 +127,39 @@ for counter, histoKey in enumerate(histoList) :
             #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(hist2d.GetEntries())
             if name=='Gamma':
                 histos[name] = hist3d.ProjectionX(hist3d.GetName()+'_gamma')
-                hist2d = hist3d.Project3D('xz')
-
-                #print hist2d.GetYaxis().GetNbins(), hist2d.GetXaxis().GetNbins()
-                hist2d.SetName(hist2d.GetName()+'_rw1')
-                hist2d.Reset()
                 histos[name+'Reweight'] = hist3d.ProjectionX(hist3d.GetName()+'_gammareweight')
                 histos[name+'Reweight'].Reset()
                 for ibin in range(1,hist3d.GetYaxis().GetNbins()+2):
                     yval = hist3d.GetYaxis().GetBinCenter(ibin)
-                    if yval > reweighthist.GetXaxis().GetXmax(): yval = reweighthist.GetXaxis().GetXmax()*0.99
+                    if yval > reweighthists[options.targetZ].GetXaxis().GetXmax(): yval = reweighthists[options.targetZ].GetXaxis().GetXmax()*0.99
                     hist3d.GetYaxis().SetRange(ibin,ibin)
                     hist2d = hist3d.Project3D('zx')
-                    if options.dataSource=='reco':
-                        if zeffhist.Interpolate(yval)*geffhist.Interpolate(yval)>0:
-                            hist2d.Scale(zeffhist.Interpolate(yval)/geffhist.Interpolate(yval))
-                            #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
+                    # if options.dataSource=='reco':
+                    #     if zeffhist.Interpolate(yval)*geffhist.Interpolate(yval)>0:
+                    #         hist2d.Scale(zeffhist.Interpolate(yval)/geffhist.Interpolate(yval))
+                    #         #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
                     for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
                         zval = hist3d.GetZaxis().GetBinCenter(jbin)
-                        if zval > reweighthist.GetYaxis().GetXmax(): zval = reweighthist.GetYaxis().GetXmax()*0.99
+                        if zval > reweighthists[options.targetZ].GetYaxis().GetXmax(): zval = reweighthists[options.targetZ].GetYaxis().GetXmax()*0.99
                         projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',jbin,jbin)
                         prescaleint = projx.Integral()
-                        projx.Scale(reweighthist.Interpolate(yval,zval))
+                        projx.Scale(reweighthists[options.targetZ].Interpolate(yval,zval))
 #                        print ibin, jbin, yval, zval
-#                        print reweighthist.Interpolate(yval,zval), prescaleint, '==>', projx.Integral()
+#                        print reweighthists[options.targetZ].Interpolate(yval,zval), prescaleint, '==>', projx.Integral()
                         histos[name+'Reweight'].Add(projx)
                 print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
             else: print 'Not supposed to have TH3 for type', name
         elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
-            histos[name] = hist
+            histos[name] = hist.Clone(hist.GetName()+'_'+name)
             if( not histos[name] ) :
                 continue
             if( not histos[name].GetEntries()) :
                 continue
             #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
 
-    if( not name in histos ) :
-        continue
     print histoKey
+    if not options.targetZ in histos:
+        continue
 
     c1 = ROOT.TCanvas('c1_'+histoKey.GetName().replace('$',''),
                       'c1_'+histoKey.GetName().replace('$',''),
@@ -180,22 +174,23 @@ for counter, histoKey in enumerate(histoList) :
     pad1.SetLogy()
     pad1.cd()
 
-    histos['Znunu'].SetLineColor(ROOT.kRed)
-    histos['Znunu'].SetMarkerColor(ROOT.kRed)
-    histos['Znunu'].SetMarkerStyle(ROOT.kFullTriangleUp)
-    histos['Znunu'].SetMarkerSize(0.7)
+    histos[options.targetZ].SetLineColor(ROOT.kRed)
+    histos[options.targetZ].SetMarkerColor(ROOT.kRed)
+    histos[options.targetZ].SetMarkerStyle(ROOT.kFullTriangleUp)
+    histos[options.targetZ].SetMarkerSize(0.7)
     histos['Gamma'].SetMarkerStyle(ROOT.kOpenSquare)
     histos['Gamma'].SetMarkerSize(0.7)
-    histos['Znunu'].Scale(1000)
-    histos['Gamma'].Scale(1000)
+    # histos[options.targetZ].Scale(1000)
+    # histos['Gamma'].Scale(1000)
 
     leg4 = ROOT.TLegend(.6, 0.7, 0.9, 0.9) if 'GammaReweight' in histos.keys() else ROOT.TLegend(.6, 0.7, 0.9, 0.9)
     leg4.SetFillStyle(0)
     leg4.SetBorderSize(0)
-    leg4.AddEntry(histos['Znunu'] , 'Znunu')
+    leg4.AddEntry(histos[options.targetZ] , options.targetZ)
 
-    if not ('minus' in histos['Znunu'].GetName() or 'cutflow' in histos['Znunu'].GetName()):
-        histname_data = histos['Znunu'].GetName()+'_data'
+    if not ('minus' in histos[options.targetZ].GetName() or 'cutflow' in histos[options.targetZ].GetName()):
+
+        histname_data = histos[options.targetZ].GetName()
         cutlevel = ''
         underscore_cut = False
         for i in ['no_cuts', 'base_meff', 'cry_tight', 'met50_2jet', 'met100_2jet', 'met300_2jet']:
@@ -210,22 +205,32 @@ for counter, histoKey in enumerate(histoList) :
         else:
             varname,cutlevel = histname_data.rsplit('_',2)[0:2]
         if varname in varmappings: 
-            histos['Data'] = histos['Znunu'].Clone(histname_data)
+            histos['Data'] = histos[options.targetZ].Clone(histname_data+'_CRYreweight')
             histos['Data'].Reset()
             cry_chain.Draw('{var}>>{hist}'.format(
-                    var=varmappings[varname], hist=histname_data, nbins=histos['Znunu'].GetNbinsX(),
-                   ),'weight_RZG*(phSignal&&{cut})'.format(cut=cuts[cutlevel]))
+                    var=varmappings[varname], hist=histname_data+'_CRYreweight', nbins=histos[options.targetZ].GetNbinsX(),
+                   ),'weight_R'+(options.targetZ.replace('nu','v'))+'G*(phSignal&&{cut}&&(cleaning&15)==0)'.format(cut=cuts[cutlevel]))
             histos['Data'].SetMarkerStyle(ROOT.kFullCircle)
             histos['Data'].SetMarkerColor(ROOT.kBlack)
             histos['Data'].SetLineColor(ROOT.kBlack)
             leg4.AddEntry(histos['Data'] , 'CRY Data')
+
+            histos['DataZll'] = histos[options.targetZ].Clone(histname_data+'_CRZ')
+            histos['DataZll'].Reset()
+            crz_chain.Draw('{var}>>{hist}'.format(
+                    var=varmappings[varname], hist=histname_data+'_CRZ', nbins=histos[options.targetZ].GetNbinsX(),
+                   ),'({cut}&&(cleaning&7)==0)'.format(cut=cuts[cutlevel]))
+            histos['DataZll'].SetMarkerStyle(ROOT.kFullTriangleDown)
+            histos['DataZll'].SetMarkerColor(ROOT.kOrange)
+            histos['DataZll'].SetLineColor(ROOT.kOrange)
+            leg4.AddEntry(histos['DataZll'] , 'CRZ Data')
 
     # if histos['Gamma'].GetNbinsX() ==100 :
     #     for proc in histos.keys():
     #         histos[proc].Rebin(4)
 
     histos['Gamma'].Draw('p')
-    histos['Znunu'].Draw('lsame')
+    histos[options.targetZ].Draw('lsame')
 
     scalef = 1.
     if 'GammaReweight' in histos.keys():
@@ -234,7 +239,7 @@ for counter, histoKey in enumerate(histoList) :
         histos['GammaReweight'].SetMarkerStyle(ROOT.kFullSquare)
         histos['GammaReweight'].SetMarkerSize(0.7)
 
-        histos['GammaReweight'].Scale(1000)
+        # histos['GammaReweight'].Scale(1000)
         scalef = histos['GammaReweight'].Integral()/histos['Gamma'].Integral() if histos['Gamma'].Integral()>0. else 0.
         histos['Gamma'].Scale(scalef)
         histos['GammaReweight'].Draw('psame')
@@ -243,20 +248,15 @@ for counter, histoKey in enumerate(histoList) :
     else:
         leg4.AddEntry(histos['Gamma'] , 'Gamma')
     if 'Data' in histos.keys(): histos['Data'].Draw('same')
+    if 'DataZll' in histos.keys(): histos['DataZll'].Draw('same')
     leg4.Draw('same')
 
     if 'Data' in  histos.keys():
-        histos['Gamma'].SetMaximum(4*max(histos['Data'].GetMaximum(),histos['Znunu'].GetMaximum()))
-        histos['Gamma'].SetMinimum(0.5*max(1,min(histos['Data'].GetMinimum(),histos['Znunu'].GetMinimum())))
+        histos['Gamma'].SetMaximum(4*max(histos['Data'].GetMaximum(),histos[options.targetZ].GetMaximum()))
+        histos['Gamma'].SetMinimum(0.5*max(1,min(histos['Data'].GetMinimum(),histos[options.targetZ].GetMinimum())))
     else:
-        histos['Gamma'].SetMaximum(4*max(histos['Gamma'].GetMaximum(),histos['Znunu'].GetMaximum()))
-        histos['Gamma'].SetMinimum(0.5*max(1,min(histos['Gamma'].GetMinimum(),histos['Znunu'].GetMinimum())))
-
-    ratio = histos['Gamma'].Clone(histos['Gamma'].GetName()+'_ratgZ')
-    ratio.Sumw2()
-    ratio.Divide(histos['Znunu'])
-    ratio.SetMinimum(0)
-    ratio.SetMaximum(2.5)
+        histos['Gamma'].SetMaximum(4*max(histos['Gamma'].GetMaximum(),histos[options.targetZ].GetMaximum()))
+        histos['Gamma'].SetMinimum(0.5*max(1,min(histos['Gamma'].GetMinimum(),histos[options.targetZ].GetMinimum())))
 
     c1.cd()
     pad2 = ROOT.TPad('pad2','pad2',0. ,0.0, 1.,0.3  )
@@ -265,11 +265,20 @@ for counter, histoKey in enumerate(histoList) :
     pad2.Draw()
     pad2.cd()
 
-    if 'cutflow' in histos['Znunu'].GetName():
+    if 'cutflow' in histos[options.targetZ].GetName():
         pad2.SetBottomMargin(0.6)
         pad2.SetRightMargin(0.3)
         pad1.SetRightMargin(0.3)
         histos['Gamma'].SetMinimum(1)
+
+    ratio = histos['Gamma'].Clone(histos['Gamma'].GetName()+'_ratgZ')
+    ratio2 = None
+    ratio3 = None
+    ratio4 = None
+    # ratio.Sumw2()
+    ratio.Divide(histos[options.targetZ])
+    ratio.SetMinimum(0)
+    ratio.SetMaximum(2.5)
 
     ratio.GetYaxis().SetTitle('#gamma / Z');
     ratio.GetYaxis().SetNdivisions(505);
@@ -289,22 +298,27 @@ for counter, histoKey in enumerate(histoList) :
     ratio.Draw('l')
     if 'GammaReweight' in histos.keys():
         ratio2 = histos['GammaReweight'].Clone(histos['GammaReweight'].GetName()+'_ratGZ')
-        ratio2.Sumw2()
-        ratio2.Divide(histos['Znunu'])
+        # ratio2.Sumw2()
+        ratio2.Divide(histos[options.targetZ])
         ratio2.Draw('psame')
     else:
         ratio.SetMaximum(15)
+
     if 'Data' in histos.keys():
         ratio3 = histos['Data'].Clone(histos['Data'].GetName()+'_ratDZ')
-        ratio3.Sumw2()
-        ratio3.Divide(histos['Znunu'])
+        # ratio3.Sumw2()
+        ratio3.Divide(histos[options.targetZ])
         ratio3.Draw('psame')
+    if 'DataZll' in histos.keys():
+        ratio4 = histos['DataZll'].Clone(histos['DataZll'].GetName()+'_ratDZll')
+        # ratio3.Sumw2()
+        ratio4.Divide(histos[options.targetZ])
+        ratio4.Draw('psame')
 
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
-    histos = None
 
-#    printHisto(histoKey)
+    histos = None
 
 import time
 #time.sleep(120)

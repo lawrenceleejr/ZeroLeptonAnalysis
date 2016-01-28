@@ -35,7 +35,7 @@ for datasource in ['reco','truth']:
             zvvhist = zvv_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
             ghist = g_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
 
-            rat = zvvhist.Clone('Rzvvg_{0}_{1}'.format(rwpair[0],rwpair[1],level))
+            rat = zvvhist.Clone('Rzvvg_{0}_{1}_{2}'.format(rwpair[0],rwpair[1],level))
             rat.Divide(ghist)
             #rat.Scale(1./math.sqrt(rat.Integral()))
             outfile.cd(datasource)
@@ -43,7 +43,6 @@ for datasource in ['reco','truth']:
 
             if datasource=='reco':
                 zllhist = zll_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
-                ghist = g_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
 
                 rat2 = zllhist.Clone('Rzllg_{0}_{1}_{2}'.format(rwpair[0],rwpair[1],level))
                 rat2.Divide(ghist)
