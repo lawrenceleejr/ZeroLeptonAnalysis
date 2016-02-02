@@ -105,10 +105,18 @@ elif options.dataSource == 'reco':
     reweighthists['Znunu'] = reweightfile.Get('reco/Rzvvg_'+options.reweightHists+'_'+options.reweightCuts)
     reweighthists['Zll'] = reweightfile.Get('reco/Rzllg_'+options.reweightHists+'_'+options.reweightCuts)
 
-print reweighthists
-#    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
-#    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
-#    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
+#print reweighthists
+
+#TODODOD HERE
+effhist = {
+    "Znunu" : reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)  ,
+    "Zll"   : reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)  ,
+    "Gamma" : reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts),
+}
+
+# zvveffhist =
+# zlleffhist =
+# geffhist   =
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
 if 'bnl' in os.getenv('HOSTNAME') :
@@ -161,7 +169,11 @@ for counter, histoKey in enumerate(histoList) :
                     if yval > reweighthists[options.targetZ].GetXaxis().GetXmax(): yval = reweighthists[options.targetZ].GetXaxis().GetXmax()*0.99
                     hist3d.GetYaxis().SetRange(ibin,ibin)
                     hist2d = hist3d.Project3D('zx')
-                    # if options.dataSource=='reco':
+                    # if options.dataSource=='truth':
+                    if effhist[options.targetZ].Interpolate(yval)*effhist['Gamma'].Interpolate(yval)>0:
+                        hist2d.Scale(effhist[options.targetZ].Interpolate(yval)/effhist['Gamma'].Interpolate(yval))
+                            #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
+                    #     zeffhist = reweighthists[options.targetZ]
                     #     if zeffhist.Interpolate(yval)*geffhist.Interpolate(yval)>0:
                     #         hist2d.Scale(zeffhist.Interpolate(yval)/geffhist.Interpolate(yval))
                     #         #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
@@ -233,7 +245,7 @@ for counter, histoKey in enumerate(histoList) :
             varname = histname_data.rsplit('_',3)[0]
         else:
             varname,cutlevel = histname_data.rsplit('_',2)[0:2]
-        if varname in varmappings: 
+        if varname in varmappings:
             histos['Data'] = histos[options.targetZ].Clone(histname_data+'_CRYreweight')
             histos['Data'].Reset()
             cry_chain.Draw('{var}>>{hist}'.format(
