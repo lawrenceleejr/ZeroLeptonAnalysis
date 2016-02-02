@@ -180,9 +180,10 @@ for counter, histoKey in enumerate(histoList) :
                     for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
                         zval = hist3d.GetZaxis().GetBinCenter(jbin)
                         if zval > reweighthists[options.targetZ].GetYaxis().GetXmax(): zval = reweighthists[options.targetZ].GetYaxis().GetXmax()*0.99
+
                         projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',jbin,jbin)
                         prescaleint = projx.Integral()
-                        projx.Scale(reweighthists[options.targetZ].Interpolate(yval,zval))
+                        projx.Scale(reweighthists[options.targetZ].Interpolate(yval,zval) )
 #                        print ibin, jbin, yval, zval
 #                        print reweighthists[options.targetZ].Interpolate(yval,zval), prescaleint, '==>', projx.Integral()
                         histos[name+'Reweight'].Add(projx)
@@ -256,15 +257,17 @@ for counter, histoKey in enumerate(histoList) :
             histos['Data'].SetLineColor(ROOT.kBlack)
             leg4.AddEntry(histos['Data'] , 'CRY Data')
 
-            histos['DataZll'] = histos[options.targetZ].Clone(histname_data+'_CRZ')
-            histos['DataZll'].Reset()
-            crz_chain.Draw('{var}>>{hist}'.format(
-                    var=varmappings[varname], hist=histname_data+'_CRZ', nbins=histos[options.targetZ].GetNbinsX(),
-                   ),'({cut}&&(cleaning&7)==0)'.format(cut=cuts[cutlevel]))
-            histos['DataZll'].SetMarkerStyle(ROOT.kFullTriangleDown)
-            histos['DataZll'].SetMarkerColor(ROOT.kOrange)
-            histos['DataZll'].SetLineColor(ROOT.kOrange)
-            leg4.AddEntry(histos['DataZll'] , 'CRZ Data')
+            if options.targetZ is "Zll" :
+                print "drawing zll data"
+                histos['DataZll'] = histos[options.targetZ].Clone(histname_data+'_CRZ')
+                histos['DataZll'].Reset()
+                crz_chain.Draw('{var}>>{hist}'.format(
+                        var=varmappings[varname], hist=histname_data+'_CRZ', nbins=histos[options.targetZ].GetNbinsX(),
+                        ),'({cut}&&(cleaning&7)==0)'.format(cut=cuts[cutlevel]))
+                histos['DataZll'].SetMarkerStyle(ROOT.kFullTriangleDown)
+                histos['DataZll'].SetMarkerColor(ROOT.kOrange)
+                histos['DataZll'].SetLineColor(ROOT.kOrange)
+                leg4.AddEntry(histos['DataZll'] , 'CRZ Data')
 
     # if histos['Gamma'].GetNbinsX() ==100 :
     #     for proc in histos.keys():
