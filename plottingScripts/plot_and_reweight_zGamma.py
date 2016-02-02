@@ -149,10 +149,10 @@ for counter, histoKey in enumerate(histoList) :
     for name, ifile in myfiles.items() :
        print histoKey.GetName()
        print name
-       print memory_usage_resource()
+#       print memory_usage_resource()
        hist=ifile.Get(histoKey.GetName())
-       print memory_usage_resource()
-       print "got histo"
+#       print memory_usage_resource()
+#       print "got histo"
        if hist.ClassName().startswith('TH3'):
             hist3d = hist
             if( not hist3d ) :
@@ -176,7 +176,7 @@ for counter, histoKey in enumerate(histoList) :
                     #     zeffhist = reweighthists[options.targetZ]
                     #     if zeffhist.Interpolate(yval)*geffhist.Interpolate(yval)>0:
                     #         hist2d.Scale(zeffhist.Interpolate(yval)/geffhist.Interpolate(yval))
-                    #         #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
+                            #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
                     for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
                         zval = hist3d.GetZaxis().GetBinCenter(jbin)
                         if zval > reweighthists[options.targetZ].GetYaxis().GetXmax(): zval = reweighthists[options.targetZ].GetYaxis().GetXmax()*0.99
@@ -194,9 +194,9 @@ for counter, histoKey in enumerate(histoList) :
                 continue
             if( not histos[name].GetEntries()) :
                 continue
-            print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
-    print histoKey
-    print histos
+#            print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
+    # print histoKey
+    # print histos
     if not options.targetZ in histos:
         continue
     if not 'Gamma' in histos:
@@ -359,7 +359,7 @@ for counter, histoKey in enumerate(histoList) :
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
 
-    for histo in histos.values() : 
+    for histo in histos.values() :
         histo.Delete()
     ratio.Delete()
     if ratio2 :  ratio2.Delete()
