@@ -52,7 +52,7 @@ for datasource in ['reco','truth']:
 
 effvars = ['bosonPt','bosonEta']
 outfile.mkdir('efficiency')
-for process in ['zvv','gamma']:#'zll'
+for process in ['zvv','gamma','zll']:#
     reco_in = {'zvv':ROOT.TFile('rundir_zvv_nlo_reco.root'),'zll':ROOT.TFile('rundir_zll_nlo_reco.root'),'gamma':ROOT.TFile('rundir_gamma_reco.root')}[process]
     truth_in = {'zvv':ROOT.TFile('rundir_zvv_nlo_truth.root'),'zll':ROOT.TFile('rundir_zll_nlo_truth.root'),'gamma':ROOT.TFile('rundir_gamma_truth.root')}[process]
     for level in cutlevels:
