@@ -140,7 +140,6 @@ for counter, histoKey in enumerate(histoList) :
        print memory_usage_resource()
        print "got histo"
        if hist.ClassName().startswith('TH3'):
-            continue
             hist3d = hist
             if( not hist3d ) :
                 continue
@@ -171,7 +170,7 @@ for counter, histoKey in enumerate(histoList) :
                         histos[name+'Reweight'].Add(projx)
                 print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
             else: print 'Not supposed to have TH3 for type', name
-        elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
+       elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
             histos[name] = hist.Clone(hist.GetName()+'_'+name)
             if( not histos[name] ) :
                 continue
@@ -179,7 +178,10 @@ for counter, histoKey in enumerate(histoList) :
                 continue
             print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
     print histoKey
+    print histos
     if not options.targetZ in histos:
+        continue
+    if not 'Gamma' in histos:
         continue
 
     c1 = ROOT.TCanvas('c1_'+histoKey.GetName().replace('$',''),
