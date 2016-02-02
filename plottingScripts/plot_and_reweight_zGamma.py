@@ -89,11 +89,15 @@ elif options.dataSource == 'reco':
         }
     reweighthists['Znunu'] = reweightfile.Get('reco/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
     reweighthists['Zll'] = reweightfile.Get('reco/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
+
+print reweighthists
 #    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
 #    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
 #    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
+if 'bnl' in os.getenv('HOSTNAME') :
+    inputdir = '/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/v53_Data_pT50/'
 cry_chain = ROOT.TChain('Data_CRY')
 cry_chain.Add(inputdir+'Data_Nov11.root')
 
@@ -107,6 +111,8 @@ cry_chain.AddFriend(weighttree)
 crz_chain.AddFriend(weighttree)
 
 outputdir =  'plots/'+options.targetZ+'_'+options.dataSource+'/'
+if not os.path.isdir(outputdir) :
+    os.mkdir(outputdir)
 
 histoList = myfiles[options.targetZ].GetListOfKeys()
 #histoList.Print()
@@ -318,7 +324,18 @@ for counter, histoKey in enumerate(histoList) :
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
 
+    for histo in histos.values() : 
+        histo.Delete()
+    ratio.Delete()
+    if ratio2 :  ratio2.Delete()
+    if ratio3 :  ratio3.Delete()
+    if ratio4 :  ratio4.Delete()
+
+    pad1.Delete()
+    pad2.Delete()
+
     histos = None
+    ratio  = None
 
 import time
 #time.sleep(120)
