@@ -8,6 +8,9 @@ import os
 ROOT.gROOT.SetBatch(True)
 import AtlasStyle
 
+ROOT.gROOT.SetStyle("ATLAS");
+ROOT.gROOT.ForceStyle();
+
 def memory_usage_resource():
     import resource
     rusage_denom = 1024.
