@@ -80,7 +80,10 @@ parser = OptionParser()
 parser.add_option('--dataSource' , help='select reco or truth inputs', choices=('truth','reco'), default='truth')
 parser.add_option('--meOrder' , help='select lo or nlo Z', choices=('lo','nlo'), default='lo')
 parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
+parser.add_option('--reweightHists', help='reweight in which variables', choices=('bosonPt_dPhi','bosonEt_dPhi'),default='bosonPt_dPhi')
 parser.add_option('--targetZ', help='Z process to which to reweight', choices=('Znunu','Zll'),default='Znunu')
+
+
 (options, args) = parser.parse_args()
 
 reweightfile = ROOT.TFile('ratZG.root')
@@ -90,17 +93,17 @@ if options.dataSource == 'truth':
 	options.targetZ  : ROOT.TFile('rundir_'+options.targetZ.replace('Z','z').replace('nu','v')+'_'+options.meOrder+'_truth.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_truth.root'),
         }
-    reweighthists['Znunu'] = reweightfile.Get('truth/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
-    reweighthists['Zll'] = reweightfile.Get('truth/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
-    #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts+'_alt')
+    reweighthists['Znunu'] = reweightfile.Get('truth/Rzvvg_'+options.reweightHists+'_'+options.reweightCuts)
+    reweighthists['Zll'] = reweightfile.Get('truth/Rzllg_'+options.reweightHists+'_'+options.reweightCuts)
+    #reweighthist = reweightfile.Get('truth/Rzg_"+options.reweightHists+"_'+options.reweightCuts+'_alt')
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
 elif options.dataSource == 'reco':
     myfiles = {
 	options.targetZ  : ROOT.TFile('rundir_'+options.targetZ.replace('Z','z').replace('nu','v')+'_'+options.meOrder+'_reco.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_reco.root'),
         }
-    reweighthists['Znunu'] = reweightfile.Get('reco/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
-    reweighthists['Zll'] = reweightfile.Get('reco/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
+    reweighthists['Znunu'] = reweightfile.Get('reco/Rzvvg_'+options.reweightHists+'_'+options.reweightCuts)
+    reweighthists['Zll'] = reweightfile.Get('reco/Rzllg_'+options.reweightHists+'_'+options.reweightCuts)
 
 print reweighthists
 #    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
