@@ -3,11 +3,16 @@ import ROOT, math
 cutlevels = ['no_cuts','met50','met160','base_meff']
 rwvars = ['met','bosonPt','bosonEt','bosonEta','dPhi']
 
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option('--meOrder' , help='order for input z truth files', choices=('lo','nlo'), default='lo')
+(options, args) = parser.parse_args()
+
 outfile = ROOT.TFile('ratZG.root','RECREATE')
 for datasource in ['reco','truth']:
     outfile.mkdir(datasource)
-    zvv_in = ROOT.TFile('rundir_zvv_lo_'+datasource+'.root') if datasource == 'truth' else ROOT.TFile('rundir_zvv_nlo_'+datasource+'.root')
-    zll_in = ROOT.TFile('rundir_zll_lo_'+datasource+'.root') if datasource == 'truth' else ROOT.TFile('rundir_zll_nlo_'+datasource+'.root')
+    zvv_in = ROOT.TFile('rundir_zvv_'+options.meOrder+'_'+datasource+'.root') if datasource == 'truth' else ROOT.TFile('rundir_zvv_nlo_'+datasource+'.root')
+    zll_in = ROOT.TFile('rundir_zll_'+options.meOrder+'_'+datasource+'.root') if datasource == 'truth' else ROOT.TFile('rundir_zll_nlo_'+datasource+'.root')
     g_in = ROOT.TFile('rundir_gamma_'+datasource+'.root')
 
     for level in cutlevels:
@@ -54,7 +59,7 @@ effvars = ['bosonPt','bosonEta']
 outfile.mkdir('efficiency')
 for process in ['zvv','gamma','zll']:#
     reco_in = {'zvv':ROOT.TFile('rundir_zvv_nlo_reco.root'),'zll':ROOT.TFile('rundir_zll_nlo_reco.root'),'gamma':ROOT.TFile('rundir_gamma_reco.root')}[process]
-    truth_in = {'zvv':ROOT.TFile('rundir_zvv_nlo_truth.root'),'zll':ROOT.TFile('rundir_zll_nlo_truth.root'),'gamma':ROOT.TFile('rundir_gamma_truth.root')}[process]
+    truth_in = {'zvv':ROOT.TFile('rundir_zvv_'+options.meOrder+'_truth.root'),'zll':ROOT.TFile('rundir_zll_'+options.meOrder+'_truth.root'),'gamma':ROOT.TFile('rundir_gamma_truth.root')}[process]
     for level in cutlevels:
         for effvar in effvars:
             recohist = reco_in.Get(effvar+'_'+level)
