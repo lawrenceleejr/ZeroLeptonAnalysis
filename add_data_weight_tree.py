@@ -14,6 +14,7 @@ cry_chain.Add(inputdir+'Data_Nov11.root')
 
 reweightfile = ROOT.TFile('ratZG.root')
 reweightzvv = reweightfile.Get('reco/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
+
 effhistzvv = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
 
 reweightzll = reweightfile.Get('reco/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
@@ -42,19 +43,21 @@ for event in cry_chain:
     evtweighthelper.weight_RZllG = 0
 
     if geffhist.Interpolate(phPt)>0:
-        eff_fact = effhistzvv.Interpolate(phPt)/geffhist.Interpolate(phPt)
-        xsec_fact = reweightzvv.Interpolate(phPt,dphi)
-        evtweighthelper.weight_RZvvG = xsec_fact *eff_fact#*xsec_fact
+        zvv_eff_fact = effhistzvv.Interpolate(phPt)/geffhist.Interpolate(phPt)
+        zvv_xsec_fact = reweightzvv.Interpolate(phPt,dphi)
+        evtweighthelper.weight_RZvvG = zvv_eff_fact*zvv_xsec_fact
 
-        evtweighthelper.weight_RZllG = reweightzll.Interpolate(phPt,dphi)
+        zll_eff_fact = effhistzll.Interpolate(phPt)/geffhist.Interpolate(phPt)
+        zll_xsec_fact = reweightzll.Interpolate(phPt,dphi)
+        evtweighthelper.weight_RZllG = zll_eff_fact*zll_xsec_fact
 
     if count<10:
-        print phPt, dphi, eff_fact, xsec_fact, evtweighthelper.weight_RZvvG, evtweighthelper.weight_RZllG
-        print phPt, dphi, xsec_fact, evtweighthelper.weight_RZvvG, evtweighthelper.weight_RZllG
+        #print phPt, dphi, eff_fact, xsec_fact, evtweighthelper.weight_RZvvG, evtweighthelper.weight_RZllG
+        print phPt, dphi, zvv_xsec_fact, evtweighthelper.weight_RZvvG, evtweighthelper.weight_RZllG
     if (count%10000)==0: print count, '/', cry_chain.GetEntries()
 
     weighttree.Fill()
     count+=1
-    
+
 weighttree.Write()
 weightfile.Close()
