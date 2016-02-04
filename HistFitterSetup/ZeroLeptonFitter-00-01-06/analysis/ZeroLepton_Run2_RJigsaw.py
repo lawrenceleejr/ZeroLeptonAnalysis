@@ -264,9 +264,9 @@ if configMgr.readFromTree:
         # Z
         # zFiles.append(INPUTDIR+ "/BKG/Zjets.root")
         # zFiles.append(INPUTDIR+ "/Zjets.root")
-        # if not zlFitterConfig.usePreComputedZGeneratorSys:
-        #     zFiles.append(INPUTDIR+ "/BKG/ZMadgraphPythia8.root")
         zFiles.append(INPUTDIR_DATA+ "/Zjets.root")
+        if not zlFitterConfig.usePreComputedZGeneratorSys:
+            zFiles.append(INPUTDIR+ "/BKG/ZMadgraphPythia8.root")
 
 
         # gamma
@@ -439,7 +439,8 @@ zSample.setStatConfig(zlFitterConfig.useStat)
 #         zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
 #         zSample.normSampleRemap = "GAMMAjets"
 # if not zlFitterConfig.usePreComputedZGeneratorSys:
-#     zSample.addSystematic(Systematic("generatorZ",configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
+#     # zSample.addSystematic(Systematic("generatorZ", configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
+#     zSample.addSystematic(Systematic("generatorZ", "_MC_Nom" , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
 
 
 #--------------------------
@@ -900,11 +901,11 @@ for point in allpoints:
                     nameSys = "FlatSig"
                     #sam.addSystematic(Systematic(nameSys, configMgr.weights, 1.+zlFitterConfig.flatErrorSignal, 1-zlFitterConfig.flatErrorSignal, "user", "userOverallSys"))
                 #Z background
-                elif sam.name==zlFitterConfig.zSampleName:
-                    #generator
-                    if zlFitterConfig.usePreComputedZGeneratorSys:
-                        errorGenerator=getError(channel.name,REGION.name.replace("cuts_",""),zTheoSysGeneratorDict)
-                        sam.addSystematic(Systematic("GeneratorZ", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
+                # elif sam.name==zlFitterConfig.zSampleName:
+                #     #generator
+                #     if zlFitterConfig.usePreComputedZGeneratorSys:
+                #         errorGenerator=getError(channel.name,REGION.name.replace("cuts_",""),zTheoSysGeneratorDict)
+                #         sam.addSystematic(Systematic("GeneratorZ", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
 
                 #W background
                 elif sam.name==zlFitterConfig.wSampleName:
@@ -951,6 +952,9 @@ for point in allpoints:
     # add systematics
     ###############################################################
 
+    nominalZSuffix = "_MC_Nom"
+
+    ######################################
 
     #JET systematics
     jetSystematicList = []
@@ -976,15 +980,58 @@ for point in allpoints:
     metSystematicList.append(Systematic("MET_SoftTrk_ResoPerp","","_MET_SoftTrk_ResoPerp","_MET_SoftTrk_ResoPerp","tree","overallNormHistoSysOneSideSym"))
     metSystematicList.append(Systematic("MET_SoftTrk_Scale","","_MET_SoftTrk_ScaleUp","_MET_SoftTrk_ScaleDown","tree","overallNormHistoSys"))
 
+    ########################################
+
+
+    #JET systematics
+    jetSystematicListZ = []
+
+    #JER systematics
+    # jetSystematicListZ.append(Systematic("JER",configMgr.weights , "_JET_JER_SINGLE_NP_1up", "_MC_Nom", "tree", "overallNormHistoSysOneSideSym"))
+    jetSystematicListZ.append(Systematic("JERZ","_MC_Nom","_JET_JER_SINGLE_NP_1up","_JET_JER_SINGLE_NP_1up","tree","overallNormHistoSysOneSideSym"))# ATT: Not sure that it should be symmetrized
+
+    for jesSysStr in jesSystematicStrList:
+        # jetSystematicListZ.append(Systematic(jesSysStr,configMgr.weights,"_"+jesSysStr+"_1up","_"+jesSysStr+"_1down","tree","overallNormHistoSys"))
+        jetSystematicListZ.append(Systematic(jesSysStr+"Z","_MC_Nom","_"+jesSysStr+"_1up","_"+jesSysStr+"_1down","tree","overallNormHistoSys"))
+    #MET systematics
+    metSystematicListZ = []
+    metSystematicListZ.append(Systematic("MET_SoftTrk_ResoParaZ","_MC_Nom","_MET_SoftTrk_ResoPara","_MET_SoftTrk_ResoPara","tree","overallNormHistoSysOneSideSym"))
+    metSystematicListZ.append(Systematic("MET_SoftTrk_ResoPerpZ","_MC_Nom","_MET_SoftTrk_ResoPerp","_MET_SoftTrk_ResoPerp","tree","overallNormHistoSysOneSideSym"))
+    metSystematicListZ.append(Systematic("MET_SoftTrk_ScaleZ","_MC_Nom","_MET_SoftTrk_ScaleUp","_MET_SoftTrk_ScaleDown","tree","overallNormHistoSys"))
+    # metSystematicListZ.append(Systematic("MET_SoftTrk_ResoPara",configMgr.weights,"_MET_SoftTrk_ResoPara","_MC_Nom","tree","overallNormHistoSysOneSideSym"))
+    # metSystematicListZ.append(Systematic("MET_SoftTrk_ResoPerp",configMgr.weights,"_MET_SoftTrk_ResoPerp","_MC_Nom","tree","overallNormHistoSysOneSideSym"))
+    # metSystematicListZ.append(Systematic("MET_SoftTrk_Scale",configMgr.weights,"_MET_SoftTrk_ScaleUp","_MET_SoftTrk_ScaleDown","tree","overallNormHistoSys"))
+
+
+    #### Oh fuck. Need to make a new systematics object.
 
     for REGION in myFitConfig.channels:
         for sam in REGION.sampleList:
+            # print sam.name
+            # print "LL"
             if zlFitterConfig.useJETUncertainties:
-                for sys in jetSystematicList:
-                    sam.addSystematic(sys)
+                if sam.name == "Zjets" and "SR" in REGION.channelName:
+                    for sys in jetSystematicListZ:
+                        sys.differentNominalTreeWeight = True
+                        sys.nominal = "_MC_Nom"
+                        sam.addSystematic(sys)
+                else:
+                    for sys in jetSystematicList:
+                        sam.addSystematic(sys)
+
             if zlFitterConfig.useMETUncertainties:
-                for sys in metSystematicList:
-                    sam.addSystematic(sys)
+                if sam.name == "Zjets" and "SR" in REGION.channelName:
+                    for sys in metSystematicListZ:
+                        sys.differentNominalTreeWeight = True
+                        sys.nominal = "_MC_Nom"
+                        sam.addSystematic(sys)
+                else:
+                    for sys in metSystematicList:
+                        sam.addSystematic(sys)
+
+
+
+
 
     ###############################################################
     # This is the end

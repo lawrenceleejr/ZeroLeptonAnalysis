@@ -5,7 +5,6 @@ from ChannelConfig import *
 ###########################################################
 
 cleaningCut="( abs(m_jet1_eta)>2.4 || m_jet1_chf/m_jet1_FracSamplingMax>0.1)"
-#cleaningCut="1"
 
 regionDict={}
 regionDict["SR"] = Region("SR", "SRAll", [cleaningCut], [])
@@ -33,19 +32,21 @@ regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
 # regionDict["VRWTfminus"] = Region("VRWTfminus", "CRWT", ["lep1sign<0"], ["bTagWeight"])
 
 # regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1)"], [" 1.6 "])#extra weights should be applied only to gamma+jets
-# regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1"])#extra weights should be applied only to gamma+jets
+regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 # regionDict["VRYf"] = Region("VRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 
-# regionDict["CRQ"] = Region("CRQ", "SRAll", [cleaningCut])#ATT: qcd weight
-# regionDict["VRQ1"] = Region("VRQ1", "SRAll", [cleaningCut])#ATT: qcd weight
-# regionDict["VRQ2"] = Region("VRQ2", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["CRQ"] = Region("CRQ", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQ1"] = Region("VRQ1", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQ2"] = Region("VRQ2", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ3"] = Region("VRQ3", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ4"] = Region("VRQ4", "SRAll", [cleaningCut])#ATT: qcd weight
 
 regionDict["VRZ"] = Region("VRZ", "CRZ", [], [])
-# regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
-# regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
-# regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
+regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
+regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
+regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
+
+regionDict["VRZAndreas"] = Region("VRZAndreas", "CRZ", [], [])
 
 # regionDict["VRZf"] = Region("VRZf", "CRZ", [], [])
 

@@ -141,8 +141,8 @@ class ChannelConfig:
 
         # self.commonWeightList = ["pileupWeight", "normWeight", "genWeight"] # Note: eventweight has been moved to sysweight
         self.commonWeightList = ["weight"] # Note: eventweight has been moved to sysweight
-        self.commonWeightList = ["(weight*(weight>0) + 1*(weight==0) )"] # Note: eventweight has been moved to sysweight
-        self.commonWeightList = ["1"]
+        # self.commonWeightList = ["(weight*(weight>0) + 1*(weight==0) )"] # Note: eventweight has been moved to sysweight
+        # self.commonWeightList = ["1"]
 
         #cuts common to all regions (CR,SR,...=
         self.commonCutList = ["veto==0"]
@@ -259,7 +259,7 @@ class ChannelConfig:
         self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2"]
 
         #region where the dphi cut is not applied
-        self.regionsWithoutDPHICutList = ["CRWT","CRW","CRT","CRZ","VRZ","VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]
+        self.regionsWithoutDPHICutList = ["CRWT","CRW","CRT","CRZ","VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]
         
         #region where the met/meff cut is not applied
         self.regionsWithoutMETOVERMEFFCutList = self.regionsWithoutDPHICutList
@@ -299,6 +299,10 @@ class ChannelConfig:
         self.regionsWithoutMSCutList = []#self.regionsWithLooserScaleCuts
         self.regionsWithLooserMSCutList = ["VRTZL","CRT","CRW", "VRZb","VRWb","VRTb"]
         self.regionsWithLooserH2PPCutList = ["VRTZL","CRT","CRW", "VRZb","VRWb","VRTb"]
+
+        self.regionsWithoutScaleCuts = ["VRZAndreas"]
+        self.regionsWithoutMinCut = ["VRZAndreas"]
+        self.regionsWithoutMaxCut = ["VRZAndreas"]
 
         self.CRList = ["CRT","CRW","CRY"]
 
@@ -556,10 +560,13 @@ class ChannelConfig:
 
         if self.R_HT5PP_H5PP>=0:
             cutList.append( " R_HT5PP_H5PP >= %f"%self.R_HT5PP_H5PP   )
-        if self.minR_pTj2i_HT3PPi>=0:
-            cutList.append( " minR_pTj2i_HT3PPi >= %f"%self.minR_pTj2i_HT3PPi   )
-        if self.maxR_H1PPi_H2PPi_upper<=990:
-            cutList.append( " maxR_H1PPi_H2PPi <= %f"%self.maxR_H1PPi_H2PPi_upper   )
+
+        if not(regionName in self.regionsWithoutMinCut):
+            if self.minR_pTj2i_HT3PPi>=0:
+                cutList.append( " minR_pTj2i_HT3PPi >= %f"%self.minR_pTj2i_HT3PPi   )
+        if not(regionName in self.regionsWithoutMaxCut):
+            if self.maxR_H1PPi_H2PPi_upper<=990:
+                cutList.append( " maxR_H1PPi_H2PPi <= %f"%self.maxR_H1PPi_H2PPi_upper   )
 
         if self.RPZ_HT3PP_upper<=990:
             if regionName not in self.regionsWithInvertedRPZCutList:
@@ -606,7 +613,10 @@ class ChannelConfig:
                 cutList.append( " H2PP >= %f"%self.H2PP   )
 
 
-        if regionName in self.regionsWithLooserScaleCuts:
+        if regionName in self.regionsWithoutScaleCuts:
+            pass
+
+        elif regionName in self.regionsWithLooserScaleCuts:
 
             if self.HT1CM>=0:
                 cutList.append( " HT1CM >= %f"%self.HT1CM_loose   )

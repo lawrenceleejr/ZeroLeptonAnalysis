@@ -161,17 +161,11 @@ class PrepareHistos(object):
         for fileName in fileList: chainID += '_' +fileName
         self.currentChainName = chainID
 
-        import os
-
         ## MB : no need to recreate chain if it already exists
         if not self.configMgr.chains.has_key(chainID):
             self.configMgr.chains[chainID] = TChain(treeName)
             for fileName in fileList:
                 self.configMgr.chains[self.currentChainName].Add(fileName)
-                # if "Zjets" in fileName and "SR" in treeName and os.environ.get('ZEROLEPTONFITTER'):
-                #     print "Adding Friend * " * 20
-                #     self.configMgr.chains[self.currentChainName].AddFriend("CRY_weights_RZG",os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
-
         return
 
     def addHisto(self, name, nBins=0, binLow=0., binHigh=0., nBinsY=0, binLowY=0., binHighY=0., useOverflow=False, useUnderflow=False, forceNoFallback=False):
@@ -221,14 +215,9 @@ class PrepareHistos(object):
                     
                     tempName = "%stemp%s" % (name, str(iReg))
                     tempHist = TH1F(tempName, tempName, 1, 0.5, 1.5)
-                    # print "LL "*100
-                    # print tempName
-                    # print name
-                    # print reg
-                    # print self.cuts
-                    # print self.weights
-                    # print "LL "*100
 
+
+                    ## This is where we're taking care of TJ's friend tree setup for 0L RJR Analysis
                     print name
                     tempweight = self.weights
                     if  "hZjetsNom_SR_obs_cuts" == name:
@@ -237,7 +226,7 @@ class PrepareHistos(object):
                         tempweight = "weight_RZvvG"
                         self.cuts = self.cuts+"*(phSignal[0]==1 && phPt[0]>130.)*((cleaning&15) == 0)"
                         # print self.configMgr.chains[self.currentChainName].Project(tempName, self.cuts, self.weights)#"(CRY_weights_RZG.weight_RZG)")
-                    if  "hZjetsNom_CRZ_obs_cuts" == name or  "hZjetsNom_VRZ_obs_cuts" == name:
+                    if  any(x == name for x in ["hZjetsNom_CRZ_obs_cuts","hZjetsNom_VRZ_obs_cuts","hZjetsNom_VRZAndreas_obs_cuts"]) :
                         print self.configMgr.chains[self.currentChainName].AddFriend("CRY_weights_RZG",os.environ.get('ZEROLEPTONFITTER')+"/CRY_weights_RZG.root")
                         #tempweight = "1."
                         tempweight = "weight_RZllG"
