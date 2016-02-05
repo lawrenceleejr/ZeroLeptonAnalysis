@@ -1,6 +1,6 @@
 import ROOT, math
 
-cutlevels = ['no_cuts','met50','met160','base_meff']
+cutlevels = ['no_cuts','met50','met160','met300','base_meff']
 rwvars = ['met','bosonPt','bosonEt','bosonEta','dPhi']
 
 from optparse import OptionParser

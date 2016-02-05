@@ -3,7 +3,7 @@ import os
 
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
+parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','met300','base_meff','cry_tight'), default='no_cuts')
 (options, args) = parser.parse_args()
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
