@@ -26,7 +26,7 @@ parser.add_option("--driver"      , help="select where to run", choices=("direct
 parser.add_option("--isTest", action="store_true", default=False)
 parser.add_option("--dryRun", action="store_true", default=False)
 #parser.add_argument("--no-isTest", dest="isTest", action="store_false")
-parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", 
+parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are",
 #                  choices=(sampleChoices+('all',)),
                   default="all")
 
@@ -66,7 +66,7 @@ import os
 if os.getenv("USER")=="khoo":
     search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/zG_180116"]
 if "bnl" in os.getenv("HOSTNAME") :
-    search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG/"]
+    search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG_test/"]
 
 #search_directories = ["test/"]
 
@@ -83,7 +83,7 @@ discoverInput.discover(sh_all, search_directories)
 
 sh_all.setMetaString("nc_tree", "CRY_SRAllNT")
 
-ROOT.SH.readSusyMeta(sh_all,"optimization/susy_crosssections_13TeV.txt")
+ROOT.SH.readSusyMeta(sh_all,"$ROOTCOREBIN/data/SUSYTools/susy_crosssections_13TeV.txt")
 
 ## Split up samplehandler into per-BG SH"s based on tag metadata
 
@@ -95,9 +95,9 @@ sh_bg = {}
 #sh_bg["top"  ] = sh_all.find("top"  )
 
 sampleslist = (list(sampleChoices)) if options.samplesToRun == 'all' else [sample for sample in list(sampleChoices) if options.samplesToRun in sample]#can do any combos here
-print sampleslist 
+print sampleslist
 if not sampleslist :
-    print 'your expression isn\' a substring of any of the following sample choices :' 
+    print 'your expression isn\' a substring of any of the following sample choices :'
     print sampleChoices
     print 'Exiting'
     quiet_exit()
@@ -129,11 +129,21 @@ tempDirDict = {}
 for key in sh_bg.keys() :
     tempDirDict[key] = "rundir_" + key
 
+def sherpaScaleFactor(sample) :
+    name = sample.getMetaString("sample_name")
+    scalef = 1.
+    if "e4133" in name :
+        splitPt = name.split("Pt")[1]  #find the pt
+        startingPtSlice = int(splitPt.split("_")[0])
+        if startingPtSlice > 279. :
+            scalef = 1.
+    return scalef
+
 #To scale the histograms in the files after the event loop is done...
 def scaleMyRootFiles(processname,mylumi):
     process = sh_bg[processname]
     for sample in process:
-        tempxs = sample.getMetaDouble("nc_xs") * sample.getMetaDouble("kfactor") * sample.getMetaDouble("filter_efficiency")
+        tempxs = sample.getMetaDouble("nc_xs") * sample.getMetaDouble("kfactor") * sample.getMetaDouble("filter_efficiency") * sherpaScaleFactor(sample)
 
         print "Scaling %s by %f/(%f)"%(sample.getMetaString("short_name"), tempxs, sample.getMetaDouble("nc_sumw"))
         m_eventscaling = tempxs
@@ -199,6 +209,12 @@ for processname in sh_bg.keys():
     met300 = no_cuts.copy()
     met300["met>300"] = [10,0,1000]
 
+    met500 = no_cuts.copy()
+    met500["met>500"] = [10,0,1000]
+
+    met600 = no_cuts.copy()
+    met600["met>600"] = [10,0,1000]
+
     met50_2jet = no_cuts.copy()
     met50_2jet["met>50"] = [10,0,1000]
     met50_2jet["PP_MDeltaR>0.1"] = [10,0,2000]
@@ -220,6 +236,16 @@ for processname in sh_bg.keys():
     cry_cuts["PP_MDeltaR>300."]      = [10,0,2000]
     cry_cuts["RPT_HT5PP<.4"]                 = [10,-1,1]
     cry_cuts["QCD_Delta1 / (1 - QCD_Rsib) > .05"] = [10,-1,1]
+
+    cry_cuts_met300 = cry_cuts.copy()
+    cry_cuts_met300["met>300"] = [10,0,1000]
+
+    cry_cuts_met500 = cry_cuts.copy()
+    cry_cuts_met500["met>500"] = [10,0,1000]
+
+    cry_cuts_met600 = cry_cuts.copy()
+    cry_cuts_met600["met>600"] = [10,0,1000]
+
 #    print cry_cuts
 
     ## Define your cut strings here....
@@ -232,13 +258,18 @@ for processname in sh_bg.keys():
             "no_cuts"     : cuts_from_dict(no_cuts),
             "base_meff"   : cuts_from_dict(baseline_cuts),
             "cry_tight"   : cuts_from_dict(cry_cuts),
+            "cry_tight_met300"   : cuts_from_dict(cry_cuts_met300),
+            "cry_tight_met500"   : cuts_from_dict(cry_cuts_met500),
+            "cry_tight_met600"   : cuts_from_dict(cry_cuts_met600),
             "met50"       : cuts_from_dict(met50),
-            "met100"      : cuts_from_dict(met100),
+#            "met100"      : cuts_from_dict(met100),
             "met160"      : cuts_from_dict(met160),
             "met300"      : cuts_from_dict(met300),
-            "met50_2jet"  : cuts_from_dict(met50_2jet),
-            "met100_2jet" : cuts_from_dict(met100_2jet),
-            "met300_2jet" : cuts_from_dict(met300_2jet)
+            "met500"      : cuts_from_dict(met500),
+            "met600"      : cuts_from_dict(met600),
+#            "met50_2jet"  : cuts_from_dict(met50_2jet),
+#            "met100_2jet" : cuts_from_dict(met100_2jet),
+#            "met300_2jet" : cuts_from_dict(met300_2jet)
             }
 
     #################################################################################################
@@ -424,7 +455,7 @@ for processname in sh_bg.keys():
                                   etalimits[0], etalimits[1], etalimits[2],
                                   )
             job.algsAdd(ROOT.MD.AlgHist(therwhist, NTVariables["bosonPt"][4]+"/1000",NTVariables["bosonEta"][4], cutstring ))
- 
+
     driver = None
     if options.driver == "prooflite" :
         driver = ROOT.EL.ProofDriver()
