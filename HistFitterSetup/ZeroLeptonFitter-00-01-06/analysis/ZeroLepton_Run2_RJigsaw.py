@@ -250,22 +250,22 @@ if configMgr.readFromTree:
 
         # Top
         topFiles.append(INPUTDIR+ "/BKG/Top.root")
-        # if not zlFitterConfig.usePreComputedTopGeneratorSys:
-        #     zFiles.append(INPUTDIR+ "TopaMcAtNloHerwigpp.root")
-        # if not zlFitterConfig.usePreComputedTopFragmentationSys:
-        #     topFiles.append(INPUTDIR+ "TopPowhegHerwigpp.root")
+        if not zlFitterConfig.usePreComputedTopGeneratorSys:
+            topFiles.append(INPUTDIR+ "/BKG/TopaMcAtNloHerwigpp.root")
+        if not zlFitterConfig.usePreComputedTopFragmentationSys:
+            topFiles.append(INPUTDIR+ "/BKG/TopPowhegHerwigpp.root")
 
 
         # W
         wFiles.append(INPUTDIR+ "/BKG/Wjets.root")
-        # if not zlFitterConfig.usePreComputedWGeneratorSys:
-            # wFiles.append(INPUTDIR+ "WMadgraphPythia8.root")
+        if not zlFitterConfig.usePreComputedWGeneratorSys:
+            wFiles.append(INPUTDIR+ "/BKG/WMadgraphPythia8.root")
 
         # Z
         zFiles.append(INPUTDIR+ "/BKG/Zjets.root")
         # zFiles.append(INPUTDIR+ "/Zjets.root")
-        # if not zlFitterConfig.usePreComputedZGeneratorSys:
-            # zFiles.append(INPUTDIR+ "ZMadgraphPythia8.root")
+        if not zlFitterConfig.usePreComputedZGeneratorSys:
+            zFiles.append(INPUTDIR+ "/BKG/ZMadgraphPythia8.root")
 
         # gamma
         gammaFiles.append(INPUTDIR+ "/GammaJet.root")
