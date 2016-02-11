@@ -582,7 +582,7 @@ class ChannelConfig:
 
 
         if self.R_ptj2_HT3PP>=0:
-            cutList.append( " pT_jet2 / HT3PP >= %f"%self.R_ptj2_HT3PP   )
+            cutList.append( " R_pTj2_HT3PP >= %f"%self.R_ptj2_HT3PP   )
 
         if self.cosP_upper<=990:
             cutList.append( " abs(cosP) <= %f"%self.cosP_upper   )
