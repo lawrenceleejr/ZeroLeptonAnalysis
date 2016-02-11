@@ -249,7 +249,8 @@ def MakeHist(regionList, renamedRegions, results, hdata, hbkg, hbkgUp, hbkgDown,
     #     gPad.SetLogy()
     #if min<=0: min=0.5
     #hdata.SetMinimum(0.95*min)
-    hdata.SetMinimum(-1.)
+    # hdata.SetMinimum(-1.)
+    hdata.SetMinimum(0)
     #hdata.SetMinimum(0.1)
     return
 
@@ -328,8 +329,6 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     upperPad.cd()  
 
     hdata.Draw("E")
-    # if hdata.Integral():
-    #     gPad.SetLogy()
         
     stack = THStack("stack","stack")
     for h in hbkgComponents:
@@ -358,6 +357,14 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     # c.Print("histpull_"+outFileNamePrefix+".eps")
     # c.Print("histpull_"+outFileNamePrefix+".png")
     c.Print("histpull_"+outFileNamePrefix+".pdf")
+
+
+    if hdata.Integral():
+        upperPad.cd() 
+        hdata.SetMinimum(0.1)
+        hdata.SetMinimum(1000)
+        gPad.SetLogy()
+        c.Print("histpull_"+outFileNamePrefix+"_log.pdf")
     
     return
 
