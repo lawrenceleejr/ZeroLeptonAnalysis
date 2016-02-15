@@ -94,6 +94,11 @@ if options.dataSource == 'truth':
     reweighthists['Zll'] = reweightfile.Get('truth/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts+'_alt')
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
+    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
+    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
+    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
+
+
 elif options.dataSource == 'reco':
     myfiles = {
 	options.targetZ  : ROOT.TFile('rundir_'+options.targetZ.replace('Z','z').replace('nu','v')+'_'+options.meOrder+'_reco.root'),
@@ -155,17 +160,25 @@ for counter, histoKey in enumerate(histoList) :
                     hist2d = hist3d.Project3D('zx')
                     # if options.dataSource=='reco':
                     #     if zeffhist.Interpolate(yval)*geffhist.Interpolate(yval)>0:
-                    #         hist2d.Scale(zeffhist.Interpolate(yval)/geffhist.Interpolate(yval))
-                    #         #print zeffhist.Interpolate(yval)/geffhist.Interpolate(yval)
+                    scalef = 0.
+                    if options.targetZ=='Zll' :
+                        scalef = zlleffhist.Interpolate(yval)/geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
+                            zlleffhist.GetBinContent(geffhist.FindFirstBinAbove())/geffhist.GetBinContent(geffhist.FindFirstBinAbove())
+                    if options.targetZ=='Znunu' :
+                        scalef = 1./geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
+                            1./geffhist.GetBinContent(geffhist.FindFirstBinAbove())#zvv scale here is always ~ 1
+                    hist2d.Scale(scalef)
+
                     for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
                         zval = hist3d.GetZaxis().GetBinCenter(jbin)
                         if zval > reweighthists[options.targetZ].GetYaxis().GetXmax(): zval = reweighthists[options.targetZ].GetYaxis().GetXmax()*0.99
                         projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',jbin,jbin)
-                        prescaleint = projx.Integral()
+#                        prescaleint = projx.Integral()
                         projx.Scale(reweighthists[options.targetZ].Interpolate(yval,zval))
 #                        print ibin, jbin, yval, zval
 #                        print reweighthists[options.targetZ].Interpolate(yval,zval), prescaleint, '==>', projx.Integral()
                         histos[name+'Reweight'].Add(projx)
+
                 print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
             else: print 'Not supposed to have TH3 for type', name
        elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
