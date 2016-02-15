@@ -239,22 +239,30 @@ for counter, histoKey in enumerate(histoList) :
             histos['Data'] = histos[options.targetZ].Clone(histname_data+'_CRYreweight')
             histos['Data'].Reset()
             cry_chain.Draw('{var}>>{hist}'.format(
-                    var=varmappings[varname], hist=histname_data+'_CRYreweight', nbins=histos[options.targetZ].GetNbinsX(),
-                   ),'weight_R'+(options.targetZ.replace('nu','v'))+'G*(phSignal&&{cut}&&(cleaning&15)==0)'.format(cut=cuts[cutlevel]))
+                    var=varmappings[varname],
+                    hist=histname_data+'_CRYreweight',
+                    nbins=histos[options.targetZ].GetNbinsX(),
+                   ),
+                           'weight_R'+(options.targetZ.replace('nu','v'))+'G*(phSignal&&{cut}&&(cleaning&15)==0)'.format(cut=cuts[cutlevel]))
             histos['Data'].SetMarkerStyle(ROOT.kFullCircle)
             histos['Data'].SetMarkerColor(ROOT.kBlack)
             histos['Data'].SetLineColor(ROOT.kBlack)
             leg4.AddEntry(histos['Data'] , 'CRY Data')
 
-            histos['DataZll'] = histos[options.targetZ].Clone(histname_data+'_CRZ')
-            histos['DataZll'].Reset()
-            crz_chain.Draw('{var}>>{hist}'.format(
-                    var=varmappings[varname], hist=histname_data+'_CRZ', nbins=histos[options.targetZ].GetNbinsX(),
-                   ),'({cut}&&(cleaning&7)==0)'.format(cut=cuts[cutlevel]))
-            histos['DataZll'].SetMarkerStyle(ROOT.kFullTriangleDown)
-            histos['DataZll'].SetMarkerColor(ROOT.kOrange)
-            histos['DataZll'].SetLineColor(ROOT.kOrange)
-            leg4.AddEntry(histos['DataZll'] , 'CRZ Data')
+
+            if "Zll" in options.targetZ :
+                histos['DataZll'] = histos[options.targetZ].Clone(histname_data+'_CRZ')
+                histos['DataZll'].Reset()
+                crz_chain.Draw('{var}>>{hist}'.format(
+                        var=varmappings[varname],
+                        hist=histname_data+'_CRZ',
+                        nbins=histos[options.targetZ].GetNbinsX(),
+                        ),
+                               '({cut}&&(cleaning&7)==0)'.format(cut=cuts[cutlevel]))
+                histos['DataZll'].SetMarkerStyle(ROOT.kFullTriangleDown)
+                histos['DataZll'].SetMarkerColor(ROOT.kOrange)
+                histos['DataZll'].SetLineColor(ROOT.kOrange)
+                leg4.AddEntry(histos['DataZll'] , 'CRZ Data')
 
     # if histos['Gamma'].GetNbinsX() ==100 :
     #     for proc in histos.keys():
