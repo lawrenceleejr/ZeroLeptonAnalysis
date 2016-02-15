@@ -120,6 +120,9 @@ cry_chain.AddFriend(weighttree)
 crz_chain.AddFriend(weighttree)
 
 outputdir =  'plots/'+options.targetZ+'_'+options.dataSource+'/'
+if not os.path.isdir(outputdir) :
+    os.mkdir(outputdir)
+
 
 histoList = myfiles[options.targetZ].GetListOfKeys()
 #histoList.Print()
