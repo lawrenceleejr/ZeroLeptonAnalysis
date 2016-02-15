@@ -13,10 +13,10 @@ cry_chain = ROOT.TChain('Data_CRY')
 cry_chain.Add(inputdir+'Data_Nov11.root')
 
 reweightfile = ROOT.TFile('ratZG.root')
-reweightzvv = reweightfile.Get('reco/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
+reweightzvv = reweightfile.Get('truth/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
 #effhistzv = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
 
-reweightzll = reweightfile.Get('reco/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
+reweightzll = reweightfile.Get('truth/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
 #effhistzll = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
 
 geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
@@ -55,6 +55,6 @@ for event in cry_chain:
 
     weighttree.Fill()
     count+=1
-    
+
 weighttree.Write()
 weightfile.Close()

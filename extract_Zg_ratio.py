@@ -22,14 +22,14 @@ for datasource in ['reco','truth']:
             outfile.cd(datasource)
             rat.Write()
 
-            if datasource=='reco':
-                zllhist = zll_in.Get(rwvar+'_'+level)
-                print zllhist, ghist
-                rat2 = zllhist.Clone('Rzllg_{0}_{1}'.format(rwvar,level))
-                rat2.Divide(ghist)
-                #rat2.Scale(1./math.sqrt(rat2.Integral()))
-                outfile.cd(datasource)
-                rat2.Write()
+
+            zllhist = zll_in.Get(rwvar+'_'+level)
+            print zllhist, ghist
+            rat2 = zllhist.Clone('Rzllg_{0}_{1}'.format(rwvar,level))
+            rat2.Divide(ghist)
+            #rat2.Scale(1./math.sqrt(rat2.Integral()))
+            outfile.cd(datasource)
+            rat2.Write()
 
         for rwpair in [('bosonPt','dPhi'),('bosonEt','dPhi')]:
             zvvhist = zvv_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
@@ -41,14 +41,14 @@ for datasource in ['reco','truth']:
             outfile.cd(datasource)
             rat.Write()
 
-            if datasource=='reco':
-                zllhist = zll_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
 
-                rat2 = zllhist.Clone('Rzllg_{0}_{1}_{2}'.format(rwpair[0],rwpair[1],level))
-                rat2.Divide(ghist)
+            zllhist = zll_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
+
+            rat2 = zllhist.Clone('Rzllg_{0}_{1}_{2}'.format(rwpair[0],rwpair[1],level))
+            rat2.Divide(ghist)
                 #rat.Scale(1./math.sqrt(rat.Integral()))
-                outfile.cd(datasource)
-                rat2.Write()
+            outfile.cd(datasource)
+            rat2.Write()
 
 effvars = ['bosonPt','bosonEta']
 outfile.mkdir('efficiency')

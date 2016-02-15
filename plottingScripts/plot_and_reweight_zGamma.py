@@ -65,6 +65,8 @@ cuts = {
     'met100':'MET>300',
     'met160':'MET>100',
     'met300':'MET>300',
+    'met500':'MET>500',
+    'met600':'MET>600',
     'met50_2jet':'MET>50&&MDR>0.1',
     'met100_2jet':'MET>100&&MDR>0.1',
     'met300_2jet':'MET>300&&MDR>0.1',
@@ -129,14 +131,9 @@ for counter, histoKey in enumerate(histoList) :
     if 'Missing' in histoKey.GetName(): continue
     if 'minus' in histoKey.GetName(): continue
     for name, ifile in myfiles.items() :
-       print histoKey.GetName()
-       print name
-       print memory_usage_resource()
        hist=ifile.Get(histoKey.GetName())
-       print memory_usage_resource()
-       print "got histo"
        if hist.ClassName().startswith('TH3'):
-            continue
+#            continue
             hist3d = hist
             if( not hist3d ) :
                 continue
@@ -167,7 +164,7 @@ for counter, histoKey in enumerate(histoList) :
                         histos[name+'Reweight'].Add(projx)
                 print 'integral:', histos[name].Integral(), '==>', histos[name+'Reweight'].Integral()
             else: print 'Not supposed to have TH3 for type', name
-        elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
+       elif hist.ClassName().startswith('TH1'):# and name.startswith('met'):
             histos[name] = hist.Clone(hist.GetName()+'_'+name)
             if( not histos[name] ) :
                 continue
@@ -221,7 +218,7 @@ for counter, histoKey in enumerate(histoList) :
             varname = histname_data.rsplit('_',3)[0]
         else:
             varname,cutlevel = histname_data.rsplit('_',2)[0:2]
-        if varname in varmappings: 
+        if varname in varmappings:
             histos['Data'] = histos[options.targetZ].Clone(histname_data+'_CRYreweight')
             histos['Data'].Reset()
             cry_chain.Draw('{var}>>{hist}'.format(
@@ -332,10 +329,23 @@ for counter, histoKey in enumerate(histoList) :
         ratio4.Divide(histos[options.targetZ])
         ratio4.Draw('psame')
 
+
+
     c1.cd()
     c1.Print(outputdir+c1.GetName()+'.eps')
-    del histos
+
+    for histo in histos.values() :
+        histo.Delete()
+    ratio.Delete()
+    if ratio2 :  ratio2.Delete()
+    if ratio3 :  ratio3.Delete()
+    if ratio4 :  ratio4.Delete()
+
+    pad1.Delete()
+    pad2.Delete()
+
     histos = None
+    ratio  = None
 
 import time
 #time.sleep(120)
