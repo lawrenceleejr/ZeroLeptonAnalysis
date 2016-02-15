@@ -57,6 +57,7 @@ varmappings = {
 'HT6PP':'HT5PP',
 'sangle':'sangle',
 'dangle':'dangle',
+'Nj50'  :'NJet'#these have a 50 GeV cut
 }
 
 cuts = {
