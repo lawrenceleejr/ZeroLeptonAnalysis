@@ -7,6 +7,7 @@ import os
 
 ROOT.gROOT.SetBatch(True)
 import AtlasStyle
+ROOT.SetAtlasStyle()
 
 def memory_usage_resource():
     import resource
