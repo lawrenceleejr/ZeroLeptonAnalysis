@@ -26,7 +26,7 @@ parser.add_option("--driver"      , help="select where to run", choices=("direct
 parser.add_option("--isTest", action="store_true", default=False)
 parser.add_option("--dryRun", action="store_true", default=False)
 #parser.add_argument("--no-isTest", dest="isTest", action="store_false")
-parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are", 
+parser.add_option("--samplesToRun", help="Run a subset of samples. Note we need to do this for the LSF driver as things are",
 #                  choices=(sampleChoices+('all',)),
                   default="all")
 
@@ -67,7 +67,8 @@ if os.getenv("USER")=="khoo":
     search_directories = ["/r04/atlas/khoo/Data_2015/zeroleptonRJR/zG_180116"]
 if "bnl" in os.getenv("HOSTNAME") :
     search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG/"]
-
+    if options.isTest:
+        search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG_test/"]
 #search_directories = ["test/"]
 
 ##
@@ -95,9 +96,9 @@ sh_bg = {}
 #sh_bg["top"  ] = sh_all.find("top"  )
 
 sampleslist = (list(sampleChoices)) if options.samplesToRun == 'all' else [sample for sample in list(sampleChoices) if options.samplesToRun in sample]#can do any combos here
-print sampleslist 
+print sampleslist
 if not sampleslist :
-    print 'your expression isn\' a substring of any of the following sample choices :' 
+    print 'your expression isn\' a substring of any of the following sample choices :'
     print sampleChoices
     print 'Exiting'
     quiet_exit()
@@ -348,31 +349,27 @@ for processname in sh_bg.keys():
             'sangle'                 :  [26, 0, 1.04, False],
             'dangle'                 :  [26, -1 , 1.04, False],
             'QCD_dPhiR'              :  [32,  0 , 3.2, False],
-            'Nj50'                   :  [10,  0 , 10,   False, 'Sum$(jetPt>50)'],
+            'Nj50'                   :  [10,  -.5 , 9.5,   False, 'Sum$(jetPt>50)'],
             'HT50'                   :  [25, 0 , 5000, False, 'Sum$(jetPt*(jetPt>50))'],
             }
 
     bosonType = processname.split("_")[0]
-    if options.isTest:
-        NTVariables = {
-            "bosonPt"                    :  [25, 0 , 2000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "1000.*NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
-            "dPhi"                       :  [32,  0 , 3.2, False],
-            }
-    else:
-        NTVariables = {
-            "met"                        :  [25, 0 , 2000, False],
-            "bosonPt"                    :  [25, 0 , 1000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "1000.*NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
-            "bosonEta"                   :  [25, -5,    5, False, "NTExtraVars.ZvvEta" if bosonType=="zvv" else "0" if bosonType=="zll" else "NTCRYVars.phEta"],
-            "bosonEt"                    :  [25, 0 , 1000, True, "sqrt(NTExtraVars.ZvvPt**2+min(NTExtraVars.ZvvM,120e3)**2)" if bosonType=="zvv" else "1000.*sqrt(NTCRZVars.Zpt**2+NTCRZVars.mll**2)" if bosonType=="zll" else "NTCRYVars.phPt"],
-            "dPhi"                       :  [32,  0 , 3.2, False],
+    NTVariables = {
+        "met"                        :  [25, 0 , 2000, False],
+        "bosonPt"                    :  [25, 0 , 1000, True, "NTExtraVars.ZvvPt" if bosonType=="zvv" else "1000.*NTCRZVars.Zpt" if bosonType=="zll" else "NTCRYVars.phPt"],
+        "bosonEta"                   :  [25, -5,    5, False, "NTExtraVars.ZvvEta" if bosonType=="zvv" else "0" if bosonType=="zll" else "NTCRYVars.phEta"],
+        "bosonEt"                    :  [25, 0 , 1000, True, "sqrt(NTExtraVars.ZvvPt**2+min(NTExtraVars.ZvvM,120e3)**2)" if bosonType=="zvv" else "1000.*sqrt(NTCRZVars.Zpt**2+NTCRZVars.mll**2)" if bosonType=="zll" else "NTCRYVars.phPt"],
+        "dPhi"                       :  [32,  0 , 3.2, False],
+        "Nj50"                       :  [10, -.5, 9.5, False, "Sum$(jetPt>50)"],
             #            "Nj50" :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
-            #            "HT50" :  [25, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
-            }
+        #            "HT50" :  [25, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
+        }
     #################################################################################################
 
     etlimits   = [25, 0, 1000]
     dphilimits = [32, 0, 3.2]
     etalimits  = [20, -5, 5]
+    njetlimits = [10, -.5, 9.5]
 
     # Assume that we will want to reweight these
 
@@ -406,7 +403,8 @@ for processname in sh_bg.keys():
                                 limits[0], limits[1], limits[2])
             job.algsAdd(ROOT.MD.AlgHist(thehist, vartoplot, cutstring ))
 
-        if not options.isTest:
+#        if not options.isTest:
+        if True:
             therwhist = ROOT.TH2D("bosonPt_dPhi_%s"%cut,"bosonPt_dPhi_%s"%cut,
                                   etlimits[0], etlimits[1], etlimits[2],
                                   dphilimits[0], dphilimits[1], dphilimits[2],
@@ -424,7 +422,13 @@ for processname in sh_bg.keys():
                                   etalimits[0], etalimits[1], etalimits[2],
                                   )
             job.algsAdd(ROOT.MD.AlgHist(therwhist, NTVariables["bosonPt"][4]+"/1000",NTVariables["bosonEta"][4], cutstring ))
- 
+
+            therwhist = ROOT.TH2D("Nj50_dPhi_%s"%cut,"Nj50_dPhi__%s"%cut,
+                                  njetlimits[0], njetlimits[1], njetlimits[2],
+                                  dphilimits[0], dphilimits[1], dphilimits[2],
+                                  )
+            job.algsAdd(ROOT.MD.AlgHist(therwhist,'Sum$(jetPt>50)' ,"dPhi", cutstring ))
+
     driver = None
     if options.driver == "prooflite" :
         driver = ROOT.EL.ProofDriver()
