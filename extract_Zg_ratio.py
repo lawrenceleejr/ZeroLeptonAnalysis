@@ -6,7 +6,7 @@ rwpairs = [('bosonPt','dPhi'),('bosonEt','dPhi'), ('Nj50', 'dPhi')]
 
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option('--meOrder' , help='order for input z truth files', choices=('lo','nlo'), default='lo')
+parser.add_option('--meOrder' , help='order for input z truth files', choices=('lo','nlo'), default='nlo')
 (options, args) = parser.parse_args()
 
 outfile = ROOT.TFile('ratZG.root','RECREATE')

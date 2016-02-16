@@ -78,7 +78,7 @@ cuts = {
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('--dataSource' , help='select reco or truth inputs', choices=('truth','reco'), default='truth')
-parser.add_option('--meOrder' , help='select lo or nlo Z', choices=('lo','nlo'), default='lo')
+parser.add_option('--meOrder' , help='select lo or nlo Z', choices=('lo','nlo'), default='nlo')
 parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
 parser.add_option('--targetZ', help='Z process to which to reweight', choices=('Znunu','Zll'),default='Znunu')
 (options, args) = parser.parse_args()
