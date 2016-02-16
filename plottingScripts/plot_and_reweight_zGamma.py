@@ -80,7 +80,9 @@ parser = OptionParser()
 parser.add_option('--dataSource' , help='select reco or truth inputs', choices=('truth','reco'), default='truth')
 parser.add_option('--meOrder' , help='select lo or nlo Z', choices=('lo','nlo'), default='nlo')
 parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
+parser.add_option('--reweightHists', help='reweight in which variables', choices=('bosonPt_dPhi','bosonEt_dPhi','Nj50_dPhi'),default='bosonPt_dPhi')
 parser.add_option('--targetZ', help='Z process to which to reweight', choices=('Znunu','Zll'),default='Znunu')
+parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have reco eff of 1 .', action="store_true", default=False)
 (options, args) = parser.parse_args()
 
 reweightfile = ROOT.TFile('ratZG.root')
@@ -90,13 +92,13 @@ if options.dataSource == 'truth':
 	options.targetZ  : ROOT.TFile('rundir_'+options.targetZ.replace('Z','z').replace('nu','v')+'_'+options.meOrder+'_truth.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_truth.root'),
         }
-    reweighthists['Znunu'] = reweightfile.Get('truth/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
-    reweighthists['Zll'] = reweightfile.Get('truth/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
+    reweighthists['Znunu'] = reweightfile.Get('truth/Rzvvg_'+options.reweightHists+'_'+options.reweightCuts)
+    reweighthists['Zll']   = reweightfile.Get('truth/Rzllg_'+options.reweightHists+'_'+options.reweightCuts)
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts+'_alt')
     #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
-    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
-    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
-    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
+    zvveffhist = None
+    zlleffhist = None
+    geffhist   = None
 
 
 elif options.dataSource == 'reco':
@@ -104,11 +106,13 @@ elif options.dataSource == 'reco':
 	options.targetZ  : ROOT.TFile('rundir_'+options.targetZ.replace('Z','z').replace('nu','v')+'_'+options.meOrder+'_reco.root'),
 	'Gamma'  : ROOT.TFile('rundir_gamma_reco.root'),
         }
-    reweighthists['Znunu'] = reweightfile.Get('reco/Rzvvg_bosonPt_dPhi_'+options.reweightCuts)
-    reweighthists['Zll'] = reweightfile.Get('reco/Rzllg_bosonPt_dPhi_'+options.reweightCuts)
-#    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
-#    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
-#    geffhist = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
+    reweighthists['Znunu'] = reweightfile.Get('truth/Rzvvg_'+options.reweightHists+'_'+options.reweightCuts)
+    reweighthists['Zll']   = reweightfile.Get('truth/Rzllg_'+options.reweightHists+'_'+options.reweightCuts)
+    #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_dPhi_'+options.reweightCuts+'_alt')
+    #reweighthist = reweightfile.Get('truth/Rzg_bosonPt_no_cuts')
+    zvveffhist = reweightfile.Get('efficiency/Eff_bosonPt_zvv_'+options.reweightCuts)
+    zlleffhist = reweightfile.Get('efficiency/Eff_bosonPt_zll_'+options.reweightCuts)
+    geffhist   = reweightfile.Get('efficiency/Eff_bosonPt_gamma_'+options.reweightCuts)
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
 if 'bnl' in os.getenv('HOSTNAME') :
@@ -125,7 +129,7 @@ weighttree = weightfile.Get('CRY_weights_RZG')
 cry_chain.AddFriend(weighttree)
 crz_chain.AddFriend(weighttree)
 
-outputdir =  'plots/'+options.targetZ+'_'+options.dataSource+'/'
+outputdir =  'plots/'+options.targetZ+'_'+options.dataSource+'_'+options.reweightHists+'/'
 if not os.path.isdir(outputdir) :
     os.mkdir(outputdir)
 
@@ -158,16 +162,19 @@ for counter, histoKey in enumerate(histoList) :
                     if yval > reweighthists[options.targetZ].GetXaxis().GetXmax(): yval = reweighthists[options.targetZ].GetXaxis().GetXmax()*0.99
                     hist3d.GetYaxis().SetRange(ibin,ibin)
                     hist2d = hist3d.Project3D('zx')
-                    # if options.dataSource=='reco':
+
                     #     if zeffhist.Interpolate(yval)*geffhist.Interpolate(yval)>0:
-                    scalef = 0.
-                    if options.targetZ=='Zll' :
-                        scalef = zlleffhist.Interpolate(yval)/geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
-                            zlleffhist.GetBinContent(geffhist.FindFirstBinAbove())/geffhist.GetBinContent(geffhist.FindFirstBinAbove())
-                    if options.targetZ=='Znunu' :
-                        scalef = 1./geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
-                            1./geffhist.GetBinContent(geffhist.FindFirstBinAbove())#zvv scale here is always ~ 1
-                    hist2d.Scale(scalef)
+                    if options.dataSource=='reco':
+                        print "doing reco stuff"
+                        scalef = 0.
+                        if options.targetZ=='Zll' :
+                            scalef = zlleffhist.Interpolate(yval)/geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
+                                zlleffhist.GetBinContent(geffhist.FindFirstBinAbove())/geffhist.GetBinContent(geffhist.FindFirstBinAbove())
+                        if options.targetZ=='Znunu' :
+                            zvv_eff = zvveffhist.Interpolate(yval) if options.doZnunuEffWeight else 1.
+                            scalef = zvv_eff/geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
+                                zvv_eff/geffhist.GetBinContent(geffhist.FindFirstBinAbove())#zvv scale here is always ~ 1
+                        hist2d.Scale(scalef)
 
                     for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
                         zval = hist3d.GetZaxis().GetBinCenter(jbin)
