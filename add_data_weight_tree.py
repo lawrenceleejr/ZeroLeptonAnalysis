@@ -10,7 +10,8 @@ parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have r
 (options, args) = parser.parse_args()
 
 inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
-if 'bnl' in os.getenv('HOSTNAME') : inputdir = '/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/v53_Data_pT50/'
+if 'bnl'    in os.getenv('HOSTNAME') : inputdir = '/pnfs/usatlas.bnl.gov/users/russsmith/RJWorkshopSamples/v53_Data_pT50/'
+if 'lxplus' in os.getenv('HOSTNAME') : inputdir = '/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/'
 cry_chain = ROOT.TChain('Data_CRY')
 #for i in sorted(os.listdir(inputdir)):
 cry_chain.Add(inputdir+'Data_Nov11.root')
