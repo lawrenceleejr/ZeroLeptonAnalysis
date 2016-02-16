@@ -2,6 +2,7 @@ import ROOT, math
 
 cutlevels = ['no_cuts','met50','met160','met300','base_meff']
 rwvars = ['met','bosonPt','bosonEt','bosonEta','dPhi']
+rwpairs = [('bosonPt','dPhi'),('bosonEt','dPhi'), ('Nj50', 'dPhi')]
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -38,7 +39,7 @@ for datasource in ['reco','truth']:
             rat2.Write()
             del rat2
 
-        for rwpair in [('bosonPt','dPhi'),('bosonEt','dPhi')]:
+        for rwpair in rwpairs :
             zvvhist = zvv_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
             ghist = g_in.Get(rwpair[0]+'_'+rwpair[1]+'_'+level)
 
@@ -76,7 +77,7 @@ for process in ['zvv','gamma','zll']:#
             del truthhist
 
         for effpair in [('bosonPt','bosonEta')]:
-            recohist = reco_in.Get(effpair[0]+'_'+effpair[1]+'_'+level)
+            recohist  = reco_in.Get(effpair[0]+'_'+effpair[1]+'_'+level)
             truthhist = truth_in.Get(effpair[0]+'_'+effpair[1]+'_'+level)
             eff2 = recohist.Clone('Eff_{0}_{1}_{2}_{3}'.format(effpair[0],effpair[1],process,level))
             eff2.Divide(truthhist)
