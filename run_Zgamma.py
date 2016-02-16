@@ -349,7 +349,7 @@ for processname in sh_bg.keys():
             'sangle'                 :  [26, 0, 1.04, False],
             'dangle'                 :  [26, -1 , 1.04, False],
             'QCD_dPhiR'              :  [32,  0 , 3.2, False],
-            'Nj50'                   :  [10,  -.5 , 9.5,   False, 'Sum$(jetPt>50)'],
+            'Nj50'                   :  [15,  -.5 , 14.5,   False, 'Sum$(jetPt>50)'],
             'HT50'                   :  [25, 0 , 5000, False, 'Sum$(jetPt*(jetPt>50))'],
             }
 
@@ -360,7 +360,7 @@ for processname in sh_bg.keys():
         "bosonEta"                   :  [25, -5,    5, False, "NTExtraVars.ZvvEta" if bosonType=="zvv" else "0" if bosonType=="zll" else "NTCRYVars.phEta"],
         "bosonEt"                    :  [25, 0 , 1000, True, "sqrt(NTExtraVars.ZvvPt**2+min(NTExtraVars.ZvvM,120e3)**2)" if bosonType=="zvv" else "1000.*sqrt(NTCRZVars.Zpt**2+NTCRZVars.mll**2)" if bosonType=="zll" else "NTCRYVars.phPt"],
         "dPhi"                       :  [32,  0 , 3.2, False],
-        "Nj50"                       :  [10, -.5, 9.5, False, "Sum$(jetPt>50)"],
+        "Nj50"                       :  [15, -.5, 14.5, False, "Sum$(jetPt>50)"],
             #            "Nj50" :  [10,  0 , 10,   False, "Sum$(jetPt>50)"],
         #            "HT50" :  [25, 0 , 5000, False, "Sum$(jetPt*(jetPt>50))"],
         }
@@ -369,12 +369,12 @@ for processname in sh_bg.keys():
     etlimits   = [25, 0, 1000]
     dphilimits = [32, 0, 3.2]
     etalimits  = [20, -5, 5]
-    njetlimits = [10, -.5, 9.5]
+    njetlimits = [15, -.5, 14.5]
 
     # Assume that we will want to reweight these
 
     for cut in cuts:
-        cutstring = "NTVars.eventWeight*(%s)"%cuts[cut]
+        cutstring = "NTVars.eventWeight*(NTVars.eventWeight<10.)*(%s)"%cuts[cut]
         #            cutstring = "1."
         for varname,limits in RJigsawVariables.items() :
             # print varname
