@@ -44,7 +44,7 @@ for event in cry_chain:
     phPt  = min(event.phPt,999.99)
     dphi  = event.dphi
     njets = event.NJet
-    if njets > 9 : njets = 9 #todo extend njets reach
+    if njets > 14 : njets = 14 #todo extend njets reach
     #print  njets, dphi
 
     evtweighthelper.weight_RZvvG = 0

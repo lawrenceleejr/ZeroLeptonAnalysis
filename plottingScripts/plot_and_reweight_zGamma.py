@@ -171,8 +171,6 @@ for counter, histoKey in enumerate(histoList) :
                 continue
             #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(hist2d.GetEntries())
             if name=='Gamma':
-
-
                 histos[name] = hist3d.ProjectionX(hist3d.GetName()+'_gamma')
                 histos[name+'Reweight'] = hist3d.ProjectionX(hist3d.GetName()+'_gammareweight')
                 histos[name+'Reweight'].Reset()
@@ -193,7 +191,7 @@ for counter, histoKey in enumerate(histoList) :
                             zvv_eff = zvveffhist.Interpolate(yval) if options.doZnunuEffWeight else 1.
                             scalef = zvv_eff/geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
                                 zvv_eff/geffhist.GetBinContent(geffhist.FindFirstBinAbove())#zvv scale here is always ~ 1
-                        print scalef
+#                        print 'scalef',scalef
                         hist2d.Scale(scalef)
 
                     for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
@@ -201,6 +199,7 @@ for counter, histoKey in enumerate(histoList) :
                         if zval > reweighthists[options.targetZ].GetYaxis().GetXmax(): zval = reweighthists[options.targetZ].GetYaxis().GetXmax()*0.99
                         projx = hist2d.ProjectionX(hist2d.GetName()+'_gammaproj',jbin,jbin)
 #                        prescaleint = projx.Integral()
+#                        print reweighthists[options.targetZ].Interpolate(yval,zval)
                         projx.Scale(reweighthists[options.targetZ].Interpolate(yval,zval))
 #                        print ibin, jbin, yval, zval
 #                        print reweighthists[options.targetZ].Interpolate(yval,zval), prescaleint, '==>', projx.Integral()
@@ -217,7 +216,6 @@ for counter, histoKey in enumerate(histoList) :
             print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
     if not options.targetZ in histos:
         continue
-    if not 'Gamma' in histos.keys() : continue
 
     c1 = ROOT.TCanvas('c1_'+histoKey.GetName().replace('$',''),
                       'c1_'+histoKey.GetName().replace('$',''),
