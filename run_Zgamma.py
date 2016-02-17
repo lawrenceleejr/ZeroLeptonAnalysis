@@ -393,6 +393,12 @@ for processname in sh_bg.keys():
                                     dphilimits[0], dphilimits[1], dphilimits[2])
                 job.algsAdd(ROOT.MD.AlgHist(thehist,vartoplot,NTVariables["bosonPt"][4]+"/1000","dPhi",cutstring))
 
+                thehist = ROOT.TH3D(varname+"_Nj50_dPhi_"+"%s"%cut,varname+"_Nj50_dPhi_"+"%s"%cut,
+                                    limits[0], limits[1], limits[2],
+                                    njetlimits[0], njetlimits[1], njetlimits[2],
+                                    dphilimits[0], dphilimits[1], dphilimits[2])
+                job.algsAdd(ROOT.MD.AlgHist(thehist,vartoplot,"Sum$(jetPt>50)","dPhi",cutstring))
+
         # Don't make these 2D for now -- we may reweight in them
         for varname,limits in NTVariables.items() :
             vartoplot = limits[4] if len(limits)>4 else varname
