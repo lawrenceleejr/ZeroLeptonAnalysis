@@ -78,7 +78,7 @@ cuts = {
 
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option('--dataSource' , help='select reco or truth inputs', choices=('truth','reco'), default='truth')
+parser.add_option('--dataSource' , help='select reco or truth inputs', choices=('truth','reco'), default='reco')
 parser.add_option('--meOrder' , help='select lo or nlo Z', choices=('lo','nlo'), default='nlo')
 parser.add_option('--reweightCuts' , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
 parser.add_option('--reweightHists', help='reweight in which variables', choices=('bosonPt_dPhi','bosonEt_dPhi','Nj50_dPhi'),default='bosonPt_dPhi')
@@ -142,12 +142,26 @@ histoList = myfiles[options.targetZ].GetListOfKeys()
 
 for counter, histoKey in enumerate(histoList) :
     histos = {}
+    if (('cry_tight' not in histoKey.GetName()) and
+        ('no_cuts'   not in histoKey.GetName())): continue
     if 'PROOF' in histoKey.GetName(): continue
     if 'EventLoop' in histoKey.GetName(): continue
     if 'Missing' in histoKey.GetName(): continue
     if 'minus' in histoKey.GetName(): continue
     for name, ifile in myfiles.items() :
-       hist=ifile.Get(histoKey.GetName())
+       histnameToGet = histoKey.GetName()
+       dummyHist = ifile.Get(histnameToGet)#check if the hist is TH3
+       if dummyHist.ClassName().startswith('TH3'):
+           if name == 'Gamma' :
+               if options.reweightHists == "Nj50_dPhi" :
+                   splitName     = histoKey.GetName().split('_')
+                   insertingName = options.reweightHists.split('_')
+                   for inserter in insertingName :
+                       splitName.insert( -2,inserter )
+                   histnameToGet = '_'.join(splitName)
+                   print histnameToGet
+       hist=ifile.Get(histnameToGet)
+
        if hist.ClassName().startswith('TH3'):
 #            continue
             hist3d = hist
@@ -157,6 +171,8 @@ for counter, histoKey in enumerate(histoList) :
                 continue
             #print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(hist2d.GetEntries())
             if name=='Gamma':
+
+
                 histos[name] = hist3d.ProjectionX(hist3d.GetName()+'_gamma')
                 histos[name+'Reweight'] = hist3d.ProjectionX(hist3d.GetName()+'_gammareweight')
                 histos[name+'Reweight'].Reset()
@@ -177,6 +193,7 @@ for counter, histoKey in enumerate(histoList) :
                             zvv_eff = zvveffhist.Interpolate(yval) if options.doZnunuEffWeight else 1.
                             scalef = zvv_eff/geffhist.Interpolate(yval) if geffhist.Interpolate(yval) > 0. else \
                                 zvv_eff/geffhist.GetBinContent(geffhist.FindFirstBinAbove())#zvv scale here is always ~ 1
+                        print scalef
                         hist2d.Scale(scalef)
 
                     for jbin in range(1,hist2d.GetYaxis().GetNbins()+1):
@@ -198,9 +215,9 @@ for counter, histoKey in enumerate(histoList) :
             if( not histos[name].GetEntries()) :
                 continue
             print histoKey.GetName()+ ' ' + str(name) +  ' ' + str(histos[name].GetEntries())
-    print histoKey
     if not options.targetZ in histos:
         continue
+    if not 'Gamma' in histos.keys() : continue
 
     c1 = ROOT.TCanvas('c1_'+histoKey.GetName().replace('$',''),
                       'c1_'+histoKey.GetName().replace('$',''),
