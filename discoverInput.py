@@ -24,6 +24,18 @@ def addTags(sh_all):
 		dsid = sample.getMetaString("sample_name").split(".")[4]
 		sample.setMetaString( "short_name" , sample.getMetaString("sample_name") )
 
+		if ('truth' in sample.getMetaString("sample_name")) :
+			sample.addTag("truth")
+		else :
+			sample.addTag("reco")
+
+		if ('truth' in sample.getMetaString("sample_name")) :
+			if(('LO') in sample.getMetaString("sample_name") or
+			   "1Gam" in short_name
+			   ) :
+				sample.addTag("lo")
+			else : sample.addTag('nlo')
+
 		print short_name
 
 		if "physics_" in short_name:

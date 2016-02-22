@@ -31,19 +31,44 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 ##
 
+sampleChoices = (        "z_reco" ,"gamma_reco",
+                         "z_lo_truth" ,"gamma_lo_truth",
+			 "z_nlo_truth"
+                         )
+
+
 lumi = 1000  ## in pb-1
-if len(sys.argv)==1:
-	search_directories = ["/afs/cern.ch/user/l/leejr/work/public/fromGrid/",]
-	if 'bnl' in os.getenv('HOSTNAME'):
-		search_directories = ["/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG_test/"]
-else:
-	search_directories = [str(sys.argv[i]) for i in xrange(1,len(sys.argv))]
 
+parser = OptionParser()
+parser.add_option("--driver"      , help="select where to run", choices=("direct","lsf", "prooflite", "grid", "condor"), default="direct")
+parser.add_option("--searchDirectories", help="search given directories.  Give as a comma separarted list", default="/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_zG_test/")#todo use txt file for multiple
+#parser.add_option("--outputDir", help="Save output to given directory", default="/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_MERGED/")#todo use txt file for multiple
+
+parser.add_option("--outputDir", help="Save output to given directory", default="/tmp/"+os.getenv('USER'))#todo use txt file for multiple
+parser.add_option("--samplesToRun", help="Merge the samples",
+                  choices=sampleChoices
+		  )
+
+parser.add_option("--isTest", action="store_true", default=False)
+parser.add_option("--dryRun", action="store_true", default=False)
+
+(options, args) = parser.parse_args()
+
+search_directories = options.searchDirectories.split(',')
 print search_directories
+baseoutdir = options.outputDir+'/'+options.samplesToRun
+try:
+	os.stat(baseoutdir)
+except:
+	os.mkdir(baseoutdir)
 
-tmpOutputDirectory = "tmpOutput"
-outputDirectory = "output"
+tmpOutputDirectory = baseoutdir + "/tmpOutput"
+outputDirectory    = baseoutdir + "/output"
+
+
 #treePrefix = ""
+
+
 
 selection = "1"
 
@@ -68,15 +93,34 @@ def main():
 
 	## Split up samplehandler into per-BG SH's based on tag metadata
 
-	sh_data = sh_all.find("data")
-	sh_signal = sh_all.find("signal")
+	# sh_data = sh_all.find("data")
+	# sh_signal = sh_all.find("signal")
 	sh_bg = {}
 
-	sh_bg["qcd"] = sh_all.find("qcd")
-	sh_bg["top"] = sh_all.find("top")
-	sh_bg["wjets"] = sh_all.find("wjets")
-	sh_bg["zjets"] = sh_all.find("zjets")
-	sh_bg["gamma"] = sh_all.find("gamma")
+	# sh_bg["qcd"] = sh_all.find("qcd")
+	# sh_bg["top"] = sh_all.find("top")
+	# sh_bg["wjets"] = sh_all.find("wjets")
+
+	# sampleChoices = (      "z_reco" ,"gamma_reco",
+	# 			 "z_lo_truth" ,"gamma_lo_truth",
+	# 			 "z_nlo_truth"
+	# 			 )
+
+	sh_bg['zjets'] = None
+	sh_bg['gamma'] = None
+
+	if options.samplesToRun == 'z_reco' :
+		sh_bg['zjets'] = sh_all.find('zjets').find('reco')
+	elif options.samplesToRun == 'gamma_reco' :
+		sh_bg['gamma'] = sh_all.find('gamma').find('reco')
+	elif options.samplesToRun == 'z_lo_truth' :
+		sh_bg['zjets'] = sh_all.find('zjets').find('truth').find('lo')
+	elif options.samplesToRun == 'gamma_lo_truth' :
+		sh_bg['gamma'] = sh_all.find('gamma').find('truth').find('lo')
+	elif options.samplesToRun == 'z_nlo_truth' :
+		sh_bg['zjets'] = sh_all.find('zjets').find('truth').find('nlo')
+
+	print sh_bg
 
 	######This will be done per samplehandler ############################
 	##
@@ -85,28 +129,28 @@ def main():
 	#Creation of output directory names
 	outputFileNames = {
 		sh_all: "All",
-		sh_data: "Data",
-		sh_signal: "Signal",
-		sh_bg["qcd"]: "QCD",
-		sh_bg["top"]: "Top",
-		sh_bg["wjets"]: "WJets",
+		# sh_data: "Data",
+		# sh_signal: "Signal",
+		# sh_bg["qcd"]: "QCD",
+		# sh_bg["top"]: "Top",
+		# sh_bg["wjets"]: "WJets",
 		sh_bg["zjets"]: "ZJets",
 		sh_bg["gamma"]: "Gamma",
 		}
 
 	treesToProcess = set()
 
-	for mysamplehandler in [
+	for mysamplehandler in sh_bg.values() :#[
 								# sh_all,
 								# sh_data,
 								# sh_bg["qcd"],
 								# sh_bg["top"],
 								# sh_bg["wjets"],
-#								sh_bg["zjets"]
-								sh_bg["gamma"]
-							]:
-
-		# print mysamplehandler
+		# sh_bg["zjets"],
+		# sh_bg["gamma"]
+		print mysamplehandler
+		if not mysamplehandler : continue
+		mysamplehandler.printContent()
 
 		filesToEventuallyHadd = []
 
@@ -114,11 +158,12 @@ def main():
 
 			sample_name = sample.getMetaString("sample_name")
 			# print sample_name
-			dsid = sample_name.split(".")[2]
+			dsid = sample_name.split(".")[4]
 
 			if not treesToProcess :
 				treesToProcess = getListOfTreeNames(sample)
 			print treesToProcess
+
 
 			attachCounters(sample)
 
@@ -143,6 +188,7 @@ def main():
 #				mytree.Print()
 				outputTree = ROOT.addBranch( mytree, getNormFactor(sample) , selection)
 				outputTree.Write()
+				mytree = None
 
 			print "Saved tree %s with %s events . . ." % ( outputTree.GetName(), outputTree.GetEntries() )
 
