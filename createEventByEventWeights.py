@@ -22,18 +22,19 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 
 def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' ) :
     global reweightfile#maybe clean this up
-    selection = selection+'*normweight*(NTVars.eventWeight)'
+    selectionTrue   = selection+'*normweight*(NTVars.eventWeight)'
+    selectionString = 'dPhi'#weightVar + '_' + selection.replace('.','_').replace('*','_').rstrip('_') #avoid root stuff with * , .
     if reweightfile :
-        rw_hist = reweightfile.Get('_'.join([weightVar,selection]))
-        return rw_hist
+        rw_hist = reweightfile.Get(selectionString)
+        if rw_hist : return rw_hist
 
     z_treeHist = None
     g_treeHist = None
 
     print 'creating weight histo for z'
-    z_tree.Draw(weightVar+">>z_treeHist",selection);
+    z_tree.Draw(weightVar+">>z_treeHist",selectionTrue);
     print 'creating weight histo for g'
-    g_tree.Draw(weightVar+">>g_treeHist",selection);
+    g_tree.Draw(weightVar+">>g_treeHist",selectionTrue);
     print 'created weighting histos'
 
     ROOT.gDirectory.Print()
@@ -42,13 +43,15 @@ def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' )
     g_treeHist = ROOT.gDirectory.Get("g_treeHist");
 
     rw_hist = z_treeHist.Clone()
-    rw_hist.SetName('_'.join([weightVar,selection]))
+    rw_hist.SetName(selectionString)
     rw_hist.Divide(g_treeHist)
 
     reweightfile = ROOT.TFile.Open('ratZG.root','NEW')
+    rw_histClone = rw_hist.Clone()
     rw_hist.Write()
+    reweightfile.Close()
 
-    return rw_hist
+    return rw_histClone
 
 
 #inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
@@ -70,7 +73,7 @@ reweightvars  = ['dPhi']
 reweightHists = {}
 #somehow do a list of vars you want to create weights for
 for rwvar in reweightvars :
-    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zjets'], rwvar )
+    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zjets'], rwvar , "1.*(dPhi<4.)")
 
 print reweightvars
 
@@ -80,7 +83,6 @@ weightfile = ROOT.TFile('CRY_weights_RZG.root','recreate')
 weighttree = ROOT.TTree('CRY_weights_RZG','Weights to scale CRY photon events to Z expectation in SR or Z CR')
 
 def addWeightBranch(rwvar, evtweighthelpers) :
-
     structname       = 'evtweight_'   +rwvar+'_t'
     weightRZvvG_name = 'weight_RZvvG'
     weightRZllG_name = 'weight_RZllG'
@@ -109,28 +111,24 @@ count = 0
 print "phPt dphi eff_fact xsec_fact weight_RZvvG weight_RzllG"
 for event in mytrees['gamma'] :
 
-    phPt  = min(event.phPt,999.99)
-    dphi  = event.dPhi
-    njets = event.jetPt.size()
-    if njets > 14 : njets = 14 #todo extend njets reach
-
-
+    # phPt  = min(event.phPt,999.99)
+    # dphi  = event.dPhi
+    # njets = event.jetPt.size()
+    # if njets > 14 : njets = 14 #todo extend njets reach
 #here do a loop over the rw vars
     for rwvar, helper in evtweighthelpers.iteritems() :
         rwvarvalue     = getattr(event, rwvar)
-        rwvarvalueTest = event.dPhi
-        print count
-        print rwvar, rwvarvalue
-        print rwvar, rwvarvalueTest
-        assert(isclose(rwvarvalue,rwvarvalueTest)
+        if rwvar == 'dPhi' :
+            rwvarvalueTest = event.dPhi
+            assert(isclose(rwvarvalue,rwvarvalueTest))
 
-
-        continue
-        helper.weight_RZvvG = 0
+        helper.weight_RZvvG = reweightHists[rwvar].Interpolate(rwvarvalue)
         helper.weight_RZllG = 0
 
-        zll_eff_fact  = effhistzll.Interpolate(phPt)/geffhist.Interpolate(phPt)
-        evtweighthelper.weight_RZllG = zll_eff_fact*zll_xsec_fact
+#        if count % 10000 : print helper.weight_RZvvG
+
+        # zll_eff_fact  = effhistzll.Interpolate(phPt)/geffhist.Interpolate(phPt)
+        # evtweighthelper.weight_RZllG = zll_eff_fact*zll_xsec_fact
 
 
         # evtweighthelper.weight_RZvvG = 0
