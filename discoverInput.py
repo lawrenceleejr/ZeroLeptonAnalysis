@@ -8,6 +8,7 @@ def discover(sh, search_directories, pattern="*"):
 
 	# scan for datasets in the given directories
 	for directory in search_directories:
+	    print directory
 	    ROOT.SH.ScanDir().samplePattern(pattern).scan(sh, directory)
 
 
@@ -19,7 +20,6 @@ def discover(sh, search_directories, pattern="*"):
 
 def addTags(sh_all):
 	for sample in sh_all:
-
 		short_name = sample.getMetaString("sample_name").split(".")[5]
 		dsid = sample.getMetaString("sample_name").split(".")[4]
 		sample.setMetaString( "short_name" , sample.getMetaString("sample_name") )
@@ -31,7 +31,9 @@ def addTags(sh_all):
 
 		if ('truth' in sample.getMetaString("sample_name")) :
 			if(('LO') in sample.getMetaString("sample_name") or
-			   "1Gam" in short_name
+			   "1Gam" in short_name or
+			   ('lo') in sample.getMetaString("sample_name") or
+			   ('gamma') in sample.getMetaString("sample_name")
 			   ) :
 				sample.addTag("lo")
 			else : sample.addTag('nlo')
