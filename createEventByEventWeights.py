@@ -1,5 +1,6 @@
 import ROOT
 import os
+import string
 
 ROOT.gROOT.SetBatch(True)
 
@@ -23,7 +24,7 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' ) :
     global reweightfile#maybe clean this up
     selectionTrue   = selection+'*normweight*(NTVars.eventWeight)'
-    selectionString = 'dPhi'#weightVar + '_' + selection.replace('.','_').replace('*','_').rstrip('_') #avoid root stuff with * , .
+    selectionString = (weightVar+selection).translate(string.maketrans("",""), string.punctuation)#strips punctuation
     if reweightfile :
         rw_hist = reweightfile.Get(selectionString)
         if rw_hist : return rw_hist
@@ -49,7 +50,7 @@ def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' )
     reweightfile = ROOT.TFile.Open('ratZG.root','NEW')
     rw_histClone = rw_hist.Clone()
     rw_hist.Write()
-    reweightfile.Close()
+#    reweightfile.Close()
 
     return rw_histClone
 
@@ -60,20 +61,21 @@ if 'bnl'    in os.getenv('HOSTNAME') : inputdir = '/pnfs/usatlas.bnl.gov/users/r
 if 'lxplus' in os.getenv('HOSTNAME') : inputdir = '/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/'
 
 myfiles = {
-    'gamma' : ROOT.TFile.Open(inputdir + 'gamma_lo_truth/Gamma.root'),
-    'zjets' : ROOT.TFile.Open(inputdir + 'z_lo_truth/ZJets.root')
+    'gamma' : ROOT.TFile.Open(inputdir + 'gamma_lo_truth/Gamma_lo_truth.root'),
+    'zjets' : ROOT.TFile.Open(inputdir + 'z_lo_truth/ZJets_lo_truth.root'),
 }
 
 mytrees = {
     'gamma' : myfiles['gamma'].Get('CRY_SRAllNT'),
-    'zjets' : myfiles['gamma'].Get('SRAllNT'    )
+    'zvv'   : myfiles['zjets'].Get('SRAllNT'    ),
+    'zll'   : myfiles['zjets'].Get('CRZ_SRAllNT'),
 }
 
 reweightvars  = ['dPhi']
 reweightHists = {}
 #somehow do a list of vars you want to create weights for
 for rwvar in reweightvars :
-    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zjets'], rwvar , "1.*(dPhi<4.)")
+    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zvv'], rwvar , "1.*(dPhi<4.)")
 
 print reweightvars
 
@@ -114,55 +116,15 @@ for event in mytrees['gamma'] :
     # phPt  = min(event.phPt,999.99)
     # dphi  = event.dPhi
     # njets = event.jetPt.size()
-    # if njets > 14 : njets = 14 #todo extend njets reach
-#here do a loop over the rw vars
     for rwvar, helper in evtweighthelpers.iteritems() :
         rwvarvalue     = getattr(event, rwvar)
-        if rwvar == 'dPhi' :
-            rwvarvalueTest = event.dPhi
-            assert(isclose(rwvarvalue,rwvarvalueTest))
+        # if rwvar == 'dPhi' :
+        #     rwvarvalueTest = event.dPhi
+        #     assert(isclose(rwvarvalue,rwvarvalueTest))
 
         helper.weight_RZvvG = reweightHists[rwvar].Interpolate(rwvarvalue)
         helper.weight_RZllG = 0
 
-#        if count % 10000 : print helper.weight_RZvvG
-
-        # zll_eff_fact  = effhistzll.Interpolate(phPt)/geffhist.Interpolate(phPt)
-        # evtweighthelper.weight_RZllG = zll_eff_fact*zll_xsec_fact
-
-
-        # evtweighthelper.weight_RZvvG = 0
-        # evtweighthelper.weight_RZllG = 0
-
-    # if geffhist.Interpolate(phPt)>0:
-    #     zvv_eff       = effhistzvv.Interpolate(phPt)        #if options.doZnunuEffWeight else 1.
-    #     zvv_eff_fact  = zvv_eff/geffhist.Interpolate(phPt)  #if options.reweightDataSource=='truth' else 1.
-
-    #     zvv_xsec_fact = 0
-    #     zvv_xsec_fact = reweightzvv.Interpolate(phPt,dphi)
-    #     if not zvv_xsec_fact :
-    #         print 'you have no zvv xsec fact'
-    #         print phPt,njets,dphi
-    #         exit()
-
-        # evtweighthelper.weight_RZvvG = zvv_eff_fact*zvv_xsec_fact
-
-        # zll_xsec_fact = 0
-        # if options.reweightHists == 'bosonPt_dPhi' :
-        #     zll_xsec_fact = reweightzll.Interpolate(phPt,dphi)
-        # if options.reweightHists == 'Nj50_dPhi' :
-        #     #print 'doing njet dphi weight for zll'
-        #    zll_xsec_fact = reweightzll.Interpolate(njets,dphi)
-        #     #print 'interpolateed zll'
-        # if not zll_xsec_fact :
-        #     print 'you have no zll xsec fact'
-        #     print phPt,njets,dphi
-        #     exit()
-
-
-    # if count<10:
-    #     #print phPt, dphi, eff_fact, xsec_fact, evtweighthelper.weight_RZvvG, evtweighthelper.weight_RZllG
-    #     print phPt, dphi, zll_xsec_fact, evtweighthelper.weight_RZvvG, evtweighthelper.weight_RZllG
     if (count%10000)==0: print count, '/', mytrees['gamma'].GetEntries()
 
     weighttree.Fill()
