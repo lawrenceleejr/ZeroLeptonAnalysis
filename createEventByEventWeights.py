@@ -135,7 +135,7 @@ for event in mytrees['gamma'] :
     count+=1
 
 myfiles['gamma'].cd()
-mytrees['gamma'].AddFriend(weighttree.GetName(), weightfile)
+mytrees['gamma'].AddFriend(weighttree.GetName(), os.getenv('PWD')+'/'+weightfile)
 mytrees['gamma'].Write()
 myfiles['gamma'].Close()
 

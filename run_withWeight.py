@@ -21,7 +21,7 @@ parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have r
 #gamma_lo_truth  gamma_reco  z_lo_truth  z_nlo_truth  z_reco
 
 #inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
-inputdir = ['/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_MERGED/']
+inputdir = ['/usatlas/workarea/russsmith/photonTruthStudies_MERGED/']
 if 'lxplus' in os.getenv('HOSTNAME') : inputdir = '/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/'
 
 ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
@@ -66,12 +66,6 @@ cuts = {
 
 for samplename, sample in sh_bg.iteritems() :
 #    if not (samplename == 'gamma_lo_truth') : continue
-
-#todoo!!!!
-    # if 'gamma_' in samplename :
-    #     print 'adding friend tree'
-    #     sample.makeTChain().AddFriend("CRY_weights_RZG","CRY_weights_RZG.root");
-    #     print sample.makeTChain().GetListOfFriends()
 
     sh = ROOT.SH.SampleHandler()
     sh.add(sample)
