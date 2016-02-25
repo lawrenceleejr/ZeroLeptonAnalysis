@@ -24,7 +24,7 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' ) :
     global reweightfile#maybe clean this up
     selectionTrue   = selection+'*normweight*(NTVars.eventWeight)'
-    selectionString = (weightVar+selection).translate(string.maketrans("",""), string.punctuation)#strips punctuation
+    selectionString = (weightVar+selection).translate(string.maketrans("",""), string.punctuation).translate(None, string.digits)#strips and numbers punctuation
     if reweightfile :
         rw_hist = reweightfile.Get(selectionString)
         if rw_hist : return rw_hist
