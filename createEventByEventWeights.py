@@ -57,19 +57,25 @@ def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' )
 
 #inputdir = '/r04/atlas/khoo/Data_2015/zeroleptonRJR/v53_Data_pT50/'
 inputdir = None
-if 'bnl'    in os.getenv('HOSTNAME') : inputdir = '/pnfs/usatlas.bnl.gov/users/russsmith/photonTruthStudies_MERGED/'
+if 'bnl'    in os.getenv('HOSTNAME') : inputdir = '/usatlas/workarea/russsmith/photonTruthStudies_MERGED/'
 if 'lxplus' in os.getenv('HOSTNAME') : inputdir = '/afs/cern.ch/work/c/crogan/public/RJWorkshopSamples/v53_Data_pT50/'
 
+print inputdir
+
 myfiles = {
-    'gamma' : ROOT.TFile.Open(inputdir + 'gamma_lo_truth/Gamma_lo_truth.root'),
+    'gamma' : ROOT.TFile.Open(inputdir + 'gamma_lo_truth/Gamma_lo_truth.root', 'UPDATE'),
     'zjets' : ROOT.TFile.Open(inputdir + 'z_lo_truth/ZJets_lo_truth.root'),
 }
+
+print myfiles
 
 mytrees = {
     'gamma' : myfiles['gamma'].Get('CRY_SRAllNT'),
     'zvv'   : myfiles['zjets'].Get('SRAllNT'    ),
     'zll'   : myfiles['zjets'].Get('CRZ_SRAllNT'),
 }
+
+print mytrees
 
 reweightvars  = ['dPhi']
 reweightHists = {}
@@ -78,8 +84,6 @@ for rwvar in reweightvars :
     reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zvv'], rwvar , "1.*(dPhi<4.)")
 
 print reweightvars
-
-myfiles['zjets'].Close()
 
 weightfile = ROOT.TFile('CRY_weights_RZG.root','recreate')
 weighttree = ROOT.TTree('CRY_weights_RZG','Weights to scale CRY photon events to Z expectation in SR or Z CR')
@@ -130,5 +134,11 @@ for event in mytrees['gamma'] :
     weighttree.Fill()
     count+=1
 
+myfiles['gamma'].cd()
+mytrees['gamma'].AddFriend(weighttree.GetName(), weightfile)
+mytrees['gamma'].Write()
+myfiles['gamma'].Close()
+
+weightfile.cd()
 weighttree.Write()
 weightfile.Close()
