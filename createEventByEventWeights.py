@@ -12,6 +12,19 @@ parser.add_option('--reweightHists'      , help='reweight in which variables', c
 parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have reco eff of 1 .', action="store_true", default=False)
 (options, args) = parser.parse_args()
 
+
+def translateHistoName(var) :
+    differentNamedHistsZG = {
+        'bosonPt' : ('ZvvPt'                , 'phPt'),
+        'bosonEt' : ('ZvvPt*ZvvPt+ZvvM*ZvvM', 'phPt'),
+        #if we need more
+        }
+    if var in differentNamedHistsZG.keys() :
+        return differentNamedHistsZG[var]
+    else :
+        return (var, var)
+
+
 #todo cache the rw histos
 reweightfile = None
 if os.path.isfile('ratZG.root') :
@@ -32,13 +45,15 @@ def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' )
     z_treeHist = None
     g_treeHist = None
 
+    ZgNames = translateHistoName(weightVar)
+
     print 'creating weight histo for z'
-    z_tree.Draw(weightVar+">>z_treeHist",selectionTrue);
+    z_tree.Draw(ZgNames[0]+">>z_treeHist",selectionTrue);
     print 'creating weight histo for g'
-    g_tree.Draw(weightVar+">>g_treeHist",selectionTrue);
+    g_tree.Draw(ZgNames[1]+">>g_treeHist",selectionTrue);
     print 'created weighting histos'
 
-    ROOT.gDirectory.Print()
+#    ROOT.gDirectory.Print()
 
     z_treeHist = ROOT.gDirectory.Get("z_treeHist");
     g_treeHist = ROOT.gDirectory.Get("g_treeHist");
@@ -77,11 +92,11 @@ mytrees = {
 
 print mytrees
 
-reweightvars  = ['dPhi']
+reweightvars  = ['bosonPt']
 reweightHists = {}
 #somehow do a list of vars you want to create weights for
 for rwvar in reweightvars :
-    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zvv'], rwvar , "1.*(dPhi<4.)")
+    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zvv'], rwvar )#"1.*(dPhi<4.)")
 
 print reweightvars
 
