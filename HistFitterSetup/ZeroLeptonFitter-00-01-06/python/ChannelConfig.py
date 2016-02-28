@@ -275,8 +275,9 @@ class ChannelConfig:
         ## LL RJigsaw
 
 
-        self.regionsWithInvertedDangleCutList = ["VRTZL","CRQ","VRQ1","VRQ2"]
+        self.regionsWithInvertedDangleCutList = ["VRTZL","VRQ1","VRQ2"]
         self.regionsWithInvertedRPZCutList = ["VRTZL"]
+        self.regionsWithoutRPZCutList = ["VRTa","VRTb","VRZ","VRWa","VRWb"]
         # self.regionsWithInvertedDangleCutList = ["CRT"]
         # self.regionsWithInvertedRPZCutList = ["CRT"]
 
@@ -300,11 +301,11 @@ class ChannelConfig:
         self.regionsWithLooserMSCutList = ["VRTZL","CRT","CRW", "VRZb","VRWb","VRTb"]
         self.regionsWithLooserH2PPCutList = ["VRTZL","CRT","CRW", "VRZb","VRWb","VRTb"]
 
-        self.regionsWithoutScaleCuts = ["VRZAndreas"]
+        self.regionsWithoutScaleCuts = ["VRZAndreas","CRQ"]
         self.regionsWithoutMinCut = ["VRZAndreas"]
         self.regionsWithoutMaxCut = ["VRZAndreas"]
 
-        self.CRList = ["CRT","CRW","CRY"]
+        self.CRList = ["CRT","CRW","CRY","CRQ"]
 
 
         self.WithoutMeffCut = False
@@ -569,16 +570,20 @@ class ChannelConfig:
                 cutList.append( " maxR_H1PPi_H2PPi <= %f"%self.maxR_H1PPi_H2PPi_upper   )
 
         if self.RPZ_HT3PP_upper<=990:
-            if regionName not in self.regionsWithInvertedRPZCutList:
-                cutList.append( " RPZ_HT3PP <= %f"%self.RPZ_HT3PP_upper   )
-            else:
+            if regionName in self.regionsWithoutRPZCutList:
+                pass
+            elif regionName in self.regionsWithInvertedRPZCutList:
                 cutList.append( " RPZ_HT3PP >= %f"%self.RPZ_HT3PP_upper   )
+            else:
+                cutList.append( " RPZ_HT3PP <= %f"%self.RPZ_HT3PP_upper   )
 
         if self.RPZ_HT5PP_upper<=990:
-            if regionName not in self.regionsWithInvertedRPZCutList:
-                cutList.append( " RPZ_HT5PP <= %f"%self.RPZ_HT5PP_upper   )
-            else:
+            if regionName in self.regionsWithoutRPZCutList:
+                pass
+            elif regionName in self.regionsWithInvertedRPZCutList:
                 cutList.append( " RPZ_HT5PP >= %f"%self.RPZ_HT5PP_upper   )
+            else:
+                cutList.append( " RPZ_HT5PP <= %f"%self.RPZ_HT5PP_upper   )
 
 
         if self.R_ptj2_HT3PP>=0:

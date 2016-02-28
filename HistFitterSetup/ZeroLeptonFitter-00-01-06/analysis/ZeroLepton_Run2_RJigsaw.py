@@ -246,25 +246,25 @@ if configMgr.readFromTree:
 
     else:
         # Diboson
-        dibosonFiles.append(INPUTDIR+ "/BKG/Diboson.root" )
+        dibosonFiles.append(INPUTDIR+ "/Diboson.root" )
 
         # Top
-        topFiles.append(INPUTDIR+ "/BKG/Top.root")
+        topFiles.append(INPUTDIR+ "/Top.root")
         if not zlFitterConfig.usePreComputedTopGeneratorSys:
-            topFiles.append(INPUTDIR+ "/BKG/TopaMcAtNloHerwigpp.root")
+            topFiles.append(INPUTDIR+ "/TopaMcAtNloHerwigpp.root")
         if not zlFitterConfig.usePreComputedTopFragmentationSys:
-            topFiles.append(INPUTDIR+ "/BKG/TopPowhegHerwigpp.root")
+            topFiles.append(INPUTDIR+ "/TopPowhegHerwigpp.root")
 
 
         # W
-        wFiles.append(INPUTDIR+ "/BKG/Wjets.root")
+        wFiles.append(INPUTDIR+ "/Wjets.root")
         if not zlFitterConfig.usePreComputedWGeneratorSys:
-            wFiles.append(INPUTDIR+ "/BKG/WMadgraphPythia8.root")
+            wFiles.append(INPUTDIR+ "/WMadgraphPythia8.root")
 
         # Z
         # zFiles.append(INPUTDIR+ "/BKG/Zjets.root")
         # zFiles.append(INPUTDIR+ "/Zjets.root")
-        zFiles.append(INPUTDIR_DATA+ "/Zjets.root")
+        zFiles.append(INPUTDIR_DATA + "/Zjets.root")
         if not zlFitterConfig.usePreComputedZGeneratorSys:
             zFiles.append(INPUTDIR+ "/BKG/ZMadgraphPythia8.root")
 
@@ -275,7 +275,7 @@ if configMgr.readFromTree:
     #data
     # dataFiles.append(INPUTDIR_DATA, "/DataMain_Nov01.root")
     # dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
-    dataFiles.append(INPUTDIR_DATA+ "/Data_Nov11.root")
+    dataFiles.append(INPUTDIR_DATA+ "/Data.root")
 
 
     log.info("Using the following inputs:")

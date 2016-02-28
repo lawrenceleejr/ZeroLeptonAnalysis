@@ -42,8 +42,8 @@ regionDict["VRQ2"] = Region("VRQ2", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ4"] = Region("VRQ4", "SRAll", [cleaningCut])#ATT: qcd weight
 
 regionDict["VRZ"] = Region("VRZ", "CRZ", [], [])
-regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
-regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
+# regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
+# regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
 regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
 
 regionDict["VRZAndreas"] = Region("VRZAndreas", "CRZ", [], [])
