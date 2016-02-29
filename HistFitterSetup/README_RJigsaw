@@ -1,0 +1,109 @@
+#LL
+
+#Make sure you compile HistFitter by going into the src directory and running mak. Then...
+
+# Basically just run 
+source setup.sh
+
+
+# Then follow the ZeroLeptonFitter-00-01-06/HowToRun instructions
+
+
+
+###############################################################################################
+##Old instructions#############################################################################
+
+#---------------------------------------
+# SETUP
+#---------------------------------------
+
+# first time setting up:
+setupATLAS
+localSetupROOT --rootVersion=5.34.24-x86_64-slc6-gcc48-opt
+svn co svn+ssh://$USER@svn.cern.ch/reps/atlasphys-susy/Physics/SUSY/Analyses/HistFitter/tags/HistFitter-00-00-47 RJigsawHistFitter
+cd RJigsawHistFitter
+source setup.sh
+cd src
+make
+cd ..
+
+export SVNPHYS=svn+ssh://svn.cern.ch/reps/atlasphys-susy
+svn co $SVNPHYS/Physics/SUSY/Analyses/ZeroLeptonFitter/tags/ZeroLeptonFitter-00-01-03 ZeroLeptonFitter
+cd ZeroLeptonFitter
+source setup.sh
+cd ../
+
+# every subsequent time:
+setupATLAS
+localSetupROOT --rootVersion=5.34.24-x86_64-slc6-gcc48-opt
+cd RJigsawHistFitter
+source setup.sh
+cd ZeroLeptonFitter
+source setup.sh
+
+#---------------------------------------
+# FILES I'VE ADDED AND MODIFIED
+#---------------------------------------
+# ADDED: 
+#   RJigsawHistFitter/README_RJigsaw 
+#   RJigsawHistFitter/ZeroLeptonFitter/pointListGG_direct
+#   RJigsawHistFitter/ZeroLeptonFitter/runExclusion.py
+#   RJigsawHistFitter/ZeroLeptonFitter/logs/
+#   
+#   RJigsawHistFitter/ZeroLeptonFitter/analysis/ZeroLepton_Run2_RJigsaw.py (input file locations, and input root file names for backgrounds, also small changes to do more plots in CR and VRs)
+#   RJigsawHistFitter/ZeroLeptonFitter/createPointList_step1.py
+#   RJigsawHistFitter/ZeroLeptonFitter/createPointList_step2.py
+#   RJigsawHistFitter/JigsawSetup.sh   
+#   RJigsawHistFitter/batch.sh
+#   RJigsawHistFitter/macros/Examples/contourplot/makelistfiles_GG_direct.C
+#   RJigsawHistFitter/macros/Examples/contourplot/makecontourhists_GG_direct.C
+#   RJigsawHistFitter/macros/Examples/contourplot/makecontourplots_GG_direct.C
+#
+#
+# MODIFIED 
+#   RJigsawHistFitter/ZeroLeptonFitter/python/ChannelConfig.py (adding Jigsaw variables to be cut on, search "LH")
+#   RJigsawHistFitter/ZeroLeptonFitter/python/allChannelsDict.py (adding "SRJigsaw" signal region)
+#
+#---------------------------------------
+# DOING THINGS!
+# ---------------------------------------
+#
+# Background-only fit:
+# (in ZeroLeptonFitter dir/) 
+# HistFitter.py  -t -w -d -f  -r SRJigsaw  -F bkg  -V  analysis/ZeroLepton_Run2_RJigsaw.py
+#
+# Yields table:
+# YieldsTable.py -c SR -s Top,Wjets,Zjets,Diboson,GAMMAjets -w results/ZL_SRJigsaw_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root -o testTable.tex
+#
+# Exclusion fit (one point: 950,650)
+# HistFitter.py -p -t -w -d -f  -r SRJigsaw -F excl -g gridGG_direct,950_650 analysis/ZeroLepton_Run2_RJigsaw.py
+#
+# Exclusion fit, all points:
+# create and fill point list file (ex. pointListGG_direct) 
+# > python runExclusion.py (specify point list file name in runExclusion.py and if it's in lxbatch) 
+#
+# Create merged hypo test file for all signal points:
+# cd results/
+# mkdir ZL_SRJigsaw_Signal/
+# hadd ZL_SRJigsaw_Signal/ZL_SRJigsaw_GG_direct_Output_fixSigXSecNominal_hypotest.root ZL_SR*GG_direct*/*fixSigXSecNominal_hypotest.root
+# hadd ZL_SRJigsaw_Signal/ZL_SRJigsaw_GG_direct_Output_fixSigXSecUp_hypotest.root ZL_SR*GG_direct*/*fixSigXSecUp_hypotest.root
+# hadd ZL_SRJigsaw_Signal/ZL_SRJigsaw_GG_direct_Output_fixSigXSecDown_hypotest.root ZL_SR*GG_direct*/*fixSigXSecDown_hypotest.root
+#
+# 
+# Create a list file
+# cd RJigsawHistFitter/macros/Examples/contourplot [modify makelistfiles_GG_direct.C (input file and file format)]
+# root -b -q makelistfiles_GG_direct.C  
+# --> will get something like ZL_SRJigsaw_GG_direct_Output_fixSigXSecNominal_hypotest__1_harvest_list
+# run it three times for Nominal, Up, Down
+#
+# Creat contour histograms
+# still in above dir
+# root -b -q makecontourhists_GG_direct.C
+# run three times (nominal, up, down)
+#
+# Make contour plots
+# (first time: cp $HISTFITTER/samples/tutorial/contour/* contourmacros/)
+# root -b -q makecontourplots_GG_direct.C
+#
+#
+#
