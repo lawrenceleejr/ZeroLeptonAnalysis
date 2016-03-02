@@ -8,8 +8,8 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('--reweightCuts'       , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
 parser.add_option('--reweightDataSource' , help='reweight by truth with reco efficiency or directly from reco', choices=('truth','reco'), default='truth')
-parser.add_option('--reweightHists'      , help='reweight in which variables', choices=('bosonPt_dPhi','bosonEt_dPhi','Nj50_dPhi'),default='bosonPt_dPhi')
-parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have reco eff of 1 .', action="store_true", default=False)
+parser.add_option('--reweightHists'      , help='reweight in which variables.  Pass as a comma-separated list',,default='bosonPt')
+#parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have reco eff of 1 .', action="store_true", default=False)
 (options, args) = parser.parse_args()
 
 
@@ -22,6 +22,8 @@ def translateHistoName(var) :
     if var in differentNamedHistsZG.keys() :
         return differentNamedHistsZG[var]
     else :
+        print 'histo isn\'t in name translator.'
+        print 'This isn\'t necessarily a problem.'
         return (var, var)
 
 
@@ -37,7 +39,7 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' ) :
     global reweightfile#maybe clean this up
     selectionTrue   = selection+'*normweight*(NTVars.eventWeight)'
-    selectionString = (weightVar+selection).translate(string.maketrans("",""), string.punctuation).translate(None, string.digits)#strips and numbers punctuation
+    selectionString = (weightVar+selection).translate(string.maketrans("",""), string.punctuation).translate(None, string.digits)#strips numbers and punctuation
     if reweightfile :
         rw_hist = reweightfile.Get(selectionString)
         if rw_hist : return rw_hist
@@ -47,13 +49,14 @@ def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' )
 
     ZgNames = translateHistoName(weightVar)
 
+    print z_tree, g_tree
+
     print 'creating weight histo for z'
     z_tree.Draw(ZgNames[0]+">>z_treeHist",selectionTrue);
     print 'creating weight histo for g'
+
     g_tree.Draw(ZgNames[1]+">>g_treeHist",selectionTrue);
     print 'created weighting histos'
-
-#    ROOT.gDirectory.Print()
 
     z_treeHist = ROOT.gDirectory.Get("z_treeHist");
     g_treeHist = ROOT.gDirectory.Get("g_treeHist");
@@ -92,11 +95,11 @@ mytrees = {
 
 print mytrees
 
-reweightvars  = ['bosonPt']
+reweightvars  = options.reweightHists.split(',')
 reweightHists = {}
 #somehow do a list of vars you want to create weights for
 for rwvar in reweightvars :
-    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zvv'], rwvar )#"1.*(dPhi<4.)")
+    reweightHists[rwvar] = getWeightHistogram(mytrees['zvv'],mytrees['gamma'], rwvar )#"1.*(dPhi<4.)")
 
 print reweightvars
 
@@ -136,7 +139,7 @@ for event in mytrees['gamma'] :
     # dphi  = event.dPhi
     # njets = event.jetPt.size()
     for rwvar, helper in evtweighthelpers.iteritems() :
-        rwvarvalue     = getattr(event, rwvar)
+        rwvarvalue     = getattr(event, translateHistoName(rwvar)[1])#return the gamma name
         # if rwvar == 'dPhi' :
         #     rwvarvalueTest = event.dPhi
         #     assert(isclose(rwvarvalue,rwvarvalueTest))
@@ -150,7 +153,7 @@ for event in mytrees['gamma'] :
     count+=1
 
 myfiles['gamma'].cd()
-mytrees['gamma'].AddFriend(weighttree.GetName(), os.getenv('PWD')+'/'+weightfile)
+mytrees['gamma'].AddFriend(weighttree.GetName(), os.getenv('PWD')+'/'+weightfile.GetName())
 mytrees['gamma'].Write()
 myfiles['gamma'].Close()
 

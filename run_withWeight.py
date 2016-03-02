@@ -53,7 +53,7 @@ for sample in sh_all:
         sh_bg[sample.name()] = sample_gamma
 
 print sh_bg
-reweightvars  = ['dPhi']
+#reweightvars  = ['dPhi']
 #reweightHists = {}
 #somehow do a list of vars you want to create weights for
 #for rwvar in reweightvars :
@@ -82,7 +82,7 @@ for samplename, sample in sh_bg.iteritems() :
 
             if 'gamma' in samplename :
                 for zproc in ['Zll','Zvv'] :
-                    for rwvar in ['dPhi'] :
+                    for rwvar in ['bosonPt'] :
                         cutstring = "weight_R"+zproc+"G*NTVars.eventWeight*normweight*(%s)"%cut
                         thehist = ROOT.TH1D('_'.join([varname,zproc,rwvar,"%s"%cutname]),
                                             '_'.join([varname,zproc,rwvar,"%s"%cutname]),
