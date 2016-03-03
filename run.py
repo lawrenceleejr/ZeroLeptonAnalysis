@@ -246,11 +246,31 @@ for sampleHandlerName in [
 baseline    = "( pT_jet1 > 50.) * ( pT_jet2 > 50.) * ( MDR > 300.)"
 baselineMET = "( pT_jet1 > 50.) * ( pT_jet2 > 50.) * ( MET > 200.)"
 
+SR1ASQ = "*".join(
+["( deltaQCD > 0)",
+"( RPT_HT3PP < 0.08  )",
+"( R_H2PP_H3PP > 0.6)",
+"( R_H2PP_H3PP < 0.95)",
+"( RPZ_HT3PP < 0.55)",
+"( pT_jet2 / HT3PP > 0.16)",
+"( abs(cosP) < 0.65)",
+"( HT3PP > 1100)",
+"( H2PP > 900)",])
+
+SR1AGL = "*".join([
+"( deltaQCD > 0)",
+"( RPT_HT5PP < 0.08  )",
+"( R_H2PP_H5PP > 0.35)",
+"( R_HT5PP_H5PP > 0.8)",
+"( RPZ_HT5PP < 0.5)",
+"( minR_pTj2i_HT3PPi > 0.125)",
+"( maxR_H1PPi_H2PPi < 0.95)",
+"( dangle < 0.5 )",
+"( HT5PP > 800)",
+"( H2PP > 550)",])
 
 cuts = {}
 limits = {}
-
-
 
 ## Define your cut strings here....
 regions = {
@@ -258,6 +278,8 @@ regions = {
 
         "baseline"   : baseline,
         "baselineMET": baselineMET,
+	"SR1ASQ"      : SR1ASQ,
+	"SR1AGL"      : SR1AGL,
 }
 
 
@@ -272,24 +294,24 @@ for SH_name, mysamplehandler in my_SHs.iteritems():
 	for region in regions:
 
 
-		if "SR" in region:
-			# ## This part sets up both N-1 hists and the cutflow histogram for region
+		# if "SR" in region:
+		# 	# ## This part sets up both N-1 hists and the cutflow histogram for region
 
-			cutflow[region] = ROOT.TH1F ("cutflow_%s"%region, "cutflow_%s"%region, len(cuts[region])+2 , 0, len(cuts[region])+2 );
-			cutflow[region].GetXaxis().SetBinLabel(1, "weight");
-			cutflow[region].GetXaxis().SetBinLabel(2, baseline);
+		# 	cutflow[region] = ROOT.TH1F ("cutflow_%s"%region, "cutflow_%s"%region, len(cuts[region])+2 , 0, len(cuts[region])+2 );
+		# 	cutflow[region].GetXaxis().SetBinLabel(1, "weight");
+		# 	cutflow[region].GetXaxis().SetBinLabel(2, baseline);
 
-			for i,cutpart in enumerate(cuts[region]):
+		# 	for i,cutpart in enumerate(cuts[region]):
 
-				cutpartname = cutpart.translate(None, " (),.").replace("*","_x_").replace("/","_over_").split(" < ")[0].split(" > ")[0]
-				variablename = cutpart.split("<")[0].split(">")[0]+")"
+		# 		cutpartname = cutpart.translate(None, " (),.").replace("*","_x_").replace("/","_over_").split(" < ")[0].split(" > ")[0]
+		# 		variablename = cutpart.split("<")[0].split(">")[0]+")"
 
-				# print variablename
-				job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("%s_minus_%s"%(region,cutpartname), "%s_%s"%(region,cutpartname), limits[region][i][0], limits[region][i][1], limits[region][i][2] ), variablename ,baseline+"*weight*%s"%"*".join(["(%s)"%mycut for mycut in cuts[region] if mycut!=cutpart ])    )        )
+		# 		# print variablename
+		# 		job.algsAdd (ROOT.MD.AlgHist(ROOT.TH1F("%s_minus_%s"%(region,cutpartname), "%s_%s"%(region,cutpartname), limits[region][i][0], limits[region][i][1], limits[region][i][2] ), variablename ,baseline+"*weight*%s"%"*".join(["(%s)"%mycut for mycut in cuts[region] if mycut!=cutpart ])    )        )
 
-				cutflow[region].GetXaxis().SetBinLabel (i+3, cutpart);
+		# 		cutflow[region].GetXaxis().SetBinLabel (i+3, cutpart);
 
-			job.algsAdd(ROOT.MD.AlgCFlow (cutflow[region]))
+		# 	job.algsAdd(ROOT.MD.AlgCFlow (cutflow[region]))
 
 
 		###################################################################
@@ -325,11 +347,12 @@ for SH_name, mysamplehandler in my_SHs.iteritems():
 	driver = ROOT.EL.LSFDriver()
 #	driver = ROOT.EL.DirectDriver()
 	job.options().setString(ROOT.EL.Job.optSubmitFlags, "-q 8nh");
-	if os.path.exists( "/afs/cern.ch/work/r/rsmith/outputCorrelationPlotsv2/output/"+SH_name ):
+	if os.path.exists( "/afs/cern.ch/work/r/rsmith/outputCorrelationPlotsv4/output/"+SH_name ):
+		print "/afs/cern.ch/work/r/rsmith/outputCorrelationPlotsv4/output/"+SH_name
 		print 'can\'t print to there!!! you already have output there'
 		exit()
 #		shutil.rmtree( "/afs/cern.ch/work/r/rsmith/outputCorrelationPlots/output/"+SH_name )
-	driver.submitOnly(job, "/afs/cern.ch/work/r/rsmith/outputCorrelationPlotsv2/output/"+SH_name )
+	driver.submitOnly(job, "/afs/cern.ch/work/r/rsmith/outputCorrelationPlotsv4/output/"+SH_name )
 
 
 
