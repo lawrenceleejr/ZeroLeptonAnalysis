@@ -114,8 +114,10 @@ for rwvar in reweightvars :
 
 print reweightvars
 
-weightfile = ROOT.TFile('CRY_weights_RZG.root','recreate')
-weighttree = ROOT.TTree('CRY_weights_RZG','Weights to scale CRY photon events to Z expectation in SR or Z CR')
+weightfilename = 'CRY_weights_RZG.root'
+weightfile = ROOT.TFile(weightfilename,'recreate')
+weighttreename = 'CRY_weights_RZG'
+weighttree = ROOT.TTree(weighttreename,'Weights to scale CRY photon events to Z expectation in SR or Z CR')
 
 def addWeightBranch(rwvar, evtweighthelpers) :
     structname       = 'evtweight_'   +rwvar+'_t'
@@ -167,11 +169,17 @@ for event in mytrees['gamma'] :
     weighttree.Fill()
     count+=1
 
-myfiles['gamma'].cd()
-mytrees['gamma'].AddFriend(weighttree.GetName(), os.getenv('PWD')+'/'+weightfile.GetName())
-mytrees['gamma'].Write()
-myfiles['gamma'].Close()
-
+print "moving to weight file"
 weightfile.cd()
+print "writing weight file"
 weighttree.Write()
+print "closing weight file"
 weightfile.Close()
+
+myfiles['gamma'].cd()
+print "Adding friend"
+mytrees['gamma'].AddFriend(weighttreename, os.getenv('PWD')+'/'+weightfilename)
+print "writing friend"
+mytrees['gamma'].Write()
+print "closing gamma tree"
+myfiles['gamma'].Close()
