@@ -6,6 +6,9 @@ def cuts_from_dict(cutdict):
 no_cuts = {}
 no_cuts["1"] = [10,0,1000]
 
+dphi   = {}
+dphi["dPhi<4."] = [10, 0 , 4]
+
 met50 = no_cuts.copy()
 met50["met>50"] = [10,0,1000]
 

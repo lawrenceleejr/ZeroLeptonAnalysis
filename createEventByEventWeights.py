@@ -8,28 +8,39 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('--reweightCuts'       , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
 parser.add_option('--reweightDataSource' , help='reweight by truth with reco efficiency or directly from reco', choices=('truth','reco'), default='truth')
-parser.add_option('--reweightHists'      , help='reweight in which variables.  Pass as a comma-separated list',,default='bosonPt')
+parser.add_option('--reweightHists'      , help='reweight in which variables.  Pass as a comma-separated list',default='bosonPt')
 #parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have reco eff of 1 .', action="store_true", default=False)
 (options, args) = parser.parse_args()
 
 
-def translateHistoName(var) :
+def translateHistoName(var, eventVersion = False) :
     differentNamedHistsZG = {
         'bosonPt' : ('ZvvPt'                , 'phPt'),
         'bosonEt' : ('ZvvPt*ZvvPt+ZvvM*ZvvM', 'phPt'),
+        'nJet'    : ('Sum$(jetPt>50)'       , 'Sum$(jetPt>50)')
         #if we need more
         }
+
+    if eventVersion :
+        differentNamedHistsZG = {
+            'bosonPt' : ('ZvvPt'                , 'phPt'),
+            'bosonEt' : ('ZvvPt*ZvvPt+ZvvM*ZvvM', 'phPt'),
+            'nJet'    : ('jetPt'       , 'jetPt'),
+        #if we need more
+            }
+
     if var in differentNamedHistsZG.keys() :
         return differentNamedHistsZG[var]
     else :
-        print 'histo isn\'t in name translator.'
-        print 'This isn\'t necessarily a problem.'
+        # print 'histo isn\'t in name translator.'
+        # print 'This isn\'t necessarily a problem.'
         return (var, var)
-
 
 #todo cache the rw histos
 reweightfile = None
-if os.path.isfile('ratZG.root') :
+if not os.path.isfile('ratZG.root') :
+    reweightfile = ROOT.TFile.Open('ratZG.root','NEW')
+else :
     reweightfile = ROOT.TFile.Open('ratZG.root','UPDATE')
 #def checkWeightHistogramCache(rwfile, weightVar ) :
 #    if
@@ -65,10 +76,9 @@ def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' )
     rw_hist.SetName(selectionString)
     rw_hist.Divide(g_treeHist)
 
-    reweightfile = ROOT.TFile.Open('ratZG.root','NEW')
+    reweightfile.cd()
     rw_histClone = rw_hist.Clone()
     rw_hist.Write()
-#    reweightfile.Close()
 
     return rw_histClone
 
@@ -95,11 +105,12 @@ mytrees = {
 
 print mytrees
 
-reweightvars  = options.reweightHists.split(',')
+reweightvars    = options.reweightHists.split(',')
 reweightHists = {}
 #somehow do a list of vars you want to create weights for
 for rwvar in reweightvars :
-    reweightHists[rwvar] = getWeightHistogram(mytrees['zvv'],mytrees['gamma'], rwvar )#"1.*(dPhi<4.)")
+    #todo somehow add these automatically
+    reweightHists[rwvar] = getWeightHistogram(mytrees['zvv'],mytrees['gamma'], rwvar ,"(dPhi<4.)")
 
 print reweightvars
 
@@ -108,8 +119,8 @@ weighttree = ROOT.TTree('CRY_weights_RZG','Weights to scale CRY photon events to
 
 def addWeightBranch(rwvar, evtweighthelpers) :
     structname       = 'evtweight_'   +rwvar+'_t'
-    weightRZvvG_name = 'weight_RZvvG'
-    weightRZllG_name = 'weight_RZllG'
+    weightRZvvG_name = 'weight_RZvvG'+'_'+rwvar
+    weightRZllG_name = 'weight_RZllG'+'_'+rwvar
 
     ROOT.gROOT.ProcessLine(
         'struct '           +structname+      ' {\
@@ -139,13 +150,17 @@ for event in mytrees['gamma'] :
     # dphi  = event.dPhi
     # njets = event.jetPt.size()
     for rwvar, helper in evtweighthelpers.iteritems() :
-        rwvarvalue     = getattr(event, translateHistoName(rwvar)[1])#return the gamma name
-        # if rwvar == 'dPhi' :
-        #     rwvarvalueTest = event.dPhi
-        #     assert(isclose(rwvarvalue,rwvarvalueTest))
+        rwvarvalue = getattr(event , translateHistoName(rwvar, True)[1])#return the gamma name
 
-        helper.weight_RZvvG = reweightHists[rwvar].Interpolate(rwvarvalue)
-        helper.weight_RZllG = 0
+        try :
+            rwvarvalue = rwvarvalue.size()
+        except : pass
+
+        helper_zvv = getattr(helper, 'weight_RZvvG_'+rwvar)
+        helper_zll = getattr(helper, 'weight_RZllG_'+rwvar)
+
+        helper_zvv = reweightHists[rwvar].Interpolate(rwvarvalue)
+        helper_zll = 0
 
     if (count%10000)==0: print count, '/', mytrees['gamma'].GetEntries()
 

@@ -12,10 +12,9 @@ ROOT.gROOT.SetBatch(True)
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("--driver"             , help="select where to run", choices=("direct","lsf", "prooflite", "grid", "condor"), default="direct")
-parser.add_option('--reweightCuts'       , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
-parser.add_option('--reweightDataSource' , help='reweight by truth with reco efficiency or directly from reco', choices=('truth','reco'), default='truth')
-parser.add_option('--reweightHists'      , help='reweight in which variables', choices=('bosonPt_dPhi','bosonEt_dPhi','Nj50_dPhi'),default='bosonPt_dPhi')
-parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have reco eff of 1 .', action="store_true", default=False)
+# parser.add_option('--reweightCuts'       , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
+# parser.add_option('--reweightDataSource' , help='reweight by truth with reco efficiency or directly from reco', choices=('truth','reco'), default='truth')
+parser.add_option('--reweightHists'      , help='reweight in which variables.  Pass as a comma-separated list',default='bosonPt')
 parser.add_option("--isTest", action="store_true", default=False)
 (options, args) = parser.parse_args()
 
@@ -82,8 +81,8 @@ for samplename, sample in sh_bg.iteritems() :
 
             if 'gamma' in samplename :
                 for zproc in ['Zll','Zvv'] :
-                    for rwvar in ['bosonPt'] :
-                        cutstring = "weight_R"+zproc+"G*NTVars.eventWeight*normweight*(%s)"%cut
+                    for rwvar in options.reweightHists.split(',') :
+                        cutstring = "weight_R"+zproc+"G_"+rwvar+"*NTVars.eventWeight*normweight*(%s)"%cut
                         thehist = ROOT.TH1D('_'.join([varname,zproc,rwvar,"%s"%cutname]),
                                             '_'.join([varname,zproc,rwvar,"%s"%cutname]),
                                             limits[0], limits[1], limits[2])
