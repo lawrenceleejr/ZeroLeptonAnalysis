@@ -7,6 +7,7 @@ ROOT.gROOT.SetBatch(True)
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('--reweightCuts'       , help='cuts used to derive ratio', choices=('no_cuts','met160','base_meff','cry_tight'), default='no_cuts')
+parser.add_option("--isTest", action="store_true", default=False)
 parser.add_option('--reweightDataSource' , help='reweight by truth with reco efficiency or directly from reco', choices=('truth','reco'), default='truth')
 parser.add_option('--reweightHists'      , help='reweight in which variables.  Pass as a comma-separated list',default='bosonPt')
 #parser.add_option('--doZnunuEffWeight'   , help='Don\'t assume that Znunu have reco eff of 1 .', action="store_true", default=False)
@@ -130,6 +131,8 @@ def addWeightBranch(rwvar, evtweighthelpers) :
          Float_t           '+weightRZllG_name+';\
          };' );
 
+    print weighttree
+
     evtweighthelper = getattr(ROOT, structname)()
     zvvweightbranch = weighttree.Branch(weightRZvvG_name,
                                     ROOT.AddressOf(evtweighthelper,weightRZvvG_name),
@@ -143,6 +146,7 @@ def addWeightBranch(rwvar, evtweighthelpers) :
 evtweighthelpers = {}
 for rwvar in reweightvars :
     addWeightBranch(rwvar, evtweighthelpers)
+
 
 count = 0
 print "phPt dphi eff_fact xsec_fact weight_RZvvG weight_RzllG"
@@ -160,14 +164,20 @@ for event in mytrees['gamma'] :
 
         helper_zvv = getattr(helper, 'weight_RZvvG_'+rwvar)
         helper_zll = getattr(helper, 'weight_RZllG_'+rwvar)
+        print helper_zvv
 
-        helper_zvv = reweightHists[rwvar].Interpolate(rwvarvalue)
-        helper_zll = 0
+        helper_zvv_val = reweightHists[rwvar].Interpolate(rwvarvalue)
+        helper_zll_val = 0
+        print helper_zvv_val
+
+
+
 
     if (count%10000)==0: print count, '/', mytrees['gamma'].GetEntries()
 
     weighttree.Fill()
     count+=1
+    if options.isTest and count > 100 : break
 
 print "moving to weight file"
 weightfile.cd()
@@ -178,6 +188,7 @@ weightfile.Close()
 
 myfiles['gamma'].cd()
 print "Adding friend"
+for obj in mytrees['gamma'].GetListOfFriends() : mytrees['gamma'].GetListOfFriends().Remove(obj)
 mytrees['gamma'].AddFriend(weighttreename, os.getenv('PWD')+'/'+weightfilename)
 print "writing friend"
 mytrees['gamma'].Write()
