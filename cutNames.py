@@ -41,7 +41,8 @@ baseline_cuts["meffInc>800"] = [10,0,5000]
 cry_cuts = baseline_cuts.copy()
 cry_cuts["PP_MDeltaR>300."]      = [10,0,2000]
 cry_cuts["RPT_HT5PP<.4"]                 = [10,-1,1]
-cry_cuts["QCD_Delta1 / (1 - QCD_Rsib) > .05"] = [10,-1,1]
+cry_cuts["QCD_Delta1 > 0"] = [10,-1,1]
+#
 # print cry_cuts
 
 ## Define your cut strings here....
@@ -50,10 +51,10 @@ cuts = {
         "base_meff"   : cuts_from_dict(baseline_cuts),
         "cry_tight"   : cuts_from_dict(cry_cuts),
         "met50"       : cuts_from_dict(met50),
-        "met100"      : cuts_from_dict(met100),
-        "met160"      : cuts_from_dict(met160),
+#        "met100"      : cuts_from_dict(met100),
+#        "met160"      : cuts_from_dict(met160),
         "met300"      : cuts_from_dict(met300),
-        "met50_2jet"  : cuts_from_dict(met50_2jet),
-        "met100_2jet" : cuts_from_dict(met100_2jet),
-        "met300_2jet" : cuts_from_dict(met300_2jet)
+#        "met50_2jet"  : cuts_from_dict(met50_2jet),
+#        "met100_2jet" : cuts_from_dict(met100_2jet),
+#        "met300_2jet" : cuts_from_dict(met300_2jet)
         }

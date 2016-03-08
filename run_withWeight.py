@@ -16,6 +16,7 @@ parser.add_option("--driver"             , help="select where to run", choices=(
 # parser.add_option('--reweightDataSource' , help='reweight by truth with reco efficiency or directly from reco', choices=('truth','reco'), default='truth')
 parser.add_option('--reweightHists'      , help='reweight in which variables.  Pass as a comma-separated list',default='bosonPt')
 parser.add_option("--isTest", action="store_true", default=False)
+parser.add_option('--nevents', help     = "Run n events ", default = -1 )
 (options, args) = parser.parse_args()
 
 
@@ -58,33 +59,36 @@ print sh_bg
 #for rwvar in reweightvars :
 #    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zvv'], rwvar , "1.*(dPhi<4.)")
 
+
 for samplename, sample in sh_bg.iteritems() :
-    if not (samplename == 'gamma_lo_truth') : continue
+    if not (samplename == 'z_lo_truth_zvv') : continue
 
     sh = ROOT.SH.SampleHandler()
     sh.add(sample)
 
     job = ROOT.EL.Job()
     job.sampleHandler(sh)
+    if options.nevents > 0 :
+        job.options().setDouble (ROOT.EL.Job.optMaxEvents, float(options.nevents))
 
     count = 0
 
     for cutname,cut in cutNames.cuts.iteritems() :
         count = count + 1
         for varname,limits in variableNames.RJigsawVariables.iteritems() :
-            weight = 'normweight*(NTVars.eventWeight)'
+            weight = 'normweight*(NTVars.eventWeight)*' + str(.001 if limits[3] else 1. )
             cutstring = weight+"*(%s)"%cut
-            thehist = ROOT.TH1D('_'.join([varname,"%s"%cutname]),
-                                '_'.join([varname,"%s"%cutname]),
+            thehist = ROOT.TH1D('_'.join([varname.replace('_',''),"%s"%cutname]),
+                                '_'.join([varname.replace('_',''),"%s"%cutname]),
                                 limits[0], limits[1], limits[2])
             job.algsAdd(ROOT.MD.AlgHist(thehist,varname,cutstring))
 
             if 'gamma' in samplename :
                 for zproc in ['Zll','Zvv'] :
                     for rwvar in options.reweightHists.split(',') :
-                        cutstring = "weight_R"+zproc+"G_"+rwvar+"*NTVars.eventWeight*normweight*(%s)"%cut
-                        thehist = ROOT.TH1D('_'.join([varname,zproc,rwvar,"%s"%cutname]),
-                                            '_'.join([varname,zproc,rwvar,"%s"%cutname]),
+                        cutstring = str(.001 if limits[3] else 1. ) + "*weight_R"+zproc+"G_"+rwvar+"*NTVars.eventWeight*normweight*(%s)"%cut
+                        thehist = ROOT.TH1D('_'.join([varname.replace('_',''),zproc,rwvar,"%s"%cutname]),
+                                            '_'.join([varname.replace('_',''),zproc,rwvar,"%s"%cutname]),
                                             limits[0], limits[1], limits[2])
                         job.algsAdd(ROOT.MD.AlgHist(thehist,varname,cutstring))
             if (options.isTest and  count > 1) : break
@@ -109,5 +113,6 @@ for samplename, sample in sh_bg.iteritems() :
     else:
         driver = ROOT.EL.DirectDriver()
 
+
     print "submitting to dir : "
-    driver.submit(job, 'testdir_' + samplename )
+    driver.submit(job, 'testdir_' + samplename + ("_test" if options.isTest else "") )
