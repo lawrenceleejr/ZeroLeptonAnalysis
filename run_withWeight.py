@@ -7,7 +7,7 @@ import cutNames
 import copy
 
 ROOT.gROOT.SetBatch(True)
-
+ROOT.TH1.SetDefaultSumw2(True)
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -53,12 +53,6 @@ for sample in sh_all:
         sh_bg[sample.name()] = sample_gamma
 
 print sh_bg
-#reweightvars  = ['dPhi']
-#reweightHists = {}
-#somehow do a list of vars you want to create weights for
-#for rwvar in reweightvars :
-#    reweightHists[rwvar] = getWeightHistogram(mytrees['gamma'],mytrees['zvv'], rwvar , "1.*(dPhi<4.)")
-
 
 for samplename, sample in sh_bg.iteritems() :
     if not (samplename == 'z_lo_truth_zvv') : continue

@@ -48,7 +48,10 @@ outputdir =  'plots/'
 if not os.path.isdir(outputdir) :
     os.mkdir(outputdir)
 
-rwvars = {'bosonPt': ROOT.kBlue}
+rwvars = {'bosonPt': ROOT.kBlue,
+          'nJet'   : ROOT.kGreen,
+          'dPhi'   : ROOT.kOrange
+          }
 
 for counter, histoKey in enumerate(histoList) :
     histoname = histoKey.GetName()
@@ -80,6 +83,7 @@ for counter, histoKey in enumerate(histoList) :
 
     for histoname, histo in histos.iteritems() :
         print histoname , " : Integral = " , histo.Integral()
+        histo.Sumw2()
         histo.Scale(1./histo.Integral())
 
     histos["Znunu"].SetMarkerColor(ROOT.kRed)
@@ -105,7 +109,7 @@ for counter, histoKey in enumerate(histoList) :
     c1.cd()
     pad2 = ROOT.TPad("pad2","pad2",0. ,0.0, 1.,0.3  )
     pad2.SetTopMargin(0);
-#    pad2.SetGrid(1,1)
+    pad2.SetGrid(0,1)
     pad2.Draw()
     pad2.cd()
 
@@ -116,10 +120,11 @@ for counter, histoKey in enumerate(histoList) :
         if 'Gamma' in histoname :
             ratio = histos["Znunu"].Clone()
             ratioDict[histoname] = ratio
+            ratio.SetMarkerColor(histo.GetMarkerColor())
             ratio.SetMinimum(0)
-            ratio.SetMaximum(.5)
-            ratio.Sumw2()
-            ratio.Divide(histos["Gamma"])
+            ratio.SetMaximum(2.1)
+
+            ratio.Divide(histo)
 
 
             ratio.GetYaxis().SetTitle("Z / gamma");
