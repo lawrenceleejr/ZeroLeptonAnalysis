@@ -1,4 +1,7 @@
 import ROOT
+#import rootpy.ROOT as ROOTpy
+import rootpy.io as io
+import rootpy.tree as tree
 import os
 import string
 
@@ -116,45 +119,28 @@ for rwvar in reweightvars :
 print reweightvars
 
 weightfilename = 'CRY_weights_RZG.root'
-weightfile = ROOT.TFile(weightfilename,'recreate')
+weightfile = io.root_open(weightfilename,'recreate')
 weighttreename = 'CRY_weights_RZG'
-weighttree = ROOT.TTree(weighttreename,'Weights to scale CRY photon events to Z expectation in SR or Z CR')
+weighttree = tree.Tree(weighttreename,'Weights to scale CRY photon events to Z expectation in SR or Z CR')
 
 def addWeightBranch(rwvar, evtweighthelpers) :
-    structname       = 'evtweight_'   +rwvar+'_t'
     weightRZvvG_name = 'weight_RZvvG'+'_'+rwvar
     weightRZllG_name = 'weight_RZllG'+'_'+rwvar
 
-    ROOT.gROOT.ProcessLine(
-        'struct '           +structname+      ' {\
-         Float_t           '+weightRZvvG_name+';\
-         Float_t           '+weightRZllG_name+';\
-         };' );
+    weighttree.create_branches({
+            weightRZvvG_name : 'F',
+            weightRZllG_name : 'F',
+            })
 
-    print weighttree
-
-    evtweighthelper = getattr(ROOT, structname)()
-    zvvweightbranch = weighttree.Branch(weightRZvvG_name,
-                                    ROOT.AddressOf(evtweighthelper,weightRZvvG_name),
-                                    weightRZvvG_name+'/F')
-    zllweightbranch = weighttree.Branch(weightRZllG_name,
-                                    ROOT.AddressOf(evtweighthelper,weightRZllG_name),
-                                    weightRZllG_name+'/F')
-
-    evtweighthelpers[rwvar] = evtweighthelper
+    evtweighthelpers[rwvar] = (weightRZvvG_name , weightRZllG_name)
 
 evtweighthelpers = {}
 for rwvar in reweightvars :
     addWeightBranch(rwvar, evtweighthelpers)
 
-
 count = 0
 print "phPt dphi eff_fact xsec_fact weight_RZvvG weight_RzllG"
 for event in mytrees['gamma'] :
-
-    # phPt  = min(event.phPt,999.99)
-    # dphi  = event.dPhi
-    # njets = event.jetPt.size()
     for rwvar, helper in evtweighthelpers.iteritems() :
         rwvarvalue = getattr(event , translateHistoName(rwvar, True)[1])#return the gamma name
 
@@ -162,16 +148,14 @@ for event in mytrees['gamma'] :
             rwvarvalue = rwvarvalue.size()
         except : pass
 
-        helper_zvv = getattr(helper, 'weight_RZvvG_'+rwvar)
-        helper_zll = getattr(helper, 'weight_RZllG_'+rwvar)
-        print helper_zvv
+        helper_zvvname = evtweighthelpers[rwvar][0]
+        helper_zllname = evtweighthelpers[rwvar][1]
 
         helper_zvv_val = reweightHists[rwvar].Interpolate(rwvarvalue)
         helper_zll_val = 0
-        print helper_zvv_val
 
-
-
+        setattr(weighttree, helper_zvvname, helper_zvv_val)
+        setattr(weighttree, helper_zllname, helper_zll_val)
 
     if (count%10000)==0: print count, '/', mytrees['gamma'].GetEntries()
 
@@ -180,7 +164,7 @@ for event in mytrees['gamma'] :
     if options.isTest and count > 100 : break
 
 print "moving to weight file"
-weightfile.cd()
+#weightfile.cd()
 print "writing weight file"
 weighttree.Write()
 print "closing weight file"
