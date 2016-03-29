@@ -31,9 +31,9 @@ ROOT.gROOT.Macro("$ROOTCOREDIR/scripts/load_packages.C")
 ##
 ##
 
-sampleChoices = (        "z_reco" ,"gamma_reco",
-                         "z_lo_truth" ,"gamma_lo_truth",
-			 "z_nlo_truth"
+sampleChoices = (        "zll_reco"     ,"zvv_reco"     ,"gamma_reco",
+                         "zll_lo_truth" ,"zvv_lo_truth" ,"gamma_lo_truth",
+			 "zll_nlo_truth","zvv_nlo_truth"
                          )
 
 
@@ -97,28 +97,28 @@ def main():
 	# sh_signal = sh_all.find("signal")
 	sh_bg = {}
 
-	# sh_bg["qcd"] = sh_all.find("qcd")
-	# sh_bg["top"] = sh_all.find("top")
-	# sh_bg["wjets"] = sh_all.find("wjets")
+	sh_bg['zlljets'] = None
+	sh_bg['zvvjets'] = None
+	sh_bg['gamma'  ] = None
 
-	# sampleChoices = (      "z_reco" ,"gamma_reco",
-	# 			 "z_lo_truth" ,"gamma_lo_truth",
-	# 			 "z_nlo_truth"
-	# 			 )
+	if options.samplesToRun == 'zll_reco' :
+		sh_bg['zlljets'] = sh_all.find('zlljets').find('reco')
+	elif options.samplesToRun == 'zll_lo_truth' :
+		sh_bg['zlljets'] = sh_all.find('zlljets').find('truth').find('lo')
+	elif options.samplesToRun == 'zll_nlo_truth' :
+		sh_bg['zlljets'] = sh_all.find('zlljets').find('truth').find('nlo')
 
-	sh_bg['zjets'] = None
-	sh_bg['gamma'] = None
+	if options.samplesToRun == 'zvv_reco' :
+		sh_bg['zvvjets'] = sh_all.find('zvvjets').find('reco')
+	elif options.samplesToRun == 'zvv_lo_truth' :
+		sh_bg['zvvjets'] = sh_all.find('zvvjets').find('truth').find('lo')
+	elif options.samplesToRun == 'zvv_nlo_truth' :
+		sh_bg['zvvjets'] = sh_all.find('zvvjets').find('truth').find('nlo')
 
-	if options.samplesToRun == 'z_reco' :
-		sh_bg['zjets'] = sh_all.find('zjets').find('reco')
 	elif options.samplesToRun == 'gamma_reco' :
 		sh_bg['gamma'] = sh_all.find('gamma').find('reco')
-	elif options.samplesToRun == 'z_lo_truth' :
-		sh_bg['zjets'] = sh_all.find('zjets').find('truth').find('lo')
 	elif options.samplesToRun == 'gamma_lo_truth' :
 		sh_bg['gamma'] = sh_all.find('gamma').find('truth').find('lo')
-	elif options.samplesToRun == 'z_nlo_truth' :
-		sh_bg['zjets'] = sh_all.find('zjets').find('truth').find('nlo')
 
 	print sh_bg
 
@@ -134,7 +134,8 @@ def main():
 		# sh_bg["qcd"]: "QCD",
 		# sh_bg["top"]: "Top",
 		# sh_bg["wjets"]: "WJets",
-		sh_bg["zjets"]: "ZJets",
+		sh_bg["zlljets"]: "ZllJets",
+		sh_bg["zvvjets"]: "ZvvJets",
 		sh_bg["gamma"]: "Gamma",
 		}
 

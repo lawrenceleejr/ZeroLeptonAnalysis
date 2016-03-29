@@ -55,7 +55,7 @@ for sample in sh_all:
 print sh_bg
 
 for samplename, sample in sh_bg.iteritems() :
-    if not (samplename == 'z_lo_truth_zvv') : continue
+    if not (samplename == 'gamma_lo_truth') : continue
 
     sh = ROOT.SH.SampleHandler()
     sh.add(sample)

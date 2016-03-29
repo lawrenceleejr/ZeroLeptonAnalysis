@@ -70,11 +70,15 @@ def addTags(sh_all):
 			sample.addTag("wjets")
 		if "PowHP8EvG_Z" in short_name:
 			sample.addTag("zjets")
+
 		if "Znunu" in short_name:
-			sample.addTag("zjets")
+			sample.addTag("zvvjets")
+		if "Zmumu" in short_name:
+			sample.addTag("zlljets")
+		if "Zee" in short_name:
+			sample.addTag("zlljets")
+
 		if "Sherpa_Wqq" in short_name:
-			sample.addTag("zjets")
-		if "_Zmumu_" in short_name:
 			sample.addTag("zjets")
 		if "ggH" in short_name:
 			sample.addTag("signal")

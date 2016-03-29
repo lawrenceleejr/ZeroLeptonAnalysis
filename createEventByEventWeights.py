@@ -19,9 +19,9 @@ parser.add_option('--reweightHists'      , help='reweight in which variables.  P
 
 def translateHistoName(var, eventVersion = False) :
     differentNamedHistsZG = {
-        'bosonPt' : ('ZvvPt'                , 'phPt'),
-        'bosonEt' : ('ZvvPt*ZvvPt+ZvvM*ZvvM', 'phPt'),
-        'nJet'    : ('Sum$(jetPt>50)'       , 'Sum$(jetPt>50)')
+        'bosonPt' : ('ZvvPt'                , 'phPt',           (100, 0, 1000000) ),
+        'bosonEt' : ('ZvvPt*ZvvPt+ZvvM*ZvvM', 'phPt',           (100, 0, 1000000) ),
+        'nJet'    : ('Sum$(jetPt>50)'       , 'Sum$(jetPt>50)', (10, -.5, 9.5))
         #if we need more
         }
 
@@ -42,10 +42,12 @@ def translateHistoName(var, eventVersion = False) :
 
 #todo cache the rw histos
 reweightfile = None
-if not os.path.isfile('ratZG.root') :
-    reweightfile = ROOT.TFile.Open('ratZG.root','NEW')
+reweightfilename = 'ratZG'+ ('_test' if options.isTest else "") + '.root'
+
+if not os.path.isfile(reweightfilename) :
+    reweightfile = ROOT.TFile.Open(reweightfilename,'NEW')
 else :
-    reweightfile = ROOT.TFile.Open('ratZG.root','UPDATE')
+    reweightfile = ROOT.TFile.Open(reweightfilename,'UPDATE')
 #def checkWeightHistogramCache(rwfile, weightVar ) :
 #    if
 def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
@@ -67,10 +69,13 @@ def getWeightHistogram(z_tree , g_tree, weightVar = 'bosonPt' , selection='1.' )
     print z_tree, g_tree
 
     print 'creating weight histo for z'
-    z_tree.Draw(ZgNames[0]+">>z_treeHist",selectionTrue);
+    if(options.isTest) :     z_tree.Draw(ZgNames[0]+">>z_treeHist"+str(ZgNames[2]),selectionTrue, "", 100000)
+    else :                   z_tree.Draw(ZgNames[0]+">>z_treeHist"+str(ZgNames[2]),selectionTrue)
     print 'creating weight histo for g'
 
-    g_tree.Draw(ZgNames[1]+">>g_treeHist",selectionTrue);
+    if(options.isTest) :     g_tree.Draw(ZgNames[1]+">>g_treeHist"+str(ZgNames[2]),selectionTrue, "", 100000)
+    else :                   g_tree.Draw(ZgNames[1]+">>g_treeHist"+str(ZgNames[2]),selectionTrue)
+
     print 'created weighting histos'
 
     z_treeHist = ROOT.gDirectory.Get("z_treeHist");
