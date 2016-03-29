@@ -61,19 +61,19 @@ def getBatchConfiguration(site):
     queue = config.get(site, 'queue').replace('"', '')
     use_multiple = config.getboolean(site, 'use_multiple')
     number_to_combine = config.getint(site, 'number_to_combine')
-    command = config.get(site, 'command').replace('"', '')
-   
+    command = config.get(site, 'command')#.replace('"', '')
+
     try:
         use_parallel = config.getboolean(site, 'use_parallel')
     except:
         use_parallel = False
-   
+
     try:
         number_of_cores = config.getint(site, 'number_of_cores')
     except:
         number_of_cores = 1
 
-    cfg = { 'queue' : queue, 'use_multiple' : use_multiple, 'number_to_combine' : number_to_combine, 'command' : command, 
+    cfg = { 'queue' : queue, 'use_multiple' : use_multiple, 'number_to_combine' : number_to_combine, 'command' : command,
             'use_parallel' : use_parallel, 'number_of_cores' : number_of_cores}
 
     return cfg
@@ -81,20 +81,20 @@ def getBatchConfiguration(site):
 def makeLogFilename(filename):
     (basename, ext) = os.path.splitext(filename)
     logFilename = os.path.join(os.getenv('ZEROLEPTONFITTER'), "Logs", os.path.basename(basename))
-    
+
     return "{0}.log".format(logFilename)
 
 def submitFile(args, filename, batchConfig):
     queue = batchConfig['queue'].replace('"', "")
     if args.queue is not None and args.queue != "":
         queue = args.queue
-  
+
     values = {"QUEUE" : queue, "SCRIPT" : filename, "LOG" : makeLogFilename(filename), "ADDITIONAL_OPTS" : args.additional_opts}
 
     cmdTemplate = string.Template(batchConfig['command'])
     cmd = cmdTemplate.safe_substitute(values)
     print(cmd)
-    
+
     if args.dry_run: return
     subprocess.call(cmd, shell=True)
 
@@ -127,7 +127,7 @@ def runBatchCommands(args, outputDir, commands, forceOverwrite=False):
     jobFilenames = []
     for i, x in enumerate(commands):
         filename = '%s/Jobs/%s-%d.sh' % (os.getenv('ZEROLEPTONFITTER'), os.path.basename(outputDir), i+1)
-        
+
         if forceOverwrite or not os.path.exists(filename):
             (cuts, name, cmd) = x
             d = {"DIR" : outputDir, "HISTFITTER" : os.getenv('HISTFITTER'), "ZEROLEPTONFITTER" : os.getenv('ZEROLEPTONFITTER'), "CMD" : cmd, "GENERATED_AT": timestamp}
@@ -142,7 +142,7 @@ def runBatchCommands(args, outputDir, commands, forceOverwrite=False):
             submitFile(args, filename, batchConfig)
 
         jobFilenames.append(filename)
-    
+
     if useMultiple:
         for i, c in enumerate(chunks(jobFilenames, batchConfig['number_to_combine'])):
             filename = '%s/Jobs/%s-combined-%d.sh' % (os.getenv('ZEROLEPTONFITTER'), os.path.basename(outputDir), i+1)
