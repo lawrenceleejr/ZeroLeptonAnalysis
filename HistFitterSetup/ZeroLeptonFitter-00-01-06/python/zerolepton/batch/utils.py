@@ -84,17 +84,42 @@ def makeLogFilename(filename):
 
     return "{0}.log".format(logFilename)
 
+def createCondorSubmitFile(values) :
+    executable = values["SCRIPT"]
+    filename = executable + "_condor.sub"
+    f = open (filename, "w")
+    f.write('universe = vanilla\n')
+    f.write('log = submit/run.log\n')
+    f.write('output  = submit/log.out\n')
+    f.write('error      = submit/log.err\n')
+    f.write('getenv  = True\n')
+    f.write('accounting_group = group_atlas.general\n')
+    f.write('executable = ' + executable + '\n' )
+    f.write('queue')
+    f.close()
+    return filename
+
 def submitFile(args, filename, batchConfig):
     queue = batchConfig['queue'].replace('"', "")
     if args.queue is not None and args.queue != "":
         queue = args.queue
 
-    values = {"QUEUE" : queue, "SCRIPT" : filename, "LOG" : makeLogFilename(filename), "ADDITIONAL_OPTS" : args.additional_opts}
+    values = {"QUEUE" : queue,
+              "SCRIPT" : filename,
+              "LOG" : makeLogFilename(filename),
+              "ADDITIONAL_OPTS" : args.additional_opts,
+              "PWD" : os.getenv('ZEROLEPTONFITTER') }
 
-    cmdTemplate = string.Template(batchConfig['command'])
-    cmd = cmdTemplate.safe_substitute(values)
+    cmd = ""
+    if "condor_submit" in batchConfig['command'] :
+        print 'creating condor_submit file'
+        filename = createCondorSubmitFile(values)
+        cmd = " ".join(["condor_submit", filename])
+    else :
+        cmdTemplate = string.Template(batchConfig['command'])
+        cmd = cmdTemplate.safe_substitute(values)
+
     print(cmd)
-
     if args.dry_run: return
     subprocess.call(cmd, shell=True)
 
