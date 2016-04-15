@@ -93,7 +93,7 @@ def createCondorSubmitFile(values) :
     f.write('output  = submit/log.out\n')
     f.write('error      = submit/log.err\n')
     f.write('getenv  = True\n')
-    f.write('accounting_group = group_atlas.general\n')
+    f.write('accounting_group = group_atlas.columbia\n')
     f.write('executable = ' + executable + '\n' )
     f.write('queue')
     f.close()
