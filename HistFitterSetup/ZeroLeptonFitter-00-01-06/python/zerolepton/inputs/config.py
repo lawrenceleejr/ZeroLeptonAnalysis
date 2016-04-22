@@ -30,9 +30,11 @@ class InputConfig:
         mySection = "default"
         foundSite = False
         for section in sectionData:
+            print section
             if "sites" in sectionData[section]:
-                names = sectionData[section]["sites"].replace('"','').split(' ')
-                for n in names: 
+                print "sites"
+                names = sectionData[section]["sites"].replace('"','').lower().split(' ')
+                for n in names:
                     if len(fnmatch.filter([hostname], n)) > 0:
                         mySection = section
                         print(colors.OKBLUE + "Hostname match on {0}".format(n) + colors.ENDC)
@@ -45,16 +47,16 @@ class InputConfig:
                 #if hostname in sectionData[section]["sites"] or sectionData[section]["sites"] in hostname:
                 #    mySection = section
                 #    break
-                    
+
         setattr(self, 'section', mySection)
         print(colors.OKGREEN + "Loaded settings for site {0}".format(mySection) + colors.ENDC)
-        
+
         self.site = mySection
         for k in sectionData[mySection]:
             if k == "sites": continue
             # strip out " and ' - ConfigParser returns a raw string
             setattr(self, k, sectionData[mySection][k].replace('"', '').replace("'",""))
-        
+
         return
 
     def __str__(self):
