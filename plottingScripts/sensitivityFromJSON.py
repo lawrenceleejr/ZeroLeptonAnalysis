@@ -76,13 +76,14 @@ samples = [
 			'Diboson'
 			]
 
-lumiscale = 3.26
+lumiscale = 3.2
 writePlots = True
 combineRegions = 1
+compareToMeff = 0
 
-SignalGrids = ["SS_direct","GG_direct"]
+# SignalGrids = ["SS_direct","GG_direct"]
 # SignalGrids = ["GG_direct"]
-# SignalGrids = ["SS_direct"]
+SignalGrids = ["SS_direct"]
 # SignalGrids = ["GG_onestepCC"]
 
 
@@ -94,37 +95,45 @@ myxlabel["GG_onestepCC"] = r"$m_{\tilde{g}}$ [GeV]"
 
 MeffRegions = [
 
+"SR2jl",
+"SR2jm",
+"SR2jt",
+"SR4jt",
+"SR5j",
+"SR6jm",
+"SR6jt",
+
 ]
 
 
-cuts = [
-		"SRJigsawSR1A",
-		"SRJigsawSR1B",
-		"SRJigsawSR1C",
-		"SRJigsawSR2A",
-		"SRJigsawSR2B",
-		"SRJigsawSR2C",
-		"SRJigsawSR3A",
-		"SRJigsawSR3B",
-		"SRJigsawSR3C",
+cuts = MeffRegions+[
+		"SRJigsawSRG1a",
+		"SRJigsawSRG1b",
+		"SRJigsawSRG1c",
+		"SRJigsawSRG2a",
+		"SRJigsawSRG2b",
+		"SRJigsawSRG2c",
+		"SRJigsawSRG3a",
+		"SRJigsawSRG3b",     
+		"SRJigsawSRG3c",
 
-		"SRJigsawSR1ASq",
-		"SRJigsawSR1BSq",
-		"SRJigsawSR2ASq",
-		"SRJigsawSR2BSq",
-		"SRJigsawSR3ASq",
-		"SRJigsawSR3BSq",
+		"SRJigsawSRS1a",
+		"SRJigsawSRS1b",
+		"SRJigsawSRS2a",
+		"SRJigsawSRS2b",
+		"SRJigsawSRS3a",
+		"SRJigsawSRS3b",
 
-		"SRJigsawSR1ACo",
-		"SRJigsawSR1BCo",
-		"SRJigsawSR2ACo",
-		"SRJigsawSR2BCo",
-		"SRJigsawSR3ACo",
-		"SRJigsawSR3BCo",
-		"SRJigsawSR4ACo",
-		"SRJigsawSR4BCo",
+		# "SRJigsawSRC1a",
+		# "SRJigsawSRC1b",
+		# "SRJigsawSRC2a",
+		# "SRJigsawSRC2b",
+		# "SRJigsawSRC3a",
+		# "SRJigsawSRC3b",
+		# "SRJigsawSRC4a",
+		# "SRJigsawSRC4b",
 
-] + MeffRegions
+] 
 
 
 colorpal = sns.color_palette("husl", 4 )
@@ -133,7 +142,7 @@ colorpal = sns.color_palette("husl", 4 )
 
 
 
-fig = plt.figure(figsize=(6,7.5), dpi=100)
+figSens = plt.figure(figsize=(8,5), dpi=100 )
 
 from ROOT import RooStats
 
@@ -160,6 +169,8 @@ for SignalGrid in SignalGrids:
 		x = []
 		y = []
 		z = []
+		zd1s = []
+		zu1s = []
 
 		print tmpcut
 
@@ -167,37 +178,56 @@ for SignalGrid in SignalGrids:
 
 			myx = ipoint["mgl"]
 			myy = ipoint["mlsp"]
-			myz = ROOT.RooStats.PValueToSignificance( ipoint["p0"] )
+			# myz = ROOT.RooStats.PValueToSignificance( ipoint["p0"] )
 
-			myz = ipoint["CLsexp"] 
+			# myz = ipoint["CLsexp"] 
 			myz = ROOT.RooStats.PValueToSignificance( ipoint["CLsexp"] )
+			myzd1s = ROOT.RooStats.PValueToSignificance( ipoint["clsd1s"] )
+			myzu1s = ROOT.RooStats.PValueToSignificance( ipoint["clsu1s"] )
 			# myz = ipoint["p0"]
 
+
+			if myzu1s<0:
+				myzu1s = 0
+			if myzd1s<0:
+				myzd1s = 0
+
+			if any([np.isinf(thing) for thing in [myx,myy,myz,myzd1s,myzu1s] ]):
+				continue
 
 			x.append(myx)
 			y.append(myy)
 			z.append(myz)
+			zd1s.append(myzd1s)
+			zu1s.append(myzu1s)
+
+			# bestZbi[(myx,myy)] = (0,"")
+			# bestmeffZbi[(myx,myy)] = (0,"")
 
 
 			# if compareToMeff != tmpcut:
 			try:
-				if not(tmpcut in MeffRegions) and myz > bestZbi[(myx,myy)][0] and BG>1:
-					bestZbi[(myx,myy)] = (myz,tmpcut)
+				if not(tmpcut in MeffRegions) and myz > bestZbi[(myx,myy)][0]:
+					bestZbi[(myx,myy)] = (myz,tmpcut,myzd1s,myzu1s)
 
-				if tmpcut in MeffRegions and myz > bestmeffZbi[(myx,myy)][0]  and BG>1:
-					bestmeffZbi[(myx,myy)] = (myz,tmpcut)
+				if tmpcut in MeffRegions and myz > bestmeffZbi[(myx,myy)][0]:
+					bestmeffZbi[(myx,myy)] = (myz,tmpcut,myzd1s,myzu1s)
 
 			except:
 				if tmpcut in MeffRegions:
-					bestmeffZbi[(myx,myy)] = (myz,tmpcut)
+					bestmeffZbi[(myx,myy)] = (myz,tmpcut,myzd1s,myzu1s)
 				else:
-					bestZbi[(myx,myy)] = (myz,tmpcut)
+					bestZbi[(myx,myy)] = (myz,tmpcut,myzd1s,myzu1s)
+
+
+
 
 		xarray, yarray, zarray = deepcopy(x),deepcopy(y),deepcopy(z)
+		zarrayd1s, zarrayu1s = deepcopy(zd1s),deepcopy(zu1s)
 
 		(x,y,z,xi,yi,zi) = interpolateGridArray(x,y,z,withZeros=1)
 
-		figSens = plt.figure(  figsize=(8,5), dpi=100  )
+		# figSens = plt.figure(  figsize=(8,5), dpi=100  )
 
 		plt.imshow(zi, vmin=0, vmax=7, origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], cmap='jet', alpha=0.8)
@@ -210,9 +240,9 @@ for SignalGrid in SignalGrids:
 		# plt.clabel(CS, fontsize=9, inline=1, colors="k", linecolor="white", fmt='%1.0f $\\sigma$')
 
 
-		CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
-		           extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
-		plt.clabel(CS, fontsize=9, inline=1, colors="black", linecolor="black", fmt='%1.0f $\\sigma$')
+		# CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
+		#            extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
+		# plt.clabel(CS, fontsize=9, inline=1, colors="black", linecolor="black", fmt='%1.0f $\\sigma$')
 
 
 		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
@@ -222,8 +252,23 @@ for SignalGrid in SignalGrids:
 		plt.clabel(CS2, fontsize=9, inline=1, colors="white", linecolor="black" , fmt=fmt)
 
 
-		(x,y,z,xi,yi,zi) = interpolateGridArray(xarray,yarray,zarray,withZeros=0)
+		# uncertainty band! ###################################################
 
+		print len(xarray), len(yarray), len(zarrayu1s), len(zarrayd1s)
+		(x,y,z,xi,yi,zi) = interpolateGridArray(xarray,yarray,zarrayd1s,withZeros=1)
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
+		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white",linestyles='dashed')
+
+		(x,y,z,xi,yi,zi) = interpolateGridArray(xarray,yarray,zarrayu1s,withZeros=1)
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
+		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white",linestyles='dashed')
+
+
+		#######################################################################
+
+		(x,y,z,xi,yi,zi) = interpolateGridArray(xarray,yarray,zarray,withZeros=0)
 
 		plt.scatter(x, y, c=z, vmin=0, vmax=7, cmap='jet')
 
@@ -246,21 +291,24 @@ for SignalGrid in SignalGrids:
 	# test["jd"]
 
 
-	if MeffRegions:
+	if MeffRegions and compareToMeff:
 
 		plt.clf()
 
-		(x,y,z,zSR,xi,yi,zi) = interpolateGridDictionary(bestZbi,bestmeffZbi)
+		(x,y,z,zSR,xi,yi,zi) = interpolateGridDictionary(bestZbi,bestmeffZbi,withZeros=1)
 
-		plt.imshow(zi, vmin=-2, vmax=z.max(), origin='lower',
+		plt.imshow(zi, vmin=-2, vmax=4, origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], cmap='jet', alpha=0.8)
 		plt.colorbar(label=r"Difference in Z Value [$\sigma$]")
 
-		CS = plt.contour(zi, [-0.5,0.1,0.5,1,1.5], vmin=z.min(), vmax=z.max(), origin='lower',
+		CS = plt.contour(zi, [-1,0,0.5,1,2], vmin=z.min(), vmax=z.max(), origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
-		plt.clabel(CS, fontsize=9, inline=1, colors="white", linecolor="white", fmt='%+1.1f $\\sigma$')
+		plt.clabel(CS, fontsize=9, inline=1, colors="black", linecolor="white", fmt='%+1.1f $\\sigma$')
 
-		plt.scatter(x, y, c=z)
+
+		(x,y,z,zSR,xi,yi,zi) = interpolateGridDictionary(bestZbi,bestmeffZbi,withZeros=0)
+
+		plt.scatter(x, y, c=z, vmin=-2, vmax=4, cmap='jet')
 
 		plt.xlabel(myxlabel[SignalGrid])
 		plt.ylabel(r"$m_{\chi^0_1}$ [GeV]")
@@ -275,7 +323,7 @@ for SignalGrid in SignalGrids:
 		# plt.show()
 
 		if writePlots:
-			figSens.savefig("plots/massPlaneSensitivity_%s_%s_%d_CompareToBestMeff.png"%(SignalGrid,DeltaBG,lumiscale) )
+			figSens.savefig("plots/massPlaneSensitivity_%s_%s_%d_CompareToBestMeff.png"%(SignalGrid,"HistFitter",lumiscale) )
 
 
 
@@ -284,22 +332,48 @@ for SignalGrid in SignalGrids:
 
 		plt.clf()
 
+		print "*"*200
+		print bestZbi
+
 		(x,y,z,zSR,xi,yi,zi)=interpolateGridDictionary(bestZbi,withZeros=1)
 
 		plt.imshow(zi, vmin=0, vmax=7, origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], cmap='jet', alpha=0.8)
 		plt.colorbar(label=r"Expected CLs Z Value [$\sigma$]")
 
-		CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
-		           extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
-		plt.clabel(CS, fontsize=9, inline=1, colors="black", linecolor="black", fmt='%1.0f $\\sigma$')
+		# CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
+		#            extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
+		# plt.clabel(CS, fontsize=9, inline=1, colors="black", linecolor="black", fmt='%1.0f $\\sigma$')
 
+
+		# print "*"*200
+		# print zi
 
 		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white")
 		fmt = {}
 		fmt[ CS2.levels[0] ] = r"95\% CLs"
 		plt.clabel(CS2, fontsize=7, inline=1, colors="white", linecolor="black" , fmt=fmt)
+
+
+
+
+		# uncertainty band! ###################################################
+
+		(x,y,z,zSR,xi,yi,zi) = interpolateGridDictionary(bestZbi,withZeros=1, runUncertainty = 1)
+
+		print zi
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
+		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white",linestyles='dashed')
+
+		(x,y,z,zSR,xi,yi,zi) = interpolateGridDictionary(bestZbi,withZeros=1, runUncertainty = -1)
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
+		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white",linestyles='dashed')
+
+		#######################################################################
+
 
 
 		(x,y,z,zSR,xi,yi,zi)=interpolateGridDictionary(bestZbi,withZeros=0)
@@ -326,9 +400,9 @@ for SignalGrid in SignalGrids:
 
 		#with chosen SR
 		plt.clf()
-		CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
-		           extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
-		plt.clabel(CS, fontsize=9, inline=1, colors="black", fmt='%1.0f $\\sigma$')
+		# CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
+		#            extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
+		# plt.clabel(CS, fontsize=9, inline=1, colors="black", fmt='%1.0f $\\sigma$')
 
 
 		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
@@ -336,6 +410,9 @@ for SignalGrid in SignalGrids:
 		fmt = {}
 		fmt[ CS2.levels[0] ] = r"95\% CLs"
 		plt.clabel(CS2, fontsize=7, inline=1, colors="black", linecolor="black" , fmt=fmt)
+
+
+
 
 
 
@@ -366,19 +443,50 @@ for SignalGrid in SignalGrids:
 
 		plt.clf()
 
-		(x,y,z,zSR,xi,yi,zi)=interpolateGridDictionary(bestmeffZbi)
+		(x,y,z,zSR,xi,yi,zi)=interpolateGridDictionary(bestmeffZbi,withZeros=1)
 
 		print zSR 
 
-		plt.imshow(zi, vmin=z.min(), vmax=z.max(), origin='lower',
+		plt.imshow(zi, vmin=0, vmax=7, origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], cmap='jet', alpha=0.8)
 		plt.colorbar(label=r"Expected CLs Z Value [$\sigma$]")
 
-		CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
-		           extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
-		plt.clabel(CS, fontsize=9, inline=1, colors="white", linecolor="white", fmt='%1.0f $\\sigma$')
+		# CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
+		#            extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
+		# plt.clabel(CS, fontsize=9, inline=1, colors="white", linecolor="white", fmt='%1.0f $\\sigma$')
 
-		plt.scatter(x, y, c=z)
+
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
+		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white")
+		fmt = {}
+		fmt[ CS2.levels[0] ] = r"95\% CLs"
+		plt.clabel(CS2, fontsize=7, inline=1, colors="black", linecolor="black" , fmt=fmt)
+
+
+
+
+
+		# uncertainty band! ###################################################
+
+		(x,y,z,zSR,xi,yi,zi) = interpolateGridDictionary(bestmeffZbi,withZeros=1, runUncertainty = 1)
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
+		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white",linestyles='dashed')
+
+		(x,y,z,zSR,xi,yi,zi) = interpolateGridDictionary(bestmeffZbi,withZeros=1, runUncertainty = -1)
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
+		           extent=[x.min(), x.max(), y.min(), y.max()], colors="white",linestyles='dashed')
+
+		#######################################################################
+
+
+
+
+		(x,y,z,zSR,xi,yi,zi)=interpolateGridDictionary(bestmeffZbi,withZeros=0)
+
+		plt.scatter(x, y, c=z, vmin=0, vmax=7, cmap='jet')
 
 		plt.xlabel(myxlabel[SignalGrid])
 		plt.ylabel(r"$m_{\chi^0_1}$ [GeV]")
@@ -388,19 +496,29 @@ for SignalGrid in SignalGrids:
 
 		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
 
-		plt.annotate(r"$\Delta$BG/BG=%s, Best MEff SR, %s"%(DeltaBG,SignalGrid.translate(None, "_") ),xy=(420,1150),color="white") 
+		plt.annotate(r"HistFitter, Best MEff SR, %s"%(SignalGrid.translate(None, "_") ),xy=(420,1150),color="white") 
 		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100), color="white") 
 		# plt.show()
 
 		if writePlots:
-			figSens.savefig("plots/massPlaneSensitivity_%s_%s_%d_BestMEffSR.png"%(SignalGrid,DeltaBG,lumiscale) )
+			figSens.savefig("plots/massPlaneSensitivity_%s_%s_%d_BestMEffSR.png"%(SignalGrid,"HistFitter",lumiscale) )
 
+
+		(x,y,z,zSR,xi,yi,zi)=interpolateGridDictionary(bestmeffZbi,withZeros=1)
 
 		#with chosen SR
 		plt.clf()
-		CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
+		# CS = plt.contour(zi, [2,3,4,5], vmin=z.min(), vmax=z.max(), origin='lower',
+		#            extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
+		# plt.clabel(CS, fontsize=9, inline=1, colors="black", fmt='%1.0f $\\sigma$')
+
+
+
+		CS2 = plt.contour(zi, [ROOT.RooStats.PValueToSignificance( 0.05 ) ], vmin=z.min(), vmax=z.max(), origin='lower',
 		           extent=[x.min(), x.max(), y.min(), y.max()], colors="black")
-		plt.clabel(CS, fontsize=9, inline=1, colors="black", fmt='%1.0f $\\sigma$')
+		fmt = {}
+		fmt[ CS2.levels[0] ] = r"95\% CLs"
+		plt.clabel(CS2, fontsize=7, inline=1, colors="black", linecolor="black" , fmt=fmt)
 
 
 		print zSR
@@ -415,12 +533,12 @@ for SignalGrid in SignalGrids:
 
 		plt.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.7,1.01),xycoords='axes fraction') 
 
-		plt.annotate(r"$\Delta$BG/BG=%s, Best MEff SR, %s"%(DeltaBG,SignalGrid.translate(None, "_") ),xy=(420,1150)) 
+		plt.annotate(r"HistFitter, Best MEff SR, %s"%(SignalGrid.translate(None, "_") ),xy=(420,1150)) 
 		plt.annotate(r"$\int L \sim %.1f$ fb$^{-1}, 13$ TeV"%(lumiscale),xy=(420,1100)) 
 		# plt.show()
 
 		if writePlots:
-			figSens.savefig("plots/massPlaneSensitivity_%s_%s_%d_BestMEffSR_Text.png"%(SignalGrid,DeltaBG,lumiscale) )
+			figSens.savefig("plots/massPlaneSensitivity_%s_%s_%d_BestMEffSR_Text.png"%(SignalGrid,"HistFitter",lumiscale) )
 
 
 

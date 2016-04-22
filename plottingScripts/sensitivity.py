@@ -54,7 +54,8 @@ samples = [
 			'Diboson'
 			]
 
-lumiscale = 3.26
+# lumiscale = 3.24
+lumiscale = 10
 # lumiscale = 1.9
 writePlots = True
 combineRegions = 1
@@ -73,13 +74,13 @@ myxlabel["GG_onestepCC"] = r"$m_{\tilde{g}}$ [GeV]"
 # MeffRegions = 0
 MeffRegions = [
 # "SR2jCo",
-# "SR2jl",
-# "SR2jm",
-# "SR2jt",
-# "SR4jt",
-# "SR5j",
-# "SR6jm",
-# "SR6jt",
+"SR2jl",
+"SR2jm",
+"SR2jt",
+"SR4jt",
+"SR5j",
+"SR6jm",
+"SR6jt",
 ]
 
 
@@ -97,13 +98,33 @@ cuts = [
 		# "SR2A",
 		# "SR2B",
 		# "SR2C",
-		# # "SR2D",
+		# # # "SR2D",
 		# "SR3A",
 		# "SR3B",
 		# "SR3C",
 
+		"SRG1a",
+		"SRG1b",
+		"SRG1c",
+		"SRG2a",
+		"SRG2b",
+		"SRG2c",
+		"SRG3a",
+		"SRG3b",
+		"SRG3c",
 
-		"SR1ACo",
+		"SRS1a",
+		"SRS1b",
+		"SRS2a",
+		"SRS2b",
+		"SRS3a",
+		"SRS3b",
+
+		"SRC1",
+		"SRC2",
+		"SRC3",
+		"SRC4q",
+		"SRC4g",
 		# "SR1BCo",
 		# "SR2ACo",
 		# "SR2BCo",
@@ -121,7 +142,7 @@ DeltaBGs = {}
 DeltaBGs["BaselineSyst"] = {}
 
 for cut in cuts:
-	DeltaBGs["BaselineSyst"][cut] = 0.1 if ("SR2j" in cut or "Sq" in cut or "Co" in cut) else 0.2
+	DeltaBGs["BaselineSyst"][cut] = 0.1 if ("SR2j" in cut or "SRS" in cut or "SRC" in cut) else 0.2
 
 colorpal = sns.color_palette("husl", 4 )
 
@@ -140,8 +161,8 @@ myfiles = {
 	# 'Data':   'hists/hist-DataMain_periodC.root.root',
 	# 'QCD': 'hists/output/hist-QCD.root.root',
 	'Top': 'hists/output/Top/hist-Top.root.root',
-	'W': 'hists/output/W/hist-Wjets.root.root',
-	'Z': 'hists/output/Z/hist-Zjets.root.root',
+	'W': 'hists/output/Wjets/hist-Wjets.root.root',
+	'Z': 'hists/output/Zjets/hist-Zjets.root.root',
 	'Diboson':'hists/output/Diboson/hist-Diboson.root.root',
 }
 
@@ -235,7 +256,7 @@ for SignalGrid in SignalGrids:
 			# signalfile = root_open("hists/rundir_signal/"+signalsample)
 			# print signalfile.ls()
 			try:
-				signalfile = root_open("hists/output/%s/hist-%s.root.root"%(signalsample,SignalGrid))
+				signalfile = root_open("hists/output/%s/hist-%s_ALL.root.root"%(signalsample,SignalGrid))
 				sig =  signalfile.Get("MET_%s"%tmpcut ).Clone( signalsample )
 				sig.Scale(lumiscale)
 				if SignalGrid == "SS_direct":
