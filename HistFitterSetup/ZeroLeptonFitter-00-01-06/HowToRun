@@ -2,6 +2,7 @@
 
 # This generates the commands to run. Change grid to whatever signal grid you want...
 
+./ToolKit/backgroundbatch/generateOptimisationSRs.py 
 ./ToolKit/batch/generateOptimisationSRs.py --grid=GG_direct --entire-grid
 ./ToolKit/batch/generateOptimisationSRs.py --grid=SS_direct --entire-grid
 

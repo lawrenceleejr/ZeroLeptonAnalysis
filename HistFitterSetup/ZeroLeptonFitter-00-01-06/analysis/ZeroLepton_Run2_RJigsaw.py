@@ -289,9 +289,9 @@ if configMgr.readFromTree:
 #weights = ["genWeight", "pileupWeight", "normWeight"]
 # weights = ["eventWeight", "pileupWeight", "normWeight"]
 weights = ["weight"]
-# if zlFitterConfig.applyKappaCorrection:
-#     # weights.append("gammaCorWeight(RunNumber)")
-#     weights.append("1./1.6")
+if zlFitterConfig.applyKappaCorrection:
+    weights.append("gammaCorWeight(RunNumber)")
+    # weights.append("1./1.6")
 configMgr.weights = weights
 
 #######################################################################
