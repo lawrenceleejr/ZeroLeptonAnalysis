@@ -89,9 +89,9 @@ def createCondorSubmitFile(values) :
     filename = executable + "_condor.sub"
     f = open (filename, "w")
     f.write('universe = vanilla\n')
-    f.write('log = submit/run.log\n')
-    f.write('output  = submit/log.out\n')
-    f.write('error      = submit/log.err\n')
+    f.write('log     = logs/run_'+executable.split("/")[-1].replace('.sh','')+'.log\n')
+    f.write('output  = logs/log_'+executable.split("/")[-1].replace('.sh','')+'.out\n')
+    f.write('error   = logs/log_'+executable.split("/")[-1].replace('.sh','')+'.err\n')
     f.write('getenv  = True\n')
     f.write('accounting_group = group_atlas.columbia\n')
     f.write('executable = ' + executable + '\n' )
