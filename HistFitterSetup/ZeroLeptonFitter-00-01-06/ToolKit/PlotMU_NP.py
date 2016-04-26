@@ -31,8 +31,8 @@ def MakeBox(color=ROOT.kGreen,offset=0,ymin=-1,ymax=1):
     graph.SetPoint(0,0.3+offset,ymin);
     graph.SetPoint(1,0.3+offset,ymax);
     graph.SetPoint(2,0.7+offset,ymax);
-    graph.SetPoint(3,0.7+offset,ymin);    
-    graph.SetFillColor(color); 
+    graph.SetPoint(3,0.7+offset,ymin);
+    graph.SetFillColor(color);
     graph.SetLineColor(2);
     graph.SetLineWidth(5);
     graph.SetLineStyle(1);
@@ -42,13 +42,13 @@ def MakeBox(color=ROOT.kGreen,offset=0,ymin=-1,ymax=1):
 def main():
     ## Get list of mu parameters (present in all SRs)
     for channel in sorted(finalChannelsDict.keys()):
-        if not os.path.exists("MU_%s.pkl" % channel):
+        if not os.path.exists("plots/MU_%s.pkl" % channel):
             continue
-        
+
         try:
-            fMU = open('MU_%s.pkl' % channel,'r')
+            fMU = open('plots/MU_%s.pkl' % channel,'r')
         except:
-            print "Could not open MU_%s.pkl" % channel
+            print "Could not open plots/MU_%s.pkl" % channel
             continue
 
 
@@ -62,20 +62,20 @@ def main():
             dMU[item[0]][channel] = [item[1],item[2]]
             #print item[0],channel,dMU[item[0]][channel],item
         fMU.close()
-       
+
         try:
-            fNP = open('NP_%s.pkl' % channel,'r')
+            fNP = open('plots/NP_%s.pkl' % channel,'r')
         except:
-            print "Could not open NP_%s.pkl" % channel
+            print "Could not open plots/NP_%s.pkl" % channel
             continue
-        
+
         theList = pickle.load(fNP)
         for item in theList:
             if not item[0] in dNP: dNP[item[0]] = {}
             dNP[item[0]][channel] = [item[1],item[2]]
             #print item[0],channel,dNP[item[0]][channel],item
         fNP.close()
-    
+
     ## Prepare MU histograms
     nChannels = len(finalChannelsDict.keys())
     for mu in dMU:
@@ -100,7 +100,7 @@ def main():
             dMU[mu]['hist'].GetXaxis().SetBinLabel(bin+1,channel[2:])
             dMU[mu]['histbis'].SetBinContent(bin+1,dMU[mu][channel][0])
             dMU[mu]['histbis'].SetBinError(bin+1,0.0001)
-    
+
     ## Prepare NP histograms
     for ichan,channel in enumerate(sorted(finalChannelsDict.keys())):
         hname = 'hNP_%s' % channel
@@ -130,13 +130,13 @@ if __name__ == "__main__":
     import AtlasStyle
     AtlasStyle.SetAtlasStyle()
     from math import *
-    
+
     # #MUZ/W plot
     # for k,v in dMU["W"].items():
     #    if k.find("hist")>=0: continue
     #    print "toto",k,(dMU["W"][k][0]-dMU["Z"][k][0])/dMU["Z"][k][0],(dMU["W"][k][0]-dMU["Z"][k][0])/sqrt(pow(dMU["W"][k][1],2)+pow(dMU["Z"][k][1],2))
 
-    
+
     ## MU plot
     plots['MU'] = {}
     plots['MU']['canvas'] = ROOT.TCanvas('cMU','cMU')
@@ -163,7 +163,7 @@ if __name__ == "__main__":
         pad.SetFrameBorderMode(0)
         pad.SetFrameBorderMode(0)
         pad.Draw()
-    
+
     for imu,mu in enumerate(dMU.keys()):
         pad = plots['MU']['pads'][imu]
         pad.cd()
@@ -189,10 +189,10 @@ if __name__ == "__main__":
         dMU[mu]['histbis'].Draw('E SAME')
         if not 'Multijets' in mu:
             dMU[mu]['line'] = ROOT.TLine(0.,1.,len(finalChannelsDict.keys()),1.)
-            dMU[mu]['line'].SetLineColor(ROOT.kRed) 
-            dMU[mu]['line'].SetLineStyle(2) 
-            dMU[mu]['line'].SetLineWidth(2) 
-            dMU[mu]['line'].Draw() 
+            dMU[mu]['line'].SetLineColor(ROOT.kRed)
+            dMU[mu]['line'].SetLineStyle(2)
+            dMU[mu]['line'].SetLineWidth(2)
+            dMU[mu]['line'].Draw()
     canvas.Print('plots/summaryMU.eps')
     # canvas.Print('summaryMU.png')
     # canvas.Print('summaryMU.pdf')

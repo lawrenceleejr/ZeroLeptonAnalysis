@@ -21,7 +21,7 @@ gSystem.Load("libSusyFitter.so")
 from ROOT import ConfigMgr,FitConfig #this module comes from gSystem.Load("libSusyFitter.so")
 gROOT.Reset()
 
-from ROOT import TFile, RooWorkspace, TObject, TString, RooAbsReal, RooRealVar, RooFitResult, RooDataSet, RooAddition, RooArgSet,RooAbsData,RooRandom,RooArgList 
+from ROOT import TFile, RooWorkspace, TObject, TString, RooAbsReal, RooRealVar, RooFitResult, RooDataSet, RooAddition, RooArgSet,RooAbsData,RooRandom,RooArgList
 from ROOT import Util, TMath
 from ROOT import RooFit
 from ROOT import RooExpandedFitResult
@@ -41,7 +41,7 @@ import pickle
 
 from logger import Logger
 log = Logger('SysTable')
-  
+
 
 def makeNicePlots(result,workspace,SRname):
 
@@ -51,7 +51,7 @@ def makeNicePlots(result,workspace,SRname):
   corrMatrix=None
   numPars=0
 
-  fpf = result.floatParsFinal() 
+  fpf = result.floatParsFinal()
   for idx in range(fpf.getSize()):
     parname = fpf[idx].GetName()
     par = workspace.var(parname)
@@ -71,9 +71,9 @@ def makeNicePlots(result,workspace,SRname):
   h_NP.GetYaxis().SetLabelSize(0.05);
 
   counter=0
-  for info in infoForNPPlots:     
-    counter+=1  
-    h_NP.GetXaxis().SetBinLabel(counter,info[0])          
+  for info in infoForNPPlots:
+    counter+=1
+    h_NP.GetXaxis().SetBinLabel(counter,info[0])
     h_NP.SetBinContent(counter,info[1])
     h_NP.SetBinError(counter,info[2])
 
@@ -82,7 +82,7 @@ def makeNicePlots(result,workspace,SRname):
   h_NP.Draw("E")
   # canvas_NP.Print("NP_"+SRname+".png")
   canvas_NP.Print("plots/NP_"+SRname+".eps")
-  fNP = open("NP_"+SRname+".pkl",'w')
+  fNP = open("plots/NP_"+SRname+".pkl",'w')
   pickle.dump(infoForNPPlots, fNP)
   fNP.close()
 
@@ -93,9 +93,9 @@ def makeNicePlots(result,workspace,SRname):
   h_MU.GetYaxis().SetLabelSize(0.05);
 
   counter=0
-  for info in infoForMUPlots:     
-    counter+=1  
-    h_MU.GetXaxis().SetBinLabel(counter,info[0].replace("Yield",""))          
+  for info in infoForMUPlots:
+    counter+=1
+    h_MU.GetXaxis().SetBinLabel(counter,info[0].replace("Yield",""))
     h_MU.SetBinContent(counter,info[1])
     h_MU.SetBinError(counter,info[2])
 
@@ -106,11 +106,11 @@ def makeNicePlots(result,workspace,SRname):
   # canvas_MU.Print("MU_"+SRname+".gif")
   # canvas_MU.Print("MU_"+SRname+".pdf")
   # canvas_MU.Print("MU_"+SRname+".png")
-  fMU = open("MU_"+SRname+".pkl",'w')
+  fMU = open("plots/MU_"+SRname+".pkl",'w')
   pickle.dump(infoForMUPlots, fMU)
   fMU.close()
 
-  
+
   # How many parameters to we actually have?
   numPars=0
   for idx in range(fpf.getSize()):
@@ -129,9 +129,9 @@ def makeNicePlots(result,workspace,SRname):
   for i in range(1, fpf.getSize()+1):
     xLabel = oldMatrix.GetXaxis().GetBinLabel(i)
     #print "Found xLabel %d=%s" % (i, xLabel)
-    if xLabel.find("gamma") != -1 and xLabel.find("VR") != -1: 
+    if xLabel.find("gamma") != -1 and xLabel.find("VR") != -1:
       continue
-    
+
     k += 1
     l = 1
     for j in range(1, fpf.getSize()+1):
@@ -139,7 +139,7 @@ def makeNicePlots(result,workspace,SRname):
 
       #print "\tFound yLabel %d=%s" % (j, yLabel)
 
-      if yLabel.find("gamma") != -1 and yLabel.find("VR") != -1: 
+      if yLabel.find("gamma") != -1 and yLabel.find("VR") != -1:
         continue
 
       content = oldMatrix.GetBinContent(i,j)
@@ -148,7 +148,7 @@ def makeNicePlots(result,workspace,SRname):
       corrMatrix.SetBinContent(k,l,content)
       corrMatrix.GetXaxis().SetBinLabel(k, xLabel)
       corrMatrix.GetYaxis().SetBinLabel(l, yLabel)
-      
+
       #print "\tNew => ",k,l,corrMatrix.GetXaxis().GetBinLabel(k),corrMatrix.GetYaxis().GetBinLabel(l)
       l += 1
   corrMatrix.GetZaxis().SetRangeUser(-1.0, 1.0);
@@ -160,8 +160,8 @@ def makeNicePlots(result,workspace,SRname):
   c_corr.SetBottomMargin(0.4)
   c_corr.SetRightMargin(0.1)
   c_corr.SetTopMargin(0.1)
-  
-  
+
+
   #gStyle.SetPalette(51) ;
   gStyle.SetPalette(1) ;
   gStyle.SetMarkerSize(1.45);
@@ -192,7 +192,7 @@ def makeNicePlots(result,workspace,SRname):
 
 def latexfitresults( filename, namemap, region='3jL', sample='', resultName="RooExpandedFitResult_afterFit", dataname='obsData', doAsym=True,SRName=""):
   """
-  Method-1: set all parameters constant, except for the one you're interested in, 
+  Method-1: set all parameters constant, except for the one you're interested in,
            calculate the systematic/error propagated due to that parameter
 
   @param filename The filename containing afterFit workspace
@@ -211,7 +211,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
   w = Util.GetWorkspaceFromFile(filename,workspacename)
   if w==None:
     print "ERROR : Cannot open workspace : ", workspacename
-    sys.exit(1) 
+    sys.exit(1)
 
   """
   pick up RooExpandedFitResult from workspace with name resultName (either before or after fit)
@@ -234,7 +234,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
   if data_set==None:
     print "ERROR : Cannot open dataset : ", "data_set"
     sys.exit(1)
-      
+
   """
   pick up channel category (RooCategory) from workspace
   """
@@ -252,7 +252,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
   chosenSample = False
   if sample is not '':
     chosenSample = True
-        
+
   """
   define regSys set, for all names/numbers to be saved in
   """
@@ -263,7 +263,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
   """
   regionCatStr = 'channelCat==channelCat::' + regionFullName.Data()
   dataRegion = data_set.reduce(regionCatStr)
-  
+
   """
   retrieve and save number of observed (=data) events in region
   """
@@ -272,7 +272,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
     nobsRegion = dataRegion.sumEntries()
   else:
     print " ERROR : dataset-category dataRegion not found"
-    
+
   """
   if looking at a sample, there is no equivalent N_obs (only for the full model)
   """
@@ -314,7 +314,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
   regSys['sqrtnfitted'] = TMath.Sqrt(nFittedInRegion)
   regSys['nfitted'] = nFittedInRegion
 
-  pdfFittedErrInRegion = Util.GetPropagatedError(pdfInRegion, result, doAsym) 
+  pdfFittedErrInRegion = Util.GetPropagatedError(pdfInRegion, result, doAsym)
   regSys['totsyserr'] = pdfFittedErrInRegion
 
 
@@ -328,8 +328,8 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
   calculate error per (floating) parameter in fitresult
   get a list of floating parameters to loop over
   """
-  fpf = result.floatParsFinal() 
-  
+  fpf = result.floatParsFinal()
+
   """
   set all floating parameters constant
   """
@@ -338,7 +338,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
     par = w.var(parname)
     par.setConstant()
 
-    
+
 
   """
   if several systematatic/parameters are pre-defined in namemap, they will be floated together
@@ -347,7 +347,7 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
   """
   else, float each parameter one by one and calculate the error due to it
   """
-  if len(namemap)>0: 
+  if len(namemap)>0:
     for key in namemap.keys():
       print namemap[key]
       for parname in namemap[key]:
@@ -361,16 +361,16 @@ def latexfitresults( filename, namemap, region='3jL', sample='', resultName="Roo
         par = w.var(parname)
         par.setConstant()
         pass
-  else: 
+  else:
     for idx in range(fpf.getSize()):
       parname = fpf[idx].GetName()
       par = w.var(parname)
       par.setConstant(False)
       sysError  = Util.GetPropagatedError(pdfInRegion, result, doAsym)
       regSys['syserr_'+parname] =  sysError
-      par.setConstant() 
+      par.setConstant()
       print parname,par.getVal(),par.getError()
-      
+
 
 
   return regSys
@@ -390,7 +390,7 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
   @param sample The sample to be used insted of total pdf (default='' not defined, hence total pdf used)
   @param fitregions Fit regions to perform the re-fit (default= 'WR,TR,S3,S4,SR3jT,SR4jT' but needs to be specified by user)
   @param dataname The name of dataset (default='obsData')
-  @param doAsym Calculates asymmetric errors taken from MINOS (default=False) 
+  @param doAsym Calculates asymmetric errors taken from MINOS (default=False)
   """
 
   """
@@ -399,7 +399,7 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
   w = Util.GetWorkspaceFromFile(filename,'w')
   if w==None:
     print "ERROR : Cannot open workspace : "
-    sys.exit(1) 
+    sys.exit(1)
 
   """
   pick up RooExpandedFitResult from workspace with name resultName (either before or after fit)
@@ -413,7 +413,7 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
   save the original (after-fit result) fit parameters list
   """
   resultlistOrig = result.floatParsFinal()
-    
+
   """
   load workspace snapshot related to resultName (=set all parameters to values after fit)
   """
@@ -427,7 +427,7 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
   if data_set==None:
     print "ERROR : Cannot open dataset : ", "data_set"
     sys.exit(1)
-      
+
   """
   pick up channel category (RooCategory) from workspace
   """
@@ -470,12 +470,12 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
   regionCatStr = 'channelCat==channelCat::' + regionFullName.Data()
   dataRegion = data_set.reduce(regionCatStr)
   nobsRegion = 0.
-  
+
   if dataRegion:
     nobsRegion = dataRegion.sumEntries()
   else:
     print " ERROR : dataset-category", regionCatStr, " not found"
-    
+
   """
   if looking at a sample, there is no equivalent N_obs (only for the full model)
   """
@@ -503,7 +503,7 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
     if foundRRS >1 or foundRRS==0:
       print " \n\n WARNING: ", pdf.GetName(), " has ", foundRRS, " instances of RooRealSumPdf"
       print pdf.GetName(), " component list:", prodList.Print("v")
-    
+
   if not pdfInRegion:
     if chosenSample:
       print " \n Warning, could not find pdf in region = ",region, " for sample = ",sample
@@ -517,14 +517,14 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
   regSys['sqrtnfitted'] = TMath.Sqrt(nFittedInRegion)
   regSys['nfitted'] = nFittedInRegion
 
-  pdfFittedErrInRegion = Util.GetPropagatedError(pdfInRegion, result, doAsym) 
+  pdfFittedErrInRegion = Util.GetPropagatedError(pdfInRegion, result, doAsym)
   regSys['totsyserr'] = pdfFittedErrInRegion
-  
+
   """
   set lumi parameter constant for the refit -- FIXME
   """
   lumiConst = True
-  
+
   fpf = result.floatParsFinal()
 
   """
@@ -575,7 +575,7 @@ def latexfitresults_method2(filename,resultname='RooExpandedFitResult_afterFit',
     par.setConstant(False)
 
     """
-    print a warning if new fit with 1 par fixed did not converge - meaning that sys error cannot be trusted 
+    print a warning if new fit with 1 par fixed did not converge - meaning that sys error cannot be trusted
     """
     if result_1parfixed.status()==0 and result_1parfixed.covQual()==3:   #and result_1parfixed.numStatusHistory()==2 and  result_1parfixed.statusCodeHistory(0)==0 and  result_1parfixed.statusCodeHistory(1) ==0:
       systError = systError
@@ -597,7 +597,7 @@ Main function calls start here ....
 """
 
 if __name__ == "__main__":
-  
+
   import os, sys
   import getopt
   """
@@ -619,10 +619,10 @@ if __name__ == "__main__":
     print "-y: take symmetrized average of minos errors"
 
     print "\nFor example:"
-    print "SysTable.py -w MyName_combined_BasicMeasurement_model_afterFit.root  -c SR7jTEl_meffInc,SR7jTMu_meffInc -o SystematicsMultiJetsSR.tex"    
+    print "SysTable.py -w MyName_combined_BasicMeasurement_model_afterFit.root  -c SR7jTEl_meffInc,SR7jTMu_meffInc -o SystematicsMultiJetsSR.tex"
     print "SysTable.py -w MyName_combined_BasicMeasurement_model_afterFit.root  -c SR7jTEl,SR7jTMu -s Top,WZ"
     print "SysTable.py -c SR3Lhigh_disc_cuts -s '[topZ,topW,ttbarHiggs,singleTopZ],[diBosonWZ,diBosonPowhegZZ,triBoson],fakes' -w MyName_combined_NormalMeasurement_model_afterFit.root -o MySystTable.tex python/MySystTableConfig.py"
-    sys.exit(0)        
+    sys.exit(0)
 
   wsFileName=''
   try:
@@ -676,7 +676,7 @@ if __name__ == "__main__":
       showPercent=True
     elif opt == '-y':
       doAsym=True
-     
+
   if outputFileName=="default":
     outputFileName=sampleStr+chanStr+'_SysTable.tex'
     pass
@@ -701,7 +701,7 @@ if __name__ == "__main__":
 
   if not vars().has_key("namemap"):
     namemap={}
- 
+
   resultName = 'RooExpandedFitResult_afterFit'
   if not showAfterFitError:
     resultName =  'RooExpandedFitResult_beforeFit'
@@ -720,7 +720,7 @@ if __name__ == "__main__":
 
     if not chosenSample:
       if method == "2":
-        regSys = latexfitresults_method2(wsFileName,resultName,chan,'',fitRegionsStr,'obsData',doAsym,SRName) 
+        regSys = latexfitresults_method2(wsFileName,resultName,chan,'',fitRegionsStr,'obsData',doAsym,SRName)
       else:
         regSys = latexfitresults(wsFileName,namemap,chan,'',resultName,'obsData',doAsym,SRName)
       chanSys[chan] = regSys
@@ -729,9 +729,9 @@ if __name__ == "__main__":
       for sample in sampleList:
         sampleName=getName(sample)
         if method == "2":
-          regSys = latexfitresults_method2(wsFileName,resultName,chan,sample,fitRegionsStr,'obsData',doAsym,SRName) 
+          regSys = latexfitresults_method2(wsFileName,resultName,chan,sample,fitRegionsStr,'obsData',doAsym,SRName)
         else:
-          regSys = latexfitresults(wsFileName,namemap,chan,sample,resultName,'obsData',doAsym,SRName) 
+          regSys = latexfitresults(wsFileName,namemap,chan,sample,resultName,'obsData',doAsym,SRName)
         chanSys[chan+"_"+sampleName] = regSys
         chanList.append(chan+"_"+sampleName)
         pass
@@ -741,7 +741,7 @@ if __name__ == "__main__":
   write out LaTeX table by calling function from SysTableTex.py function tablefragment
   """
   line_chanSysTight = tablefragment(chanSys,chanList,skiplist,SRName,showPercent)
-  
+
   f = open(outputFileName, 'w')
   f.write( line_chanSysTight )
   f.close()
