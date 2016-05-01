@@ -527,20 +527,21 @@ class ChannelConfig:
             else:
                 cutList.append( " deltaQCD >= %f"%self.deltaQCD )
 
-        if regionName in self.regionsWithInvertedRPTCutList:
-            if self.RPTHT3PP_upper<=990:
-                cutList.append( " RPT_HT3PP >= %f"%self.RPTHT3PP_upper   )
-            if self.RPTHT5PP_upper<=990:
-                cutList.append( " RPT_HT5PP >= %f"%self.RPTHT5PP_upper   )
-            if self.RPT_PTISR_upper<=990:
-                cutList.append(  " RPT_PTISR >= %f "%self.RPT_PTISR_upper   )
-        elif regionName not in self.regionsWithoutRPTCutList:
-            if self.RPTHT3PP_upper<=990:
-                cutList.append( " RPT_HT3PP <= %f"%self.RPTHT3PP_upper   )
-            if self.RPTHT5PP_upper<=990:
-                cutList.append( " RPT_HT5PP <= %f"%self.RPTHT5PP_upper   )
-            if self.RPT_PTISR_upper<=990:
-                cutList.append(  " RPT_PTISR <= %f "%self.RPT_PTISR_upper   )
+        if self.RPT_PTISR_upper >= 0 :
+            if regionName in self.regionsWithInvertedRPTCutList:
+                if self.RPTHT3PP_upper<=990:
+                    cutList.append( " RPT_HT3PP >= %f"%self.RPTHT3PP_upper   )
+                if self.RPTHT5PP_upper<=990:
+                    cutList.append( " RPT_HT5PP >= %f"%self.RPTHT5PP_upper   )
+                if self.RPT_PTISR_upper<=990:
+                    cutList.append(  " RPT_PTISR >= %f "%self.RPT_PTISR_upper   )
+            elif regionName not in self.regionsWithoutRPTCutList:
+                if self.RPTHT3PP_upper<=990:
+                    cutList.append( " RPT_HT3PP <= %f"%self.RPTHT3PP_upper   )
+                if self.RPTHT5PP_upper<=990:
+                    cutList.append( " RPT_HT5PP <= %f"%self.RPTHT5PP_upper   )
+                if self.RPT_PTISR_upper<=990:
+                    cutList.append(  " RPT_PTISR <= %f "%self.RPT_PTISR_upper   )
 
         if regionName in self.regionsWithoutH2PPoHNPPCutList:
             pass
