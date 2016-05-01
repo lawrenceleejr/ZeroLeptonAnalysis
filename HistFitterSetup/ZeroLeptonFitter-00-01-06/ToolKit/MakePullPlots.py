@@ -228,7 +228,7 @@ def main(zlFitterConfig):
     myAnaList = finalChannelsDict.keys()
 
     for anaName in myAnaList:
-        regionList = zlFitterConfig.allRegionsList()
+        regionList = zlFitterConfig.allRegionsList( excludeRegions = ["VRQ", "CRQ"])
 
         # Filename containing workspace
         filename = os.path.join(options.output_dir, "ZL_%s_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root" % anaName)

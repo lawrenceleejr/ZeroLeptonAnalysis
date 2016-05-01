@@ -166,9 +166,9 @@ class ZLFitterConfig:
         # # # self.validationRegionsList+=["VRWMf","VRTMf"]
         # # # ##self.validationRegionsList+=["VRWTplus","VRWTminus"]
         # # # ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
-        # # # ##self.validationRegionsList+=["VRT2L"] 
-        # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation     
-        self.validationRegionsList+=["VRQ"]#,"VRQ2"]#,"VRQ3","VRQ4"] 
+        # # # ##self.validationRegionsList+=["VRT2L"]
+        # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation
+        self.validationRegionsList+=["VRQ"]#,"VRQ2"]#,"VRQ3","VRQ4"]
 
 
         self.Print()
@@ -193,8 +193,10 @@ class ZLFitterConfig:
         if sample == self.dibosonSampleName:     return "Diboson"
         return "Unknown"
 
-    def allRegionsList(self):
-        return self.constrainingRegionsList+self.validationRegionsList+[self.SRName]
+    def allRegionsList(self, excludeRegions = []):
+        allRegionsList = self.constrainingRegionsList+self.validationRegionsList+[self.SRName]
+        for reg in excludeRegions : allRegionsList.remove(reg)
+        return allRegionsList
 
     def Print(self):
         self.log.info("blindSR = %s" % self.blindSR)
