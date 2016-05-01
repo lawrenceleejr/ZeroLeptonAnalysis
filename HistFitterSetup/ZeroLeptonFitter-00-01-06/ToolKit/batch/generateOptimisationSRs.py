@@ -75,10 +75,10 @@ if grid is None:
 if not mode in modeMap:
     print("Don't know HistFitter argument for optimisation mode {0}".format(mode))
     sys.exit()
-   
+
 from zerolepton.grids.config import GridConfig
 discovery = False
-if mode == discovery: 
+if mode == discovery:
     discovery = True
 gridConfig = GridConfig(grid, discovery)
 
@@ -92,12 +92,12 @@ if (points == [] or points[0] == "") and not args.entire_grid:
 
     # sanity check
     for c in gridConfig.optimisation_cuts:
-        if "-" in c.key: 
+        if "-" in c.key:
             (key1, key2) = c.key.split("-")
             keys = [key1, key2]
         else:
             keys = [c.key]
-        
+
         for k in keys:
             if k not in interpretation_idx:
                 print(colors.BOLD + colors.FAIL + "FATAL: unknown variable {0} used in optimisation string - check settings/grids.cfg!".format(k) + colors.ENDC)
@@ -119,7 +119,7 @@ if (points == [] or points[0] == "") and not args.entire_grid:
                     break
 
     print(colors.OKGREEN + "=> Loaded {0} optimisation points based on your cuts".format(len(points)) + colors.ENDC)
-   
+
     first = True
     for line in textwrap.wrap(", ".join(points), 80):
         if first: print "=> {0}".format(line); first=False
@@ -215,14 +215,11 @@ SignalRegions = [
 "SRJigsawSRS3a",
 "SRJigsawSRS3b",
 
-"SRJigsawSRC1a",
-"SRJigsawSRC1b",
-"SRJigsawSRC2a",
-"SRJigsawSRC2b",
-"SRJigsawSRC3a",
-"SRJigsawSRC3b",
-"SRJigsawSRC4a",
-"SRJigsawSRC4b",
+"SRJigsawSRC1",
+"SRJigsawSRC2",
+"SRJigsawSRC3",
+"SRJigsawSRC4",
+"SRJigsawSRC5",
 
 ]
 
