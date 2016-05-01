@@ -238,7 +238,7 @@ class ChannelConfig:
         self.PTISR       = 0
         self.PTISR_loose = 0
         self.NV          = 0
-        self.RPT_PTISR_upper = 0
+        self.RPT_PTISR_upper = -1
 
         #region with inverted Ap cut
         self.regionsWithInvertedApCutList = []
@@ -638,7 +638,10 @@ class ChannelConfig:
         if self.MDR>=0:
             cutList.append(" MDR >= %f"%self.MDR)
 
-
+        if self.dphiISRI>0 :
+            cutList.append(" dphiISRI >= %f"%self.dphiISRI)
+        if self.NV>0 :
+            cutList.append(" NV >= %f"%self.NV)
 
         #extra cuts from CR
         cutList += self.regionDict[regionName].extraCutList
