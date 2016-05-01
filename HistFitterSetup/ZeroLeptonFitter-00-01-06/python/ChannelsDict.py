@@ -351,15 +351,15 @@ finalChannelsDict[anaSRFAR.name] = anaSRFAR
 anaSRJigsawBasic=ChannelConfig(name="SRJigsawBasic",regionDict=regionDict)
 
 # trigger
-anaSRJigsawBasic.met=100
-anaSRJigsawBasic.MDR=300
+anaSRJigsawBasic.met=200
+#anaSRJigsawBasic.MDR=300
 anaSRJigsawBasic.deltaQCD=0
 
 
 anaSRJigsawCoBasic=ChannelConfig(name="SRJigsawCoBasic",regionDict=regionDict)
 
 # trigger
-anaSRJigsawCoBasic.met=100
+anaSRJigsawCoBasic.met=200
 
 
 #----------------------------------------------------------
