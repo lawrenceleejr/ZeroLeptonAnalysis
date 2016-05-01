@@ -495,89 +495,89 @@ finalChannelsDict[anaSRJigsawSRG3b.name] = anaSRJigsawSRG3b
 
 ###################################################################
 
-anaSRJigsawSRS1Common = copy.deepcopy( anaSRJigsawBasic )
-anaSRJigsawSRS1Common.name = "SRJigsawSRS1Common"
+anaSRJigsawSRS1Common                = copy.deepcopy( anaSRJigsawBasic )
+anaSRJigsawSRS1Common.name           = "SRJigsawSRS1Common"
 anaSRJigsawSRS1Common.RPTHT3PP_upper = 0.08
-anaSRJigsawSRS1Common.nJets = 2
+anaSRJigsawSRS1Common.nJets          = 2
 
-anaSRJigsawSRS1Common.R_H2PP_H3PP = 0.6
+anaSRJigsawSRS1Common.R_H2PP_H3PP       = 0.6
 anaSRJigsawSRS1Common.R_H2PP_H3PP_upper = 0.95
-anaSRJigsawSRS1Common.RPZ_HT3PP_upper = 0.55
-anaSRJigsawSRS1Common.R_ptj2_HT3PP = 0.16
-anaSRJigsawSRS1Common.cosP_upper = 0.65
+anaSRJigsawSRS1Common.RPZ_HT3PP_upper   = 0.55
+anaSRJigsawSRS1Common.R_ptj2_HT3PP      = 0.16
+#anaSRJigsawSRS1Common.cosP_upper       = 0.65
 
-anaSRJigsawSRS1Common.HT3PP_loose = 1100
-anaSRJigsawSRS1Common.H2PP_loose = 900
+anaSRJigsawSRS1Common.HT3PP_loose = 1000
+anaSRJigsawSRS1Common.H2PP_loose  = 900
+anaSRJigsawSRS1Common.H2PP        = 900
 
-anaSRJigsawSRS1a = copy.deepcopy( anaSRJigsawSRS1Common )
-anaSRJigsawSRS1a.name = "SRJigsawSRS1a"
-anaSRJigsawSRS1a.HT3PP = 1100
-anaSRJigsawSRS1a.H2PP = 900
-finalChannelsDict[anaSRJigsawSRS1a.name]=anaSRJigsawSRS1a
+anaSRJigsawSRS1a                         = copy.deepcopy( anaSRJigsawSRS1Common )
+anaSRJigsawSRS1a.name                    = "SRJigsawSRS1a"
+anaSRJigsawSRS1a.HT3PP                   = 1000
+finalChannelsDict[anaSRJigsawSRS1a.name] = anaSRJigsawSRS1a
 
 
 anaSRJigsawSRS1b = copy.deepcopy( anaSRJigsawSRS1Common )
-anaSRJigsawSRS1b.name = "SRJigsawSRS1b"
-anaSRJigsawSRS1b.HT3PP = 1200
-anaSRJigsawSRS1b.H2PP = 1000
-finalChannelsDict[anaSRJigsawSRS1b.name]=anaSRJigsawSRS1b
+anaSRJigsawSRS1b.name                    = "SRJigsawSRS1b"
+anaSRJigsawSRS1b.HT3PP                   = 1200
+finalChannelsDict[anaSRJigsawSRS1b.name] = anaSRJigsawSRS1b
 
 ####################################################################
 
 
-anaSRJigsawSRS2Common = copy.deepcopy( anaSRJigsawBasic )
-anaSRJigsawSRS2Common.name = "SRJigsawSRS2Common"
+anaSRJigsawSRS2Common                = copy.deepcopy( anaSRJigsawBasic )
+anaSRJigsawSRS2Common.name           = "SRJigsawSRS2Common"
 anaSRJigsawSRS2Common.RPTHT3PP_upper = 0.08
-anaSRJigsawSRS2Common.R_H2PP_H3PP = 0.55
-anaSRJigsawSRS2Common.R_H2PP_H3PP_upper = 0.96
-anaSRJigsawSRS2Common.RPZ_HT3PP_upper = 0.6
-anaSRJigsawSRS2Common.R_ptj2_HT3PP = 0.15
-anaSRJigsawSRS2Common.cosP_upper = 0.7
-anaSRJigsawSRS2Common.nJets = 2
-anaSRJigsawSRS2Common.HT3PP_loose = 1100
-anaSRJigsawSRS2Common.H2PP_loose = 900
+anaSRJigsawSRS2Common.nJets          = 2
 
-anaSRJigsawSRS2a = copy.deepcopy( anaSRJigsawSRS2Common )
-anaSRJigsawSRS2a.name = "SRJigsawSRS2a"
-anaSRJigsawSRS2a.HT3PP = 1300
-anaSRJigsawSRS2a.H2PP = 1100
-finalChannelsDict[anaSRJigsawSRS2a.name]=anaSRJigsawSRS2a
+anaSRJigsawSRS2Common.R_H2PP_H3PP       = 0.55
+anaSRJigsawSRS2Common.R_H2PP_H3PP_upper = 0.96
+anaSRJigsawSRS2Common.RPZ_HT3PP_upper   = 0.6
+anaSRJigsawSRS2Common.R_ptj2_HT3PP      = 0.15
+#anaSRJigsawSRS2Common.cosP_upper       = 0.7
+
+anaSRJigsawSRS2Common.HT3PP_loose = 1300
+anaSRJigsawSRS2Common.H2PP_loose  = 900
+anaSRJigsawSRS2Common.H2PP        = 1200
+
+anaSRJigsawSRS2a                         = copy.deepcopy( anaSRJigsawSRS2Common )
+anaSRJigsawSRS2a.name                    = "SRJigsawSRS2a"
+anaSRJigsawSRS2a.HT3PP                   = 1300
+finalChannelsDict[anaSRJigsawSRS2a.name] = anaSRJigsawSRS2a
 
 
 anaSRJigsawSRS2b = copy.deepcopy( anaSRJigsawSRS2Common )
-anaSRJigsawSRS2b.name = "SRJigsawSRS2b"
-anaSRJigsawSRS2b.HT3PP = 1450
-anaSRJigsawSRS2b.H2PP = 1200
-finalChannelsDict[anaSRJigsawSRS2b.name]=anaSRJigsawSRS2b
+anaSRJigsawSRS2b.name                    = "SRJigsawSRS2b"
+anaSRJigsawSRS2b.HT3PP                   = 1450
+finalChannelsDict[anaSRJigsawSRS2b.name] = anaSRJigsawSRS2b
 
 
 ####################################################################
 
 
-anaSRJigsawSRS3Common = copy.deepcopy( anaSRJigsawBasic )
-anaSRJigsawSRS3Common.name = "SRJigsawSRS3Common"
+anaSRJigsawSRS3Common                = copy.deepcopy( anaSRJigsawBasic )
+anaSRJigsawSRS3Common.name           = "SRJigsawSRS3Common"
 anaSRJigsawSRS3Common.RPTHT3PP_upper = 0.08
-anaSRJigsawSRS3Common.R_H2PP_H3PP = 0.5
+anaSRJigsawSRS3Common.nJets          = 2
+
+anaSRJigsawSRS3Common.R_H2PP_H3PP       = 0.5
 anaSRJigsawSRS3Common.R_H2PP_H3PP_upper = 0.98
-anaSRJigsawSRS3Common.RPZ_HT3PP_upper = 0.63
-anaSRJigsawSRS3Common.R_ptj2_HT3PP = 0.13
-anaSRJigsawSRS3Common.cosP_upper = 0.8
-anaSRJigsawSRS3Common.nJets = 2
+anaSRJigsawSRS3Common.RPZ_HT3PP_upper   = 0.63
+anaSRJigsawSRS3Common.R_ptj2_HT3PP      = 0.13
+#anaSRJigsawSRS3Common.cosP_upper       = 0.8
+
 anaSRJigsawSRS3Common.HT3PP_loose = 1100
-anaSRJigsawSRS3Common.H2PP_loose = 900
+anaSRJigsawSRS3Common.H2PP_loose  = 900
+anaSRJigsawSRS3Common.H2PP        = 1500
 
-anaSRJigsawSRS3a = copy.deepcopy( anaSRJigsawSRS3Common )
-anaSRJigsawSRS3a.name = "SRJigsawSRS3a"
-anaSRJigsawSRS3a.HT3PP = 1600
-anaSRJigsawSRS3a.H2PP = 1350
-finalChannelsDict[anaSRJigsawSRS3a.name]=anaSRJigsawSRS3a
-
+anaSRJigsawSRS3a                         = copy.deepcopy( anaSRJigsawSRS3Common )
+anaSRJigsawSRS3a.name                    = "SRJigsawSRS3a"
+anaSRJigsawSRS3a.HT3PP                   = 1600
+finalChannelsDict[anaSRJigsawSRS3a.name] = anaSRJigsawSRS3a
 
 anaSRJigsawSRS3b = copy.deepcopy( anaSRJigsawSRS3Common )
-anaSRJigsawSRS3b.name = "SRJigsawSRS3b"
-anaSRJigsawSRS3b.HT3PP = 1800
-anaSRJigsawSRS3b.H2PP = 1500
-finalChannelsDict[anaSRJigsawSRS3b.name]=anaSRJigsawSRS3b
+anaSRJigsawSRS3b.name                    = "SRJigsawSRS3b"
+anaSRJigsawSRS3b.HT3PP                   = 1800
+finalChannelsDict[anaSRJigsawSRS3b.name] = anaSRJigsawSRS3b
 
 #----------------------------------------------------------
 # RJigsaw SRs - Compressed Stuff
