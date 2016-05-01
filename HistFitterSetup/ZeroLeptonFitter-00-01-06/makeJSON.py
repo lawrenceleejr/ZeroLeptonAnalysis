@@ -1,4 +1,4 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 
 
 import os, sys
@@ -38,14 +38,11 @@ regions = [
 "SRJigsawSRS3a",
 "SRJigsawSRS3b",
 
-"SRJigsawSRC1a",
-"SRJigsawSRC1b",
-"SRJigsawSRC2a",
-"SRJigsawSRC2b",
-"SRJigsawSRC3a",
-"SRJigsawSRC3b",
-"SRJigsawSRC4a",
-"SRJigsawSRC4b",
+"SRJigsawSRC1",
+"SRJigsawSRC2",
+"SRJigsawSRC3",
+"SRJigsawSRC4",
+"SRJigsawSRC5",
 
 ]
 
