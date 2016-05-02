@@ -16,7 +16,7 @@ ROOT.gSystem.Load("libSusyFitter.so");
 #ROOT.gROOT.LoadMacro("ContourUtils.C");
 #ROOT.gROOT.LoadMacro("contourmacros/GetSRName.C");
 
-# Use HistFitter's automatic rejection? 
+# Use HistFitter's automatic rejection?
 automaticRejection=False
 
 parser = argparse.ArgumentParser()
