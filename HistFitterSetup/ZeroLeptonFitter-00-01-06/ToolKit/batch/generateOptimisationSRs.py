@@ -200,13 +200,10 @@ SignalRegions = [
 
 "SRJigsawSRG1a",
 "SRJigsawSRG1b",
-"SRJigsawSRG1c",
 "SRJigsawSRG2a",
 "SRJigsawSRG2b",
-"SRJigsawSRG2c",
 "SRJigsawSRG3a",
 "SRJigsawSRG3b",
-"SRJigsawSRG3c",
 
 "SRJigsawSRS1a",
 "SRJigsawSRS1b",
