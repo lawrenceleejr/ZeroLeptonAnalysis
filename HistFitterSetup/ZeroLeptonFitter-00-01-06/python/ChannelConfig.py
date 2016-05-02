@@ -284,6 +284,8 @@ class ChannelConfig:
         self.regionsWithInvertedRPTCutList = []
         # self.regionsWithInvertedRPTCutList = ["CRQ"]
 
+
+
         self.regionsWithInvertedMSCutList = []
         self.regionsWithInvertedRISRCutList = ["CRQ","VRQ"]
 
@@ -303,6 +305,8 @@ class ChannelConfig:
         self.regionsWithLooserScaleCuts = ["CRT","CRW", "VRZa","VRWa","VRTa","CRQ"]
         self.regionsWithoutMSCutList = ["CRQ"]#self.regionsWithLooserScaleCuts
         self.regionsWithLooserMSCutList = ["CRT","CRW", "VRZb","VRWb","VRTb"]
+        self.regionsWithLooserPTISRCut = ["CRT","CRW", "VRZb","VRWb","VRTb"]
+
         self.regionsWithoutCosSCutList = ["CRT","CRW","VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb"]
         self.regionsWithLooserH2PPCutList = ["CRY","CRQ","CRT","CRW", "VRZb","VRWb","VRTb"]
 
@@ -516,6 +520,16 @@ class ChannelConfig:
                 cutList.append( " MS >= %f"%self.MS_loose )
             else:
                 cutList.append( " MS >= %f"%self.MS )
+
+        if self.PTISR>=0:
+            if regionName in self.regionsWithInvertedPTISRCutList:
+                cutList.append( " PTISR <= %f"%self.PTISR )
+            elif regionName in self.regionsWithoutPTISRCutList:
+                pass
+            elif regionName in self.regionsWithLooserPTISRCutList:
+                cutList.append( " PTISR >= %f"%self.PTISR_loose )
+            else:
+                cutList.append( " PTISR >= %f"%self.PTISR )
 
         if self.deltaQCD>=0:
             if regionName in self.regionsWithLooserDeltaQCDCutList:
