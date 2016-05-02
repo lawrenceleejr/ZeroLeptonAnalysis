@@ -3,14 +3,13 @@
 
 import os, sys
 import glob
+import ROOT
 
 print sys.argv
 
 folder = sys.argv[1]
 
 regions = [
-
-
 "SR2jl",
 "SR2jm",
 "SR2jt",
@@ -18,8 +17,6 @@ regions = [
 "SR5j",
 "SR6jm",
 "SR6jt",
-
-
 
 "SRJigsawSRG1a",
 "SRJigsawSRG1b",
@@ -46,19 +43,52 @@ regions = [
 
 ]
 
+def isFileCorrupted(filename) :
+	ROOT.gEnv.SetValue("TFile.Recover=0")
+#	print "checking file : " + filename
+	rfile = ROOT.TFile(filename)
+	if not rfile : return True
+	return rfile.IsZombie()
+
 grids = ["GG_direct","SS_direct"]
 
 grids = [folder.split("-")[1] ]
 
 os.system("mkdir {0}/combinedResults".format(folder)  )
 
+hypotests = []
+
+print os.path.join(folder, "results")
+for root, dirs , files in os.walk(os.path.join(folder, "results")) :
+	for ifile in  files :
+		if "hypotest" in ifile :
+			hypotests.append(os.path.join(root, ifile))
+
+failedFitFile = open("corruptedFiles_"+grids[0]+".txt", "w")
+
 for grid in grids:
 	for region in regions:
-		if glob.glob('{0}/results/ZL_{1}_{2}_*'.format(folder,region,grid) ):
-			os.system(" hadd -f {0}/combinedResults/{1}_{2}.root {0}/results/ZL_{1}_{2}_*/*hypotest*root ".format(folder,region,grid)     )
-			os.system('python CollectAndWriteHypoTestResults.py -F  {0}/combinedResults/{1}_{2}.root  -f "hypo_{2}_%f_%f" -c "1" -I "mgl:mlsp"'.format(folder,region,grid)  )
+		allhypotests = [test for test in hypotests if (region     in test
+							       and grid   in test
+							       and region in test)]
+		safehypotests = [test for test in allhypotests if not isFileCorrupted(test)]
+		corrhypotests = [test for test in allhypotests if     isFileCorrupted(test)]
 
+		if corrhypotests :
+			print "These hypotests appear to be corrupted, skipping! : "
+			for test in corrhypotests :
+				print test
+				failedFitFile.write(test+"\n")
+			print ""
 
+		cmdHadd         = "hadd -v 0 -f {0}/combinedResults/{1}_{2}.root ".format(folder,region,grid) + " ".join(safehypotests)
+		cmdCollectTests	= 'python CollectAndWriteHypoTestResults.py -F  {0}/combinedResults/{1}_{2}.root  -f "hypo_{2}_%f_%f" -c "1" -I "mgl:mlsp"'.format(folder,region,grid)
+		os.system(cmdHadd)
+		os.system(cmdCollectTests)
+	cmdTar = "tar cvzf packedUpJSON_{0}.tgz Outputs/SR*{0}*.json ".format(grid)
+	os.system(cmdTar)
+
+failedFitFile.close()
 
 # for fn in os.listdir(sys.argv[1]):
 #      print fn
@@ -69,5 +99,3 @@ for grid in grids:
 # 	if "fixSigXSecNominal" in fn:
 # 		os.system( "cp Outputs/%s Outputs/%s"%(fn, fn.replace("_GG_direct_Output_fixSigXSecNominal_hypotest","").replace("ZL_","")  )      )
 
-
-	os.system(" tar cvzf packedUpJSON_{0}.tgz Outputs/SR*{0}*.json ".format(grid)    )
