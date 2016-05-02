@@ -54,7 +54,7 @@ def loadGridPoints(grid):
 parser = argparse.ArgumentParser()
 parser.add_argument("--grid", default=None, type=str)
 parser.add_argument("--point", default=[], type=str, action='append')
-parser.add_argument("--pointsPerCommand", default=10, type=int)
+parser.add_argument("--pointsPerCommand", default=1, type=int)
 parser.add_argument("--entire-grid", default=False, action="store_true", help="use entire grid")
 parser.add_argument("--outputSuffix", default="", type=str, help="output filename suffix. A timestamp is used by default.")
 parser.add_argument('--mode', choices=['discovery', 'exclusion', 'exclusionUL', 'all'], default='exclusion', help="Run discovery, exclusion or exclusion ULs to optimise")
