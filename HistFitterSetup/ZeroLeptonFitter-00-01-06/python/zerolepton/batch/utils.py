@@ -95,7 +95,6 @@ def createCondorSubmitFile(values) :
     f.write('getenv  = True\n')
     f.write('accounting_group = group_atlas.columbia\n')
     f.write('executable = ' + executable + '\n' )
-    f.write('Requirements   = Memory >= 5000')
     f.write('queue')
     f.close()
     return filename
