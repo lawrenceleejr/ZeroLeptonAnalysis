@@ -7,6 +7,8 @@ from SS_direct_OptiChannels import *
 from ChannelsDict_Plotting import *
 from ChannelsDict_2015Paper import *
 
+from RJigsawChannelDict import *
+
 ###########################################################
 # definition of the final analysis channels
 ###########################################################
@@ -130,7 +132,6 @@ finalChannelsDict[anaSR7j.name] = anaSR7j
 
 
 
-
 ###########################################################
 # Opti
 ###########################################################
@@ -146,6 +147,7 @@ finalChannelsDict[anaSR7j.name] = anaSR7j
 
 allChannelsDict = finalChannelsDict.copy()
 allChannelsDict.update(channelsForPlottingDict)
+allChannelsDict.update(RJigsawChannelDict)
 
 
 
