@@ -231,7 +231,7 @@ class ChannelConfig:
         #Compressed Variables
         self.RISR        = 0
         self.RISR_CR     = 0
-        self.cosS        = 0
+        self.cosS        = -999
         self.MS          = 0
         self.MS_loose    = 0
         self.dphiISRI    = 0
@@ -305,7 +305,7 @@ class ChannelConfig:
         self.regionsWithLooserScaleCuts = ["CRT","CRW", "VRZa","VRWa","VRTa","CRQ"]
         self.regionsWithoutMSCutList = ["CRQ"]#self.regionsWithLooserScaleCuts
         self.regionsWithLooserMSCutList = ["CRT","CRW", "VRZb","VRWb","VRTb"]
-        self.regionsWithLooserPTISRCut = ["CRT","CRW", "VRZb","VRWb","VRTb"]
+        self.regionsWithLooserPTISRCutList = ["CRT","CRW", "VRZb","VRWb","VRTb"]
 
         self.regionsWithoutCosSCutList = ["CRT","CRW","VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb"]
         self.regionsWithLooserH2PPCutList = ["CRY","CRQ","CRT","CRW", "VRZb","VRWb","VRTb"]
@@ -522,11 +522,11 @@ class ChannelConfig:
                 cutList.append( " MS >= %f"%self.MS )
 
         if self.PTISR>=0:
-            if regionName in self.regionsWithInvertedPTISRCutList:
-                cutList.append( " PTISR <= %f"%self.PTISR )
-            elif regionName in self.regionsWithoutPTISRCutList:
-                pass
-            elif regionName in self.regionsWithLooserPTISRCutList:
+            # if regionName in self.regionsWithInvertedPTISRCutList:
+            #     cutList.append( " PTISR <= %f"%self.PTISR )
+            # elif regionName in self.regionsWithoutPTISRCutList:
+            #     pass
+            if regionName in self.regionsWithLooserPTISRCutList:
                 cutList.append( " PTISR >= %f"%self.PTISR_loose )
             else:
                 cutList.append( " PTISR >= %f"%self.PTISR )
@@ -612,7 +612,7 @@ class ChannelConfig:
 
         if self.RISR_CR>=0 and regionName in self.CRList:
             cutList.append(  " RISR >= %f "%self.RISR_CR   )
-        elif self.RISR>=0:
+        elif self.RISR>0:
             if regionName in self.regionsWithInvertedRISRCutList:
                 cutList.append(  " RISR <= %f "%self.RISR   )
             else:
@@ -620,7 +620,7 @@ class ChannelConfig:
 
 
         if regionName not in self.regionsWithoutCosSCutList:
-            if self.cosS>=0:
+            if self.cosS>=-1:
                 cutList.append(  " cosS >= %f "%self.cosS   )
 
 
