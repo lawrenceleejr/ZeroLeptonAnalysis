@@ -1,9 +1,11 @@
 Run with:
+#HistFitter.py -w -f  python/UpperLimitTest.py
 
 HistFitter.py -w -f -D 'allPlots'  analysis/tutorial/MyUpperLimitAnalysis_SS.py
 UpperLimitTable.py -c SS -w results/MyUpperLimitAnalysis_SS/SPlusB_combined_NormalMeasurement_model.root -l 20.3 -a
-UpperLimitTable.py -c SS -w results/MyUpperLimitAnalysis_SS/SPlusB_combined_NormalMeasurement_model.root -l 20.3 -n 2000
+UpperLimitTable.py -c SS -w results/MyUpperLimitAnalysis_SS/SPlusB_combined_NormalMeasurement_model.root -l 20.3 -n 2000 -o upperlimits/UpperLimit_MJ_SR1.tex
 
+#UpperLimitTable.py -c SS -w results/MyUpperLimitAnalysis_SS/SPlusB_combined_NormalMeasurement_model.root -p N_S -l 20.3 -a -o upperlimits/UpperLimit_MJ_SR1.tex
 
 
 Asimov Results:
@@ -45,6 +47,7 @@ njet: 7, ptcut: 180 , btag: 1 ===================================
 
 njet: 7, ptcut: 80 , btag: 2 ===================================
 [17.240131354537805, 349.9746664971175, 306.0928157594624, 33.205481650487286, 74.50985386257037, 0.7280516717797809, 0.614]
+{'p0': 0.588, 'nExpInSR': 318.03011447858046, 'visXsec': 11.840967068711198, 'nExpInSRMinus1Sigma': 81.59264972485471, 'CLb': 0.27235304992009546, 'nObsInSR': 240.37163149483732, 'Z': -0.22240322692720577, 'nExpInSRPlus1Sigma': 80.18159622980102}
 
 njet: 7, ptcut: 120 , btag: 2 ===================================
 
@@ -59,7 +62,7 @@ njet: 7, ptcut: 120 , btag: 2 ===================================
 #################################################################
 
 
-
+1
 njet: 7, ptcut: 120, btag:0  ===================================
 
 nbkg = 366.503540
@@ -69,7 +72,7 @@ ndataErr = 22.476495
 
 syst = 0.143000
 
-
+2
 njet: 7, ptcut: 180 , btag: 0 ===================================
 
 nbkg = 6.147290
@@ -79,7 +82,7 @@ ndataErr = 2.006480
 
 syst = 0.207000
 
-
+3
 njet: 7, ptcut: 120 , btag: 1 ===================================
 
 nbkg = 137.929886
@@ -89,6 +92,7 @@ ndataErr = 15.531234
 
 syst = 0.150000
 
+4
 njet: 7, ptcut: 180 , btag: 1 ===================================
 
 nbkg = 2.269337
@@ -99,7 +103,7 @@ ndataErr = 1.018766
 syst = 0.300000
 
 
-
+5
 njet: 7, ptcut: 80 , btag: 2 ===================================
 
 nbkg = 1669.892944
@@ -109,7 +113,7 @@ ndataErr = 55.181976
 
 syst = 0.100000
 
-
+6
 njet: 7, ptcut: 120 , btag: 2 ===================================
 
 nbkg = 37.854172

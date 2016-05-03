@@ -27,10 +27,10 @@ nsigErr   =  2.  	# (Absolute) Statistical error on signal estimate *from limite
 
 #######################################################
 
-nbkg = 1669.892944
-nbkgErr = 95.740914
-ndata = 1557.693604
-ndataErr = 55.181976
+nbkg = 1670
+nbkgErr = 96
+ndata = 1558
+ndataErr = 55
 
 syst = 0.100000
 
