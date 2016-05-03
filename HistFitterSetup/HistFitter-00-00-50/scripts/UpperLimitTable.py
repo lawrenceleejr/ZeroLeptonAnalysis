@@ -84,11 +84,11 @@ def latexfitresults(filename, poiname='mu_SIG', lumiFB=1.0, nTOYS=3000, asimov=F
   """
   set the range of POI to be scanned and perform HypoTest inversion
   """
-  murangelow = 240
-  murangehigh = 350 #40.0 #set here -1. if you want to have automatic determined scan range, if using values != -1, please check the log file if the scan range was large enough
+  murangelow = 250
+  murangehigh = 400 #40.0 #set here -1. if you want to have automatic determined scan range, if using values != -1, please check the log file if the scan range was large enough
 
-  npoints = int((murangehigh-murangelow)*2.)
-
+#  npoints = int((murangehigh-murangelow)*200.)
+  npoints = 20
 
   hti_result = RooStats.DoHypoTestInversion(w,ntoys,calctype,3,True,npoints,murangelow,murangehigh)
 
@@ -104,7 +104,7 @@ def latexfitresults(filename, poiname='mu_SIG', lumiFB=1.0, nTOYS=3000, asimov=F
   """
   get the upper limit on N_obs out of hypotest result, and transform to limit on visible xsection
   """
-  uL_nobsinSR = hti_result.UpperLimit()
+  uL_nobsinSR = hti_result.UpperLimit() ##LL Soooo dumb
   uL_visXsec = uL_nobsinSR / lumiFB
 
   """
@@ -128,21 +128,27 @@ def latexfitresults(filename, poiname='mu_SIG', lumiFB=1.0, nTOYS=3000, asimov=F
   mu_M = 0.
   index_P = 0
   indexFound = False
-  for iresult in range(hti_result.ArraySize()):
+  for iresult in range(hti_result.ArraySize()):  ##LL Trying to skip last stupid point....
     xval = hti_result.GetXValue(iresult) 
     yval = hti_result.GetYValue(iresult)
     if xval>uL_nobsinSR and not indexFound:
       index_P = iresult
       CLB_P = hti_result.CLb(iresult)
       mu_P = xval
+
+
       if iresult>0:
         CLB_M = hti_result.CLb(iresult-1)
         mu_M = hti_result.GetXValue(iresult-1)
         indexFound = True
 
+
   """
   interpolate (linear) the value of CLB to be exactly above upperlimit p-val
   """
+  print "about to try interpolating ! ======================================================"
+  print CLB_P, CLB_M
+  print mu_P, mu_M
   try:
     alpha_CLB = (CLB_P - CLB_M) / (mu_P - mu_M)
     beta_CLB = CLB_P - alpha_CLB*mu_P
@@ -348,6 +354,8 @@ if __name__ == "__main__":
   for index,chan in enumerate(chanList):      
     print upLim[chan]
 
+
+  print "Done! LL=============================================="
 
 
   if runInterpreter:
