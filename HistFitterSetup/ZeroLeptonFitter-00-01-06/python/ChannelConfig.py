@@ -175,8 +175,10 @@ class ChannelConfig:
 
         #angular cuts
         self.dPhiCRQ = -1.0
+        self.dPhiMin2CRQ = -1.0
         self.dPhiRCRQ = -1.0
         self.dPhi = -1.0
+        self.dphiMin2 = -1.0
         self.dPhiR = -1.0
 
         #effective mass
@@ -447,6 +449,20 @@ class ChannelConfig:
                     myString += " || dphiR < %f" % (self.dPhiRCRQ)
                 else:
                     myString += " && dphiR >= %f" % (self.dPhiR)
+
+        if self.dphiMin2>=0 and regionName not in self.regionsWithoutDPHICutList:
+            myString="("
+
+            #first the dphi cut
+            if self.dphiMin2CRQ<0: self.dphiMin2CRQ=self.dphiMin2/2 # if PhiCRQ is not defined, take the half: 0.4==>0.2
+            if regionName in self.regionsWithFullyInvertedDPHICutList:
+                myString += " dphiMin2 < %f" % (self.dphiMin2CRQ)
+            elif regionName in self.regionsWithIntermediateDPHICutList:
+                myString += "( dphiMin2 > %f && dphiMin2 < %f )" % (self.dphiMin2CRQ, self.dphiMin2)
+            else:
+                myString += " dphiMin2 >= %f " % (self.dphiMin2)
+
+
 
             myString += ")"
             if not(self.WithoutdPhiCut):

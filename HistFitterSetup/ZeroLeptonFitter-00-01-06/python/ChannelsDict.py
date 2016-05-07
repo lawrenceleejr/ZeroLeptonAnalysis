@@ -639,7 +639,8 @@ anaSRJigsawSRC4Common.dphiISRI    = 2.95
 anaSRJigsawSRC4Common.PTISR       = 700
 anaSRJigsawSRC4Common.PTISR_loose = 500
 #anaSRJigsawSRC5Common.dPhi        = 0.2
-anaSRJigsawSRC4Common.deltaQCD    = -.5
+anaSRJigsawSRC4Common.dphiMin2    = 0.2
+#anaSRJigsawSRC4Common.deltaQCD    = -.5
 anaSRJigsawSRC4Common.NV          = 2
 
 finalChannelsDict[anaSRJigsawSRC4Common.name]=anaSRJigsawSRC4Common
@@ -654,7 +655,8 @@ anaSRJigsawSRC5Common.MS_loose    = 50
 anaSRJigsawSRC5Common.dphiISRI    = 2.95
 anaSRJigsawSRC5Common.PTISR       = 700
 anaSRJigsawSRC5Common.PTISR_loose = 500
-anaSRJigsawSRC4Common.deltaQCD    = -.5
+anaSRJigsawSRC5Common.dphiMin2    = 0.2
+#anaSRJigsawSRC4Common.deltaQCD    = -.5
 anaSRJigsawSRC5Common.NV          = 3
 
 finalChannelsDict[anaSRJigsawSRC5Common.name]=anaSRJigsawSRC5Common
