@@ -198,7 +198,7 @@ class ChannelConfig:
         #Common Variables
 
         self.MDR=-1
-        self.deltaQCD=-1
+        self.deltaQCD=-999
         self.H2PP=-1
         self.H2PP_loose=-1
 
@@ -531,7 +531,7 @@ class ChannelConfig:
             else:
                 cutList.append( " PTISR >= %f"%self.PTISR )
 
-        if self.deltaQCD>=0:
+        if self.deltaQCD>=-1:
             if regionName in self.regionsWithLooserDeltaQCDCutList:
                 cutList.append( " deltaQCD >= -0.5"  )
             elif regionName in self.regionsWithInvertedDeltaQCDCutList:
