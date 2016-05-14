@@ -175,7 +175,7 @@ class ChannelConfig:
 
         #angular cuts
         self.dPhiCRQ = -1.0
-        self.dPhiMin2CRQ = -1.0
+        self.dphiMin2CRQ = -1.0
         self.dPhiRCRQ = -1.0
         self.dPhi = -1.0
         self.dphiMin2 = -1.0
