@@ -2,9 +2,9 @@
 
 # This generates the commands to run. Change grid to whatever signal grid you want...
 
-./ToolKit/backgroundbatch/generateOptimisationSRs.py 
-./ToolKit/batch/generateOptimisationSRs.py --grid=GG_direct --entire-grid
-./ToolKit/batch/generateOptimisationSRs.py --grid=SS_direct --entire-grid
+./ToolKit/rjigsawScripts/generateOptimisationSRs.py
+#./ToolKit/batch/generateOptimisationSRs.py --grid=GG_direct --entire-grid
+#./ToolKit/batch/generateOptimisationSRs.py --grid=SS_direct --entire-grid
 
 
 # IF USING LXBATCH OR AN LSF SYSTEM:
@@ -16,12 +16,12 @@
 
   # This thing is making scripts that aren't excecutable which pisses off lxbatch. So fix it with...
 
-  chmod +x Jobs/*sh 
+  chmod +x Jobs/*sh
 
 # FI
 
 
-# Then you can submit it. 
+# Then you can submit it.
 
 ./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXXXX.json  # add a "--site=Oz" or "Columbia"
  or whatever if not running on LSF.
@@ -30,4 +30,4 @@
 
 python makeJSON.py optimisation-XXXXXXXX/
 
-# then there's a sensitivityFromJSON.py script in the plottingScripts directory that you can play with. 
+# then there's a sensitivityFromJSON.py script in the plottingScripts directory that you can play with.
