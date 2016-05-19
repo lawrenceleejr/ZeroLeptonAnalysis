@@ -7,7 +7,6 @@ from copy import deepcopy
 import os
 import sys
 import ROOT
-import math
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 current_path = ROOT.gROOT.GetMacroPath()
@@ -16,7 +15,7 @@ ROOT.gROOT.SetMacroPath(new_path)
 
 def createChannelConfigFromString(s, prefix="", finalVar="meffIncl"):
     # we assume the string s is a comma-separated string of key:value pairs
-    
+
     # for the fullname, we will convert the commas to underscores and the colons to hyphens
     # we set the optimisation flag to true, so that the fullname can be used as the name
 
@@ -34,16 +33,16 @@ def createChannelConfigFromString(s, prefix="", finalVar="meffIncl"):
         d.update({finalVar: finalValue})
 
     fullname = s.replace(":","-").replace(",","_")
-    fullnameForData = "_".join("%s-%s" % (key,val) for (key,val) in dictForName.iteritems() ) 
-   
+    fullnameForData = "_".join("%s-%s" % (key,val) for (key,val) in dictForName.iteritems() )
+
     if prefix != "":
         fullname = "%s_%s" % (prefix, fullname)
         fullnameForData = "%s_%s" % (prefix, fullnameForData)
 
     d['optimisationRegion'] = True
     d['name'] = fullname
-    d['fullname'] = fullname 
-    d['fullnameForData'] = fullnameForData 
+    d['fullname'] = fullname
+    d['fullnameForData'] = fullnameForData
     c = ChannelConfig(**d)
 
     return c
@@ -53,11 +52,11 @@ def createChannelConfigFromString(s, prefix="", finalVar="meffIncl"):
 ########################################################
 class Region:
     def __init__(self, regionName, treeName, extraCutList = [], extraWeightList = []):
-        
+
         self.name = regionName
         self.suffixTreeName = treeName
         self.extraWeightList = extraWeightList
-        self.extraCutList = extraCutList        
+        self.extraCutList = extraCutList
         return
 
     def __str__(self):
@@ -73,11 +72,11 @@ class Region:
 class ChannelConfig:
     def __init__(self, **kwargs):
         self.setCommonVars()
-       
+
         #print kwargs
         for key in kwargs:
             val = kwargs[key]
-           
+
             # do some automatic type conversions based on the existing defaults
             original = getattr(self, key, None)
             if original is not None and isinstance(original, int):
@@ -89,13 +88,13 @@ class ChannelConfig:
             elif original is None and 'optimisationRegion' in kwargs:
                 print "Cannot set new attribute %s for optimisation region" % key
                 sys.exit()
-                
+
             setattr(self, key, val)
 
         if hasattr(self, 'optimisationRegion') and self.optimisationRegion == True:
             # don't force the full name requirement for optimisation regions
             pass
-        elif len(self.name) >= 40:
+        elif len(self.name) >= 20:
             print "************************************************************"
             print "Problem with SR:", self.name
             print "The name of your SR is too long. It should have less than 20 characters."
@@ -103,7 +102,7 @@ class ChannelConfig:
             print "Will exit...."
             print "************************************************************"
             sys.exit()
-       
+
         if self.name == "":
             print "Cannot have an SR without name. Exiting."
             sys.exit()
@@ -130,8 +129,8 @@ class ChannelConfig:
         # NOTE: I SHOULD BE CALLED BY ANY CONSTRUCTOR. PYTHON WILL PUNCH YOU IN THE FACE IF YOU DONT USE ME.
 
         self.useFilteredNtuples = False
-        
-        # Note: please make sure the types are correct, i.e. set dPhi to -1.0 and not -1. The optimisation regions 
+
+        # Note: please make sure the types are correct, i.e. set dPhi to -1.0 and not -1. The optimisation regions
         # convert to your exisiting type -> if you put -1 for dPhi, optimisations of eg 0.4 become 0.
 
         self.name = ""
@@ -140,7 +139,8 @@ class ChannelConfig:
 
         self.optimisationRegion = False
 
-        self.commonWeightList = ["normWeight", "genWeight"] # Note: eventweight has been moved to sysweight
+        # self.commonWeightList = ["pileupWeight", "normWeight", "genWeight"] # Note: eventweight has been moved to sysweight
+        self.commonWeightList = ["weight"] # Note: eventweight has been moved to sysweight
 
         #cuts common to all regions (CR,SR,...=
         self.commonCutList = ["veto==0"]
@@ -148,22 +148,16 @@ class ChannelConfig:
         #cleaning cuts
         self.doTimingCut = True
         self.doCleaning = True
-        self.cleaningCuts = "1" 
+        self.cleaningCuts = "1"
         #self.cleaningCuts+="&& (cleaning&15)==0"
-        
+
         #jet multiplicity
         self.nJets = 2
         self.jetPtThreshold = 50
 
-        #jet 
-        self.fatjet1MassMin = -1
-        self.fatjet1MassMax = -1
-        self.fatjet2MassMin = -1
-        self.fatjet2MassMax = -1
-
         # jet pts - note the threshold above
-        self.jetpt1 = 200
-        self.jetpt2 = 50
+        self.jetpt1 = -1
+        self.jetpt2 = -1
         self.jetpt3 = -1
         self.jetpt4 = -1
         self.jetpt5 = -1
@@ -172,7 +166,7 @@ class ChannelConfig:
         self.jetpt8 = -1
 
         #met based variables
-        self.MET = 200
+        self.MET = -1
         self.MET_upper = -1
         self.METsig = -1
         self.MET_over_meffNj = -1.0
@@ -180,14 +174,15 @@ class ChannelConfig:
         self.MET_over_meffNjCRQ = -1.0
 
         #angular cuts
-        self.dPhiCRQ = 0.2
-        self.dPhiRCRQ = 0.1
+        self.dPhiCRQ = -1.0
+        self.dphiMin2CRQ = -1.0
+        self.dPhiRCRQ = -1.0
         self.dPhi = -1.0
+        self.dphiMin2 = -1.0
         self.dPhiR = -1.0
-        
+
         #effective mass
         self.meffIncl = -1
-        self.meffInclLoose = -1
 
         #effective mass upper cut
         self.meffInclUpperCut = -1
@@ -199,17 +194,17 @@ class ChannelConfig:
         self.ApUpperCut = -1.
 
 
-        ###############################################################
-        # RJigsaw Variables
+        ########################################
+        #LL RJigsaw Variables
 
-        # Common Variables
+        #Common Variables
 
         self.MDR=-1
-        self.deltaQCD=-1
+        self.deltaQCD=-999
         self.H2PP=-1
         self.H2PP_loose=-1
 
-        # Squark Variables
+        #Squark Variables
         self.RPTHT3PP_upper=+999
 
         self.R_H2PP_H3PP=-1
@@ -222,7 +217,7 @@ class ChannelConfig:
         self.HT3PP=-1
         self.HT3PP_loose=-1
 
-        # Gluino Variables
+        #Gluino Variables
 
         self.RPTHT5PP_upper=+999
         self.R_H2PP_H5PP=-1
@@ -235,10 +230,10 @@ class ChannelConfig:
         self.HT5PP_loose=-1
 
 
-        # Compressed Variables
+        #Compressed Variables
         self.RISR        = 0
         self.RISR_CR     = 0
-        self.cosS        = 0
+        self.cosS        = -999
         self.MS          = 0
         self.MS_loose    = 0
         self.dphiISRI    = 0
@@ -247,73 +242,36 @@ class ChannelConfig:
         self.NV          = 0
         self.RPT_PTISR_upper = -1
 
-        ###############################################################
+        #region with inverted Ap cut
+        self.regionsWithInvertedApCutList = []
 
-        #region for Loose CR
-        self.regionForLooseCRList = ["CRYL","CRWL","CRTL","CRZllL","VRZL"]
-
-        #region for Very Loose CR
-        self.regionForVeryLooseCRList =["CRWVL","CRZllVL","VRZVL","CRTVL"]
-
-        #region for minimum MET cuts 
-        self.regionWithMinimumMETCutsList =["CRYlmlA","CRYlmtA","VRWlmtA","VRWlmlA","VRZlmtA","VRZlmlA"]+self.regionForLooseCRList
-        #self.regionWithMinimumMETCutsList =self.regionForLooseCRList
-        #self.regionWithMinimumMETCutsList =[]
-
-        #regions with looser meff cuts
-        self.regionsWithLooserMeffCuts = []
-        
         #region with fully inverted dphi cuts
-        self.regionsWithFullyInvertedDPHICutList = ["CRQ","VRQ1"]
+        self.regionsWithFullyInvertedDPHICutList = ["CRQ"]
 
         #region with intermediate dphi cuts
         self.regionsWithIntermediateDPHICutList = ["VRQ4","VRQ3"]
 
         #region with inverted metsig cuts
-        self.regionsWithInvertedMETSIGCutList = ["CRQ","VRQ2","VRQ4"]
+        self.regionsWithInvertedMETSIGCutList = []#["CRQ","VRQ2","VRQ4"]
 
         #region with inverted metovermeff cuts
-        self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2","VRQ4"]
-
-        #region with inverted MET cut
-        self.regionsWithInvertedMETCutList = self.regionForVeryLooseCRList
+        self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2"]
 
         #region where the dphi cut is not applied
-        self.regionsWithoutDPHICutList = ["CRWT","CRW","CRT","CRZ","VRZ","VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]+self.regionForVeryLooseCRList 
-        
-        #region where the met/meff cut is not applied
-        #self.regionsWithoutMETOVERMEFFCutList = self.regionsWithoutDPHICutList+self.regionWithMinimumMETCutsList
-        self.regionsWithoutMETOVERMEFFCutList = self.regionsWithoutDPHICutList+self.regionForLooseCRList + ["CRYlmtA","CRYlmlA","VRWlmtA","VRWlmlA","VRZlmtA","VRZlmlA"]
+        self.regionsWithoutDPHICutList = ["CRWT","CRW","CRT","CRZ","VRZ","VRWTplus","VRWTminus","VRWM","VRTM","VRWTplus","VRWTminus","VRT2L"]
 
-        #region where the mass cut is not applied
-        self.regionsWithoutMASSCutList = self.regionsWithoutDPHICutList
+        #region where the met/meff cut is not applied
+        self.regionsWithoutMETOVERMEFFCutList = self.regionsWithoutDPHICutList
 
         #region where the met significance cut is not applied
-        #self.regionsWithoutMETSIGCutList = self.regionsWithoutDPHICutList+self.regionWithMinimumMETCutsList
-        self.regionsWithoutMETSIGCutList = self.regionsWithoutDPHICutList+self.regionForLooseCRList+ ["CRYlmtA","CRYlmlA","VRWlmtA","VRWlmlA","VRZlmtA","VRZlmlA"]
+        self.regionsWithoutMETSIGCutList = self.regionsWithoutDPHICutList
 
         # region where the Ap cut is not applied
-        #self.regionsWithoutApCutList = self.regionsWithoutDPHICutList+["CRY","CRQ","VRQ1","VRQ2","VRQ3","VRQ4"]+self.regionForLooseCRList
         self.regionsWithoutApCutList = self.regionsWithoutDPHICutList+["CRY","CRQ","VRQ1","VRQ2","VRQ3","VRQ4"]
-
-        #region with same cut as SR
-        self.regionWithSRCutList = ["CRYtmtA","VRWtmtA"]
-
-        #region with inverted Ap cut
-        self.regionsWithInvertedApCutList = ["CRYtmlA","CRYlmlA","VRWtmlA","VRWlmlA","VRZtmlA","VRZlmlA"]
-        #self.regionsWithInvertedApCutList = ["CRYtmlA","CRYlmlA","VRWtmlA","VRWlmlA","VRZtmlA","VRZlmlA"]+self.regionForLooseCRList
-
-        #region with inverted meff cut
-        self.regionsWithInvertedMeffCutList = ["CRYlmtA","CRYlmlA","VRWlmtA","VRWlmlA","VRZlmtA","VRZlmlA"]+self.regionForVeryLooseCRList+self.regionForLooseCRList
-        #self.regionsWithInvertedMeffCutList = ["CRYlmtA","CRYlmlA","VRWlmtA","VRWlmlA","VRZlmtA","VRZlmlA"]+self.regionForVeryLooseCRList
-
-        #region with inverted SRcut
-        #self.regionsWithInvertedSRCutList = self.regionForLooseCRList
-        self.regionsWithInvertedSRCutList = []
 
 
         ##################################################
-        # RJigsaw
+        ## LL RJigsaw
 
         self.regionsWithInvertedDangleCutList = ["VRTZL","CRQ","VRQ","VRQ2"]
         self.regionsWithInvertedRPZCutList = ["VRTZL"]
@@ -327,6 +285,8 @@ class ChannelConfig:
         self.regionsWithInvertedDeltaQCDCutList = ["CRQ","VRQ"]
         self.regionsWithInvertedRPTCutList = []
         # self.regionsWithInvertedRPTCutList = ["CRQ"]
+
+
 
         self.regionsWithInvertedMSCutList = []
         self.regionsWithInvertedRISRCutList = ["CRQ","VRQ"]
@@ -347,24 +307,25 @@ class ChannelConfig:
         self.regionsWithLooserScaleCuts = ["CRT","CRW", "VRZa","VRWa","VRTa","CRQ"]
         self.regionsWithoutMSCutList = ["CRQ"]#self.regionsWithLooserScaleCuts
         self.regionsWithLooserMSCutList = ["CRT","CRW", "VRZb","VRWb","VRTb"]
+        self.regionsWithLooserPTISRCutList = ["CRT","CRW", "VRZb","VRWb","VRTb"]
+
         self.regionsWithoutCosSCutList = ["CRT","CRW","VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb"]
         self.regionsWithLooserH2PPCutList = ["CRY","CRQ","CRT","CRW", "VRZb","VRWb","VRTb"]
 
         self.CRList = ["CRT","CRW","CRY","CRQ"]
 
-        ######################################################
 
         self.WithoutMeffCut = False
-        self.WithoutMetOverMeffCut = False 
+        self.WithoutMetOverMeffCut = False
         self.WithoutdPhiCut = False
         self.WithoutApCut = False
         self.WithoutJetpT1Cut = False
         self.WithoutJetpT2Cut = False
         self.WithoutJetpT3Cut = False
-        self.WithoutJetpT4Cut = False 
+        self.WithoutJetpT4Cut = False
 
         return
-    
+
     def getSuffixTreeName(self,regionName = "SR"):
         if regionName not in self.regionDict.keys():
             print "Region %s is unknown. Exit" % regionName
@@ -389,9 +350,9 @@ class ChannelConfig:
         cutsDict = {}
         for regionName,region in self.regionDict.items():
             cutsDict[regionName] = self.getCuts(regionName=regionName)
-        
+
         return cutsDict
-        
+
     def getCuts(self, regionName="SR"):
         if regionName not in self.regionDict.keys():
             print "Region %s is unknown. Exit" % regionName
@@ -399,61 +360,46 @@ class ChannelConfig:
 
         cutList = []
         # Start with cuts take away a huge chunk
-        
-        #effective mass cut              
-        if self.meffIncl >= 0 and not(self.WithoutMeffCut) and regionName not in self.regionsWithInvertedMeffCutList and regionName not in self.regionsWithInvertedSRCutList: 
-            if regionName in self.regionsWithLooserMeffCuts:
-                cutList.append(" Meff >= %f " % self.meffInclLoose)
-            else:
-                cutList.append(" Meff >= %f " % self.meffIncl)
 
+        #effective mass cut
+        if self.meffIncl >= 0 and not(self.WithoutMeffCut):
+            cutList.append(" Meff >= %f " % (self.meffIncl))
 
-
-        #effective mass cut upper cut              
+        #effective mass cut upper cut
         if self.meffInclUpperCut >= 0:
             cutList.append(" Meff <= %f " % (self.meffInclUpperCut))
-        
+
         # met cuts
-        if self.MET > 0 and regionName not in self.regionsWithInvertedMETCutList and not(self.WithoutMetOverMeffCut):
+        if self.MET > 0:
             cutList.append("MET >= %f" % self.MET)
-        
+
         # met upper cuts
         if self.MET_upper > 0:
             cutList.append("MET < %f" % self.MET_upper)
-        
-        # jet cuts
-        #if not self.useFilteredNtuples:
-        cutList.append("NJet >= %d" % self.nJets) # filtered nutples have correct nJets automatically
-
-        if self.nJets > 0 and not(self.WithoutJetpT1Cut):
-            cutList.append(" pT_jet1 >= %f" % max(self.jetpt1, self.jetPtThreshold))
-        if self.nJets > 1 and not(self.WithoutJetpT2Cut) and regionName not in self.regionForVeryLooseCRList:
-            cutList.append(" pT_jet2 >= %f" % max(self.jetpt2, self.jetPtThreshold))
-        if self.nJets > 2 and not(self.WithoutJetpT3Cut) and regionName not in self.regionForVeryLooseCRList:
-            cutList.append(" pT_jet3 >= %f" % max(self.jetpt3, self.jetPtThreshold))
-        if self.nJets > 3 and not(self.WithoutJetpT4Cut) and regionName not in self.regionForVeryLooseCRList:
-            cutList.append(" pT_jet4 >= %f" % max(self.jetpt4, self.jetPtThreshold))
-        if self.nJets > 4:
-            cutList.append(" pT_jet5 >= %f" % max(self.jetpt5, self.jetPtThreshold))
-        if self.nJets > 5:
-            cutList.append(" pT_jet6 >= %f" % max(self.jetpt6, self.jetPtThreshold))
-        # if self.nJets > 6:
-        #     cutList.append("jetPt[6] >= %f" % max(self.jetpt7, self.jetPtThreshold))
-        # if self.nJets > 7:
-        #     cutList.append("jetPt[7] >= %f" % max(self.jetpt8, self.jetPtThreshold))
 
 
-        # fat jet mass cuts
-        # if regionName not in self.regionsWithoutMASSCutList:
-        #     if  self.fatjet1MassMin >0:
-        #         cutList.append("RTjetM[0] >= %f" % self.fatjet1MassMin)
-        #     if  self.fatjet1MassMax >0:
-        #         cutList.append("RTjetM[0] < %f" % self.fatjet1MassMax)
-        #     if  self.fatjet2MassMin >0:
-        #         cutList.append("RTjetM[1] >= %f" % self.fatjet2MassMin)
-        #     if  self.fatjet2MassMax >0:
-        #         cutList.append("RTjetM[1] < %f" % self.fatjet2MassMax)
 
+        #LH commenting out
+        #jets cuts
+        cutList.append("NJet>="+str(self.nJets))
+        if self.nJets>0:
+            # max(self.pt0,self.jetPtThreshold)
+            cutList.append(" pT_jet1>="+str(self.jetpt1  ))
+        if self.nJets>1:
+            cutList.append(" pT_jet2>="+str(self.jetpt2  ))
+        if self.nJets>2:
+            cutList.append(" pT_jet3>="+str(self.jetpt3  ))
+        if self.nJets>3:
+            cutList.append(" pT_jet4>="+str(self.jetpt4  ))
+        if self.nJets>4:
+            cutList.append(" pT_jet5>="+str(self.jetpt5  ))
+        if self.nJets>5:
+            cutList.append(" pT_jet6>="+str(self.jetpt6  ))
+        # if self.nJet>6:
+        #     cutList.append(" jetP>="+str(max(self.pt6,self.jetPtThreshold)))
+        # if self.nJet>7:
+        #     cutList.append(" jetPt[7]>="+str(max(self.pt7,self.jetPtThreshold)))
+        #"""
 
         # Now on to the rest
         if self.commonCutList != []:
@@ -462,7 +408,7 @@ class ChannelConfig:
         # timing cuts
         if self.doTimingCut == True:
             cutList.append("(abs(timing)<4)")
-       
+
         # cleaning cuts
         if self.doCleaning:
             if self.regionDict[regionName].suffixTreeName == "SRAll":
@@ -474,17 +420,17 @@ class ChannelConfig:
             elif self.regionDict[regionName].suffixTreeName == "CRZ":
                 self.cleaningCuts = "((cleaning&7) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "CRY":
-                self.cleaningCuts = "((cleaning&15) == 0)"   
+                self.cleaningCuts = "((cleaning&15) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "CRQ":
-                self.cleaningCuts = "((cleaning&3)==0)"   
-            else: 
+                self.cleaningCuts = "((cleaning&3)==0)"
+            else:
                 self.cleaningCuts = "(1)"
-            
+
             cutList.append(self.cleaningCuts)
 
         #angular cuts
         if self.dPhi>=0 and regionName not in self.regionsWithoutDPHICutList:
-            myString="("  
+            myString="("
 
             #first the dphi cut
             if self.dPhiCRQ<0: self.dPhiCRQ=self.dPhi/2 # if PhiCRQ is not defined, take the half: 0.4==>0.2
@@ -494,23 +440,37 @@ class ChannelConfig:
                 myString += "( dphi > %f && dphi < %f )" % (self.dPhiCRQ, self.dPhi)
             else:
                 myString += " dphi >= %f " % (self.dPhi)
-                
+
             # add also the dphiR cut
-            if self.dPhiR >= 0 and self.nJets >= 4:  
-                if self.dPhiRCRQ < 0: 
+            if self.dPhiR >= 0 and self.nJets >= 4:
+                if self.dPhiRCRQ < 0:
                     self.dPhiRCRQ = self.dPhiR/2 # if dPhiRCRQ is not defined, take the half: 0.2==>0.1
-                if regionName in self.regionsWithFullyInvertedDPHICutList+self.regionsWithIntermediateDPHICutList:                
+                if regionName in self.regionsWithFullyInvertedDPHICutList+self.regionsWithIntermediateDPHICutList:
                     myString += " || dphiR < %f" % (self.dPhiRCRQ)
                 else:
                     myString += " && dphiR >= %f" % (self.dPhiR)
-                                    
+
+        if self.dphiMin2>=0 and regionName not in self.regionsWithoutDPHICutList:
+            myString="("
+
+            #first the dphi cut
+            if self.dphiMin2CRQ<0: self.dphiMin2CRQ=self.dphiMin2/2 # if PhiCRQ is not defined, take the half: 0.4==>0.2
+            if regionName in self.regionsWithFullyInvertedDPHICutList:
+                myString += " dphiMin2 < %f" % (self.dphiMin2CRQ)
+            elif regionName in self.regionsWithIntermediateDPHICutList:
+                myString += "( dphiMin2 > %f && dphiMin2 < %f )" % (self.dphiMin2CRQ, self.dphiMin2)
+            else:
+                myString += " dphiMin2 >= %f " % (self.dphiMin2)
+
+
+
             myString += ")"
             if not(self.WithoutdPhiCut):
-                cutList.append(myString) 
+                cutList.append(myString)
 
         # met significance
         if regionName not in self.regionsWithoutMETSIGCutList and self.METsig > 0:
-            
+
             #compute the lower cut if not specified
             if self.METsigCRQ < 0:
                 if self.METsig <= 8:
@@ -522,27 +482,26 @@ class ChannelConfig:
 
             varName = "MET/sqrt(Meff-MET)"
             if regionName in self.regionsWithInvertedMETSIGCutList:
-                cutList.append("%s >= %f && %s < %f" % (varName, self.METsigCRQ, varName, self.METsig)) 
+                cutList.append("%s >= %f && %s < %f" % (varName, self.METsigCRQ, varName, self.METsig))
             else:
-                cutList.append("%s >= %f" % (varName, self.METsig)) 
+                cutList.append("%s >= %f" % (varName, self.METsig))
 
 
-        # Aplanary cut   
-        if self.Ap>=0 and (regionName not in self.regionsWithoutApCutList) and (regionName not in self.regionsWithInvertedApCutList):
+        # Aplanary upper cut
+        if self.Ap>=0 and regionName not in self.regionsWithoutApCutList:
             cutList.append("Aplan >= %f" % (self.Ap))
 
-        # Aplanary upper cut   
-        if regionName in self.regionsWithInvertedApCutList and self.Ap>=0 and (regionName not in self.regionsWithoutApCutList):
-            cutList.append(" Aplan < %f" % (self.Ap))
+        if regionName in self.regionsWithInvertedApCutList:
+            cutList.append(" Aplan < %f" % (self.ApUpperCut))
 
         #met over meff
         if regionName not in self.regionsWithoutMETOVERMEFFCutList and self.MET_over_meffNj > 0:
 
             #compute the lower cut if not specified
             if self.MET_over_meffNjCRQ < 0:
-                if self.MET_over_meffNj >= 0.4:    
+                if self.MET_over_meffNj >= 0.4:
                     self.MET_over_meffNjCRQ = self.MET_over_meffNj-0.25
-                elif self.MET_over_meffNj <= 0.2:    
+                elif self.MET_over_meffNj <= 0.2:
                     self.MET_over_meffNjCRQ = self.MET_over_meffNj-0.05
                 else:
                     self.MET_over_meffNjCRQ = self.MET_over_meffNj-0.15
@@ -551,99 +510,22 @@ class ChannelConfig:
             for ijet in range(self.nJets):
                 varName += " + pT_jet%s"%(str(ijet+1) )
             varName += ")"
-            
+
             if regionName in self.regionsWithInvertedMETOVERMEFFCutList:
                 #cutList.append(varName+">="+str(self.MET_over_meffNjCRQ)+" && "+varName+"<"+str(self.MET_over_meffNj))
                 cutList.append("%s >= %f && %s < %f" % (varName, self.MET_over_meffNjCRQ, varName, self.MET_over_meffNj))
             else:
                 if not(self.WithoutMetOverMeffCut):
-                    #cutList.append(varName+">="+str(self.MET_over_meffNj)) 
-                    cutList.append("%s >= %f " % (varName, self.MET_over_meffNj)) 
-        
-        #minimum MET cut
-        minMETcut=200.
-        if regionName in self.regionWithMinimumMETCutsList:
-            minMETcut=200.
-            if self.MET_over_meffNj > 0:
-                minMETcut = max(self.meffIncl*self.MET_over_meffNj,minMETcut)
-            elif self.METsig > 0:
-                minMETcut = max(math.pow(self.METsig,2)*(-1.+math.sqrt(1+4.*self.meffIncl/math.pow(self.METsig,2)))/2.,minMETcut)
-            cutList.append("MET >= %f" % minMETcut)
+                    #cutList.append(varName+">="+str(self.MET_over_meffNj))
+                    cutList.append("%s >= %f " % (varName, self.MET_over_meffNj))
 
-        #inverted MET cut
-        if regionName in self.regionsWithInvertedMETCutList:
-            minMETcut=200.
-            maxMETcut=self.MET
-            if self.MET_over_meffNj > 0:
-                maxMETcut = max(self.meffIncl*self.MET_over_meffNj, maxMETcut)
-            elif self.METsig >0:
-                maxMETcut = max(math.pow(self.METsig,2)*(-1.+math.sqrt(1+4.*self.meffIncl/math.pow(self.METsig,2)))/2., maxMETcut)
-            cutList.append("MET >= %f" % minMETcut)
-            cutList.append("MET < %f " % maxMETcut)
 
-        #effective mass inverted cut               
-        if regionName in self.regionsWithInvertedMeffCutList:
-            minMeffcut=700
-            minMeffcut+=minMETcut
-            maxMeffcut=self.meffIncl
-            if regionName not in self.regionForVeryLooseCRList and regionName not in self.regionForLooseCRList:
-            #if regionName not in self.regionForVeryLooseCRList:
-                if self.nJets > 2 and not(self.WithoutJetpT3Cut):
-                    minMeffcut+=max(self.jetpt3, self.jetPtThreshold)
-                if self.nJets > 3 and not(self.WithoutJetpT4Cut):
-                    minMeffcut+=max(self.jetpt4, self.jetPtThreshold)
-                if self.nJets > 4:
-                    minMeffcut+=max(self.jetpt5, self.jetPtThreshold)
-                if self.nJets > 5:
-                    minMeffcut+=max(self.jetpt6, self.jetPtThreshold)
-                if self.nJets > 6:
-                    minMeffcut+=max(self.jetpt7, self.jetPtThreshold)
-                if self.nJets > 7:
-                    minMeffcut+=max(self.jetpt8, self.jetPtThreshold)
-            else :
-                if self.nJets > 2:
-                    minMeffcut+=self.jetPtThreshold
-                if self.nJets > 3:
-                    minMeffcut+=self.jetPtThreshold
-                if self.nJets > 4:
-                    minMeffcut+=self.jetPtThreshold
-                if self.nJets > 5:
-                    minMeffcut+=self.jetPtThreshold
-                if self.nJets > 6:
-                    minMeffcut+=self.jetPtThreshold
-                if self.nJets > 7:
-                    minMeffcut+=self.jetPtThreshold
-            
-            #this is temporary method   
-            if minMeffcut >= maxMeffcut:
-                minMeffcut=maxMeffcut-200.
-            cutList.append(" Meff >= %f " % minMeffcut) 
-            if not(self.WithoutMeffCut):
-                cutList.append(" Meff < %f " % (self.meffIncl))
 
-        #forSR Inverted CR
-        if regionName in self.regionsWithInvertedSRCutList:
-            cutforInvSR="("
-            if self.Ap>=0:
-                cutforInvSR+="Aplan <"+str(self.Ap) +"||"
-            """
-            if self.MET_over_meffNj>0:
-                varName="met/(met"
-                for ijet in range(self.nJets):
-                    varName += " + jetPt[%d]" % ijet
-                varName += ")"
-                cutforInvSR+=varName+"<"+str(self.MET_over_meffNj)+"||"
-            if self.METsig >0:
-                varName = "met/sqrt(meffInc-met)"
-                cutforInvSR+=varName+"<"+str(self.METsig)+"||"
-            """
-            if self.meffIncl >0:
-                cutforInvSR+="Meff"+"<"+str(self.meffIncl)+")"
-            cutList.append(cutforInvSR)
-    
+        ###############################################################################
+        ###############################################################################
+        ###############################################################################
 
-        ##########################################################
-        # RJigsaw
+        # LL RJigsaw
 
         if self.MS>=0:
             if regionName in self.regionsWithInvertedMSCutList:
@@ -655,7 +537,17 @@ class ChannelConfig:
             else:
                 cutList.append( " MS >= %f"%self.MS )
 
-        if self.deltaQCD>=0:
+        if self.PTISR>=0:
+            # if regionName in self.regionsWithInvertedPTISRCutList:
+            #     cutList.append( " PTISR <= %f"%self.PTISR )
+            # elif regionName in self.regionsWithoutPTISRCutList:
+            #     pass
+            if regionName in self.regionsWithLooserPTISRCutList:
+                cutList.append( " PTISR >= %f"%self.PTISR_loose )
+            else:
+                cutList.append( " PTISR >= %f"%self.PTISR )
+
+        if self.deltaQCD>=-1:
             if regionName in self.regionsWithLooserDeltaQCDCutList:
                 cutList.append( " deltaQCD >= -0.5"  )
             elif regionName in self.regionsWithInvertedDeltaQCDCutList:
@@ -736,7 +628,7 @@ class ChannelConfig:
 
         if self.RISR_CR>=0 and regionName in self.CRList:
             cutList.append(  " RISR >= %f "%self.RISR_CR   )
-        elif self.RISR>=0:
+        elif self.RISR>0:
             if regionName in self.regionsWithInvertedRISRCutList:
                 cutList.append(  " RISR <= %f "%self.RISR   )
             else:
@@ -744,7 +636,7 @@ class ChannelConfig:
 
 
         if regionName not in self.regionsWithoutCosSCutList:
-            if self.cosS>=0:
+            if self.cosS>=-1:
                 cutList.append(  " cosS >= %f "%self.cosS   )
 
 
@@ -782,15 +674,6 @@ class ChannelConfig:
         if self.NV>0 :
             cutList.append(" NV >= %f"%self.NV)
 
-
-        ##################################################################
-
-
-
-
-
-
-
         #extra cuts from CR
         cutList += self.regionDict[regionName].extraCutList
 
@@ -812,30 +695,21 @@ class ChannelConfig:
         print "Regions without dPhi/dPhiR cuts    : ", self.regionsWithoutDPHICutList
         print "Regions without METSIG cuts        : ", self.regionsWithoutMETSIGCutList
         print "Regions without METOVERMEFF cuts   : ", self.regionsWithoutMETOVERMEFFCutList
-        print "Regions without Aplanarity cut     : ", self.regionsWithoutApCutList
         print "Regions with inverted dphi cut     : ", self.regionsWithFullyInvertedDPHICutList
         print "Regions with intermediate dphi cut : ", self.regionsWithIntermediateDPHICutList
         print "Regions with inverted metsig cut   : ", self.regionsWithInvertedMETSIGCutList
         print "Regions with inverted met/meff cut : ", self.regionsWithInvertedMETOVERMEFFCutList
-        print "Regions with inverted aplanaritycut: ", self.regionsWithInvertedApCutList
-        print "Regions with inverted met cut      : ", self.regionsWithInvertedMETCutList
-        print "Regions with inverted meff cut     : ", self.regionsWithInvertedMeffCutList
-        print "Regions with minimum met cut       : ", self.regionWithMinimumMETCutsList
-     
-        #region with fully inverted dphi cuts
-        self.regionsWithFullyInvertedDPHICutList = ["CRQ","VRQ1"]
+        print "Using LL's RJigsaw Version........"
 
-        #region with intermediate dphi cuts
-        self.regionsWithIntermediateDPHICutList = ["VRQ4","VRQ3"]
+        print "Regions with self.regionsWithLooserScaleCuts   : ", self.regionsWithLooserScaleCuts
+        print "Regions with self.regionsWithoutMSCutList      : ", self.regionsWithoutMSCutList
+        print "Regions with self.regionsWithLooserMSCutList   : ", self.regionsWithLooserMSCutList
+        print "Regions with self.regionsWithLooserH2PPCutList : ", self.regionsWithLooserH2PPCutList
 
-        #region with inverted metsig cuts
-        self.regionsWithInvertedMETSIGCutList = ["CRQ","VRQ2","VRQ4"]
 
-        #region with inverted metovermeff cuts
-        self.regionsWithInvertedMETOVERMEFFCutList = ["CRQ","VRQ2","VRQ4"]
 
         print "=================================================="
-        print "Cuts:" 
+        print "Cuts:"
         print " "
         print "nJets              : ", self.nJets
         print "jetpt1             : ", max(self.jetpt1, self.jetPtThreshold)
@@ -854,17 +728,17 @@ class ChannelConfig:
         print "dPhiR              : ", self.dPhiR
         print "meffIncl           : ", self.meffIncl
         print "Ap                 : ", self.Ap
-        
+
         if printLevel > 0:
 
             print "=================================================="
             for regionName, region in self.regionDict.items():
                 print region
-                if printLevel > 1:  
+                if printLevel > 1:
                     print "Additional debugging info for %s:" % regionName
                     print "\t Suffix for tree name: %s" % self.getSuffixTreeName(regionName)
                     print "\t Cuts: %s " % (self.getCuts(regionName))
-                    #print "\t Weights: %s " % (self.getWeights(regionName))
+                    print "\t Weights: %s " % (self.getWeights(regionName))
 
                 print "=================================================="
 
