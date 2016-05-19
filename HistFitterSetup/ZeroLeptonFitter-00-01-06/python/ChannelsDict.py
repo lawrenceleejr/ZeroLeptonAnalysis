@@ -502,7 +502,7 @@ anaSRJigsawSRS1Common.nJets          = 2
 
 anaSRJigsawSRS1Common.R_H2PP_H3PP       = 0.6
 anaSRJigsawSRS1Common.R_H2PP_H3PP_upper = 0.95
-anaSRJigsawSRS1Common.RPZ_HT3PP_upper   = 0.55
+anaSRJigsawSRS1Common.RPZ_HT5PP_upper   = 0.55
 anaSRJigsawSRS1Common.R_ptj2_HT3PP      = 0.16
 #anaSRJigsawSRS1Common.cosP_upper       = 0.65
 
@@ -531,7 +531,7 @@ anaSRJigsawSRS2Common.nJets          = 2
 
 anaSRJigsawSRS2Common.R_H2PP_H3PP       = 0.55
 anaSRJigsawSRS2Common.R_H2PP_H3PP_upper = 0.96
-anaSRJigsawSRS2Common.RPZ_HT3PP_upper   = 0.6
+anaSRJigsawSRS2Common.RPZ_HT5PP_upper   = 0.6
 anaSRJigsawSRS2Common.R_ptj2_HT3PP      = 0.15
 #anaSRJigsawSRS2Common.cosP_upper       = 0.7
 
@@ -561,7 +561,7 @@ anaSRJigsawSRS3Common.nJets          = 2
 
 anaSRJigsawSRS3Common.R_H2PP_H3PP       = 0.5
 anaSRJigsawSRS3Common.R_H2PP_H3PP_upper = 0.98
-anaSRJigsawSRS3Common.RPZ_HT3PP_upper   = 0.63
+anaSRJigsawSRS3Common.RPZ_HT5PP_upper   = 0.63
 anaSRJigsawSRS3Common.R_ptj2_HT3PP      = 0.13
 #anaSRJigsawSRS3Common.cosP_upper       = 0.8
 
