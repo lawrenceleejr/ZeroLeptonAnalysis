@@ -631,7 +631,7 @@ finalChannelsDict[anaSRJigsawSRC3Common.name]=anaSRJigsawSRC3Common
 ###################################################################
 anaSRJigsawSRC4Common = copy.deepcopy( anaSRJigsawCoBasic )
 anaSRJigsawSRC4Common.name = "SRJigsawSRC4"
-anaSRJigsawSRC4Common.RISR        = 0.55
+anaSRJigsawSRC4Common.RISR        = 0.70
 anaSRJigsawSRC4Common.RISR_CR     = 0.70
 anaSRJigsawSRC4Common.MS          = 500
 anaSRJigsawSRC4Common.MS_loose    = 50
@@ -648,7 +648,7 @@ finalChannelsDict[anaSRJigsawSRC4Common.name]=anaSRJigsawSRC4Common
 ###################################################################
 anaSRJigsawSRC5Common = copy.deepcopy( anaSRJigsawCoBasic )
 anaSRJigsawSRC5Common.name = "SRJigsawSRC5"
-anaSRJigsawSRC5Common.RISR        = 0.60
+anaSRJigsawSRC5Common.RISR        = 0.70
 anaSRJigsawSRC5Common.RISR_CR     = 0.70
 anaSRJigsawSRC5Common.MS          = 500
 anaSRJigsawSRC5Common.MS_loose    = 50
