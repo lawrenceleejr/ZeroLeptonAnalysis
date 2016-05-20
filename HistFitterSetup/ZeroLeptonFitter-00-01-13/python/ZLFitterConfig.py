@@ -170,6 +170,7 @@ class ZLFitterConfig:
         # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation
         self.validationRegionsList+=["VRQ"]#,"VRQ2"]#,"VRQ3","VRQ4"]
 
+        self.datadriven = None
 
         self.Print()
 
