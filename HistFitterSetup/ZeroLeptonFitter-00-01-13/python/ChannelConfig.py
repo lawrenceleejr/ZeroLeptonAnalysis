@@ -304,13 +304,15 @@ class ChannelConfig:
         # self.regionsWithLooserMSCutList = ["VRTZL","CRT","CRW","CRY", "VRZb","VRWb","VRTb"]
         # self.regionsWithLooserH2PPCutList = ["VRTZL","CRT","CRW","CRY", "VRZb","VRWb","VRTb"]
 
-        self.regionsWithLooserScaleCuts = ["CRT","CRW", "VRZa","VRWa","VRTa","CRQ"]
+        self.regionsWithLooserScaleCuts = ["CRT","CRW",
+                                           "CRZVL","CRY",
+                                           "VRZa","VRWa","VRTa","CRQ"]
         self.regionsWithoutMSCutList = ["CRQ"]#self.regionsWithLooserScaleCuts
         self.regionsWithLooserMSCutList = ["CRT","CRW", "VRZb","VRWb","VRTb"]
         self.regionsWithLooserPTISRCutList = ["CRT","CRW", "VRZb","VRWb","VRTb"]
 
         self.regionsWithoutCosSCutList = ["CRT","CRW","VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb"]
-        self.regionsWithLooserH2PPCutList = ["CRY","CRQ","CRT","CRW", "VRZb","VRWb","VRTb"]
+        self.regionsWithLooserH2PPCutList = ["CRY","CRZVL","CRQ","CRT","CRW", "VRZb","VRWb","VRTb"]
 
         self.CRList = ["CRT","CRW","CRY","CRQ"]
 
