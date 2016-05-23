@@ -185,19 +185,6 @@ anaSRFAR.jetpt6 = 50.
 anaSRFAR.meffIncl = 2000
 finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ###########################################################
 # # definition of the channels for plotting purpose
 # ###########################################################
@@ -631,8 +618,8 @@ finalChannelsDict[anaSRJigsawSRC3Common.name]=anaSRJigsawSRC3Common
 ###################################################################
 anaSRJigsawSRC4Common = copy.deepcopy( anaSRJigsawCoBasic )
 anaSRJigsawSRC4Common.name = "SRJigsawSRC4"
-anaSRJigsawSRC4Common.RISR        = 0.70
-anaSRJigsawSRC4Common.RISR_CR     = 0.70
+anaSRJigsawSRC4Common.RISR        = 0.75
+anaSRJigsawSRC4Common.RISR_CR     = 0.75
 anaSRJigsawSRC4Common.MS          = 500
 anaSRJigsawSRC4Common.MS_loose    = 50
 anaSRJigsawSRC4Common.dphiISRI    = 2.95
