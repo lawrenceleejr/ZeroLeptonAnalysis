@@ -54,7 +54,7 @@ def loadGridPoints(grid):
 parser = argparse.ArgumentParser()
 parser.add_argument("--grid", default=None, type=str)
 parser.add_argument("--point", default=[], type=str, action='append')
-parser.add_argument("--pointsPerCommand", default=10, type=int)
+parser.add_argument("--pointsPerCommand", default=4, type=int)
 parser.add_argument("--entire-grid", default=False, action="store_true", help="use entire grid")
 parser.add_argument("--outputSuffix", default="", type=str, help="output filename suffix. A timestamp is used by default.")
 parser.add_argument('--mode', choices=['discovery', 'exclusion', 'exclusionUL', 'all'], default='discovery', help="Run discovery, exclusion or exclusion ULs to optimise")
@@ -90,10 +90,10 @@ if grid is None:
 if not mode in modeMap:
     print("Don't know HistFitter argument for optimisation mode {0}".format(mode))
     sys.exit()
-   
+
 from zerolepton.grids.config import GridConfig
 discovery = False
-if mode == discovery: 
+if mode == discovery:
     discovery = True
 gridConfig = GridConfig(grid, discovery)
 
@@ -107,12 +107,12 @@ if (points == [] or points[0] == "") and not args.entire_grid:
 
     # sanity check
     for c in gridConfig.optimisation_cuts:
-        if "-" in c.key: 
+        if "-" in c.key:
             (key1, key2) = c.key.split("-")
             keys = [key1, key2]
         else:
             keys = [c.key]
-        
+
         for k in keys:
             if k not in interpretation_idx:
                 print(colors.BOLD + colors.FAIL + "FATAL: unknown variable {0} used in optimisation string - check settings/grids.cfg!".format(k) + colors.ENDC)
@@ -135,9 +135,9 @@ if (points == [] or points[0] == "") and not args.entire_grid:
 
     # ensure we didn't put any duplicates in
     points = set(points)
-    
+
     print(colors.OKGREEN + "=> Loaded {0} optimisation points based on your cuts".format(len(points)) + colors.ENDC)
-   
+
     first = True
     for line in textwrap.wrap(", ".join(points), 80):
         if first: print "=> {0}".format(line); first=False
@@ -199,90 +199,52 @@ if nChunks != 1:
         print(colors.OKBLUE + "Redefined number of points per command to {0:d} to make each job equally long".format(pointsPerCommand))
     print(colors.OKBLUE + "Splitting {0} points into {1:d} chunks to make jobs".format(len(points), nChunks ) + colors.ENDC)
 
-nJetList = cuts.pop('nJets')
-for nJets in nJetList:
-    # Split by nJets 
-    
-    j = 0
-    nRemoved = 0
-    myCuts = copy(cuts)
-    removedCuts = []
+SignalRegions = [
 
-    # Removed obsolete jet cuts
-    for N in range(3, 8):
-        name = 'jetpt{0}'.format(N)
-        if nJets < N and name in myCuts:
-            if myCuts[name] != [0]: removedCuts.append(name)
-            del myCuts[name]
+"SR2jl",
+"SR2jm",
+"SR2jt",
+"SR4jt",
+"SR5j",
+"SR6jm",
+"SR6jt",
 
-    if nJets < 4:
-        if "dPhiR" in myCuts:
-            removedCuts.append("dPhiR")
-            del myCuts["dPhiR"]
 
-    if removedCuts != []:
-        print(colors.OKBLUE + "Removed cuts on {0} for nJets={1}".format(", ".join(removedCuts), nJets) + colors.ENDC)
+"SRJigsawSRG1a",
+"SRJigsawSRG1b",
+"SRJigsawSRG2a",
+"SRJigsawSRG2b",
+"SRJigsawSRG3a",
+"SRJigsawSRG3b",
 
-    for c in cartesian_product(myCuts):
-        # add the nJet cut to this
-        c['nJets'] = nJets
+"SRJigsawSRS1a",
+"SRJigsawSRS1b",
+"SRJigsawSRS2a",
+"SRJigsawSRS2b",
+"SRJigsawSRS3a",
+"SRJigsawSRS3b",
 
-        # are the jet pt's nicely descending?
-        ignoreCut = False
-        maxJetPt = 200
-        if "jetpt1" in c: 
-            maxJetPt = c['jetpt1']
+"SRJigsawSRC1",
+"SRJigsawSRC2",
+"SRJigsawSRC3",
+"SRJigsawSRC4",
+"SRJigsawSRC5",
 
-        myJetPts = [maxJetPt]
-        for N in range(2, nJets+1):
-            # check if we are lower than the current maximum
-            
-            name = 'jetpt{0}'.format(N)
-            # if we're not in - falls back to the default of 50
-            myJetPt = 50
-            if name in c: myJetPt = c[name]
+]
 
-            myJetPts.append(myJetPt)
+for SignalRegion in SignalRegions:
+    for subsetPoints in chunks(points, pointsPerCommand):
+        # ROOT5 has a tendency to crash if we don't run the -t step seperately, so do that
+        cmd = "HistFitter.py -D allPlots -t -w -f -z -p -l -F excl -g grid{0},{1}  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( grid, ",".join(subsetPoints) , SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
 
-            if myJetPt > maxJetPt:
-                ignoreCut = True
-            
-            maxJetPt = myJetPt
+        # NOTE: I need to become clever enough to recycle histograms for the final discriminating variable.
+        # print cmd
+        commands.append( (SignalRegion, SignalRegion, cmd) )
+        # print commands
 
-        if ignoreCut:
-            #print "nJet = {0}; skipping jet cuts {1}".format(nJets, " ".join([str(s) for s in myJetPts]))
-            nRemoved += 1
-            continue
-        else:
-            pass
-            #print "nJet = {0}; keeping jet cuts {1}".format(nJets, " ".join([str(s) for s in myJetPts]))
+        # break
 
-        # Now build the string
-        cutStr = buildCutString(c)
-        cutStrings.add(cutStr)
 
-        # NOTE: the prefix must match to what the analysis script does internally - we only construct the channel to get its full name out later
-        channel = createChannelConfigFromString(cutStr, "SR{0:d}j".format(nJets))
-
-        for subsetPoints in chunks(points, pointsPerCommand):
-            i += 1
-            j += 1
-
-            # ROOT5 has a tendency to crash if we don't run the -t step seperately, so do that
-            myCmds = []
-            for HFargs in ("-t", "-w -f {0}".format(modeMap[mode]) ):
-                myCmds.append('HistFitter.py {0} -F excl -ggrid{1},{2} -u "-R {3} -P SR{4}j" {5}/analysis/ZeroLepton_Run2.py'.format(HFargs, grid, ",".join(subsetPoints), cutStr, nJets, os.getenv('ZEROLEPTONFITTER')))
-
-            cmd = " && ".join(myCmds)
-
-            # NOTE: I need to become clever enough to recycle histograms for the final discriminating variable.
-            commands.append( (cutStr, channel.fullname, cmd) )
-
-        pass
-   
-    if nRemoved > 0:
-        print(colors.OKBLUE + "Removed {0} useless jet pt settings for nJet={1}".format(nRemoved, nJets) + colors.ENDC)
-    print(colors.OKBLUE + "Wrote {0} commands for nJet={1}".format(j, nJets) + colors.ENDC)
 timestamp = time.time()
 
 data = {}
@@ -309,4 +271,4 @@ for filename in filenames:
 	with open(filename, 'w') as outfile:
 		json.dump(data, outfile)
 
-	print(colors.OKGREEN + "Wrote {1} optimisation commands to {0}".format(filename, i) + colors.ENDC)
+	print(colors.OKGREEN + "Wrote {1} optimisation commands to {0}".format(filename, len(commands)) + colors.ENDC)
