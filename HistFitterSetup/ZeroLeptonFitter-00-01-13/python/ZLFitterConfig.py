@@ -171,6 +171,8 @@ class ZLFitterConfig:
         self.validationRegionsList+=["VRQ"]#,"VRQ2"]#,"VRQ3","VRQ4"]
 
         self.datadriven = None
+        self.writeXML = None
+        self.useSplittedNtuples = False
 
         self.Print()
 

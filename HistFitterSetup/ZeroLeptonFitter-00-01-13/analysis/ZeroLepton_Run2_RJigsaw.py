@@ -50,6 +50,8 @@ zlFitterConfig = ZLFitterConfig()
 configMgr.blindSR = zlFitterConfig.blindSR
 configMgr.blindCR = zlFitterConfig.blindCR
 configMgr.blindVR = zlFitterConfig.blindVR
+configMgr.writeXML = zlFitterConfig.writeXML
+
 configMgr.useSignalInBlindedData = zlFitterConfig.useSignalInBlindedData
 
 configMgr.fixSigXSec = zlFitterConfig.fixSigXSec
