@@ -273,7 +273,7 @@ def main(zlFitterConfig):
     useChargeAsymmetry = False
 
     parser = OptionParser()
-    parser.add_option("--blind", default=True, action="store_true", help="")
+    parser.add_option("--blind", default=False, action="store_true", help="")
     parser.add_option("--PrintOnly", default=False, action="store_true", help="do not execute the command")
     parser.add_option("--doVR", default=False, action="store_true", help="include tables with VRs that are not the _all.tex version")#ATT: remove
     parser.add_option("-s", "--shape", default=False, action="store_true", help="workspace has shape fits")#ATT: remove

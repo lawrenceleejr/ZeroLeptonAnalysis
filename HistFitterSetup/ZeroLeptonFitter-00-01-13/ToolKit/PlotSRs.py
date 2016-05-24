@@ -18,7 +18,7 @@ from ROOT import *
 ROOT.gROOT.SetBatch(True) # Turn off online histogram drawing
 
 from ZLFitterConfig import *
-zlFitterConfig = ZLFitterConfig() 
+zlFitterConfig = ZLFitterConfig()
 
 
 index=-1
@@ -80,23 +80,23 @@ def main():
 
 
     hist_sumbkg = TH1F("sumbkg","sumbkg",nSR,0,nSR)
-    hist_sumbkg.SetLineColor(2) 
+    hist_sumbkg.SetLineColor(2)
     hist_sumbkg.SetLineWidth(1)
-  
+
     hist_bkgMap={}
     for sam in samples:
         hist_bkgMap[sam]=TH1F(sam,sam,nSR,0,nSR)
         hist_bkgMap[sam].SetFillColor(colors[sam])
         hist_bkgMap[sam].SetLineWidth(0)
         hist_bkgMap[sam].SetLineStyle(0)
-        
+
     ## Get list of mu parameters (present in all SRs)
     counter=0
     for channel in allAna:
         counter+=1
 
         if not os.path.exists("yield_%s_all.pickle" % channel):
-            continue    
+            continue
         try:
             fYield = open('yield_%s_all.pickle' % channel,'r')
         except:
@@ -110,33 +110,32 @@ def main():
 
 
 
-        nobs=float(theMap["nobs"][index])
-        print nobs
+        nobs = float(theMap["nobs"][index])
         nsumbkgEr=theMap["TOTAL_FITTED_bkg_events_err"][index]
         nsumbkg=theMap["TOTAL_FITTED_bkg_events"][index]
-        
+
         print channel
         hist_data.GetXaxis().SetBinLabel(counter,channel.replace("SR",""))
 
-        hist_data.SetBinContent(counter,nobs)        
+        hist_data.SetBinContent(counter,nobs)
         graph_data.SetPoint(counter-1,hist_data.GetBinCenter(counter),nobs)
         pEr=PoissonError(nobs)
         graph_data.SetPointError(counter-1,0.,0,pEr[1],pEr[0])
 
-        hist_dataClone.SetBinContent(counter,nobs)  
+        hist_dataClone.SetBinContent(counter,nobs)
         graph_dataClone.SetPoint(counter-1,hist_data.GetBinCenter(counter),nobs)
         if nobs==0:
             hist_dataClone.SetBinContent(counter,MinThres)
             graph_dataClone.SetPoint(counter-1,hist_data.GetBinCenter(counter),MinThres)
 
-       
+
 
         if nobs > 0:
             hist_data.SetBinError(counter,0.00001)#sqrt(nobs))
 
         hist_sumbkg.SetBinContent(counter,nsumbkg)
         hist_sumbkg.SetBinError(counter,nsumbkgEr)
-        
+
         for sam in samples:
             n=theMap["Fitted_events_"+sam][index]
             er=theMap["Fitted_err_"+sam][index]
@@ -235,28 +234,28 @@ def main():
     text2.SetTextColor(kBlack);
     text2.SetNDC(True);
     #text2.DrawLatex(0.23,0.79,"Internal");
-    
+
 
     ###############
-    hist_ratio=hist_data.Clone()        
-    hist_bkgerror=hist_data.Clone()        
-    graph_ratio=TGraphAsymmErrors(nSR)#graph_data.Clone()        
+    hist_ratio=hist_data.Clone()
+    hist_bkgerror=hist_data.Clone()
+    graph_ratio=TGraphAsymmErrors(nSR)#graph_data.Clone()
 
     for counter in range(1,hist_data.GetNbinsX()+1):
         ratio=-1000
         nExp=hist_sumbkg.GetBinContent(counter)
         if nExp==0:
             nExp=0.01
-            
+
         if doData:
             ratio=hist_data.GetBinContent(counter)/nExp
         pEr=PoissonError(hist_data.GetBinContent(counter))
         nExp=hist_sumbkg.GetBinContent(counter)
         nExpEr=hist_sumbkg.GetBinError(counter)
 
-       
 
-        #print hist_data.GetBinContent(counter)/nExp,pEr[1]/nExp,pEr[0]/nExp            
+
+        #print hist_data.GetBinContent(counter)/nExp,pEr[1]/nExp,pEr[0]/nExp
         graph_ratio.SetPoint(counter-1,hist_data.GetBinCenter(counter),ratio)
         try:
             graph_ratio.SetPointError(counter-1,0.,0,pEr[1]/nExp,pEr[0]/nExp)
@@ -272,11 +271,11 @@ def main():
 
 
 
-        
+
         print counter,ratio,  hist_data.GetBinContent(counter), hist_sumbkg.GetBinContent(counter)," toto"
 
     ###########
-    
+
     canvas = TCanvas("canvas","canvas",1000,800)
     canvas.SetLeftMargin(0.1)
     upperPad = ROOT.TPad("upperPad","upperPad",0.001,0.35,0.995,0.995)
@@ -286,7 +285,7 @@ def main():
     upperPad.SetFillColor(0);
     upperPad.SetBorderMode(0);
     upperPad.SetBorderSize(2);
-    #upperPad.SetTicks() 
+    #upperPad.SetTicks()
     upperPad.SetTopMargin   ( 0.05 );
     upperPad.SetRightMargin ( 0.05 );
     upperPad.SetBottomMargin( 0.00 );
@@ -294,9 +293,9 @@ def main():
     upperPad.SetFrameBorderMode(0);
     upperPad.SetFrameBorderMode(0);
     upperPad.Draw()
-    
+
     #lowerPad.SetGridx();
-    #lowerPad.SetGridy(); 
+    #lowerPad.SetGridy();
     lowerPad.SetFillColor(0);
     lowerPad.SetBorderMode(0);
     lowerPad.SetBorderSize(2);
@@ -310,7 +309,7 @@ def main():
 
     canvas.SetFrameFillColor(ROOT.kWhite)
 
-    upperPad.cd()  
+    upperPad.cd()
 
 
     #DRAW=======================
@@ -332,7 +331,7 @@ def main():
     stack.Draw("same")
     hist_sumbkg.Draw("hist,same")
     hist_sumbkg2.Draw("E2,same")
-    
+
     graph_dataShadow=graph_data.Clone()
     graph_dataShadow.SetLineWidth(5)
     graph_dataShadow.SetMarkerSize(graph_data.GetMarkerSize()*1.3)
@@ -343,13 +342,13 @@ def main():
         hist_data.Draw("E,same")
         graph_data.Draw("P")
         hist_data.Draw("axis,same")
-    
-    
 
 
-    leg1.Draw()    
-    text.DrawLatex(0.38,0.85,"#bf{#it{ATLAS}} Internal") 
-    #text.DrawLatex(0.477,0.85,"#bf{#it{ATLAS}} Preliminary") 
+
+
+    leg1.Draw()
+    text.DrawLatex(0.38,0.85,"#bf{#it{ATLAS}} Internal")
+    #text.DrawLatex(0.477,0.85,"#bf{#it{ATLAS}} Preliminary")
     text.DrawLatex(0.38,0.75,"#sqrt{s}=13TeV, "+str(round(zlFitterConfig.luminosity,1))+" fb^{-1}");
 
 
@@ -389,14 +388,14 @@ def main():
     hist_bkgerror.SetLineColor(2)
     hist_bkgerror.SetMarkerSize(0)
     hist_bkgerror.Draw("E2,same")
-    
+
     if doData:
         graph_ratio.Draw("P")
 
 
 
-    canvas.Print("plotSR.pdf")   
-    canvas.Print("plotSR.eps")    
+    canvas.Print("plotSR.pdf")
+    canvas.Print("plotSR.eps")
 
 if __name__ == "__main__":
 
