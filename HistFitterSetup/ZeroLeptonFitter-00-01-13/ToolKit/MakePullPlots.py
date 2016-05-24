@@ -15,7 +15,7 @@ from ChannelsDict import *
 from ZLFitterConfig import *
 
 import pullPlotUtils
-from pullPlotUtils import makePullPlot 
+from pullPlotUtils import makePullPlot
 
 ###################################################
 # config file
@@ -73,7 +73,7 @@ def renameRegions(useChargeAsymmetry, useVRWTM):
         myRegionDict["VRWTMinus"] = "VRWT-"
         myRegionDict["VRWTPlusf"] = "VRWTf+"
         myRegionDict["VRWTMinusf"] = "VRWTf-"
-   
+
     return myRegionDict
 
 ###################################################
@@ -98,26 +98,26 @@ def getRegionColor(name):
 ###################################################
 def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useShapeFit=False, doVR=False, doBlind=True,doPrintOnly=False):
     suffix="_cuts"
-    if useShapeFit: suffix="_meffInc"    
-    
+    if useShapeFit: suffix="_meffInc"
+
     regionsForTables = ""
     regionsForTablesAll = ""
     for region in regionList:
         region2 = region
-        
+
         if region2 in renamedRegions.keys():
             region2 = renamedRegions[region2]
-        
+
         regionsForTablesAll += region+suffix+","
-        if region2.find("SR") >= 0 or region2.find("CR") >= 0 or region2=="VRZ":# or region2=="VRWMf": #" or region2=="VRWM":          
+        if region2.find("SR") >= 0 or region2.find("CR") >= 0 or region2=="VRZ":# or region2=="VRWMf": #" or region2=="VRWM":
             regionsForTables += region+suffix+","
-    
+
     #remove last comma
     if regionsForTablesAll[-1]==",":
         regionsForTablesAll=regionsForTablesAll[:-1]
-    
+
     if regionsForTables[-1]==",":
-        regionsForTables=regionsForTables[:-1]        
+        regionsForTables=regionsForTables[:-1]
     print "regionsForTablesAll"
     print regionsForTablesAll
     print "regionsForTables"
@@ -145,8 +145,8 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
                 else:
                     theRegions +=','+region
             cmd = "YieldsTable.py "
-            #if doBlind:
-            #    cmd += "-B "
+            if doBlind:
+                cmd += "-B "
             if showErrorBeforeFits:
                 cmd += "-b "
             cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_%d.tex -t %s" % (theRegions, samples, filename, makeCaption(anaconv, theRegions), makeLabel(anaconv, theRegions), anaconv,i+1, anaconv)
@@ -155,8 +155,8 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
 
     else:
         cmd = "YieldsTable.py "
-        #if doBlind:
-        #    cmd += "-B "
+        if doBlind:
+            cmd += "-B "
         if showErrorBeforeFits:
             cmd += "-b "
         cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s.tex -t %s" % (regionsForTables, samples, filename, makeCaption(anaconv, regionsForTables), makeLabel(anaconv, regionsForTables), anaconv, anaconv)
@@ -184,10 +184,10 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
                 for region2 in regionsForTables.split(','):
                     if region2==region:
                         found=True
-                if (found): 
+                if (found):
                     continue
                 j += 1
-                if j < i * 6 or j >= (i + 1) * 6: 
+                if j < i * 6 or j >= (i + 1) * 6:
                     continue
                 k += 1
                 if 0==k:
@@ -196,18 +196,18 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
                     theRegions += ','+region
 
             cmd = "YieldsTable.py "
-            #if doBlind:
-            #    cmd += "-B "
+            if doBlind:
+                cmd += "-B "
             if showErrorBeforeFits:
                 cmd += "-b "
             cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_all%d.tex -t %s" % (theRegions, samples, filename, makeCaption(anaconv, theRegions), makeLabel(anaconv, theRegions), anaconv, i+1, anaconv)
             print i,nVRs,nVRs/6,cmd
             if  not doPrintOnly: subprocess.call(cmd, shell=True)
-   
+
     # make combined table with all VRs and all CRs (note: we always need this for the pickle not  not )
     cmd = "YieldsTable.py "
-    #if doBlind:
-    #    cmd += "-B "
+    if doBlind:
+        cmd += "-B "
     if showErrorBeforeFits:
         cmd += "-b "
     cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_all.tex -t %sall" % (regionsForTablesAll, samples, filename, makeCaption(anaconv, regionsForTablesAll), makeLabel(anaconv, regionsForTablesAll), anaconv, anaconv)
@@ -215,7 +215,7 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
     if  not doPrintOnly:subprocess.call(cmd, shell=True)
 
     return
-    
+
 ###################################################
 #
 ###################################################
@@ -226,13 +226,13 @@ def makeSystematicsTablesInCR(anaconv, filename, regionList, useShapeFit=False,d
         cmd = "python $ZEROLEPTONFITTER/ToolKit/SysTable.py -%s  -m 1 -w %s -c %s -o systtable_%s_%s.tex -n %s" % ("%",filename, region, anaconv, region,anaconv)
         print cmd
         if  not doPrintOnly: subprocess.call(cmd, shell=True)
-   
+
     return
 ###################################################
 #
 ###################################################
 def makeSystematicsTables(anaconv, filename, useShapeFit=False,doPrintOnly=False,region="SR_cuts"):
-   
+
     #cmd = "BkgSysTable.py -a True -w %s -c %s -o systtable_%s.tex -t %s" % (filename, region, anaconv, anaconv)
 
     # "-m <method>: switch between method 1 (extrapolation) and method 2 (refitting with 1 parameter constant)"
@@ -243,8 +243,8 @@ def makeSystematicsTables(anaconv, filename, useShapeFit=False,doPrintOnly=False
     cmd = "python $ZEROLEPTONFITTER/ToolKit/SysTable.py -%s  -m 1 -w %s -c %s -o systtable_%s_%s.tex -n %s" % ("%",filename, region, anaconv,region,anaconv)
     print cmd
     if  not doPrintOnly: subprocess.call(cmd, shell=True)
-    
-    
+
+
     return
 
 ###################################################
@@ -253,11 +253,11 @@ def makeSystematicsTables(anaconv, filename, useShapeFit=False,doPrintOnly=False
 
 def makeSummaryPlots(doPrintOnly=False):
     print " ******** Make summary plots *********"
-    cmd = "python $ZEROLEPTONFITTER/ToolKit/PlotMU_NP.py" 
+    cmd = "python $ZEROLEPTONFITTER/ToolKit/PlotMU_NP.py"
     print cmd
     if not doPrintOnly: subprocess.call(cmd, shell=True)
 
-    cmd = "python $ZEROLEPTONFITTER/ToolKit/PlotSRs.py" 
+    cmd = "python $ZEROLEPTONFITTER/ToolKit/PlotSRs.py"
     print cmd
     if not doPrintOnly: subprocess.call(cmd, shell=True)
 
@@ -266,37 +266,37 @@ def makeSummaryPlots(doPrintOnly=False):
 ##############################################################################
 #    Main
 ##############################################################################
-def main(zlFitterConfig): 
-    
+def main(zlFitterConfig):
+
 
     useVRWTM = False
     useChargeAsymmetry = False
 
     parser = OptionParser()
-    parser.add_option("--blind", default=False, action="store_true", help="")
+    parser.add_option("--blind", default=True, action="store_true", help="")
     parser.add_option("--PrintOnly", default=False, action="store_true", help="do not execute the command")
     parser.add_option("--doVR", default=False, action="store_true", help="include tables with VRs that are not the _all.tex version")#ATT: remove
     parser.add_option("-s", "--shape", default=False, action="store_true", help="workspace has shape fits")#ATT: remove
     parser.add_option("-o", "--output-dir", default="results/",
                       help="output dir under which files can be found", metavar="DIR")
     (options, args) = parser.parse_args()
-   
+
     options.output_dir += "/" #to be sure
 
     print options
 
     ###############################################################################
-    
+
     #samples = "Diboson,GAMMAjets,Multijets,Top,Wjets,Zjets"
     samples = ",".join(zlFitterConfig.sampleNameList)
-    
+
     renamedRegions = renameRegions(useChargeAsymmetry, useVRWTM)
     myAnaList = finalChannelsDict.keys()
 
     for anaName in myAnaList:
         regionList = zlFitterConfig.allRegionsList()
 
-        # Filename containing workspace    
+        # Filename containing workspace
         filename = os.path.join(options.output_dir, "ZL_%s_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root" % anaName)
 
         if not os.path.exists(filename):
@@ -313,19 +313,19 @@ def main(zlFitterConfig):
 
         #Yields
         makeYieldTables(anaName, filename, regionList, samples, renamedRegions, options.shape, options.doVR, options.blind,doPrintOnly=options.PrintOnly)
-        
+
         #pull
         if not options.PrintOnly:
             pickleFilename = "yield_%s_all.pickle" % (anaName)
             results1=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind)
 
             if results1!=None:
-                pullMap={}                
+                pullMap={}
                 for r in results1:
                     pullMap[r[0].replace("_cuts","")]=r[1:5]
                     pullFileName = "pull_%s.pkl" % (anaName)
                     pickle.dump( pullMap, open( pullFileName, "wb" ) )
-                    
+
 
     makeSummaryPlots(options.PrintOnly)
 
