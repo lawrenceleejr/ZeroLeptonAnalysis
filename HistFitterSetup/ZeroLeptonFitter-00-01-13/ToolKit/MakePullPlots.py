@@ -210,7 +210,7 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
         cmd += "-B "
     if showErrorBeforeFits:
         cmd += "-b "
-    cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_all.tex -t %sall" % (regionsForTablesAll, samples, filename, makeCaption(anaconv, regionsForTablesAll), makeLabel(anaconv, regionsForTablesAll), anaconv, anaconv)
+    cmd += " -P -c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_all.tex -t %sall" % (regionsForTablesAll, samples, filename, makeCaption(anaconv, regionsForTablesAll), makeLabel(anaconv, regionsForTablesAll), anaconv, anaconv)
     print cmd
     if  not doPrintOnly:subprocess.call(cmd, shell=True)
 
