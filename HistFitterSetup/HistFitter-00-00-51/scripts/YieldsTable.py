@@ -128,19 +128,23 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   make a list of channelCat calls for every region
   """
   regionCatList = [ 'channelCat==channelCat::' +region.Data() for region in regionFullNameList]
-  
+
   """
   retrieve number of observed (=data) events per region
   """
+  print regionCatList
+  srindex = regionFullNameList.index("SR_cuts")
   regionDatasetList = [data_set.reduce(regioncat) for regioncat in regionCatList]
+
   for index, data in enumerate(regionDatasetList):
+    print "data," , data, data.GetName()
     data.SetName("data_" + regionList[index])
     data.SetTitle("data_" + regionList[index])
-    
-  nobs_regionList = [ data.sumEntries() for data in regionDatasetList]
 
+  nobs_regionList = [ data.sumEntries() for data in regionDatasetList]
+  if blinded :  nobs_regionList[srindex] = -1
   """
-  if showSum=True calculate the total number of observed events in all regions  
+  if showSum=True calculate the total number of observed events in all regions
   """
   sumNobs = 0.
   for nobs in nobs_regionList:
@@ -159,14 +163,14 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   """
   pdfinRegionList = [ Util.GetRegionPdf(w, region)  for region in regionList]
   varinRegionList =  [ Util.GetRegionVar(w, region) for region in regionList]
-  
+
   """
   if splitBins=True get the list of Nbins, binMax and binMin; make a list of new region names for each bin
   """
-  varNbinsInRegionList =  [] 
-  varBinLowInRegionList = []  
-  varBinHighInRegionList =  [] 
-  rangeNameBinsInRegionList = [] 
+  varNbinsInRegionList =  []
+  varBinLowInRegionList = []
+  varBinHighInRegionList =  []
+  rangeNameBinsInRegionList = []
   if splitBins:
     varNbinsInRegionList = [Util.GetRegionVar(w, region).getBinning().numBins() for region in regionList]
     varBinLowInRegionList = [[Util.GetRegionVar(w, region).getBinning((region+"binning")).binLow(ibin) for ibin in range(0, varNbinsInRegionList[idx]) ] for idx,region in enumerate(regionList)]
@@ -176,7 +180,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
       if varNbinsInRegionList[index]==1:
         print " \n YieldsTable.py: WARNING: you have called -P (= per-bin yields) but this region ", region, " has only 1 bin \n"
 
-  
+
 
   """
   if splitBins=True reshuffle the regionName list; each region name is followed by names of each bin (i.e. regionNameList=['SR3J','SR3J_bin1','SR3j_bin2','SR4J','SR4J_bin1'])
@@ -188,7 +192,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
       for ibin in range(0,varNbinsInRegionList[index]):
         regionListWithBins.append(rangeNameBinsInRegionList[index][ibin])
     tablenumbers['names'] = regionListWithBins
-  
+
 
   """
   calculate number of observed(=data) events per bin
@@ -209,7 +213,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   """
   if blinded=True, set all numbers of observed events to -1
   """
-  if blinded: 
+  if blinded and splitBins:
     for index, nobs in enumerate(nobs_regionListWithBins):
       nobs_regionListWithBins[index] = -1
     tablenumbers['nobs'] = nobs_regionListWithBins
@@ -239,7 +243,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
     if foundRRS >1 or foundRRS==0:
       print " \n\n WARNING: ", pdf.GetName(), " has ", foundRRS, " instances of RooRealSumPdf"
       print pdf.GetName(), " component list:", prodList.Print("v")
-    
+
   """
   calculate total pdf number of fitted events and error
   """
@@ -248,7 +252,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
 
 
   """
-  if showSum=True calculate the total number of fitted events in all regions  
+  if showSum=True calculate the total number of fitted events in all regions
   """
   if showSum:
     pdfInAllRegions = RooArgSet()
@@ -259,10 +263,10 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
     nPdfSumError = Util.GetPropagatedError(pdfSumInAllRegions, resultAfterFit, doAsym)
     nFittedInRegionList.append(nPdfSumVal)
     pdfFittedErrInRegionList.append(nPdfSumError)
-  
+
   tablenumbers['TOTAL_FITTED_bkg_events']    =  nFittedInRegionList
   tablenumbers['TOTAL_FITTED_bkg_events_err']    =  pdfFittedErrInRegionList
- 
+
   """
   calculate the fitted number of events and propagated error for each requested sample, by splitting off each sample pdf
   """
@@ -277,15 +281,15 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
       sampleInRegionError = 0.
       if not sampleInRegion==None:
         sampleInRegionVal = sampleInRegion.getVal()
-        sampleInRegionError = Util.GetPropagatedError(sampleInRegion, resultAfterFit, doAsym) 
+        sampleInRegionError = Util.GetPropagatedError(sampleInRegion, resultAfterFit, doAsym)
         sampleInAllRegions.add(sampleInRegion)
       else:
         print " \n YieldsTable.py: WARNING: sample =", sampleName, " non-existent (empty) in region =",region, "\n"
       nSampleInRegionVal.append(sampleInRegionVal)
       nSampleInRegionError.append(sampleInRegionError)
-      
+
       """
-      if splitBins=True calculate numbers of fitted events plus error per bin      
+      if splitBins=True calculate numbers of fitted events plus error per bin
       """
       if splitBins:
         origMin = varinRegionList[ireg].getMin()
@@ -303,11 +307,11 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
             print " \n YieldsTable.py: WARNING: sample =", sampleName, " non-existent (empty) in region=",region, " bin=",ibin, " \n"
           nSampleInRegionVal.append(sampleInRegionVal)
           nSampleInRegionError.append(sampleInRegionError)
- 
+
         varinRegionList[ireg].setRange(origMin,origMax)
 
     """
-    if showSum=True calculate the total number of fitted events in all regions  
+    if showSum=True calculate the total number of fitted events in all regions
     """
     if showSum:
       sampleSumInAllRegions = RooAddition( (sampleName+"_AllRegions_FITTED"), (sampleName+"_AllRegions_FITTED"), RooArgList(sampleInAllRegions))
@@ -319,7 +323,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
     tablenumbers['Fitted_err_'+sampleName]   = nSampleInRegionError
 
 
-  
+
   print "\n starting BEFORE-FIT calculations \n"
   """
   FROM HERE ON OUT WE CALCULATE THE EXPECTED NUMBER OF EVENTS __BEFORRE__ THE FIT
@@ -339,7 +343,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   for i in range(len(_muFacs)):
     if "mu_" in _muFacs[i].GetName() and _muFacs[i].getVal() != 1.0:
       print  " \n WARNING: scaling factor %s != 1.0 (%g) expected MC yield WILL BE WRONG!" % (_muFacs[i].GetName(), _muFacs[i].getVal())
-  
+
   """
   get a list of pdf's and variables per region
   """
@@ -376,9 +380,9 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   """
   nExpInRegionList =  [ pdf.getVal() for index, pdf in enumerate(rrspdfinRegionList)]
   pdfExpErrInRegionList = [ Util.GetPropagatedError(pdf, resultBeforeFit, doAsym)  for pdf in rrspdfinRegionList]
-  
+
   """
-  if showSum=True calculate the total number of expected events in all regions  
+  if showSum=True calculate the total number of expected events in all regions
   """
   if showSum:
     pdfInAllRegions = RooArgSet()
@@ -389,10 +393,10 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
     nPdfSumError = Util.GetPropagatedError(pdfSumInAllRegions, resultBeforeFit, doAsym)
     nExpInRegionList.append(nPdfSumVal)
     pdfExpErrInRegionList.append(nPdfSumError)
-  
+
   tablenumbers['TOTAL_MC_EXP_BKG_events']    =  nExpInRegionList
   tablenumbers['TOTAL_MC_EXP_BKG_err']    =  pdfExpErrInRegionList
-  
+
   """
   calculate the fitted number of events and propagated error for each requested sample, by splitting off each sample pdf
   """
@@ -407,7 +411,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
       MCSampleInRegionError = 0.
       if not MCSampleInRegion==None:
         MCSampleInRegionVal = MCSampleInRegion.getVal()
-        MCSampleInRegionError = Util.GetPropagatedError(MCSampleInRegion, resultBeforeFit, doAsym) 
+        MCSampleInRegionError = Util.GetPropagatedError(MCSampleInRegion, resultBeforeFit, doAsym)
         MCSampleInAllRegions.add(MCSampleInRegion)
       else:
         print " \n WARNING: sample=", sampleName, " non-existent (empty) in region=",region
@@ -415,8 +419,8 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
       nMCSampleInRegionError.append(MCSampleInRegionError)
 
       """
-      if splitBins=True calculate numbers of fitted events plus error per bin      
-      """ 
+      if splitBins=True calculate numbers of fitted events plus error per bin
+      """
       if splitBins:
         origMin = varinRegionList[ireg].getMin()
         origMax = varinRegionList[ireg].getMax()
@@ -433,11 +437,11 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
             print " \n YieldsTable.py: WARNING: sample =", sampleName, " non-existent (empty) in region=",region, " bin=",ibin, " \n"
           nMCSampleInRegionVal.append(MCSampleInRegionVal)
           nMCSampleInRegionError.append(MCSampleInRegionError)
- 
+
         varinRegionList[ireg].setRange(origMin,origMax)
 
     """
-    if showSum=True calculate the total number of fitted events in all regions  
+    if showSum=True calculate the total number of fitted events in all regions
     """
     if showSum:
       MCSampleSumInAllRegions = RooAddition( (sampleName+"_AllRegions_MC"), (sampleName+"_AllRegions_MC"), RooArgList(MCSampleInAllRegions))
@@ -453,14 +457,14 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   """
   map_listofkeys = tablenumbers.keys()
   map_listofkeys.sort()
-  
+
   """
   print the sorted tablenumbers set
   """
   for name in map_listofkeys:
     if tablenumbers.has_key(name) :
       print name, ": ", tablenumbers[name]
-      
+
   return tablenumbers
 
 
@@ -475,7 +479,7 @@ Main function calls start here ....
 """
 
 if __name__ == "__main__":
-  
+
   import os, sys
   import getopt
   """
@@ -496,7 +500,7 @@ if __name__ == "__main__":
     print "-S: also show the sum of all regions (off by default)"
     print "-y: take symmetrized average of minos errors"
     print "-C: full table caption"
-    print "-L: full table label" 
+    print "-L: full table label"
     print "-u: arbitrary string propagated to the latex table caption"
     print "-t: arbitrary string defining the latex table name"
     print "-P: calculate yields per bin for each region"
@@ -510,7 +514,7 @@ if __name__ == "__main__":
     print "YieldsTable.py -c S2eeT,S2mmT,S2emT,S4eeT,S4mmT,S4emT -w /afs/cern.ch/user/c/cote/susy0/users/cote/HistFitter5/results/Combined_KFactorFit_5Channel_bkgonly_combined_BasicMeasurement_model_afterFit.root -o MyTableDilep.tex -b"
     print "YieldsTable.py -c S2eeT,S2mmT,S2emT,S4eeT,S4mmT,S4emT -w /afs/cern.ch/user/c/cote/susy0/users/cote/HistFitter5/results/Combined_KFactorFit_5Channel_bkgonly_combined_BasicMeasurement_model_afterFit.root -o MyTableDilep.tex -b -S"
     print "YieldsTable.py -c S2eeT,S2mmT,S2emT,S4eeT,S4mmT,S4emT -w /afs/cern.ch/user/c/cote/susy0/users/cote/HistFitter5/results/Combined_KFactorFit_5Channel_bkgonly_combined_BasicMeasurement_model_afterFit.root -o MyTableDilep.tex -a"
-    sys.exit(0)        
+    sys.exit(0)
 
   wsFileName='/results/MyOneLeptonKtScaleFit_HardLepR17_BkgOnlyKt_combined_NormalMeasurement_model_afterFit.root'
   try:
@@ -533,10 +537,10 @@ if __name__ == "__main__":
   splitBins = False
   userString = ""
   tableName = "table.results.yields"
-   
+
   tableLabel = ""
   tableCaption = ""
-  
+
   """
   set options as given by the user call
   """
@@ -569,7 +573,7 @@ if __name__ == "__main__":
     elif opt == '-a':
       useAsimovSet = True
     elif opt == '-g':
-      ignoreLastChannel = True 
+      ignoreLastChannel = True
     elif opt == '-y':
       doAsym = True
     elif opt == '-P':
@@ -594,9 +598,9 @@ if __name__ == "__main__":
   dataname = "obsData"
   if useAsimovSet:
     dataname = "asimovData"
-    
+
   """
-  call the function to calculate the numbers, or take numbers from pickle file  
+  call the function to calculate the numbers, or take numbers from pickle file
   """
   import pickle
   if wsFileName.endswith(".pickle"):
@@ -621,7 +625,7 @@ if __name__ == "__main__":
     sampleName=getName(sample)
     sampleList_decoded.append(sampleName)
 
-     
+
   """
   write out LaTeX table by calling function from YieldsTableTex.py
   """
