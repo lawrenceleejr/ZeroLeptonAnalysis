@@ -248,7 +248,7 @@ def MakeHist(regionList, renamedRegions, results, hdata, hbkg, hbkgUp, hbkgDown,
     #hdata.SetMinimum(0.1)
     return
 
-def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRegions, doBlind, extra=""):
+def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRegions, doBlind, doLogScale = False, extra=""):
     print "========================================", outFileNamePrefix
     ROOT.gStyle.SetOptStat(0000);
     Npar=len(regionList)
@@ -303,6 +303,7 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     upperPad.SetLeftMargin( 0.10 );
     upperPad.SetFrameBorderMode(0);
     upperPad.SetFrameBorderMode(0);
+    upperPad.SetLogy(int(doLogScale))
     upperPad.Draw()
 
     lowerPad.SetGridx();
@@ -347,13 +348,13 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     all = []
     GetBoxes(all, hresults, renamedRegions, frame, doBlind, True)
 
-    c.Print("histpull_"+outFileNamePrefix+".eps")
-    c.Print("histpull_"+outFileNamePrefix+".png")
-    c.Print("histpull_"+outFileNamePrefix+".pdf")
+#    c.Print("histpull_"+outFileNamePrefix+".eps")
+#    c.Print("histpull_"+outFileNamePrefix+".png")
+    c.Print("histpull_"+outFileNamePrefix+("_log" if doLogScale else "_lin")+".pdf")
 
     return
 
-def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPrefix, doBlind=False, scaleRegions = {} ):
+def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPrefix, doBlind=False, scaleRegions = {} , doLogScale = False):
     """
     Make a pull plot from a pickle file of results
 
@@ -408,7 +409,7 @@ def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPref
         results1.append((region,pull,nbObs,nbExp,nbExpEr,totEr,nbExpComponents))
 
     #pull
-    MakeHistPullPlot(samples, regionList, outputPrefix, results1, renamedRegions, doBlind)
+    MakeHistPullPlot(samples, regionList, outputPrefix, results1, renamedRegions, doBlind, doLogScale=doLogScale)
 
     # return the results array in case you want to use this somewhere else
     return results1

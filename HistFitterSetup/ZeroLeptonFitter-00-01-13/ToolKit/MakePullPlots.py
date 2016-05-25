@@ -295,6 +295,7 @@ def main(zlFitterConfig):
 
     for anaName in myAnaList:
         regionList = zlFitterConfig.allRegionsList()
+        regionList.remove("VRQ")#don't plot VRQ for now
 
         # Filename containing workspace
         filename = os.path.join(options.output_dir, "ZL_%s_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root" % anaName)
@@ -319,6 +320,7 @@ def main(zlFitterConfig):
             pickleFilename = "yield_%s_all.pickle" % (anaName)
             scaleRegions  = {"VRZ_cuts" : 1.55/1.8 }#scale the VRZ by the jigsaw kappa factor
             results1=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind, scaleRegions)
+            results2=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind, scaleRegions, doLogScale = True)
 
             if results1!=None:
                 pullMap={}

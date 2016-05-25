@@ -196,9 +196,8 @@ class ZLFitterConfig:
         if sample == self.dibosonSampleName:     return "Diboson"
         return "Unknown"
 
-    def allRegionsList(self, excludeRegions = []):
+    def allRegionsList(self):
         allRegionsList = self.constrainingRegionsList+self.validationRegionsList+[self.SRName]
-        for reg in excludeRegions : allRegionsList.remove(reg)
         return allRegionsList
 
     def Print(self):
