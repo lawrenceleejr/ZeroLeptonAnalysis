@@ -353,7 +353,7 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
 
     return
 
-def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPrefix, doBlind=False):
+def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPrefix, doBlind=False, scaleRegions = {} ):
     """
     Make a pull plot from a pickle file of results
 
@@ -363,6 +363,7 @@ def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPref
     @param renamedRegions List of renamed regions; dict of old => new names
     @param outputPrefix Prefix for the output file
     @param doBlind Blind the SR or not?
+    @param scaleRegions Give a dictionary of regions with the scale factor to apply in that region
     """
     try:
         picklefile = open(pickleFilename,'rb')
@@ -379,6 +380,10 @@ def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPref
         nbObs = mydict["nobs"][index]
         nbExp = mydict["TOTAL_FITTED_bkg_events"][index]
         nbExpEr = mydict["TOTAL_FITTED_bkg_events_err"][index]
+        if region in scaleRegions.keys() :
+            print "scaling region" , region , "by " scaleRegions[region]
+            nbExp   = nbExp   * scaleRegions[region]
+            nbExpEr = nbExpEr * scaleRegions[region]
         pEr = PoissonError(nbExp)
         totEr = sqrt(nbExpEr*nbExpEr+pEr[2]*pEr[2])
         totErDo = sqrt(nbExpEr*nbExpEr+pEr[1]*pEr[1])
