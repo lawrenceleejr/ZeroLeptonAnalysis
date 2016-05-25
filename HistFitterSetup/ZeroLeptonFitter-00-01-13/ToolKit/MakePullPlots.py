@@ -317,8 +317,8 @@ def main(zlFitterConfig):
         #pull
         if not options.PrintOnly:
             pickleFilename = "yield_%s_all.pickle" % (anaName)
-            scaleRegions  = "VRZ_cuts"#scale the VRZ by the jigsaw kappa factor
-            results1=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind)
+            scaleRegions  = {"VRZ_cuts" : 1.55/1.8 }#scale the VRZ by the jigsaw kappa factor
+            results1=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind, scaleRegions)
 
             if results1!=None:
                 pullMap={}
