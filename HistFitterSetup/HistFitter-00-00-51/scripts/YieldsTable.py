@@ -14,7 +14,7 @@
  * Redistribution and use in source and binary forms, with or without             *
  * modification, are permitted according to the terms listed in the file          *
  * LICENSE.                                                                       *
-""" 
+"""
 
 import ROOT
 ROOT.gROOT.SetBatch(True)
@@ -36,7 +36,7 @@ import sys
 def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=False, doAsym=True, blinded=False, splitBins=False):
   """
   Calculate before/after-fit yields in all channels given
-  
+
   @param filename The filename containing afterFit workspace
   @param regionList A list of regions to be considered
   @param sampleList A list of samples to be considered
@@ -54,7 +54,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   w = Util.GetWorkspaceFromFile(filename,'w')
   if w==None:
     print "ERROR : Cannot open workspace : ", workspacename
-    sys.exit(1) 
+    sys.exit(1)
 
   """
   pick up after-fit RooExpandedFitResult from workspace
@@ -79,7 +79,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
   if data_set==None:
     print "ERROR : Cannot open dataset : ", "data_set"+suffix
     sys.exit(1)
-      
+
   """
   pick up channel category (RooCategory) from workspace
   """
@@ -117,7 +117,7 @@ def latexfitresults(filename,regionList,sampleList,dataname='obsData',showSum=Fa
       sumName = reg
     else:
       sumName = sumName + " + " + reg
-  
+
   regionListWithSum = list(regionList)
   if showSum:
     regionListWithSum.append(sumName)

@@ -248,7 +248,7 @@ def MakeHist(regionList, renamedRegions, results, hdata, hbkg, hbkgUp, hbkgDown,
     #hdata.SetMinimum(0.1)
     return
 
-def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRegions, doBlind, extra=""):
+def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRegions, doBlind, doLogScale = False, extra=""):
     print "========================================", outFileNamePrefix
     ROOT.gStyle.SetOptStat(0000);
     Npar=len(regionList)
@@ -303,6 +303,7 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     upperPad.SetLeftMargin( 0.10 );
     upperPad.SetFrameBorderMode(0);
     upperPad.SetFrameBorderMode(0);
+    upperPad.SetLogy(int(doLogScale))
     upperPad.Draw()
 
     lowerPad.SetGridx();
@@ -347,13 +348,13 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     all = []
     GetBoxes(all, hresults, renamedRegions, frame, doBlind, True)
 
-    c.Print("histpull_"+outFileNamePrefix+".eps")
-    c.Print("histpull_"+outFileNamePrefix+".png")
-    c.Print("histpull_"+outFileNamePrefix+".pdf")
+#    c.Print("histpull_"+outFileNamePrefix+".eps")
+#    c.Print("histpull_"+outFileNamePrefix+".png")
+    c.Print("histpull_"+outFileNamePrefix+("_log" if doLogScale else "_lin")+".pdf")
 
     return
 
-def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPrefix, doBlind=False):
+def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPrefix, doBlind=False, scaleRegions = {} , doLogScale = False):
     """
     Make a pull plot from a pickle file of results
 
@@ -363,6 +364,7 @@ def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPref
     @param renamedRegions List of renamed regions; dict of old => new names
     @param outputPrefix Prefix for the output file
     @param doBlind Blind the SR or not?
+    @param scaleRegions Give a dictionary of regions with the scale factor to apply in that region
     """
     try:
         picklefile = open(pickleFilename,'rb')
@@ -379,6 +381,10 @@ def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPref
         nbObs = mydict["nobs"][index]
         nbExp = mydict["TOTAL_FITTED_bkg_events"][index]
         nbExpEr = mydict["TOTAL_FITTED_bkg_events_err"][index]
+        if region in scaleRegions.keys() :
+            print "scaling region" , region , "by ", scaleRegions[region]
+            nbExp   = nbExp   * scaleRegions[region]
+            nbExpEr = nbExpEr * scaleRegions[region]
         pEr = PoissonError(nbExp)
         totEr = sqrt(nbExpEr*nbExpEr+pEr[2]*pEr[2])
         totErDo = sqrt(nbExpEr*nbExpEr+pEr[1]*pEr[1])
@@ -403,7 +409,7 @@ def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPref
         results1.append((region,pull,nbObs,nbExp,nbExpEr,totEr,nbExpComponents))
 
     #pull
-    MakeHistPullPlot(samples, regionList, outputPrefix, results1, renamedRegions, doBlind)
+    MakeHistPullPlot(samples, regionList, outputPrefix, results1, renamedRegions, doBlind, doLogScale=doLogScale)
 
     # return the results array in case you want to use this somewhere else
     return results1
