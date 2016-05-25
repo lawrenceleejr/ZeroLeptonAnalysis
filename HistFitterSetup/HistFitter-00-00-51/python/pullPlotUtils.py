@@ -381,7 +381,7 @@ def makePullPlot(pickleFilename, regionList, samples, renamedRegions, outputPref
         nbExp = mydict["TOTAL_FITTED_bkg_events"][index]
         nbExpEr = mydict["TOTAL_FITTED_bkg_events_err"][index]
         if region in scaleRegions.keys() :
-            print "scaling region" , region , "by " scaleRegions[region]
+            print "scaling region" , region , "by ", scaleRegions[region]
             nbExp   = nbExp   * scaleRegions[region]
             nbExpEr = nbExpEr * scaleRegions[region]
         pEr = PoissonError(nbExp)
