@@ -303,7 +303,6 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
     upperPad.SetLeftMargin( 0.10 );
     upperPad.SetFrameBorderMode(0);
     upperPad.SetFrameBorderMode(0);
-    upperPad.SetLogy(int(doLogScale))
     upperPad.Draw()
 
     lowerPad.SetGridx();
@@ -350,7 +349,16 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
 
 #    c.Print("histpull_"+outFileNamePrefix+".eps")
 #    c.Print("histpull_"+outFileNamePrefix+".png")
-    c.Print("histpull_"+outFileNamePrefix+("_log" if doLogScale else "_lin")+".pdf")
+    if doLogScale :
+        c.Print("histpull_"+outFileNamePrefix+("_lin")+".pdf")
+    else :
+        if hdata.Integral():
+            upperPad.cd()
+            hdata.SetMinimum(0.1)
+            hdata.SetMinimum(1000)
+            gPad.SetLogy()
+            c.Print("plots/histpull_"+outFileNamePrefix+"_log.pdf")
+        else : print "Integral is 0 when asking for log scale! not printing"
 
     return
 
