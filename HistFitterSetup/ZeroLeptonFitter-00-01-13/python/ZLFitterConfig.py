@@ -156,7 +156,7 @@ class ZLFitterConfig:
 
         # # # self.validationRegionsList+=["VRYf"]
         self.validationRegionsList += ["VRZ","VRW","VRT"]
-        self.validationRegionsList += ["VRZVL"]
+        self.validationRegionsList += ["CRZVL"]
         self.validationRegionsList += ["VRZa","VRWa","VRTa"]
         self.validationRegionsList += ["VRZb","VRWb","VRTb"]
         # # # self.validationRegionsList +=["VRZf"]
@@ -168,7 +168,7 @@ class ZLFitterConfig:
         # # # ##self.validationRegionsList+=["VRWTfplus","VRWTfminus"]
         # # # ##self.validationRegionsList+=["VRT2L"]
         # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation
-#        self.validationRegionsList+=["VRQ"]#,"VRQ2"]#,"VRQ3","VRQ4"]
+        self.validationRegionsList+=["VRQ"]#,"VRQ2"]#,"VRQ3","VRQ4"]
 
         self.datadriven = None
         self.writeXML = None
