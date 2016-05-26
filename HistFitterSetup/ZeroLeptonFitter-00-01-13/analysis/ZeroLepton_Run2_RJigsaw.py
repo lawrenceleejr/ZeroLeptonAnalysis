@@ -120,6 +120,8 @@ anaName = channel.name
 if channel.optimisationRegion:
     anaName = channel.fullname
 
+print anaName , anaName
+
 #######################################################################
 # Signal configutation
 #######################################################################
@@ -292,7 +294,8 @@ if configMgr.readFromTree:
 # weights = ["eventWeight", "pileupWeight", "normWeight"]
 weights = ["weight"]
 if zlFitterConfig.applyKappaCorrection:
-    weights.append("gammaCorWeight(RunNumber)")
+    anaNameSuperset = lambda x: (x if x in ["SRS","SRG","SRC"] else "")
+    weights.append("gammaCorWeight(RunNumber, "+anaNameSuperset(anaName)+")")
     # weights.append("1./1.6")
 configMgr.weights = weights
 
