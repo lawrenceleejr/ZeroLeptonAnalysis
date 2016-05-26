@@ -156,7 +156,7 @@ class ZLFitterConfig:
 
         # # # self.validationRegionsList+=["VRYf"]
         self.validationRegionsList += ["VRZ","VRW","VRT"]
-        self.validationRegionsList += ["CRZVL"]
+#        self.validationRegionsList += ["CRZVL"]
         self.validationRegionsList += ["VRZa","VRWa","VRTa"]
         self.validationRegionsList += ["VRZb","VRWb","VRTb"]
         # # # self.validationRegionsList +=["VRZf"]

@@ -350,15 +350,16 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
 #    c.Print("histpull_"+outFileNamePrefix+".eps")
 #    c.Print("histpull_"+outFileNamePrefix+".png")
     if doLogScale :
-        c.Print("histpull_"+outFileNamePrefix+("_lin")+".pdf")
-    else :
         if hdata.Integral():
             upperPad.cd()
             hdata.SetMinimum(0.1)
             hdata.SetMinimum(1000)
             gPad.SetLogy()
-            c.Print("plots/histpull_"+outFileNamePrefix+"_log.pdf")
+            c.Print("histpull_"+outFileNamePrefix+"_log.pdf")
         else : print "Integral is 0 when asking for log scale! not printing"
+    else :
+        c.Print("histpull_"+outFileNamePrefix+("_lin")+".pdf")
+
 
     return
 

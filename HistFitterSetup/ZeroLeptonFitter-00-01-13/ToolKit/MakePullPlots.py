@@ -321,7 +321,7 @@ def main(zlFitterConfig):
 #            scaleRegions  = {"VRZ_cuts" : 1.55/1.8 }#scale the VRZ by the jigsaw kappa factor
             scaleRegions  = {}#scale the VRZ by the jigsaw kappa factor
             results1=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind, scaleRegions)
-#            results2=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind, scaleRegions, doLogScale = True)
+            results2=makePullPlot(pickleFilename, regionList, samples, renamedRegions, anaName, options.blind, scaleRegions, doLogScale = True)
 
             if results1!=None:
                 pullMap={}
