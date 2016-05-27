@@ -40,15 +40,15 @@ if makeCutFlowTables:
 
 samples = [
 			# 'Data',
-			# 'QCD',
+			'QCD',
 			'Top',
 			'W',
 			'Z',
 			'Diboson',
 			]
 
-lumiscale = 1000
 
+lumiscale = 3.24
 
 colorpal = sns.color_palette("husl", 4 )
 
@@ -74,10 +74,10 @@ colors = {
 
 myfiles = {
 	# 'Data':   'hists/hist-DataMain_periodC.root.root',
-	# 'QCD':    'hists/output/hist-QCD.root.root',
+	'QCD':    'hists/output/QCD/hist-QCD.root.root',
 	'Top':    'hists/output/Top/hist-Top.root.root',
-	'W': 'hists/output/W/hist-Wjets.root.root',
-	'Z': 'hists/output/Z/hist-Zjets.root.root',
+	'W': 'hists/output/Wjets/hist-Wjets.root.root',
+	'Z': 'hists/output/Zjets/hist-Zjets.root.root',
 	'Diboson':'hists/output/Diboson/hist-Diboson.root.root',
 }
 
@@ -90,25 +90,43 @@ signalsamples = [x for x in signalsamples if "GG_direct" in x or "SS_direct" in 
 plottedsignals = {}
 
 
+plottedsignals["SR2jl"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2jm"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2jCo"] = ["SS_direct_900_500","SS_direct_1000_600","SS_direct_1100_700" ]
 plottedsignals["SR2jt"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR4jt"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SR5j"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR6jm"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR6jt"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
 
-plottedsignals["SR1ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR1BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR2ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR2BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR3ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR3BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS1a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS1b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS2a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS2b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS3a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS3b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 
 
-plottedsignals["SR1A"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-plottedsignals["SR1B"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-plottedsignals["SR1C"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
-plottedsignals["SR2A"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
-plottedsignals["SR2B"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
-plottedsignals["SR2C"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
-plottedsignals["SR3A"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
-plottedsignals["SR3B"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
-plottedsignals["SR3C"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SRC1a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC1b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC2a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC2b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC3a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC3b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC4a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC4b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+
+
+plottedsignals["SRG1a"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SRG1b"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SRG1c"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
+plottedsignals["SRG2a"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+plottedsignals["SRG2b"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+plottedsignals["SRG2c"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+plottedsignals["SRG3a"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SRG3b"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SRG3c"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+
 
 plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
 
@@ -123,23 +141,31 @@ regions = [
 # "SR2jt",
 
 
-"SR1ASq",
-"SR1BSq",
-"SR2ASq",
-"SR2BSq",
-"SR3ASq",
-"SR3BSq",
+"SRS1a",
+"SRS1b",
+"SRS2a",
+"SRS2b",
+"SRS3a",
+"SRS3b",
 
+"SRC1a",
+"SRC1b",
+"SRC2a",
+"SRC2b",
+"SRC3a",
+"SRC3b",
+"SRC4a",
+"SRC4b",
 
-"SR1A",
-"SR1B",
-"SR1C",
-"SR2A",
-"SR2B",
-"SR2C",
-"SR3A",
-"SR3B",
-"SR3C",
+"SRG1a",
+"SRG1b",
+"SRG1c",
+"SRG2a",
+"SRG2b",
+"SRG2c",
+"SRG3a",
+"SRG3b",
+"SRG3c",
 
 
 # "SR5j",
@@ -274,7 +300,26 @@ for region in regions:
 
 	# use them in the legend
 	for isignal in xrange(len(plottedsignals[region]) ):
-		handles[-1-isignal] = handles[-1-isignal][0]
+		try:
+			handles[-1-isignal] = handles[-1-isignal][0]
+
+		except:
+			pass
+
+
+	# # get handles
+	# handles, labels = axes.get_legend_handles_labels()
+	# # remove the errorbars
+	# tmphandles = []
+	# tmplabels = []
+	# for a,b in zip(handles,labels):
+	# 	# if type(a)==Line2D:
+	# 	# 	continue
+	# 	tmphandles.append(a[0])
+	# 	tmplabels.append(b)
+	# # use them in the legend
+
+
 	axes2.legend(handles, labels, loc='best',numpoints=1)
 
 
@@ -285,6 +330,6 @@ for region in regions:
 	# plt.show()
 
 	print "saving"
-	fig.savefig("N-1Plots/%s.png"%histogramName)
+	fig.savefig("CutflowPlots/%s.pdf"%histogramName, dpi=300)
 
 

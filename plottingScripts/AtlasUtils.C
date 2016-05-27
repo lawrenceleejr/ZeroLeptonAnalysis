@@ -10,28 +10,28 @@
 #include "TPave.h"
 #include "TH1.h"
 
-void ATLAS_LABEL(Double_t x,Double_t y,Color_t color) 
+void ATLAS_LABEL(Double_t x,Double_t y,Color_t color, std::string extra)
 {
-  TLatex l; //l.SetTextAlign(12); l.SetTextSize(tsize); 
+  TLatex l; //l.SetTextAlign(12); l.SetTextSize(tsize);
   l.SetNDC();
   l.SetTextFont(72);
   l.SetTextColor(color);
-  l.DrawLatex(x,y,"ATLAS");
+  l.DrawLatex(x,y, ("ATLAS " + extra ).c_str());
 }
 
 TGraphErrors* myTGraphErrorsDivide(TGraphErrors* g1,TGraphErrors* g2) {
- 
-  const Int_t debug=0; 
 
-  if (!g1) printf("**myTGraphErrorsDivide: g1 does not exist !  \n"); 
-  if (!g2) printf("**myTGraphErrorsDivide: g2 does not exist !  \n"); 
+  const Int_t debug=0;
+
+  if (!g1) printf("**myTGraphErrorsDivide: g1 does not exist !  \n");
+  if (!g2) printf("**myTGraphErrorsDivide: g2 does not exist !  \n");
 
 
   Int_t n1=g1->GetN();
   Int_t n2=g2->GetN();
 
   if (n1!=n2) {
-   printf("**myTGraphErrorsDivide: vector do not have same number of entries !  \n"); 
+   printf("**myTGraphErrorsDivide: vector do not have same number of entries !  \n");
   }
 
   TGraphErrors* g3= new TGraphErrors();
@@ -53,15 +53,15 @@ TGraphErrors* myTGraphErrorsDivide(TGraphErrors* g1,TGraphErrors* g2) {
      dx1  = g1->GetErrorX(i1);
      if (y1!=0) dy1  = g1->GetErrorY(i1)/y1;
      if (y2!=0) dy2  = g2->GetErrorY(i2)/y2;
-   
+
      if (debug)
       printf("**myTGraphErrorsDivide: %d x1=%f x2=%f y1=%f y2=%f  \n",iv,x1,x2,y1,y2);
 
      if (y2!=0.) g3->SetPoint(iv, x1,y1/y2);
      else        g3->SetPoint(iv, x1,y2);
-   
+
      Double_t e=0.;
-     if (y1!=0 && y2!=0) e=std::sqrt(dy1*dy1+dy2*dy2)*(y1/y2); 
+     if (y1!=0 && y2!=0) e=std::sqrt(dy1*dy1+dy2*dy2)*(y1/y2);
      g3->SetPointError(iv,dx1,e);
 
 
@@ -75,7 +75,7 @@ TGraphErrors* myTGraphErrorsDivide(TGraphErrors* g1,TGraphErrors* g2) {
     }
     //    printf("**myTGraphErrorsDivide: ...next  \n");
    }
-  }  
+  }
   return g3;
 
 }
@@ -83,7 +83,7 @@ TGraphErrors* myTGraphErrorsDivide(TGraphErrors* g1,TGraphErrors* g2) {
 
 TGraphAsymmErrors* myTGraphErrorsDivide(TGraphAsymmErrors* g1,TGraphAsymmErrors* g2) {
 
-  const Int_t debug=0; 
+  const Int_t debug=0;
 
   TGraphAsymmErrors* g3= new TGraphAsymmErrors();
   Int_t n1=g1->GetN();
@@ -126,7 +126,7 @@ TGraphAsymmErrors* myTGraphErrorsDivide(TGraphAsymmErrors* g1,TGraphAsymmErrors*
     else        dy1l  = 0.;
     if (y2!=0.) dy2l  = EYlow2 [i]/y2;
     else        dy2l  = 0.;
-   
+
     //if (debug)
     //printf("%d x1=%f x2=%f y1=%f y2=%f  \n",i,x1,x2,y1,y2);
     if (debug)
@@ -143,7 +143,7 @@ TGraphAsymmErrors* myTGraphErrorsDivide(TGraphAsymmErrors* g1,TGraphAsymmErrors*
     if (debug) printf("dx1h=%f  dx1l=%f  el=%f  eh=%f \n",dx1h,dx1l,el,eh);
     g3->SetPointError(i,dx1h,dx1l,el,eh);
 
-  }  
+  }
   return g3;
 
 }
@@ -205,9 +205,9 @@ void myAddtoBand(TGraphErrors* g1, TGraphAsymmErrors* g2) {
   for (Int_t i=0; i<g1->GetN(); i++) {
     g1->GetPoint(i, x1,y1);
     g2->GetPoint(i, x1,y2);
-    
-    if ( y1==0 || y2==0 ) { 
-      std::cerr << "check these points very carefully : myAddtoBand() : point " << i << std::endl;  
+
+    if ( y1==0 || y2==0 ) {
+      std::cerr << "check these points very carefully : myAddtoBand() : point " << i << std::endl;
     }
     //    if (y1==0) y1=1;
     //    if (y2==0) y2=1;
@@ -255,7 +255,7 @@ TGraphErrors* TH1TOTGraph(TH1 *h1){
    ey=h1->GetBinError(i);
    x=h1->GetBinCenter(i);
    ex=h1->GetBinWidth(i);
-   
+
   //   cout << " x,y = " << x << " " << y << " ex,ey = " << ex << " " << ey << endl;
 
    g1->SetPoint(i-1,x,y);
@@ -271,19 +271,19 @@ TGraphErrors* TH1TOTGraph(TH1 *h1){
 void myText(Double_t x,Double_t y,Color_t color, const char *text) {
 
   //Double_t tsize=0.05;
-  TLatex l; //l.SetTextAlign(12); l.SetTextSize(tsize); 
+  TLatex l; //l.SetTextAlign(12); l.SetTextSize(tsize);
   l.SetNDC();
   l.SetTextColor(color);
   l.DrawLatex(x,y,text);
 }
- 
 
-void myBoxText(Double_t x, Double_t y,Double_t boxsize,Int_t mcolor,const char *text) 
+
+void myBoxText(Double_t x, Double_t y,Double_t boxsize,Int_t mcolor,const char *text)
 {
 
   Double_t tsize=0.06;
 
-  TLatex l; l.SetTextAlign(12); //l.SetTextSize(tsize); 
+  TLatex l; l.SetTextAlign(12); //l.SetTextSize(tsize);
   l.SetNDC();
   l.DrawLatex(x,y,text);
 
@@ -310,7 +310,7 @@ void myBoxText(Double_t x, Double_t y,Double_t boxsize,Int_t mcolor,const char *
 }
 
 
-void myMarkerText(Double_t x,Double_t y,Int_t color,Int_t mstyle, const char *text,Float_t msize) 
+void myMarkerText(Double_t x,Double_t y,Int_t color,Int_t mstyle, const char *text,Float_t msize)
 {
   Double_t tsize=0.06;
   TMarker *marker = new TMarker(x-(0.4*tsize),y,8);
@@ -319,7 +319,7 @@ void myMarkerText(Double_t x,Double_t y,Int_t color,Int_t mstyle, const char *te
   marker->SetMarkerSize(msize);
   marker->Draw();
 
-  TLatex l; l.SetTextAlign(12); //l.SetTextSize(tsize); 
+  TLatex l; l.SetTextAlign(12); //l.SetTextSize(tsize);
   l.SetNDC();
   l.DrawLatex(x,y,text);
 }

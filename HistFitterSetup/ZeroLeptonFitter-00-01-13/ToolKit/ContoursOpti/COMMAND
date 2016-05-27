@@ -1,0 +1,18 @@
+
+python getJSONFiles.py  --gridName GG_direct   &
+python makeContour.py -o --gridName GG_direct &
+
+python getJSONFiles.py  --gridName SS_direct    &
+python makeContour.py -o --gridName SS_direct &
+
+
+python getJSONFiles.py  --gridName GG_onestepCC_x05 
+python makeContour.py -o --gridName GG_onestepCC_x05 
+
+python getJSONFiles.py  --gridName GG_onestepCC_mchi1060 
+python makeContour.py -o --gridName GG_onestepCC_mchi1060 
+
+
+python getJSONFiles.py  --gridName SM_GG_N2_mchi101 &
+python makeContour.py -o --gridName SM_GG_N2_mchi101 &
+

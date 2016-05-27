@@ -1,0 +1,77 @@
+To-do-list HistFitter 9. September 2015
+
+############
+#All tasks:#
+############
+
+
+>>> High priority:
+
+- Documentation on how to setup HistFitter and ROOT on different operating systems (ubuntu done, complete mac instructions)
+- Revision: the Tutorial/documentation could be a more practical-oriented. 
+ o Update contour plot example
+ o Update FAQ and main HistFitter twiki pages
+- Advertizement and examples for combination of workspaces. ---> Partially DONE
+- Migration into ATLAS release
+- Harmonize the various plotting and batch/grid submission scripts. 
+- Migrate to uncapped p0 values. 
+- toys versus asymptotic - add possibility to assess fit information on toys
+- Investigate 'method 3' from Higgs group for systematics tables
+- Memory issue reported for loading many histograms at the grid by Katharina Behr
+
+>>>>>From old to-do list:
+- Proper treatment of all bins with zero events by HistFactory? Check (See recent mail George Lewis)
+- sigma values in list-file. 
+- Hard-coded names, e.g. sig_xsection. Needs to be documented, or made flexible. 
+- Generalized scripts --- for plotting in particular
+
+
+
+>>> Next: Useful additions & Extra documentation:
+
+- Analysis script sharing/generalization/
+  o in particular for contour plot scripts, also update those in the trunk
+  o add option to run contour plots to HistFitter.py
+- Correct statistical treatment of fits to prescaled data. 
+- Clean-up of C++ and python code (see work packages by statistics forum)
+- Add possibility to produce HEPData material
+- Add pull plot for parameters to HistFitter
+- Provide functions/tools to do fitting/plotting of arbitrary workspaces, also not following the naming convention by HistFitter
+- feature request: generalization of pull plot macro, possible based on pickle format as in Geert-Jan's example macro
+- parallelization for histogram construction and for producing toys
+
+>>> On slightly longer time-scale:
+
+- Manpower situation. Rotation of mailing-list help. 
+- Python code cleanup: implement polymorphic design for Systematic and Sample python config objects 
+
+
+
+###################
+#Tasks per person:#
+###################
+
+---------------------------
+
+Tasks for Jeanette:
+
+- ensure blinding also for only specific regions
+- work on parallelization/information on toys
+- enable overlaying of signal point on CRs/VRs plots from background-only fit
+
+-------------------
+
+Tasks for Geert-Jan:
+
+- module functions for contour plots
+
+
+----------------
+Tasks for Sarah:
+
+- implement ABCD method
+
+----------------
+Tasks for Luigi:
+
+- presentation of systematic uncertainties before fit

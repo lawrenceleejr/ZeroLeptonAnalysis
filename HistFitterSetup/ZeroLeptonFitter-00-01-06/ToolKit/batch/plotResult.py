@@ -22,7 +22,7 @@ from pprint import pprint
 from zerolepton.colors import colors
 from zerolepton.grids.config import GridConfig
 
-# from zerolepton.plotting.optimisationplot import OptimisationPlot
+from zerolepton.plotting.optimisationplot import OptimisationPlot
 
 from zerolepton.contours.data import ContourData, OptimisationCut
 from zerolepton.contours.utils import getFileList, createPlainTextListFileFromJSON

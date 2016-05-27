@@ -36,26 +36,28 @@ mpl.rcParams['text.latex.preamble'] = [
 
 samples = [
 			# 'Data',
-			# 'QCD',
+			'QCD',
+			# 'GammaJet',
 			'Top',
-			'W',
-			'Z',
+			'Wjets',
+			'Zjets',
 			'Diboson',
 			]
 
-lumiscale = 4
+lumiscale = 3.24
 
 
-colorpal = sns.color_palette("husl", 4 )
+colorpal = sns.color_palette("husl", 5 )
 
 
 colors = {
 	'Data': 'black',
 	'QCD': 'gray',
 	'Top': colorpal[0],
-	'W': colorpal[1],
-	'Z': colorpal[2],
+	'Wjets': colorpal[1],
+	'Zjets': colorpal[2],
 	'Diboson': colorpal[3],
+	'GammaJet': colorpal[4],
 }
 
 # colors = {
@@ -67,15 +69,17 @@ colors = {
 # }
 
 myfiles = {
-	# 'Data':   'hists/hist-DataMain_periodC.root.root',
-	# 'QCD':    'hists/hist-QCD.root.root',
-	'Top':    'hists/output/Top/hist-Top.root.root',
-	'W':      'hists/output/W/hist-Wjets.root.root',
-	'Z':      'hists/output/Z/hist-Zjets.root.root',
-	'Diboson':'hists/output/Diboson/hist-Diboson.root.root',
+	'Data':   root_open('hists/output/Data/hist-Data.root.root'),
+	'QCD':    root_open('hists/output/QCD/hist-QCD.root.root'),
+	'GammaJet':    root_open('hists/output/GammaJet/hist-GammaJet.root.root'),
+
+	'Top':    root_open('hists/output/Top/hist-Top.root.root'),
+	'Wjets':      root_open('hists/output/Wjets/hist-Wjets.root.root'),
+	'Zjets':      root_open('hists/output/Zjets/hist-Zjets.root.root'),
+	'Diboson':root_open('hists/output/Diboson/hist-Diboson.root.root'),
 }
 
-
+rebinfactor = 2
 
 signalsamples = os.listdir("hists/output/")
 # print signalsamples
@@ -90,27 +94,40 @@ plottedsignals = {}
 
 plottedsignals["SR2jl"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 plottedsignals["SR2jm"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SR2jCo"] = ["SS_direct_900_500","SS_direct_1000_600","SS_direct_1100_700" ]
 plottedsignals["SR2jt"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 plottedsignals["SR4jt"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
 plottedsignals["SR5j"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR6jm"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SR6jt"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
 
-plottedsignals["SR1ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR1BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR2ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR2BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR3ASq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SR3BSq"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS1a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS1b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS2a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS2b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS3a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+plottedsignals["SRS3b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 
 
-plottedsignals["SR1A"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-plottedsignals["SR1B"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-plottedsignals["SR1C"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
-plottedsignals["SR2A"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
-plottedsignals["SR2B"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
-plottedsignals["SR2C"] = ["GG_direct_1200_400","GG_direct_1300_500","GG_direct_1400_600" ]
-plottedsignals["SR3A"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
-plottedsignals["SR3B"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
-plottedsignals["SR3C"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SRC1a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC1b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC2a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC2b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC3a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC3b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC4a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+plottedsignals["SRC4b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+
+
+plottedsignals["SRG1a"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SRG1b"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+plottedsignals["SRG1c"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
+plottedsignals["SRG2a"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+plottedsignals["SRG2b"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+plottedsignals["SRG2c"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+plottedsignals["SRG3a"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SRG3b"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+plottedsignals["SRG3c"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
 
 
 # plottedsignals["SR3A"] = ["GG_onestepCC_745_625_505"]
@@ -118,12 +135,18 @@ plottedsignals["SR3C"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_160
 plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
 
 
-f = root_open(myfiles['Top'])
+f = myfiles['Top']
+f.ls()
 # f.ls()
 # print [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
-histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
+f.cd()
+# histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
+histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "Meff_" in key.GetName() ]
+histogramNames += [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "MET_" in key.GetName() ]
 
 # myfiles[""]
+
+print histogramNames
 
 
 # style_mpl()
@@ -131,18 +154,11 @@ fig = plt.figure(figsize=(6,7.5))
 
 outputFile = open("n-1.tex", 'w')
 
+
 for histogramName in histogramNames:
 
-	# if not("SR5j" in histogramName):
-	# 	continue
-	# if "SR5j" in histogramName:
-	# 	continue
-	# if "SR6j" in histogramName:
-	# 	continue
-	# if not("SR2j" in histogramName):
-	# 	continue
-
-	if not("SR3A" in histogramName):
+	print histogramName
+	if "SR" not in histogramName:
 		continue
 
 	plt.clf()
@@ -152,25 +168,29 @@ for histogramName in histogramNames:
 	stack = HistStack()
 
 	for sample in samples:
-		f = root_open(myfiles[sample])
+		f = myfiles[sample]
 		# f.ls()
 		hists[sample] = f.Get(histogramName).Clone(sample)
 		hists[sample].Sumw2()
-		if not("nJet" in histogramName)  and not("QCD_Delta" in histogramName):
-			hists[sample].Rebin(2)
-			# hists[sample].Rebin(100)
+		if not("nJet" in histogramName) and not("nBJet" in histogramName):
+			hists[sample].Rebin(rebinfactor)
+			# hists[sample].Rebin(rebinfactor)
 		hists[sample].SetTitle(r"%s"%sample)
-		hists[sample].fillstyle = 'solid'
+		hists[sample].fillstyle = "solid"
 		hists[sample].fillcolor = colors[sample]
-		hists[sample].linewidth = 0
-		hists[sample].Scale(lumiscale)
+		# hists[sample].linewidth = 0
 		if "SS_direct" in sample:
 			hists[sample].Scale(0.8)
 
 		if sample != 'Data':
+			hists[sample].Scale(lumiscale)
 			histsToStack.append( hists[sample] )
-		else:
-			hists[sample].markersize = 1.2
+
+		print hists[sample].Integral()
+		# else:
+		# 	# hists[sample].markersize = 1.2
+		# 	pass
+
 
 
 	# print histsToStack[0].Integral()
@@ -185,6 +205,7 @@ for histogramName in histogramNames:
 	try:
 		stack.sum.Integral()
 	except:
+		print "stack has no integral!"
 		continue
 
 	gs = mpl.gridspec.GridSpec(2,1,height_ratios=[4,1])
@@ -196,25 +217,44 @@ for histogramName in histogramNames:
 	# axes = plt.subplot()
 
 
+	# rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, rasterized=True, ec='grey', linewidth=1)
+	# rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes, marker='o', ms=10)
+	
 
 
 	try:
-
 		axes.set_yscale('log')
-		rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, rasterized=True, ec='grey', linewidth=1)
+		rplt.bar(stack, stacked=True, axes=axes, yerr=False, alpha=0.5, rasterized=True, ec='grey', linewidth=0)
+		tmpstack = stack.sum
+		tmpstack.fillstyle = "none"
+		for i in xrange(len(stack)):
+			myalpha = 0.4 if i>0 else 1.0
+			rplt.hist(tmpstack, axes=axes, yerr=False, alpha=myalpha, rasterized=True, ec='grey', linewidth=1, fillstyle="none")
+			tmpstack = tmpstack - stack[len(stack)-1-i]
+
 		if hists['Data'].Integral():
-			rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes)
+			rplt.errorbar(hists['Data'], xerr=False, emptybins=False, axes=axes, marker='o', lw=1)
 	except:
-		# print "no data events..."
-		# continue
+		print "some sort of problem!"
 		pass
+
+
+
 
 	for signalsample in signalsamples:
 		# print signalsample
 		# print plottedsignals[histogramName.split("_")[0]  ] 
 		skip = 1
-		if any([thissig in signalsample for thissig in plottedsignals[histogramName.split("_")[0]  ] ]):
-			skip=0
+		try:
+			if "MET" in histogramName or "Meff" in histogramName:
+				tmpregionname = histogramName.split("_")[1]
+			else:
+				tmpregionname = histogramName.split("_")[0]
+			if any([thissig in signalsample for thissig in plottedsignals[tmpregionname  ] ]):
+				skip=0
+		except:
+			skip=1
+
 		if skip:
 			# print "skipping"
 			continue
@@ -229,11 +269,11 @@ for histogramName in histogramNames:
 
 
 		if not("nJet" in histogramName) and not("QCD_Delta" in histogramName):
-			hists[signalsample].Rebin(2)
+			hists[signalsample].Rebin(rebinfactor)
 		hists[signalsample].color = "red"
 
 		if hists[signalsample].Integral():
-			rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", markersize=0, rasterized=False)
+			rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", rasterized=False, markersize=0)
 
 		signalfile.Close()
 
@@ -246,26 +286,37 @@ for histogramName in histogramNames:
 
 	# leg = plt.legend(loc="best")
 	axes.annotate(r'\textbf{\textit{ATLAS}} Internal',xy=(0.05,0.95),xycoords='axes fraction') 
-	axes.annotate(r'$\int{L}\sim$ %d pb$^{-1}$, $\sqrt{s}$=13 TeV, N-1, %s'%(lumiscale, histogramName.split("_")[0] ),xy=(0.0,1.01),xycoords='axes fraction') 
+	axes.annotate(r'$\int{L}\sim$ %.1f fb$^{-1}$, $\sqrt{s}$=13 TeV, N-1, %s'%(lumiscale, histogramName.split("_")[0] ),xy=(0.0,1.01),xycoords='axes fraction') 
+
+	
+	if "MET" in histogramName:
+		xlim([0,3000])
+
+	if "Meff" in histogramName:
+		xlim([0,6000])
 
 
-	cutvalue = histogramName.split(">")[-1].split("<")[-1]
-	if cutvalue[0]=="0":
-		cutvalue = "0."+cutvalue[1:]
-	cutvalue = float(cutvalue)
-	boxDirection = 1 if ">" in histogramName else -1
 
-	linelength = abs(axes.axis()[0]-axes.axis()[1])/10.
-	linelength = 10e10
 
-	axes.plot( (cutvalue,cutvalue), (1e-10,1e2), 'g-' , alpha=0.8)
-	axes.plot( (cutvalue,cutvalue+linelength*boxDirection), (1e2,1e2), 'g-' , alpha=0.8)
-	# import numpy as np
-	# myx = np.linspace(cutvalue,cutvalue+linelength*boxDirection,2)
-	# myy = array([1,1])
-	# axes.quiver(  myx[:-1], myy[:-1], myx[1:]-myx[:-1], myy[1:]-myy[:-1] , scale_units='xy', angles='xy',scale=1 )#, head_width=0.05, head_length=0.1, fc='g', ec='g' , alpha=0.8)
-	axes.text( cutvalue, 0.01, 'Cut at %.2f'%cutvalue, color="k", size=10, va="top", ha="center", rotation=90)
+	try:
+		cutvalue = histogramName.split(">")[-1].split("<")[-1]
+		if cutvalue[0]=="0":
+			cutvalue = "0."+cutvalue[1:]
+		cutvalue = float(cutvalue)
+		boxDirection = 1 if ">" in histogramName else -1
 
+		linelength = abs(axes.axis()[0]-axes.axis()[1])/10.
+		linelength = 10e10
+
+		axes.plot( (cutvalue,cutvalue), (1e-10,1e2), 'g-' , alpha=0.8)
+		axes.plot( (cutvalue,cutvalue+linelength*boxDirection), (1e2,1e2), 'g-' , alpha=0.8)
+		# import numpy as np
+		# myx = np.linspace(cutvalue,cutvalue+linelength*boxDirection,2)
+		# myy = array([1,1])
+		# axes.quiver(  myx[:-1], myy[:-1], myx[1:]-myx[:-1], myy[1:]-myy[:-1] , scale_units='xy', angles='xy',scale=1 )#, head_width=0.05, head_length=0.1, fc='g', ec='g' , alpha=0.8)
+		axes.text( cutvalue, 0.5, 'Cut at %.2f'%cutvalue, color="k", size=10, va="top", ha="right", rotation=90)
+	except:
+		pass
 
 	# axes_ratio.set_xlabel(histogramName.replace("_"," ").replace(">","$>$").replace("<","$<$") )
 
@@ -274,20 +325,47 @@ for histogramName in histogramNames:
 	# get handles
 	handles, labels = axes.get_legend_handles_labels()
 	# remove the errorbars
-	handles = [h[0] for h in handles]
+	tmphandles = []
+	tmplabels = []
+	for a,b in zip(handles,labels):
+		if type(a)==Line2D:
+			continue
+		tmphandles.append(a[0])
+		tmplabels.append(b)
 	# use them in the legend
-	axes.legend(handles, labels, loc='best',numpoints=1)
+	axes.legend(tmphandles, tmplabels, loc='best',numpoints=1)
 
 
 	if 'Data' in hists:
-		ratioplot = Graph.divide(  Graph(hists['Data']), stack.sum , 'pois'  )
+		# print list(stack.sum.y())
+		# ratioplot = Graph.divide(  Graph(hists['Data']), stack.sum  )
+		ratioplot = Graph()
+		ratioplot.Divide(  hists['Data'], stack.sum , 'pois'  )
 		ratioplot.color = "black"
-		axes_ratio.errorbar(list(ratioplot.x()) , 
-							list(ratioplot.y()), 
-							yerr=[ x[0] for x in list(ratioplot.yerr() ) ] , 
-							# xerr=list(ratioplot.y()), 
-							fmt='o',
-							color="black")
+
+		if hists["Data"].Integral():
+			tmpyerror,tmpyerror2 = zip(*list(ratioplot.yerr()) )
+			tmpx = list(ratioplot.x())
+			tmpy = list(ratioplot.y())
+			tmpxy = zip(tmpx,tmpy,tmpyerror)
+			# print tmpxy
+			tmpxy = [tmp for tmp in tmpxy if tmp[1]!=0  ]
+			# print tmpxy
+			tmpx,tmpy,tmpyerror = zip(*tmpxy)
+			# print tmpyerror
+			# axes_ratio.errorbar(tmpx,tmpy, yerr = tmpyerror,xerr=False, emptybins=False, marker='o', lw=1, color="black")
+			axes_ratio.errorbar(tmpx, tmpy, 
+								# list(ratioplot.y()), 
+								yerr = tmpyerror,
+								# yerr=[ x[0] for x in list(ratioplot.yerr() ) ] , 
+								# xerr=list(ratioplot.y()), 
+								# emptybins=False,
+								fmt='o', lw=1,
+								color="black", ms=5)
+								# clip_on=False)
+
+		xmin, xmax = axes.get_xlim()
+		plt.plot([xmin,xmax], [1,1], 'k--', lw=1)
 
 		yticks(arange(0,2.0,0.2))
 		ylim([0,2])
@@ -308,7 +386,7 @@ for histogramName in histogramNames:
 							color="black")
 
 		yticks(arange(0,2.0,0.2))
-		ylim([0,1.0])
+		ylim([0.01,1.0])
 
 		axes_ratio.set_ylabel('Diboson Fraction')
 
@@ -317,13 +395,13 @@ for histogramName in histogramNames:
 	axes.set_ylabel('Events')
 	axes_ratio.set_xlabel(histogramName.replace("_"," ").replace(">","$>$").replace("<","$<$") )
 
-	axes.set_ylim([0.0005, 99999])
+	axes.set_ylim([0.05, 9999])
 
-
+	# axes.set_yscale(nonposy='clip')
 
 	print "saving"
 
-	fig.savefig("N-1Plots/%s.png"%histogramName, dpi=100)
+	fig.savefig("N-1Plots/%s.pdf"%histogramName, dpi=100)
 
 	outputFile.write(r"""
 \begin{figure}[tbph]
