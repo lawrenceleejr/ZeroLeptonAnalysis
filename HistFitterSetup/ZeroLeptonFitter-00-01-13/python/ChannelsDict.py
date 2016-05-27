@@ -366,7 +366,7 @@ anaSRJigsawSRG1Common.minR_pTj2i_HT3PPi = 0.125
 anaSRJigsawSRG1Common.maxR_H1PPi_H2PPi_upper = 0.95
 anaSRJigsawSRG1Common.dangle_upper = 0.6
 
-anaSRJigsawSRG1Common.HT5PP_loose = 1000
+anaSRJigsawSRG1Common.HT5PP_loose = 800
 anaSRJigsawSRG1Common.H2PP_loose = 550
 anaSRJigsawSRG1Common.H2PP = 550
 
@@ -518,7 +518,7 @@ anaSRJigsawSRS2Common.RPZ_HT5PP_upper   = 0.6
 anaSRJigsawSRS2Common.R_ptj2_HT3PP      = 0.15
 #anaSRJigsawSRS2Common.cosP_upper       = 0.7
 
-anaSRJigsawSRS2Common.HT3PP_loose = 1300
+anaSRJigsawSRS2Common.HT3PP_loose = 1000
 anaSRJigsawSRS2Common.H2PP_loose  = 900
 anaSRJigsawSRS2Common.H2PP        = 1200
 
@@ -548,7 +548,7 @@ anaSRJigsawSRS3Common.RPZ_HT5PP_upper   = 0.63
 anaSRJigsawSRS3Common.R_ptj2_HT3PP      = 0.13
 #anaSRJigsawSRS3Common.cosP_upper       = 0.8
 
-anaSRJigsawSRS3Common.HT3PP_loose = 1100
+anaSRJigsawSRS3Common.HT3PP_loose = 1000
 anaSRJigsawSRS3Common.H2PP_loose  = 900
 anaSRJigsawSRS3Common.H2PP        = 1500
 

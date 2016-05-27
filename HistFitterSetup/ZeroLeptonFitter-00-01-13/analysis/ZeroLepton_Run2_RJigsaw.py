@@ -292,10 +292,15 @@ if configMgr.readFromTree:
 # Tuples of nominal weights
 #weights = ["genWeight", "pileupWeight", "normWeight"]
 # weights = ["eventWeight", "pileupWeight", "normWeight"]
+def anaNameEnum (anaName) :
+    if "SRG" in anaName : return 1
+    if "SRC" in anaName : return 2
+    if "SRS" in anaName : return 3
+    else : return 0
+
 weights = ["weight"]
 if zlFitterConfig.applyKappaCorrection:
-    anaNameSuperset = lambda x: (x if x in ["SRS","SRG","SRC"] else "")
-    weights.append("gammaCorWeight(RunNumber, "+anaNameSuperset(anaName)+")")
+    weights.append("gammaCorWeight(RunNumber, "+str(anaNameEnum(anaName))+")")
     # weights.append("1./1.6")
 configMgr.weights = weights
 
