@@ -1,3 +1,7 @@
+
+
+
+
 #################################################
 # Channel configuration
 #################################################
@@ -414,17 +418,17 @@ class ChannelConfig:
         # cleaning cuts
         if self.doCleaning:
             if self.regionDict[regionName].suffixTreeName == "SRAll":
-                self.cleaningCuts = "((cleaning&3) == 0)"
+                self.cleaningCuts = "((cleaning&(0x80+3)) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "CRWT":
-                self.cleaningCuts = "((cleaning&15) == 0)"
+                self.cleaningCuts = "((cleaning&(0x80+15)) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "VRWT":
-                self.cleaningCuts = "((cleaning&15) == 0)"
+                self.cleaningCuts = "((cleaning&(0x80+15)) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "CRZ":
-                self.cleaningCuts = "((cleaning&7) == 0)"
+                self.cleaningCuts = "((cleaning&(0x80+7)) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "CRY":
-                self.cleaningCuts = "((cleaning&15) == 0)"
+                self.cleaningCuts = "((cleaning&(0x80+15)) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "CRQ":
-                self.cleaningCuts = "((cleaning&3)==0)"
+                self.cleaningCuts = "((cleaning&(0x80+3))==0)"
             else:
                 self.cleaningCuts = "(1)"
 
