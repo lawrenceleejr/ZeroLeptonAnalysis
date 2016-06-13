@@ -192,8 +192,7 @@ if myFitType == FitType.Background:
 # Parameters for hypothesis test
 #######################################################################
 
-# configMgr.nTOYs = 5000      # number of toys when doing frequentist calculator
-configMgr.nTOYs = 100      # number of toys when doing frequentist calculator
+configMgr.nTOYs = 5000      # number of toys when doing frequentist calculator
 configMgr.doExclusion = False
 if myFitType == FitType.Exclusion:
     configMgr.doExclusion = True
@@ -475,6 +474,10 @@ if zlFitterConfig.useShapeFit and zlFitterConfig.useShapeFactor:
 #######################################################################
 
 # Here be systematics. Sometime in future.
+sysWeight_theoSysSigUp = myreplace(configMgr.weights, ["normWeightUp"], "normWeight")
+sysWeight_theoSysSigDown = myreplace(configMgr.weights, ["normWeightDown"], "normWeight")
+theoSysSig = Systematic("SigXSec", configMgr.weights, sysWeight_theoSysSigUp, sysWeight_theoSysSigDown, "weight", "overallSys")
+
 
 
 #######################################################################
@@ -574,6 +577,7 @@ for point in allpoints:
         sigSample.setTreeName("%s_%s_SRAll" % (gridTreeName, point) )
         sigSample.setNormByTheory()
         sigSample.setNormFactor("mu_SIG", 1, 0., 100.)
+        sigSample.addSystematic(theoSysSig)
         sigSample.setStatConfig(zlFitterConfig.useStat)
         myFitConfig.addSamples(sigSample)
         myFitConfig.setSignalSample(sigSample)
@@ -717,25 +721,38 @@ for point in allpoints:
             for sys in leptonSystematicList:
                 sam.addSystematic(sys)
 
-        #bTagging uncertainties
-        if zlFitterConfig.useBTagUncertainties and "bTagWeight" in regionDict[regionName].extraWeightList:
+        #bTagging uncertainties        
+        if zlFitterConfig.useBTagUncertainties and "btagSystWeights[0]" in regionDict[regionName].extraWeightList:
 
             btagSystematicList = []
 
-            bTagSystWeightsBUp = myreplace(REGION.weights, ["bTagWeightBUp"] , "bTagWeight")
-            bTagSystWeightsBDown = myreplace(REGION.weights, ["bTagWeightBDown"] , "bTagWeight")
-            btagSystematicList.append(Systematic("bTagSysB", REGION.weights  , bTagSystWeightsBUp, bTagSystWeightsBDown, "weight", "overallNormHistoSys"))
+            bTagSystWeightsBUp = myreplace(REGION.weights, ["btagSystWeights[1]"] , "btagSystWeights[0]")
+            bTagSystWeightsBDown = myreplace(REGION.weights, ["btagSystWeights[2]"] , "btagSystWeights[0]")
+            btagSystematicList.append(Systematic("EFF_B", REGION.weights  , bTagSystWeightsBUp, bTagSystWeightsBDown, "weight", "overallNormHistoSys"))
 
-            bTagSystWeightsCUp = myreplace(REGION.weights, ["bTagWeightCUp"] , "bTagWeight")
-            bTagSystWeightsCDown = myreplace(REGION.weights, ["bTagWeightCDown"] , "bTagWeight")
-            btagSystematicList.append(Systematic("bTagSysC", REGION.weights  , bTagSystWeightsCUp, bTagSystWeightsCDown, "weight", "overallNormHistoSys"))
+            bTagSystWeightsCUp = myreplace(REGION.weights, ["btagSystWeights[3]"] , "btagSystWeights[0]")
+            bTagSystWeightsCDown = myreplace(REGION.weights, ["btagSystWeights[4]"] , "btagSystWeights[0]")
+            btagSystematicList.append(Systematic("EFF_C", REGION.weights  , bTagSystWeightsCUp, bTagSystWeightsCDown, "weight", "overallNormHistoSys"))
 
-            bTagSystWeightsLUp = myreplace(REGION.weights, ["bTagWeightLUp"] , "bTagWeight")
-            bTagSystWeightsLDown = myreplace(REGION.weights, ["bTagWeightLDown"] , "bTagWeight")
-            btagSystematicList.append(Systematic("bTagSysL", REGION.weights  , bTagSystWeightsLUp, bTagSystWeightsLDown, "weight", "overallNormHistoSys"))
+            bTagSystWeightsLUp = myreplace(REGION.weights, ["btagSystWeights[5]"] , "btagSystWeights[0]")
+            bTagSystWeightsLDown = myreplace(REGION.weights, ["btagSystWeights[6]"] , "btagSystWeights[0]")
+            btagSystematicList.append(Systematic("EFF_Light", REGION.weights  , bTagSystWeightsLUp, bTagSystWeightsLDown, "weight", "overallNormHistoSys"))
 
-            for sys in btagSystematicList:
-                sam.addSystematic(sys)
+
+            bTagSystWeightsExtrapolationUp = myreplace(REGION.weights, ["btagSystWeights[7]"] , "btagSystWeights[0]")
+            bTagSystWeightsExtrapolationDown = myreplace(REGION.weights, ["btagSystWeights[8]"] , "btagSystWeights[0]")
+            btagSystematicList.append(Systematic("EFF_extrapolation", REGION.weights  , bTagSystWeightsExtrapolationUp, bTagSystWeightsExtrapolationDown, "weight", "overallNormHistoSys"))
+
+
+            bTagSystWeightsExtrapolationFromCharmUp = myreplace(REGION.weights, ["btagSystWeights[9]"] , "btagSystWeights[0]")
+            bTagSystWeightsExtrapolationFromCharmDown = myreplace(REGION.weights, ["btagSystWeights[10]"] , "btagSystWeights[0]")
+            btagSystematicList.append(Systematic("EFF_extrapolation_from_charm", REGION.weights  , bTagSystWeightsExtrapolationFromCharmUp, bTagSystWeightsExtrapolationFromCharmDown, "weight", "overallNormHistoSys"))
+
+
+            for sam in REGION.sampleList:
+                if sam.name==zlFitterConfig.zSampleName: continue #ATT : prb with Z samples!!!!!
+                for sys in btagSystematicList:
+                    sam.addSystematic(sys)
 
         # set region type
         if regionName in zlFitterConfig.constrainingRegionsList:
@@ -877,6 +894,12 @@ for point in allpoints:
                         errorGenerator=getError(channel.name,REGION.name.replace("cuts_",""),zTheoSysGeneratorDict)
                         sam.addSystematic(Systematic("GeneratorZ", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
 
+                    #Kappa
+                    if zlFitterConfig.applyKappaCorrection:
+                        kappaError=0.066 if anaNameEnum(anaName)==3 else 0.080
+                        sam.addSystematic(Systematic("Kappa", configMgr.weights, 1+kappaError, 1-kappaError, "user", "userOverallSys"))
+                    
+
                 #W background
                 elif sam.name==zlFitterConfig.wSampleName:
                     #generator
@@ -926,9 +949,9 @@ for point in allpoints:
     #JET systematics
     jetSystematicList = []
 
-    #JER systematics
-    jetSystematicList.append(Systematic("JER","","_JET_JER_SINGLE_NP_1up","_JET_JER_SINGLE_NP_1up","tree","overallNormHistoSysOneSideSym"))# ATT: Not sure that it should be symmetrized
-
+    # JER systematics
+    # ATT: Not sure that it should be symmetrized    
+    jetSystematicList.append(Systematic("JER", "", "_JET_JER_SINGLE_NP_1up", "", "tree", "overallNormHistoSysOneSide"))
 
     #JES systematics
     jesSystematicStrList=[
@@ -943,9 +966,9 @@ for point in allpoints:
 
     #MET systematics
     metSystematicList = []
-    metSystematicList.append(Systematic("MET_SoftTrk_ResoPara","","_MET_SoftTrk_ResoPara","_MET_SoftTrk_ResoPara","tree","overallNormHistoSysOneSideSym"))
-    metSystematicList.append(Systematic("MET_SoftTrk_ResoPerp","","_MET_SoftTrk_ResoPerp","_MET_SoftTrk_ResoPerp","tree","overallNormHistoSysOneSideSym"))
-    metSystematicList.append(Systematic("MET_SoftTrk_Scale","","_MET_SoftTrk_ScaleUp","_MET_SoftTrk_ScaleDown","tree","overallNormHistoSys"))
+    metSystematicList.append(Systematic("MET_SoftTrk_ResoPara", "", "_MET_SoftTrk_ResoPara", "", "tree", "overallNormHistoSysOneSide"))
+    metSystematicList.append(Systematic("MET_SoftTrk_ResoPerp", "", "_MET_SoftTrk_ResoPerp", "", "tree", "overallNormHistoSysOneSide"))
+    metSystematicList.append(Systematic("MET_SoftTrk_Scale", "", "_MET_SoftTrk_ScaleUp", "_MET_SoftTrk_ScaleDown", "tree", "overallNormHistoSys"))
 
 
     for REGION in myFitConfig.channels:
