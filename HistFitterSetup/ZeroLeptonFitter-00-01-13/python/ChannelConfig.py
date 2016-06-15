@@ -11,6 +11,7 @@ from copy import deepcopy
 import os
 import sys
 import ROOT
+import copy
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
 current_path = ROOT.gROOT.GetMacroPath()
@@ -77,7 +78,7 @@ class ChannelConfig:
     def __init__(self, **kwargs):
         self.setCommonVars()
 
-        #print kwargs
+        print kwargs
         for key in kwargs:
             val = kwargs[key]
 
@@ -210,8 +211,8 @@ class ChannelConfig:
         self.H2PP_loose     = -1
 
         #Squark Variables
-        self.RPTHT3PP_upper       = +999
-        self.RPTHT3PP_upper_loose = +999
+        self.RPT_HT3PP_upper       = +999
+        self.RPT_HT3PP_upper_loose = +999
 
         self.R_H2PP_H3PP             = -1
         self.R_H2PP_H3PP_loose       = -1
@@ -221,17 +222,17 @@ class ChannelConfig:
         self.RPZ_HT3PP_upper       = +999
         self.RPZ_HT3PP_upper_loose = +999
 
-        self.R_ptj2_HT3PP = -1
+        self.R_pTj2_HT3PP = -1
         self.cosP_upper   = +999
         self.HT3PP        = -1
 
-        self.R_ptj2_HT3PP_loose = -1
+        self.R_pTj2_HT3PP_loose = -1
         self.cosP_upper_loose   = +999
         self.HT3PP_loose        = -1
 
         #Gluino Variables
 
-        self.RPTHT5PP_upper         = +999
+        self.RPT_HT5PP_upper         = +999
         self.R_H2PP_H5PP            = -1
         self.R_HT5PP_H5PP           = -1
         self.RPZ_HT5PP_upper        = +999
@@ -240,7 +241,7 @@ class ChannelConfig:
         self.dangle_upper           = +999
         self.HT5PP                  = -1
 
-        self.RPTHT5PP_upper_loose    = +999
+        self.RPT_HT5PP_upper_loose    = +999
         self.R_H2PP_H5PP_loose       = -1
         self.R_HT5PP_H5PP_loose      = -1
         self.RPZ_HT5PP_upper_loose   = +999
@@ -255,14 +256,12 @@ class ChannelConfig:
         self.dphiISRI        = 0
         self.PTISR           = 0
         self.NV              = 0
-        self.RPT_PTISR_upper = -1
 
         self.RISR_loose            = 0
         self.MS_loose              = 0
         self.dphiISRI_loose        = 0
         self.PTISR_loose           = 0
         self.NV_loose              = 0
-        self.RPT_PTISR_upper_loose = -1
 
         #region with inverted Ap cut
         self.regionsWithInvertedApCutList = []
@@ -302,37 +301,35 @@ class ChannelConfig:
 
         self.CRList = ["CRT","CRW","CRY","CRQ"]
         VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
-        self.regionDict =  dict([ (l, {} ) for l in self.CRList + VRList])
+        self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList])
 
         #any var that can be loose
-        for k,v in regionDict.iteritems() :
+        for k,v in self.regionListDict.iteritems() :
             for varName in dir(self) :
                 if '_loose' in  varName :  v[varName.replace('_loose', '') ] = ""
 
-        for k,v in regionDict.iteritems() :
+        for k,v in self.regionListDict.iteritems() :
             if not k.endswith('b') :                     v["H2PP" ] = "loose"
-        for k,v in regionDict.iteritems() :
+        for k,v in self.regionListDict.iteritems() :
            if not k == 'CRY' :
                if not k.endswith('a') :
                    v["HT3PP"] = "loose"
                    v["HT5PP"] = "loose"
-        for k,v in regionDict.iteritems() :
+        for k,v in self.regionListDict.iteritems() :
             if not k == 'CRY' :
                 for varName in dir(self) :
                     if varName not in ['H2PP', 'HT3PP', 'HT5PP' ] :
                         if '_loose' in  varName :            v[varName.replace('_loose', '') ] = "loose"
 
 
-        regionDict["CRQ"]["RISR"]         =  "invert"
-        regionDict["CRQ"]["R_H2PP_HT3PP"] =  "invert"
-        regionDict["CRQ"]["R_H2PP_HT5PP"] =  "invert"
+        self.regionListDict["CRQ"]["RISR"]         =  "invert"
+        self.regionListDict["CRQ"]["R_H2PP_H3PP"] =  "invert"
+        self.regionListDict["CRQ"]["R_H2PP_H5PP"] =  "invert"
 
-        print regionDict
-        for reg,idict in regionDict.iteritems() :
+        print self.regionListDict
+        for reg,idict in self.regionListDict.iteritems() :
             for var,val in idict.iteritems() :
                 print reg, var, val
-        exit()
-
         self.WithoutMeffCut = False
         self.WithoutMetOverMeffCut = False
         self.WithoutdPhiCut = False
@@ -544,8 +541,8 @@ class ChannelConfig:
         ###############################################################################
 
         # LL RJigsaw
-
-        addCutsToCutList( cutList, self.regionDict )
+        passDict = self.regionListDict
+        self.addCutsToCutList( cutList, passDict )
 
         #extra cuts from CR
         cutList += self.regionDict[regionName].extraCutList
@@ -553,17 +550,20 @@ class ChannelConfig:
         cutStr = " && ".join(cutList)
         return "(%s)" % cutStr
 
-    def addCutsToCutlist( cutList , regionDict ) :
+    def addCutsToCutList( self, cutList , regionDict ) :
         for reg, idict in regionDict.iteritems() :
             for var,val in idict.iteritems() :
-                if "upper" in val :
-                    if val             : cutList.append( var " <= " + getattr(self, var            ))
-                    if val == 'invert' : cutList.append( var " >  " + getattr(self, var            ))
-                    if val == 'loosen' : cutList.append( var " <= " + getattr(self, var + "_loose" ))
+                if "upper" in var :
+                    removeUpper = var.replace("upper","").strip("_")
+                    if not val         : cutList.append( removeUpper + " <= " + str(getattr(self, var            )))
+                    if val == 'invert' : cutList.append( removeUpper + " >  " + str(getattr(self, var            )))
+                    if val == 'loosen' : cutList.append( removeUpper + " <= " + str(getattr(self, var + "_loose" )))
                 else :
-                    if val             : cutList.append( var " >= " + getattr(self, var            ))
-                    if val == 'invert' : cutList.append( var " <  " + getattr(self, var            ))
-                    if val == 'loosen' : cutList.append( var " >= " + getattr(self, var + "_loose" ))
+                    if not val         : cutList.append( var + " >= " + str(getattr(self, var            )))
+                    if val == 'invert' : cutList.append( var + " <  " + str(getattr(self, var            )))
+                    if val == 'loosen' : cutList.append( var + " >= " + str(getattr(self, var + "_loose" )))
+
+
 
     def Print(self, printLevel=2):
         print "##################################################"
@@ -585,13 +585,6 @@ class ChannelConfig:
         print "Regions with inverted metsig cut   : ", self.regionsWithInvertedMETSIGCutList
         print "Regions with inverted met/meff cut : ", self.regionsWithInvertedMETOVERMEFFCutList
         print "Using LL's RJigsaw Version........"
-
-        print "Regions with self.regionsWithLooserScaleCuts   : ", self.regionsWithLooserScaleCuts
-        print "Regions with self.regionsWithoutMSCutList      : ", self.regionsWithoutMSCutList
-        print "Regions with self.regionsWithLooserMSCutList   : ", self.regionsWithLooserMSCutList
-        print "Regions with self.regionsWithLooserH2PPCutList : ", self.regionsWithLooserH2PPCutList
-
-
 
         print "=================================================="
         print "Cuts:"
@@ -626,8 +619,6 @@ class ChannelConfig:
                     print "\t Weights: %s " % (self.getWeights(regionName))
 
                 print "=================================================="
-
-ChannelConfig()
 
 #CRT (nBJet>0)
 #CRW (nBJet==0)
