@@ -204,64 +204,59 @@ class ChannelConfig:
 
         #Common Variables
 
-        self.MDR            = -1
-        self.deltaQCD       = -999
-        self.deltaQCD_loose = -999
-        self.H2PP           = -1
-        self.H2PP_loose     = -1
+        self.MDR                     = None #-1
+        self.deltaQCD                = None #-999
+        self.deltaQCD_loose          = None #-999
+        self.H2PP                    = None #-1
+        self.H2PP_loose              = None #-1
 
         #Squark Variables
-        self.RPT_HT3PP_upper       = +999
-        self.RPT_HT3PP_upper_loose = +999
-
-        self.R_H2PP_H3PP             = -1
-        self.R_H2PP_H3PP_loose       = -1
-        self.R_H2PP_H3PP_upper       = +999
-        self.R_H2PP_H3PP_upper_loose = +999
-
-        self.RPZ_HT3PP_upper       = +999
-        self.RPZ_HT3PP_upper_loose = +999
-
-        self.R_pTj2_HT3PP = -1
-        self.cosP_upper   = +999
-        self.HT3PP        = -1
-
-        self.R_pTj2_HT3PP_loose = -1
-        self.cosP_upper_loose   = +999
-        self.HT3PP_loose        = -1
+        self.RPT_HT3PP_upper         = None #+999
+        self.RPT_HT3PP_upper_loose   = None #+999
+        self.R_H2PP_H3PP             = None #-1
+        self.R_H2PP_H3PP_loose       = None #-1
+        self.R_H2PP_H3PP_upper       = None #+999
+        self.R_H2PP_H3PP_upper_loose = None #+999
+        self.RPZ_HT3PP_upper         = None #+999
+        self.RPZ_HT3PP_upper_loose   = None #+999
+        self.R_pTj2_HT3PP            = None #-1
+        self.cosP_upper              = None #+999
+        self.HT3PP                   = None #-1
+        self.R_pTj2_HT3PP_loose      = None #-1
+        self.cosP_upper_loose        = None #+999
+        self.HT3PP_loose             = None #-1
 
         #Gluino Variables
+        self.RPT_HT5PP_upper         = None #+999
+        self.R_H2PP_H5PP             = None #-1
+        self.R_HT5PP_H5PP            = None #-1
+        self.RPZ_HT5PP_upper         = None #+999
+        self.minR_pTj2i_HT3PPi       = None #-1
+        self.maxR_H1PPi_H2PPi_upper  = None #+999
+        self.dangle_upper            = None #+999
+        self.HT5PP                   = None #-1
 
-        self.RPT_HT5PP_upper         = +999
-        self.R_H2PP_H5PP            = -1
-        self.R_HT5PP_H5PP           = -1
-        self.RPZ_HT5PP_upper        = +999
-        self.minR_pTj2i_HT3PPi      = -1
-        self.maxR_H1PPi_H2PPi_upper = +999
-        self.dangle_upper           = +999
-        self.HT5PP                  = -1
-
-        self.RPT_HT5PP_upper_loose    = +999
-        self.R_H2PP_H5PP_loose       = -1
-        self.R_HT5PP_H5PP_loose      = -1
-        self.RPZ_HT5PP_upper_loose   = +999
-        self.minR_pTj2i_HT3PPi_loose = -1
-        self.maxR_H1PPi_H2PPi_upper  = +999
-        self.dangle_upper_loose      = +999
-        self.HT5PP_loose             = -1
+        self.RPT_HT5PP_upper_loose   = None #+999
+        self.R_H2PP_H5PP_loose       = None #-1
+        self.R_HT5PP_H5PP_loose      = None #-1
+        self.RPZ_HT5PP_upper_loose   = None #+999
+        self.minR_pTj2i_HT3PPi_loose = None #-1
+        self.maxR_H1PPi_H2PPi_upper  = None #+999
+        self.dangle_upper_loose      = None #+999
+        self.HT5PP_loose             = None #-1
 
         #Compressed Variables
-        self.RISR            = 0
-        self.MS              = 0
-        self.dphiISRI        = 0
-        self.PTISR           = 0
-        self.NV              = 0
+        self.RISR                    = None #0
+        self.MS                      = None #0
+        self.dphiISRI                = None #0
+        self.PTISR                   = None #0
+        self.NV                      = None #0
 
-        self.RISR_loose            = 0
-        self.MS_loose              = 0
-        self.dphiISRI_loose        = 0
-        self.PTISR_loose           = 0
-        self.NV_loose              = 0
+        self.RISR_loose              = None #0
+        self.MS_loose                = None #0
+        self.dphiISRI_loose          = None #0
+        self.PTISR_loose             = None #0
+        self.NV_loose                = None #0
 
         #region with inverted Ap cut
         self.regionsWithInvertedApCutList = []
@@ -553,15 +548,17 @@ class ChannelConfig:
     def addCutsToCutList( self, cutList , regionDict ) :
         for reg, idict in regionDict.iteritems() :
             for var,val in idict.iteritems() :
-                if "upper" in var :
-                    removeUpper = var.replace("upper","").strip("_")
-                    if not val         : cutList.append( removeUpper + " <= " + str(getattr(self, var            )))
-                    if val == 'invert' : cutList.append( removeUpper + " >  " + str(getattr(self, var            )))
-                    if val == 'loosen' : cutList.append( removeUpper + " <= " + str(getattr(self, var + "_loose" )))
-                else :
-                    if not val         : cutList.append( var + " >= " + str(getattr(self, var            )))
-                    if val == 'invert' : cutList.append( var + " <  " + str(getattr(self, var            )))
-                    if val == 'loosen' : cutList.append( var + " >= " + str(getattr(self, var + "_loose" )))
+                stringVarValue = str(getattr(self, var)) if getattr(self, var) else None
+                if stringVarValue != None :
+                    if "upper" in var :
+                        removeUpper = var.replace("upper","").strip("_")
+                        if not val         : cutList.append( removeUpper + " <= " + stringVarValue            ) #(getattr(self, var            )))
+                        if val == 'invert' : cutList.append( removeUpper + " >  " + stringVarValue            ) #(getattr(self, var            )))
+                        if val == 'loosen' : cutList.append( removeUpper + " <= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
+                    else :
+                        if not val         : cutList.append( var + " >= " + stringVarValue            ) #(getattr(self, var            )))
+                        if val == 'invert' : cutList.append( var + " <  " + stringVarValue            ) #(getattr(self, var            )))
+                        if val == 'loosen' : cutList.append( var + " >= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
 
 
 
