@@ -237,15 +237,12 @@ if configMgr.readFromTree:
             dibosonFiles.append(os.path.join(INPUTDIR, "DibosonMassiveCB_nJet_{0}.root".format(i)))
             topFiles.append(os.path.join(INPUTDIR, "Top_nJet_{0}.root".format(i)))
             if not zlFitterConfig.usePreComputedTopGeneratorSys:
-                pass
                 topFiles.append(os.path.join(INPUTDIR, "TopaMcAtNloHerwigpp_nJet_{0}.root".format(i)))
             if not zlFitterConfig.usePreComputedTopFragmentationSys:
-                pass
                 topFiles.append(os.path.join(INPUTDIR, "TopPowhegHerwigpp_nJet_{0}.root".format(i)))
             gammaFiles.append(os.path.join(INPUTDIR, "GAMMAMassiveCB_nJet_{0}.root".format(i)))
             wFiles.append(os.path.join(INPUTDIR, "WMassiveCB_nJet_{0}.root".format(i)))
             if not zlFitterConfig.usePreComputedWGeneratorSys:
-                pass
                 wFiles.append(os.path.join(INPUTDIR, "WMadgraphPythia8_nJet_{0}.root".format(i)))
             zFiles.append(os.path.join(INPUTDIR, "ZMassiveCB_nJet_{0}.root".format(i)))
             if not zlFitterConfig.usePreComputedZGeneratorSys:
@@ -258,17 +255,14 @@ if configMgr.readFromTree:
         # Top
         topFiles.append(INPUTDIR+ "/Top.root")
         if not zlFitterConfig.usePreComputedTopGeneratorSys:
-            pass
             topFiles.append(INPUTDIR+ "/TopaMcAtNloHerwigpp.root")
         if not zlFitterConfig.usePreComputedTopFragmentationSys:
-            pass
             topFiles.append(INPUTDIR+ "/TopPowhegHerwigpp.root")
 
 
         # W
         wFiles.append(INPUTDIR+ "/Wjets.root")
         if not zlFitterConfig.usePreComputedWGeneratorSys:
-            pass
             wFiles.append(INPUTDIR+ "/WMadgraphPythia8.root")
 
         # Z
