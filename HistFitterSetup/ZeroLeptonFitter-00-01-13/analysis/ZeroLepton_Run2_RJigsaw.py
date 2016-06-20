@@ -297,7 +297,7 @@ def anaNameEnum (anaName) :
     if "SRS" in anaName : return 3
     else : return 0
 
-weights = ["weight"]
+weights = ["weight", "WZweight"]
 if zlFitterConfig.applyKappaCorrection:
     weights.append("gammaCorWeight(RunNumber, "+str(anaNameEnum(anaName))+")")
     # weights.append("1./1.6")
@@ -721,7 +721,7 @@ for point in allpoints:
             for sys in leptonSystematicList:
                 sam.addSystematic(sys)
 
-        #bTagging uncertainties        
+        #bTagging uncertainties
         if zlFitterConfig.useBTagUncertainties and "btagSystWeights[0]" in regionDict[regionName].extraWeightList:
 
             btagSystematicList = []
@@ -898,7 +898,7 @@ for point in allpoints:
                     if zlFitterConfig.applyKappaCorrection:
                         kappaError=0.066 if anaNameEnum(anaName)==3 else 0.080
                         sam.addSystematic(Systematic("Kappa", configMgr.weights, 1+kappaError, 1-kappaError, "user", "userOverallSys"))
-                    
+
 
                 #W background
                 elif sam.name==zlFitterConfig.wSampleName:
@@ -950,7 +950,7 @@ for point in allpoints:
     jetSystematicList = []
 
     # JER systematics
-    # ATT: Not sure that it should be symmetrized    
+    # ATT: Not sure that it should be symmetrized
     jetSystematicList.append(Systematic("JER", "", "_JET_JER_SINGLE_NP_1up", "", "tree", "overallNormHistoSysOneSide"))
 
     #JES systematics
