@@ -85,7 +85,7 @@ anaSRFAR.METsig = 15
 anaSRFAR.jetpt1 = 200.
 anaSRFAR.jetpt2 = 200.
 anaSRFAR.meffIncl = 1200
-finalChannelsDict[anaSRFAR.name] = anaSRFAR
+#finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 #GG_direct_750_650, GG_onestep_825_785_745 2jm
 # SR2jbase-MeSig20-Meff1800-sljetpt60-dphi0.4-ap0.00
@@ -97,7 +97,7 @@ anaSRFAR.METsig = 20
 anaSRFAR.jetpt1 = 200.
 anaSRFAR.jetpt2 = 50.
 anaSRFAR.meffIncl = 1800
-finalChannelsDict[anaSRFAR.name] = anaSRFAR
+#finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 #SS_direct_1200_0 2jt
 # SR2jbase-MeSig20-Meff2000-sljetpt200-dphi0.8-ap0.00
@@ -109,7 +109,7 @@ anaSRFAR.METsig = 20
 anaSRFAR.jetpt1 = 200.
 anaSRFAR.jetpt2 = 200.
 anaSRFAR.meffIncl = 2000
-finalChannelsDict[anaSRFAR.name] = anaSRFAR
+#finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 # GG_direct_1400_0 4jt
 anaSRFAR = ChannelConfig(name="SR4jt", regionDict=regionDict, fullname="SR4jbase-MetoMeff0.2-Meff2200-sljetpt100-34jetpt100-dphi0.4-ap0.04")
@@ -125,7 +125,7 @@ anaSRFAR.jetpt2 = 100.
 anaSRFAR.jetpt3 = 100.
 anaSRFAR.jetpt4 = 100.
 anaSRFAR.meffIncl = 2200
-finalChannelsDict[anaSRFAR.name] = anaSRFAR
+#finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 #GG_onestepCC_1265_945_625 at 4/fb 5j
 # SR5jbase-MetoMeff0.25-Meff1600-sljetpt100-34jetpt100-dphi0.4-ap0.02
@@ -142,7 +142,7 @@ anaSRFAR.jetpt3 = 100.
 anaSRFAR.jetpt4 = 100.
 anaSRFAR.jetpt5 = 50.
 anaSRFAR.meffIncl = 1600
-finalChannelsDict[anaSRFAR.name] = anaSRFAR
+#finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 #GG_onestepCC_1265_945_625 at 4/fb 6jm
 # SR6jbase-MetoMeff0.25-Meff1600-sljetpt100-34jetpt100-dphi0.4-ap0.02
@@ -160,7 +160,7 @@ anaSRFAR.jetpt4 = 100.
 anaSRFAR.jetpt5 = 50.
 anaSRFAR.jetpt6 = 50.
 anaSRFAR.meffIncl = 1600
-finalChannelsDict[anaSRFAR.name] = anaSRFAR
+#finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 #GG_onestepCC_1545_785_25 at 4/fb
 # SR6jbase-MetoMeff0.2-Meff1800-sljetpt100-34jetpt100-dphi0.4-ap0.02
@@ -178,7 +178,7 @@ anaSRFAR.jetpt4 = 100.
 anaSRFAR.jetpt5 = 50.
 anaSRFAR.jetpt6 = 50.
 anaSRFAR.meffIncl = 2000
-finalChannelsDict[anaSRFAR.name] = anaSRFAR
+#finalChannelsDict[anaSRFAR.name] = anaSRFAR
 
 # ###########################################################
 # # definition of the channels for plotting purpose
