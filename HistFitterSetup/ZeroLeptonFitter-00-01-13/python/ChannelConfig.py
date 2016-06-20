@@ -321,7 +321,7 @@ class ChannelConfig:
                         if '_loose' in  varName :            v[varName.replace('_loose', '') ] = "loose"
 
 
-        self.regionListDict["CRQ"]["RISR"]         =  "invert"
+        self.regionListDict["CRQ"]["RISR"]        =  "invert"
         self.regionListDict["CRQ"]["R_H2PP_H3PP"] =  "invert"
         self.regionListDict["CRQ"]["R_H2PP_H5PP"] =  "invert"
 
@@ -541,7 +541,7 @@ class ChannelConfig:
 
         # LL RJigsaw
         passDict = self.regionListDict
-        self.addCutsToCutList( cutList, passDict )
+        self.addCutsToCutList( cutList, passDict , regionName )
 
         #extra cuts from CR
         cutList += self.regionDict[regionName].extraCutList
@@ -549,22 +549,36 @@ class ChannelConfig:
         cutStr = " && ".join(cutList)
         return "(%s)" % cutStr
 
-    def addCutsToCutList( self, cutList , regionDict ) :
+    def addCutsToCutList( self, cutList , regionDict, regionName = None ) :
+        if not regionName :
+            print "NO REGION NAME, exiting"
+
+        print regionDict
         for reg, idict in regionDict.iteritems() :
-            for var,val in idict.iteritems() :
-                stringVarValue = str(getattr(self, var)) if getattr(self, var) else None
-                if stringVarValue != None :
-                    if "upper" in var :
-                        removeUpper = var.replace("upper","").strip("_")
-                        if not val         : cutList.append( removeUpper + " <= " + stringVarValue            ) #(getattr(self, var            )))
-                        if val == 'invert' : cutList.append( removeUpper + " >  " + stringVarValue            ) #(getattr(self, var            )))
-                        if val == 'loosen' : cutList.append( removeUpper + " <= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
-                    else :
-                        if not val         : cutList.append( var + " >= " + stringVarValue            ) #(getattr(self, var            )))
-                        if val == 'invert' : cutList.append( var + " <  " + stringVarValue            ) #(getattr(self, var            )))
-                        if val == 'loosen' : cutList.append( var + " >= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
+            if regionName == reg :
+                 for var,val in idict.iteritems() :
+                     stringVarValue = str(getattr(self, var)) if getattr(self, var) else None
+                     if stringVarValue != None :#can be zero, so us this
+                         print var, stringVarValue
+                         finalCutString = ""
+                         if "upper" in var :
+                             removeUpper = var.replace("upper","").strip("_")
+                             if not val         : finalCutString = removeUpper + " <= " + stringVarValue
+                             if val == 'invert' : finalCutString = removeUpper + " >  " + stringVarValue
+                             if val == 'loosen' : finalCutString = removeUpper + " <=  " + stringVarValue + "_loose"
+                             # if not val         : cutList.append( removeUpper + " <= " + stringVarValue            ) #(getattr(self, var            )))
+                             # if val == 'invert' : cutList.append( removeUpper + " >  " + stringVarValue            ) #(getattr(self, var            )))
+                             # if val == 'loosen' : cutList.append( removeUpper + " <= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
+                         else :
+                             if not val         : finalCutString = var         + " >= " + stringVarValue
+                             if val == 'invert' : finalCutString = var         + " <  " + stringVarValue
+                             if val == 'loosen' : finalCutString = var         + " >=  "+ stringVarValue + "_loose"
 
-
+                        # if not val         : cutList.append( var + " >= " + stringVarValue            ) #(getattr(self, var            )))
+                        # if val == 'invert' : cutList.append( var + " <  " + stringVarValue            ) #(getattr(self, var            )))
+                        # if val == 'loosen' : cutList.append( var + " >= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
+                 if finalCutString : cutList.append(finalCutString)
+#                    print cutList
 
     def Print(self, printLevel=2):
         print "##################################################"
