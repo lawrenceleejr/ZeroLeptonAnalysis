@@ -12,7 +12,7 @@
   # This is a bit sloppy, but run the submission script in a "dry_run" mode to create the worker scripts
   # Run on the json file produced by the above command
 
-  ./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXX.json --dry_run
+  ./ToolKit/optimisation/runOptimisation.py -f optimisation/optimisation-XXXXXXX.json --dry_run
 
   # This thing is making scripts that aren't excecutable which pisses off lxbatch. So fix it with...
 
@@ -23,7 +23,7 @@
 
 # Then you can submit it.
 
-./ToolKit/batch/runOptimisation.py -f optimisation/optimisation-XXXXXXXXX.json  # add a "--site=Oz" or "Columbia"
+./ToolKit/optimisation/runOptimisation.py -f optimisation/optimisation-XXXXXXXXX.json  # add a "--site=Oz" or "Columbia"
  or whatever if not running on LSF.
 
 # Then you can convert these into json with

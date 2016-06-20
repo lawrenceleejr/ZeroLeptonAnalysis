@@ -276,7 +276,7 @@ if configMgr.readFromTree:
     #data
     # dataFiles.append(INPUTDIR_DATA, "/DataMain_Nov01.root")
     # dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
-    dataFiles.append(INPUTDIR_DATA+ "/Data.root")
+    dataFiles.append(INPUTDIR_DATA+ "/DataMain2015.root")
 
 
     log.info("Using the following inputs:")
