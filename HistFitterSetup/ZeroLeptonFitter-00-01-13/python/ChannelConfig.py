@@ -148,7 +148,7 @@ class ChannelConfig:
         self.commonWeightList = ["weight"] # Note: eventweight has been moved to sysweight
 
         #cuts common to all regions (CR,SR,...=
-        self.commonCutList = ["veto==0"]
+        self.commonCutList = ["veto == 0"]
 
         #cleaning cuts
         self.doTimingCut = True
@@ -304,7 +304,7 @@ class ChannelConfig:
         self.CRList = ["CRT","CRW","CRY","CRQ"]
         VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
         VRList      += [ "VRQ" , "VRZ", "VRW", "VRT"]
-        self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
+        self.regionListDict =  dict([ (l, OrderedDict() ) for l in self.CRList + VRList + ["SR"] ])
 
         #any var that can be loose
         for k,v in self.regionListDict.iteritems() :
@@ -398,20 +398,20 @@ class ChannelConfig:
 
         #LH commenting out
         #jets cuts
-        cutList.append("NJet>="+str(self.nJets))
+        cutList.append("NJet >= "+str(self.nJets))
         if self.nJets>0:
             # max(self.pt0,self.jetPtThreshold)
-            cutList.append(" pT_jet1>="+str(self.jetpt1  ))
+            cutList.append(" pT_jet1 >= "+str(self.jetpt1  ))
         if self.nJets>1:
-            cutList.append(" pT_jet2>="+str(self.jetpt2  ))
+            cutList.append(" pT_jet2 >= "+str(self.jetpt2  ))
         if self.nJets>2:
-            cutList.append(" pT_jet3>="+str(self.jetpt3  ))
+            cutList.append(" pT_jet3 >= "+str(self.jetpt3  ))
         if self.nJets>3:
-            cutList.append(" pT_jet4>="+str(self.jetpt4  ))
+            cutList.append(" pT_jet4 >= "+str(self.jetpt4  ))
         if self.nJets>4:
-            cutList.append(" pT_jet5>="+str(self.jetpt5  ))
+            cutList.append(" pT_jet5 >= "+str(self.jetpt5  ))
         if self.nJets>5:
-            cutList.append(" pT_jet6>="+str(self.jetpt6  ))
+            cutList.append(" pT_jet6 >= "+str(self.jetpt6  ))
         # if self.nJet>6:
         #     cutList.append(" jetP>="+str(max(self.pt6,self.jetPtThreshold)))
         # if self.nJet>7:
@@ -424,7 +424,7 @@ class ChannelConfig:
 
         # timing cuts
         if self.doTimingCut == True:
-            cutList.append("(abs(timing)<4)")
+            cutList.append("(abs(timing) < 4)")
 
         # cleaning cuts
         if self.doCleaning:
@@ -439,7 +439,7 @@ class ChannelConfig:
             elif self.regionDict[regionName].suffixTreeName == "CRY":
                 self.cleaningCuts = "((cleaning&(15+512)) == 0)"
             elif self.regionDict[regionName].suffixTreeName == "CRQ":
-                self.cleaningCuts = "((cleaning&(0x80+3))==0)"
+                self.cleaningCuts = "((cleaning&(0x80+3)) == 0)"
             else:
                 self.cleaningCuts = "(1)"
 
@@ -542,10 +542,7 @@ class ChannelConfig:
         ###############################################################################
         ###############################################################################
 
-        # LL RJigsaw
-        passDict = self.regionListDict
-
-        self.addCutsToCutList( cutList, passDict , regionName )
+        self.addCutsToCutList( cutList, self.regionListDict , regionName )
 
         #extra cuts from CR
         cutList += self.regionDict[regionName].extraCutList

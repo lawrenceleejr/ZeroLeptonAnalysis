@@ -132,10 +132,10 @@ for sampleHandlerName in [
 
 # print ChannelsDict.finalChannelsDict
 # print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"]
-print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCuts()
+# print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCuts()
 # print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].NV
-print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCutsDict()
-print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].commonCutList
+print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCutsDict()["SR"][1:-1].split("&&")
+# print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].commonCutList
 
 
 
