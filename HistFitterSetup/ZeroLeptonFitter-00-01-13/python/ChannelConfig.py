@@ -297,38 +297,41 @@ class ChannelConfig:
         # self.regionsWithInvertedDangleCutList = ["CRT"]
         # self.regionsWithInvertedRPZCutList = ["CRT"]
 
-#        self.CRList = ["CRT","CRW","CRY","CRQ"]
-        self.CRList = ["CRT","CRW","CRQ"]
+
+
+
+
+        self.CRList = ["CRT","CRW","CRY","CRQ"]
         VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
-        self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList])
+        VRList      += [ "VRQ" , "VRZ", "VRW", "VRT"]
+        self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
 
         #any var that can be loose
         for k,v in self.regionListDict.iteritems() :
             for varName in dir(self) :
-                if '_loose' in  varName :  v[varName.replace('_loose', '') ] = ""
+                if ('_loose' in varName) : v[varName.replace('_loose','')] = ""
 
         for k,v in self.regionListDict.iteritems() :
-            if not k.endswith('b') :                     v["H2PP" ] = "loose"
+            if k.endswith('a') or k in self.CRList :      
+                   v["H2PP" ] = "loosen"
         for k,v in self.regionListDict.iteritems() :
            if not k == 'CRY' :
-               if not k.endswith('a') :
-                   v["HT3PP"] = "loose"
-                   v["HT5PP"] = "loose"
-        for k,v in self.regionListDict.iteritems() :
+               if k.endswith('b') or k in self.CRList:
+                   v["HT3PP"] = "loosen"
+                   v["HT5PP"] = "loosen"
+        for k,v in self.regionListDict.iteritems():
             if not k == 'CRY' :
                 for varName in dir(self) :
                     if varName not in ['H2PP', 'HT3PP', 'HT5PP' ] :
-                        if '_loose' in  varName :            v[varName.replace('_loose', '') ] = "loose"
+                        if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
+                            v[varName.replace('_loose', '') ] = "loosen"
+
 
 
         self.regionListDict["CRQ"]["RISR"]        =  "invert"
         self.regionListDict["CRQ"]["R_H2PP_H3PP"] =  "invert"
         self.regionListDict["CRQ"]["R_H2PP_H5PP"] =  "invert"
 
-        print self.regionListDict
-        for reg,idict in self.regionListDict.iteritems() :
-            for var,val in idict.iteritems() :
-                print reg, var, val
         self.WithoutMeffCut = False
         self.WithoutMetOverMeffCut = False
         self.WithoutdPhiCut = False
@@ -541,6 +544,7 @@ class ChannelConfig:
 
         # LL RJigsaw
         passDict = self.regionListDict
+
         self.addCutsToCutList( cutList, passDict , regionName )
 
         #extra cuts from CR
@@ -552,33 +556,25 @@ class ChannelConfig:
     def addCutsToCutList( self, cutList , regionDict, regionName = None ) :
         if not regionName :
             print "NO REGION NAME, exiting"
+            sys.exit(1)
 
-        print regionDict
         for reg, idict in regionDict.iteritems() :
             if regionName == reg :
                  for var,val in idict.iteritems() :
-                     stringVarValue = str(getattr(self, var)) if getattr(self, var) else None
+                     finalCutString = ""
+                     stringVarValue = str(getattr(self, var)) if getattr(self, var)!=None else None
                      if stringVarValue != None :#can be zero, so us this
-                         print var, stringVarValue
                          finalCutString = ""
                          if "upper" in var :
                              removeUpper = var.replace("upper","").strip("_")
                              if not val         : finalCutString = removeUpper + " <= " + stringVarValue
                              if val == 'invert' : finalCutString = removeUpper + " >  " + stringVarValue
-                             if val == 'loosen' : finalCutString = removeUpper + " <=  " + stringVarValue + "_loose"
-                             # if not val         : cutList.append( removeUpper + " <= " + stringVarValue            ) #(getattr(self, var            )))
-                             # if val == 'invert' : cutList.append( removeUpper + " >  " + stringVarValue            ) #(getattr(self, var            )))
-                             # if val == 'loosen' : cutList.append( removeUpper + " <= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
+                             if val == 'loosen' : finalCutString = removeUpper + " <=  " + stringVarValue
                          else :
                              if not val         : finalCutString = var         + " >= " + stringVarValue
                              if val == 'invert' : finalCutString = var         + " <  " + stringVarValue
-                             if val == 'loosen' : finalCutString = var         + " >=  "+ stringVarValue + "_loose"
-
-                        # if not val         : cutList.append( var + " >= " + stringVarValue            ) #(getattr(self, var            )))
-                        # if val == 'invert' : cutList.append( var + " <  " + stringVarValue            ) #(getattr(self, var            )))
-                        # if val == 'loosen' : cutList.append( var + " >= " + stringVarValue + "_loose" ) #(getattr(self, var + "_loose" )))
-                 if finalCutString : cutList.append(finalCutString)
-#                    print cutList
+                             if val == 'loosen' : finalCutString = var         + " >=  "+ stringVarValue
+                     if finalCutString : cutList.append(finalCutString)
 
     def Print(self, printLevel=2):
         print "##################################################"
