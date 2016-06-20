@@ -213,12 +213,15 @@ class ChannelConfig:
         #Squark Variables
         self.RPT_HT3PP_upper         = None #+999
         self.RPT_HT3PP_upper_loose   = None #+999
+
         self.R_H2PP_H3PP             = None #-1
         self.R_H2PP_H3PP_loose       = None #-1
         self.R_H2PP_H3PP_upper       = None #+999
         self.R_H2PP_H3PP_upper_loose = None #+999
+
         self.RPZ_HT3PP_upper         = None #+999
         self.RPZ_HT3PP_upper_loose   = None #+999
+
         self.R_pTj2_HT3PP            = None #-1
         self.cosP_upper              = None #+999
         self.HT3PP                   = None #-1
@@ -294,7 +297,8 @@ class ChannelConfig:
         # self.regionsWithInvertedDangleCutList = ["CRT"]
         # self.regionsWithInvertedRPZCutList = ["CRT"]
 
-        self.CRList = ["CRT","CRW","CRY","CRQ"]
+#        self.CRList = ["CRT","CRW","CRY","CRQ"]
+        self.CRList = ["CRT","CRW","CRQ"]
         VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
         self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList])
 
