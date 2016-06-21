@@ -312,7 +312,7 @@ class ChannelConfig:
                 if ('_loose' in varName) : v[varName.replace('_loose','')] = ""
 
         for k,v in self.regionListDict.iteritems() :
-            if k.endswith('a') or k in self.CRList :      
+            if k.endswith('a') or k in self.CRList :
                    v["H2PP" ] = "loosen"
         for k,v in self.regionListDict.iteritems() :
            if not k == 'CRY' :
