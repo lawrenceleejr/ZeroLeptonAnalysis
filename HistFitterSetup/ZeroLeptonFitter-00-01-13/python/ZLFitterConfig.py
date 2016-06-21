@@ -144,7 +144,7 @@ class ZLFitterConfig:
         self.constrainingRegionsList += ["CRT","CRW"]
         #self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
         # self.constrainingRegionsList += ["CRZ"]
-        self.constrainingRegionsList += ["CRY"]
+#        self.constrainingRegionsList += ["CRY"]
 #        self.constrainingRegionsList += ["CRQ"]
 
 
