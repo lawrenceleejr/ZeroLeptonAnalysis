@@ -468,8 +468,7 @@ class ChannelConfig:
                     myString += " && dphiR >= %f" % (self.dPhiR)
 
         if self.dphiMin2>=0 and regionName not in self.regionsWithoutDPHICutList:
-            myString="("
-
+            myString=""
             #first the dphi cut
             if self.dphiMin2CRQ<0: self.dphiMin2CRQ=self.dphiMin2/2 # if PhiCRQ is not defined, take the half: 0.4==>0.2
             if regionName in self.regionsWithFullyInvertedDPHICutList:
@@ -479,9 +478,6 @@ class ChannelConfig:
             else:
                 myString += " dphiMin2 >= %f " % (self.dphiMin2)
 
-
-
-            myString += ")"
             if not(self.WithoutdPhiCut):
                 cutList.append(myString)
 
@@ -560,17 +556,23 @@ class ChannelConfig:
                  for var,val in idict.iteritems() :
                      finalCutString = ""
                      stringVarValue = str(getattr(self, var)) if getattr(self, var)!=None else None
-                     if stringVarValue != None :#can be zero, so us this
+                     if stringVarValue != None :#can be zero, so use this
                          finalCutString = ""
                          if "upper" in var :
                              removeUpper = var.replace("upper","").strip("_")
-                             if not val         : finalCutString = removeUpper + " <= " + stringVarValue
-                             if val == 'invert' : finalCutString = removeUpper + " >  " + stringVarValue
-                             if val == 'loosen' : finalCutString = removeUpper + " <=  " + stringVarValue
+                             if not val         : finalCutString = removeUpper + " <= "  + stringVarValue
+                             if val == 'invert' : finalCutString = removeUpper + " >  "  + stringVarValue
+                             if val == 'loosen' :
+                                 loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
+                                 if not loosenedStringVarValue : print reg,var,val
+                                 finalCutString                  = removeUpper + " <=  " + loosenedStringVarValue
                          else :
                              if not val         : finalCutString = var         + " >= " + stringVarValue
                              if val == 'invert' : finalCutString = var         + " <  " + stringVarValue
-                             if val == 'loosen' : finalCutString = var         + " >=  "+ stringVarValue
+                             if val == 'loosen' :
+                                 loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
+                                 if not loosenedStringVarValue : print reg,var,val, var+"_loose"
+                                 finalCutString                  = var         + " >=  " + loosenedStringVarValue
                      if finalCutString : cutList.append(finalCutString)
 
     def Print(self, printLevel=2):

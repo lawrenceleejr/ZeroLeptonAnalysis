@@ -9,11 +9,11 @@ cleaningCut="( abs(m_jet1_eta)>2.4 || m_jet1_chf/m_jet1_FracSamplingMax>0.1)"
 regionDict={}
 regionDict["SR"] = Region("SR", "SRAll", [cleaningCut], [])
 
-regionDict["CRW"] = Region("CRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["CRT"] = Region("CRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
+regionDict["CRW"] = Region("CRW", "CRWT", ["nBJet < 1"], ["bTagWeight"])
+regionDict["CRT"] = Region("CRT", "CRWT", ["nBJet > 0"], ["bTagWeight"])
 # regionDict["CRT"] = Region("CRT", "SRAll", ["nBJet>0"], ["bTagWeight"])
 #regionDict["CRTZL"] = Region("CRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
-regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
+regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet >= 0"], ["bTagWeight"])
 
 
 # regionDict["VRWf"] = Region("VRWf", "CRWT", ["nBJet==0"], ["bTagWeight"]) #ATT: systWeights[0] is a proxy for the lepton weight
@@ -32,7 +32,7 @@ regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
 # regionDict["VRWTfminus"] = Region("VRWTfminus", "CRWT", ["lep1sign<0"], ["bTagWeight"])
 
 # regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1)"], [" 1.6 "])#extra weights should be applied only to gamma+jets
-regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130. && phTight[0]==1)"], [])#extra weights should be applied only to gamma+jets
+regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0] == 1 && phPt[0] > 130. && phTight[0] == 1)"], [])#extra weights should be applied only to gamma+jets
 # regionDict["VRYf"] = Region("VRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 
 regionDict["CRQ"] = Region("CRQ", "SRAll", [cleaningCut])#ATT: qcd weight
@@ -44,7 +44,7 @@ regionDict["VRQ"] = Region("VRQ", "SRAll", [cleaningCut])#ATT: qcd weight
 regionDict["VRZ"] = Region("VRZ", "CRZ", [], [])
 regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
 regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
-regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
+regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet > 0",cleaningCut], ["bTagWeight"])
 
 # regionDict["VRZf"] = Region("VRZf", "CRZ", [], [])
 
@@ -52,17 +52,17 @@ regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWe
 
 
 # ##for data-driven BG estimation##
-regionDict["VRW"] = Region("VRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["VRWa"] = Region("VRWa", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["VRWb"] = Region("VRWb", "CRWT", ["nBJet==0"], ["bTagWeight"])
-#regionDict["CRWL"] = Region("VRWL", "CRWT", ["nBJet==0"], ["bTagWeight"])
-#regionDict["CRWVL"] = Region("VRWVL", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["VRT"] = Region("VRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
-regionDict["VRTa"] = Region("VRTa", "CRWT", ["nBJet>0"], ["bTagWeight"])
-regionDict["VRTb"] = Region("VRTb", "CRWT", ["nBJet>0"], ["bTagWeight"])
-# regionDict["CRTL"] = Region("VRTL", "CRWT", ["nBJet>0"], ["bTagWeight"])
-# regionDict["CRTVL"] = Region("VRTVL", "CRWT", ["nBJet>0"], ["bTagWeight" ])
-# regionDict["CRYL"] = Region("CRYL", "CRY", ["(phSignal==1 && phPt>130."], [])#extra weights should be applied only to gamma+jets
+regionDict["VRW"] = Region("VRW", "CRWT", ["nBJet < 1"], ["bTagWeight"])
+regionDict["VRWa"] = Region("VRWa", "CRWT", ["nBJet < 1"], ["bTagWeight"])
+regionDict["VRWb"] = Region("VRWb", "CRWT", ["nBJet < 1"], ["bTagWeight"])
+#regionDict["CRWL"] = Region("VRWL", "CRWT", ["nBJet < 1"], ["bTagWeight"])
+#regionDict["CRWVL"] = Region("VRWVL", "CRWT", ["nBJet < 1"], ["bTagWeight"])
+regionDict["VRT"] = Region("VRT", "CRWT", ["nBJet > 0"], ["bTagWeight"])
+regionDict["VRTa"] = Region("VRTa", "CRWT", ["nBJet > 0"], ["bTagWeight"])
+regionDict["VRTb"] = Region("VRTb", "CRWT", ["nBJet > 0"], ["bTagWeight"])
+# regionDict["CRTL"] = Region("VRTL", "CRWT", ["nBJet > 0"], ["bTagWeight"])
+# regionDict["CRTVL"] = Region("VRTVL", "CRWT", ["nBJet > 0"], ["bTagWeight" ])
+# regionDict["CRYL"] = Region("CRYL", "CRY", ["(phSignal == 1 && phPt>130."], [])#extra weights should be applied only to gamma+jets
 # regionDict["CRZL"] = Region("CRZL", "CRZ", [], [])
 regionDict["CRZVL"] = Region("CRZVL", "CRZ", [], [])
 #regionDict["SRZVL"] = Region("SRZVL", "SRAll", ["( abs(jetEta[0])>2.4 || jet1Chf/jetFracSamplingMax[0]>0.1)"], [])
