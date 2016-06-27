@@ -322,9 +322,9 @@ class ChannelConfig:
         for k,v in self.regionListDict.iteritems():
             if not k == 'CRY' :
                 for varName in dir(self) :
-                    if varName not in ['H2PP', 'HT3PP', 'HT5PP' ] :
-                        if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
-                            v[varName.replace('_loose', '') ] = "loosen"
+                    if varName not in ['H2PP', 'HT3PP', 'HT5PP' , 'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose' ] :
+                            if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
+                                v[varName.replace('_loose', '') ] = "loosen"
 
 
 
