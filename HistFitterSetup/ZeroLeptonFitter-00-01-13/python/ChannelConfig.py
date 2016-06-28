@@ -315,12 +315,10 @@ class ChannelConfig:
             if k.endswith('a') or k in self.CRList :
                    v["H2PP" ] = "loosen"
         for k,v in self.regionListDict.iteritems() :
-           if not k == 'CRY' :
                if k.endswith('b') or k in self.CRList:
                    v["HT3PP"] = "loosen"
                    v["HT5PP"] = "loosen"
         for k,v in self.regionListDict.iteritems():
-            if not k == 'CRY' :
                 for varName in dir(self) :
                     if varName not in ['H2PP', 'HT3PP', 'HT5PP' , 'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose' ] :
                             if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
