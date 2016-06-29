@@ -306,6 +306,7 @@ class ChannelConfig:
         VRList      += [ "VRQ" , "VRZ", "VRW", "VRT"]
         self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
 
+
         #any var that can be loose
         for k,v in self.regionListDict.iteritems() :
             for varName in dir(self) :
@@ -319,12 +320,16 @@ class ChannelConfig:
                    v["HT3PP"] = "loosen"
                    v["HT5PP"] = "loosen"
         for k,v in self.regionListDict.iteritems():
+            isNotCompressedRegionCRY = not ('SRJigsawSRC' in self.name and 'CRY' in k)
                 for varName in dir(self) :
-                    if varName not in ['H2PP', 'HT3PP', 'HT5PP' , 'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose' ] :
+                    if varName not in ['H2PP', 'HT3PP', 'HT5PP' ,
+                                       'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose'
+                                       ] :
+                        if isNotCompressedRegionCRY or varName not in [ 'RISR','dphiISRI','NV',
+                                                                        'RISR_loose','dphiISRI_loose','NV_loose',
+                                                                        ] :
                             if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
                                 v[varName.replace('_loose', '') ] = "loosen"
-
-
 
         self.regionListDict["CRQ"]["RISR"]        =  "invert"
         self.regionListDict["CRQ"]["R_H2PP_H3PP"] =  "invert"
