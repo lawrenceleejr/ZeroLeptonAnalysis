@@ -21,11 +21,11 @@ auto kappaMapFunction = [](int region){
   // if (region == "SRS" )  return 2.00;
 
 
-  if (region == 0 )  return 1.55;
-  if (region == 1 )  return 1.55;
-  if (region == 2 )  return 1.55;
-  if (region == 3 )  return 2.00;
-  return 1.55;
+  // if (region == 0 )  return 1.55;
+  // if (region == 1 )  return 1.55;
+  // if (region == 2 )  return 1.55;
+  // if (region == 3 )  return 2.00;
+  return 1.31;
 };
 
 float gammaCorWeight(int RunNumber, int regionEnum = 0 ){// std::string region = "Meff") {
