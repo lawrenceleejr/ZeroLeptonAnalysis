@@ -325,9 +325,9 @@ class ChannelConfig:
                     if varName not in ['H2PP', 'HT3PP', 'HT5PP' ,
                                        'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose'
                                        ] :
-                        if not isNotCompressedRegionCRY or varName not in [ 'RISR','dphiISRI','NV',
-                                                                            'RISR_loose','dphiISRI_loose','NV_loose',
-                                                                            ] :
+                        if isNotCompressedRegionCRY or varName not in [ 'RISR','dphiISRI','NV',
+                                                                        'RISR_loose','dphiISRI_loose','NV_loose',
+                                                                        ] :
                             if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
                                 v[varName.replace('_loose', '') ] = "loosen"
 
