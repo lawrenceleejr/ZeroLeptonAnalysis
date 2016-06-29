@@ -321,7 +321,7 @@ class ChannelConfig:
                    v["HT5PP"] = "loosen"
         for k,v in self.regionListDict.iteritems():
             isNotCompressedRegionCRY = not ('SRJigsawSRC' in self.name and 'CRY' in k)
-                for varName in dir(self) :
+            for varName in dir(self) :
                     if varName not in ['H2PP', 'HT3PP', 'HT5PP' ,
                                        'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose'
                                        ] :
