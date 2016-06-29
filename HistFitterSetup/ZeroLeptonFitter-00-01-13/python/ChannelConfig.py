@@ -320,11 +320,13 @@ class ChannelConfig:
                    v["HT5PP"] = "loosen"
         for k,v in self.regionListDict.iteritems():
                 for varName in dir(self) :
-                    if varName not in ['H2PP', 'HT3PP', 'HT5PP' , 'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose' ] :
+                    if varName not in ['H2PP', 'HT3PP', 'HT5PP' ,
+                                       'H2PP_loose', 'HT3PP_loose', 'HT5PP_loose'
+                                       'RISR','dphiISRI','NV',
+                                       'RISR_loose','dphiISRI_loose','NV_loose',
+                                       ] :
                             if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
                                 v[varName.replace('_loose', '') ] = "loosen"
-
-
 
         self.regionListDict["CRQ"]["RISR"]        =  "invert"
         self.regionListDict["CRQ"]["R_H2PP_H3PP"] =  "invert"
