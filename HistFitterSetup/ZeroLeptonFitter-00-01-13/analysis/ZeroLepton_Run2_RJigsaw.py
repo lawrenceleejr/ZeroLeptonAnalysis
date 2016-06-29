@@ -897,7 +897,8 @@ for point in allpoints:
 
                     #Kappa
                     if zlFitterConfig.applyKappaCorrection:
-                        kappaError=0.066 if anaNameEnum(anaName)==3 else 0.080
+#                        kappaError=0.066 if anaNameEnum(anaName)==3 else 0.080
+                        kappaError = 0.07
                         sam.addSystematic(Systematic("Kappa", configMgr.weights, 1+kappaError, 1-kappaError, "user", "userOverallSys"))
 
 
