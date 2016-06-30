@@ -44,16 +44,24 @@ indir201 = "/working/rsmith/v57_sys/"
 indir207 = "/working/rsmith/v103_sys/"
 
 samplefiles = {
-	}
+	"Data" : { "201" : root_open("".join([indir201,"DataMain_data15_13TeV.root"])),
+		   "207" : root_open("".join([indir207,"DataMain_data15_13TeV.root"])),	},
 
-samplefiles["Data"] = { "201" : root_open("".join([indir201,"DataMain_data15_13TeV.root"])),
-			"207" : root_open("".join([indir207,"DataMain_data15_13TeV.root"])),
-	}
-samplefiles["Top"] = { "201" : root_open("".join([indir201,"Top.root"])),
-		       "207" : root_open("".join([indir207,"Top.root"])),
-	}
+	"Z"    : { "201" : root_open("".join([indir201,"Zjets.root"])),
+		   "207" : root_open("".join([indir207,"Zjets.root"])),                },
 
-print samplefiles
+	"QCD"    : { "201" : root_open("".join([indir201,"QCD.root"])),
+		     "207" : root_open("".join([indir207,"QCD.root"])),                },
+
+	"W"    : { "201" : root_open("".join([indir201,"Wjets.root"])),
+		   "207" : root_open("".join([indir207,"Wjets.root"])),                },
+
+	"Top"    : { "201" : root_open("".join([indir201,"Top.root"])),
+		     "207" : root_open("".join([indir207,"Top.root"])),                },
+
+	"GAMMA"    : { "201" : root_open("".join([indir201,"GammaJet.root"])),
+		       "207" : root_open("".join([indir207,"GammaJet.root"])),                },
+	}
 
 samples = {
 	}
@@ -61,84 +69,73 @@ samples = {
 samples["Data"] = { "201" : samplefiles["Data"]["201"].Get("Data_SRAll"),
 		    "207" : samplefiles["Data"]["207"].Get("Data_SRAll"),
 	}
-samples["Top"] = { "201"  : samplefiles["Top"]["201"].Get("Top_SRAll"),
-		   "207"  : samplefiles["Top"]["207"].Get("Top_SRAll"),
+samples["Z"] = {   "201"  : samplefiles["Z"]["201"].Get("Z_SRAll"),
+		   "207"  : samplefiles["Z"]["207"].Get("Z_SRAll"),
+	}
+samples["QCD"] = { "201"  : samplefiles["QCD"]["201"].Get("QCD_SRAll"),
+		   "207"  : samplefiles["QCD"]["207"].Get("QCD_SRAll"),
 	}
 
+samples["Top"] = {"201"  : samplefiles["Top"]["201"].Get("Top_SRAll"),
+		  "207"  : samplefiles["Top"]["207"].Get("Top_SRAll"),
+		  }
+
+samples["GAMMA"] = {"201"  : samplefiles["GAMMA"]["201"].Get("GAMMA_SRAll"),
+		  "207"  : samplefiles["GAMMA"]["207"].Get("GAMMA_SRAll"),
+		  }
+
+samples["W"] = {"201"  : samplefiles["W"]["201"].Get("W_SRAll"),
+		"207"  : samplefiles["W"]["207"].Get("W_SRAll"),
+		  }
 print samples
 
-def cleaning(tree, year) :
-	return 0
+def cleaning(tree, is201 = True) :
+	cleanDict = {
+		'SRAll'   : "((cleaning&(3))==0)",
+		'CRWT' : "((cleaning&(15))==0)",
+		'CRZ'  : "((cleaning&(7))==0)",
+		'CRY'  : "((cleaning&(15))==0)",
+		'CRQ'  : "((cleaning&(3))==0)",
+		} if is201  else {
+		'SRAll' : "((cleaning&(3+0x80))==0)",
+		'CRWT' : "((cleaning&(15+256))==0)",
+		'CRZ' : "((cleaning&(7+0x80))==0)",
+		'CRY' : "((cleaning&(15+512))==0)",
+		'CRQ' : "((cleaning&(3+0x80))==0)",
+		}
+	return cleanDict[tree]
+
+def runNumberCut(is201 = True, isData = False ) :
+	if isData : return ''
+	runNumberCut = '(RunNumber >=361444 && RunNumber <= 361467)' if is201 else '(RunNumber >=363415 && RunNumber <= 363435)'
+	return runNumberCut
 
 cutlists = {#NTVars.nJet>=2 &&
 	"presel" : "1.*( pT_jet1>200 && pT_jet2>50 && veto==0 && abs(timing)<4       && Meff > 800 && MET > 200)",
-	"sr2jl"  : "(pT_jet1>=200.0 &&  pT_jet2>=200.0 && veto==0 && (abs(timing)<4) && MET/sqrt(Meff-MET) >= 15.000000 && Meff >= 1200.000000 )" #
+	"sr2jl"   : "(pT_jet1>=200.0 &&  pT_jet2>=200.0 && veto==0 && (abs(timing)<4) && MET/sqrt(Meff-MET) >= 15.000000 && Meff >= 1200.000000 )",
+	"manfredi": "(pT_jet1>=200.0 &&  pT_jet2>=200.0 && veto==0 && (abs(timing)<4) && MET/sqrt(Meff-MET) >= 15.000000 && Meff >= 1200.000000 )", #
 }
 
-crtcuts = cutlists['presel']
+crtcuts = cutlists['manfredi']
 
-varsToPlot = { "MET" : {
-		"Data" : {
-			"201" : None,
-			"207" : None
-			},
-		"Top"  : {
-			"201" : None,
-			"207" : None
-			},
-		}, #fill histo after
-
-	       "Meff" : {
-		"Data" : {
-			"201" : None,
-			"207" : None
-			},
-		"Top"  : {
-			"201" : None,
-			"207" : None
-			},
-		}, #fill histo after
-
-
-	       # "METSoftTerm" : {
-	       # 	"Data" : {
-	       # 		"201" : None,
-	       # 		"207" : None
-	       # 		},
-	       # 	"Top"  : {
-	       # 		"201" : None,
-	       # 		"207" : None
-	       # 		},
-	       # 	}, #fill histo after
-	       "pT_jet1"          : {
-		"Data" : {
-			"201" : None,
-			"207" : None
-			},
-		"Top"  : {
-			"201" : None,
-			"207" : None
-			},
-		},
-	       "NJet" : {
-		"Data" : {
-			"201" : None,
-			"207" : None
-			},
-		"Top"  : {
-			"201" : None,
-			"207" : None
-			},
-		},
-}
+varsToPlot = {}
+listOfVars = ['MET', 'Meff', 'pT_jet1', 'NJet']
+#listOfVars = ['Meff', 'pT_jet1']
+for var in listOfVars :
+	varsToPlot[var] = {}
+	for treename in samples.keys() :
+		varsToPlot[var][treename] = {"201" : None ,
+					     "207" : None
+					     }
 
 lumiscale = 3240
 
 for datatype, datatypedict in samples.iteritems() :
 	for release, reltree in datatypedict.iteritems() :
-		weight = "weight" #if (not "Data" in datatype) else "1."
-		print datatype, weight
-		cutstring = crtcuts + "*" + weight
+		weight      = "weight" if (not "Data" in datatype) else "1."
+		cleanString = cleaning( reltree.GetName().split('_')[1] , '201' in release)
+		cutstring   = crtcuts + "*" + cleanString + '*' + weight #'*' + runCut
+		print datatype, release , cutstring
 		for var in varsToPlot.keys() :
 			c1 = ROOT.TCanvas()
 			color = ('blue' if release == '201' else 'red')
@@ -214,6 +211,7 @@ def makeComparisonCanvas(histList, denomHist = None, mainTitle = "", ratioTitle 
 		ratio.Draw()
 
 	c1.Print('plots/' + '_'.join([denomHist.GetName()]+ [i.GetName() for i in histList] +  [".eps"]).replace("$",""))
+	denomHist.Delete()
 	for obj in histList + [ratio] :
 		obj.Delete()
 
