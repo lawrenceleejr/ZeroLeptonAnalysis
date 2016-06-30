@@ -71,8 +71,8 @@ def cleaning(tree, year) :
 	return 0
 
 cutlists = {#NTVars.nJet>=2 &&
-	"presel" : "1.*( pT_jet1>200 && jetPt_2>50 && veto==0 && abs(timing)<4       && Meff > 800 && MET > 200)",
-	"sr2jl"  : "(pT_jet1>=200.0 &&  jetPt_2>=200.0 && veto==0 && (abs(timing)<4) && MET/sqrt(Meff-MET) >= 15.000000 && Meff >= 1200.000000 )" #
+	"presel" : "1.*( pT_jet1>200 && pT_jet2>50 && veto==0 && abs(timing)<4       && Meff > 800 && MET > 200)",
+	"sr2jl"  : "(pT_jet1>=200.0 &&  pT_jet2>=200.0 && veto==0 && (abs(timing)<4) && MET/sqrt(Meff-MET) >= 15.000000 && Meff >= 1200.000000 )" #
 }
 
 crtcuts = cutlists['presel']
@@ -120,7 +120,7 @@ varsToPlot = { "MET" : {
 			"207" : None
 			},
 		},
-	       "Length$(jetPt)" : {
+	       "NJet" : {
 		"Data" : {
 			"201" : None,
 			"207" : None
@@ -136,7 +136,7 @@ lumiscale = 3240
 
 for datatype, datatypedict in samples.iteritems() :
 	for release, reltree in datatypedict.iteritems() :
-		weight = "normWeight*eventWeight" if (not "Data" in datatype) else "1."
+		weight = "weight" #if (not "Data" in datatype) else "1."
 		print datatype, weight
 		cutstring = crtcuts + "*" + weight
 		for var in varsToPlot.keys() :
