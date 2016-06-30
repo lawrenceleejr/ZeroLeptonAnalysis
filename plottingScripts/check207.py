@@ -7,11 +7,12 @@ from rootpy.plotting.style import get_style, set_style
 from rootpy.plotting.utils import get_limits
 from rootpy.interactive import wait
 from rootpy.io import root_open
-import rootpy.plotting.root2matplotlib as rplt
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-from matplotlib.ticker import AutoMinorLocator, MultipleLocator
-from pylab import *
+
+#import rootpy.plotting.root2matplotlib as rplt
+#import matplotlib.pyplot as plt
+#import matplotlib as mpl
+#from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+#from pylab import *
 import os
 
 import AtlasStyle
@@ -20,25 +21,6 @@ import AtlasUtils
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 # import style_mpl
-
-from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-rc('text', usetex=True)
-
-mpl.rcParams['text.latex.preamble'] = [
-       r'\usepackage{siunitx}',   # i need upright \micro symbols, but you need...
-       r'\sisetup{detect-all}',   # ...this to force siunitx to actually use your fonts
-       r'\usepackage{helvet}',    # set the normal font here
-       r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
-       r'\sansmath'               # <- tricky! -- gotta actually tell tex to use!
-]
-
-def chrisZbi(Nsig, Nbkg, g_deltaNbkg = .2) :
-	Nobs = Nsig+Nbkg;
-	tau = 1./Nbkg/(g_deltaNbkg*g_deltaNbkg);
-	aux = Nbkg*tau;
-	Pvalue = ROOT.TMath.BetaIncomplete(1./(1.+tau),Nobs,aux+1.);
-	return ROOT.TMath.Sqrt(2.)*ROOT.TMath.ErfcInverse(Pvalue*2);
 
 indir201 = "/working/rsmith/v57_sys/"
 indir207 = "/working/rsmith/v103_sys/"
@@ -66,11 +48,11 @@ samplefiles = {
 samples = {
 	}
 
-samples["Data"] = { "201" : samplefiles["Data"]["201"].Get("Data_SRAll"),
-		    "207" : samplefiles["Data"]["207"].Get("Data_SRAll"),
-	}
 samples["Z"] = {   "201"  : samplefiles["Z"]["201"].Get("Z_SRAll"),
 		   "207"  : samplefiles["Z"]["207"].Get("Z_SRAll"),
+	}
+samples["Data"] = { "201" : samplefiles["Data"]["201"].Get("Data_SRAll"),
+		    "207" : samplefiles["Data"]["207"].Get("Data_SRAll"),
 	}
 samples["QCD"] = { "201"  : samplefiles["QCD"]["201"].Get("QCD_SRAll"),
 		   "207"  : samplefiles["QCD"]["207"].Get("QCD_SRAll"),
@@ -119,7 +101,7 @@ cutlists = {#NTVars.nJet>=2 &&
 crtcuts = cutlists['manfredi']
 
 varsToPlot = {}
-listOfVars = ['MET', 'Meff', 'pT_jet1', 'NJet']
+listOfVars = ['NJet']#, 'MET', 'Meff', 'pT_jet1']
 #listOfVars = ['Meff', 'pT_jet1']
 for var in listOfVars :
 	varsToPlot[var] = {}
@@ -128,19 +110,19 @@ for var in listOfVars :
 					     "207" : None
 					     }
 
-lumiscale = 3240
+lumiscale = 3.240
 
 for datatype, datatypedict in samples.iteritems() :
 	for release, reltree in datatypedict.iteritems() :
 		weight      = "weight" if (not "Data" in datatype) else "1."
 		cleanString = cleaning( reltree.GetName().split('_')[1] , '201' in release)
-		cutstring   = crtcuts + "*" + cleanString + '*' + weight #'*' + runCut
+		cutstring   = crtcuts + "*" + cleanString + '*' + weight + ('*WZweight' if ('207' in release) else '') #'*' + runCut
 		print datatype, release , cutstring
 		for var in varsToPlot.keys() :
 			c1 = ROOT.TCanvas()
 			color = ('blue' if release == '201' else 'red')
 
-			hnew = reltree.Draw(var+">>htemp"+('(20,200,1200)' if
+			hnew = reltree.Draw(var+">>htemp"+('(40,200,2200)' if
 							   (var in ['pT_jet1', 'MET','Meff']) else ('(15,0,300)'
 													if "metSoftTerm" in var
 													else  '(15, -.5, 14.5)') ),
@@ -185,7 +167,7 @@ def makeComparisonCanvas(histList, denomHist = None, mainTitle = "", ratioTitle 
 	pad2.cd()
 
 	for hist in histList :
-		ratio = denomHist.Clone()
+		ratio = denomHist.Clone(shallow=True)
 		ratio.GetYaxis().SetTitle(( ratioTitle if ratioTitle else (hist.GetName() + " " + denomHist.GetName())))
 		ratio.SetMarkerColor(ROOT.kBlack);
 		ratio.SetLineColor  (ROOT.kBlack);
@@ -203,17 +185,19 @@ def makeComparisonCanvas(histList, denomHist = None, mainTitle = "", ratioTitle 
 		ratio.GetXaxis().SetLabelFont(43);
 		ratio.GetXaxis().SetLabelSize(15);
 
-		ratio.SetMinimum(.9)
-		ratio.SetMaximum(1.1)
+		ratio.SetMinimum(.75)
+		ratio.SetMaximum(1.25)
 		ratio.Sumw2()
 
 		ratio.Divide(hist)
 		ratio.Draw()
 
 	c1.Print('plots/' + '_'.join([denomHist.GetName()]+ [i.GetName() for i in histList] +  [".eps"]).replace("$",""))
-	denomHist.Delete()
-	for obj in histList + [ratio] :
-		obj.Delete()
+
+	for obj in histList + [ratio] + [denomHist] :
+		if obj :
+			obj.Delete()
+			del obj
 
 for varname, histdict in varsToPlot.iteritems() :
 	for datatype in samples.keys() :
