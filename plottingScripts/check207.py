@@ -40,17 +40,17 @@ def chrisZbi(Nsig, Nbkg, g_deltaNbkg = .2) :
 	Pvalue = ROOT.TMath.BetaIncomplete(1./(1.+tau),Nobs,aux+1.);
 	return ROOT.TMath.Sqrt(2.)*ROOT.TMath.ErfcInverse(Pvalue*2);
 
-indir201 = "~/eos/atlas/user/l/lduflot/atlasreadable/ZeroLeptonRun2-00-00-57/filtered/"
-indir207 = "/afs/cern.ch/work/r/rsmith/public/"
+indir201 = "/working/rsmith/v57_sys/"
+indir207 = "/working/rsmith/v103_sys/"
 
 samplefiles = {
 	}
 
-samplefiles["Data"] = { "201" : root_open("".join([indir201,"DataMain.root"])),
-			"207" : root_open("".join([indir207,"p2613/DataMain.root"])),
+samplefiles["Data"] = { "201" : root_open("".join([indir201,"DataMain_data15_13TeV.root"])),
+			"207" : root_open("".join([indir207,"DataMain_data15_13TeV.root"])),
 	}
 samplefiles["Top"] = { "201" : root_open("".join([indir201,"Top.root"])),
-		       "207" : root_open("".join([indir207,"p2596/Top.root"])),
+		       "207" : root_open("".join([indir207,"Top.root"])),
 	}
 
 print samplefiles
@@ -67,14 +67,17 @@ samples["Top"] = { "201"  : samplefiles["Top"]["201"].Get("Top_SRAll"),
 
 print samples
 
+def cleaning(tree, year) :
+	return 0
+
 cutlists = {#NTVars.nJet>=2 &&
-	"presel" : "1.*( jetPt[0]>200 && jetPt[1]>50 && NTVars.veto==0 && abs(NTVars.timing)<4 && (NTVars.cleaning&3) == 0 && meffInc > 800 && met > 200)",
-	"sr2jl"  : "(jetPt[0]>=200.0 &&  jetPt[1]>=200.0 && NTVars.veto==0 && (abs(NTVars.timing)<4) && ((NTVars.cleaning&3) == 0) && met/sqrt(meffInc-met) >= 15.000000 && meffInc >= 1200.000000 )" #
+	"presel" : "1.*( pT_jet1>200 && jetPt_2>50 && veto==0 && abs(timing)<4       && Meff > 800 && MET > 200)",
+	"sr2jl"  : "(pT_jet1>=200.0 &&  jetPt_2>=200.0 && veto==0 && (abs(timing)<4) && MET/sqrt(Meff-MET) >= 15.000000 && Meff >= 1200.000000 )" #
 }
 
 crtcuts = cutlists['presel']
 
-varsToPlot = { "met" : {
+varsToPlot = { "MET" : {
 		"Data" : {
 			"201" : None,
 			"207" : None
@@ -85,7 +88,7 @@ varsToPlot = { "met" : {
 			},
 		}, #fill histo after
 
-	       "meffInc" : {
+	       "Meff" : {
 		"Data" : {
 			"201" : None,
 			"207" : None
@@ -97,7 +100,7 @@ varsToPlot = { "met" : {
 		}, #fill histo after
 
 
-	       # "metSoftTerm" : {
+	       # "METSoftTerm" : {
 	       # 	"Data" : {
 	       # 		"201" : None,
 	       # 		"207" : None
@@ -107,7 +110,7 @@ varsToPlot = { "met" : {
 	       # 		"207" : None
 	       # 		},
 	       # 	}, #fill histo after
-	       "jetPt[0]"          : {
+	       "pT_jet1"          : {
 		"Data" : {
 			"201" : None,
 			"207" : None
@@ -141,7 +144,7 @@ for datatype, datatypedict in samples.iteritems() :
 			color = ('blue' if release == '201' else 'red')
 
 			hnew = reltree.Draw(var+">>htemp"+('(20,200,1200)' if
-							   (var in ['jetPt[0]', 'met','meffInc']) else ('(15,0,300)'
+							   (var in ['pT_jet1', 'MET','Meff']) else ('(15,0,300)'
 													if "metSoftTerm" in var
 													else  '(15, -.5, 14.5)') ),
 					    cutstring,
@@ -220,6 +223,6 @@ for varname, histdict in varsToPlot.iteritems() :
 		hist201 = histos['201']
 		hist207 = histos['207']
 		makeComparisonCanvas([hist207], hist201 , ratioTitle = "20.1 / 20.7",
-				     xAxisTitle = varname + (" (GeV) " if varname in ['jetPt[0]', 'met', 'meffInc']  else "") )
+				     xAxisTitle = varname + (" (GeV) " if varname in ['pT_jet1', 'MET', 'Meff']  else "") )
 
 
