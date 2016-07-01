@@ -23,7 +23,7 @@ auto kappaMapFunction = [](int region){
 
   // if (region == 0 )  return 1.55;
   // if (region == 1 )  return 1.55;
-  if (region == 2 )  return 3.6;
+  if (region == 2 )  return 3.2;
   // if (region == 3 )  return 2.00;
   return 1.31;
 };
