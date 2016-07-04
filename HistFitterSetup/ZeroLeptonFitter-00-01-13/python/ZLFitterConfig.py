@@ -84,7 +84,10 @@ class ZLFitterConfig:
         self.usePreComputedWGeneratorSys=False
         self.usePreComputedTopGeneratorSys=False
         self.usePreComputedTopFragmentationSys=False
-        self.usePreComputedZGeneratorSys=True
+        self.usePreComputedZGeneratorSys=False
+
+#jet smearing
+        self.useDDQCDsample = True
 
         # JES,JER,...
         self.useJETUncertainties = True
@@ -93,10 +96,10 @@ class ZLFitterConfig:
         self.useMETUncertainties = True
 
         # Btag
-        self.useBTagUncertainties = False
+        self.useBTagUncertainties = True
 
         # Leptons
-        self.useLeptonUncertainties = False
+        self.useLeptonUncertainties = True
 
         ##############################################
         # Kappa correction for gamma+jets
@@ -118,7 +121,7 @@ class ZLFitterConfig:
         # Luminosity
         ##############################################
 
-        self.luminosity = 3.24 # 2.674#unit is fb-1
+        self.luminosity = 5.8 # 2.674#unit is fb-1
         self.luminosityEr = 0.09 # style the run1 error
 
         ##############################################
@@ -129,7 +132,7 @@ class ZLFitterConfig:
         self.useDIBOSONsample = True
 
         # QCD weight- one number per jet multiplicity starting with the monojet channel
-        self.qcdWeightList = [ 0.00192226,0.00192226, 0.00172744, 0.00149138, 0.00129087, 0.00122661, 0.00122661, 0.00122661]
+        self.qcdWeightList = [0.006727*float(self.luminosity)]*6
 
         ##############################################
         # Signal and control region
@@ -145,7 +148,7 @@ class ZLFitterConfig:
         #self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
-#        self.constrainingRegionsList += ["CRQ"]
+        self.constrainingRegionsList += ["CRQ"]
 
 
 
