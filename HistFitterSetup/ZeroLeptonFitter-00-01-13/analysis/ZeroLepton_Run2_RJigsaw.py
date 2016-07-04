@@ -266,7 +266,7 @@ if configMgr.readFromTree:
 
 
         # W
-        wFiles.append(INPUTDIR+ "/WMassiveCB.root.root")
+        wFiles.append(INPUTDIR+ "/WMassiveCB.root")
         if not zlFitterConfig.usePreComputedWGeneratorSys:
             wFiles.append(INPUTDIR+ "/WMadgraphPythia8.root")
 

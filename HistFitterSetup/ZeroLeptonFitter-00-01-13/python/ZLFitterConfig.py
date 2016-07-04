@@ -84,7 +84,7 @@ class ZLFitterConfig:
         self.usePreComputedWGeneratorSys=False
         self.usePreComputedTopGeneratorSys=False
         self.usePreComputedTopFragmentationSys=False
-        self.usePreComputedZGeneratorSys=False
+        self.usePreComputedZGeneratorSys=True
 
 #jet smearing
         self.useDDQCDsample = True
