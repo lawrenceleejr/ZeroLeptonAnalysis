@@ -246,11 +246,12 @@ if configMgr.readFromTree:
 
     else:
         # Diboson
-        dibosonFiles.append(INPUTDIR+ "/Diboson.root" )
+        dibosonFiles.append(INPUTDIR+ "/DibosonMassiveCB.root" )
 
 
         if zlFitterConfig.useDDQCDsample:
-            qcdFiles.append(os.path.join(INPUTDIR_MC, "JetSmearing_2015.root"))
+            qcdFiles.append(os.path.join(INPUTDIR, "JetSmearing_2015.root"))
+#            qcdFiles.append(os.path.join(INPUTDIR, "JetSmearing_2016.root"))
         else :
             qcdFiles.append( INPUTDIR+"/QCD.root")
 
@@ -265,18 +266,18 @@ if configMgr.readFromTree:
 
 
         # W
-        wFiles.append(INPUTDIR+ "/Wjets.root")
+        wFiles.append(INPUTDIR+ "/WMassiveCB.root.root")
         if not zlFitterConfig.usePreComputedWGeneratorSys:
             wFiles.append(INPUTDIR+ "/WMadgraphPythia8.root")
 
         # Z
-        zFiles.append(INPUTDIR+ "/Zjets.root")
+        zFiles.append(INPUTDIR+ "/ZMassiveCB.root")
         # zFiles.append(INPUTDIR+ "/Zjets.root")
         if not zlFitterConfig.usePreComputedZGeneratorSys:
             zFiles.append(INPUTDIR+ "/ZMadgraphPythia8.root")
 
         # gamma
-        gammaFiles.append(INPUTDIR+ "/GammaJet.root")
+        gammaFiles.append(INPUTDIR+ "/GAMMAMassiveCB.root")
 
     #data
     # dataFiles.append(INPUTDIR_DATA, "/DataMain_Nov01.root")
