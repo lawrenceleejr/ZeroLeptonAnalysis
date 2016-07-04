@@ -45,17 +45,17 @@ log.info("ZeroLeptonFitter says hi!")
 
 # ZeroLepton configuration instance
 # If you want to overright one of the option, please change ZLFitterConfig.py locally
-zlFitterConfig = ZLFitterConfig() 
+zlFitterConfig = ZLFitterConfig()
 
 # HistFitter's ConfigManager settings
-configMgr.blindSR = zlFitterConfig.blindSR              
-configMgr.blindCR = zlFitterConfig.blindCR              
-configMgr.blindVR = zlFitterConfig.blindVR              
-configMgr.writeXML = zlFitterConfig.writeXML              
+configMgr.blindSR = zlFitterConfig.blindSR
+configMgr.blindCR = zlFitterConfig.blindCR
+configMgr.blindVR = zlFitterConfig.blindVR
+configMgr.writeXML = zlFitterConfig.writeXML
 configMgr.useSignalInBlindedData = zlFitterConfig.useSignalInBlindedData
 
-configMgr.fixSigXSec = zlFitterConfig.fixSigXSec        
-configMgr.runOnlyNominalXSec = zlFitterConfig.runOnlyNominalXSec 
+configMgr.fixSigXSec = zlFitterConfig.fixSigXSec
+configMgr.runOnlyNominalXSec = zlFitterConfig.runOnlyNominalXSec
 
 #######################################################################
 # Commandline args
@@ -74,7 +74,7 @@ if configMgr.userArg != "":
     args = parser.parse_args(configMgr.userArg.split())
 
     log.info("Parsed user args %s" % str(args))
-   
+
     if args.useBackgroundCache:
         log.info("Setting useBackgroundCache=True")
 
@@ -94,13 +94,13 @@ if len(pickedSRs) > 0 and pickedSRs[0] not in finalChannelsDict and (configMgr.u
     log.fatal("UNKNOWN SR %s" % pickedSRs[0])
 
 elif len(pickedSRs) > 0:
-    # known SR, use it 
+    # known SR, use it
     channel = finalChannelsDict[pickedSRs[0]]
     if configMgr.userArg != "" and args.optimisationRegion is not None:
         log.warning("Note: your optimisation SR will be ignored")
 elif configMgr.userArg != "" and args.optimisationRegion is not None:
     # optimisation SR passed
-    channel = createChannelConfigFromString(args.optimisationRegion, args.regionPrefix) 
+    channel = createChannelConfigFromString(args.optimisationRegion, args.regionPrefix)
     channel.regionDict = regionDict
     log.info("Using optimisation region defined from %s" % args.optimisationRegion)
 
@@ -113,7 +113,7 @@ elif configMgr.userArg != "" and args.optimisationRegion is not None:
 
 if zlFitterConfig.useSplittedNtuples:
     channel.useSplittedNtuples = True
-    if "veto==0" in channel.commonCutList: 
+    if "veto==0" in channel.commonCutList:
         # already applied in the filtered ntuples - remove it
         channel.commonCutList.remove("veto==0")
 
@@ -134,7 +134,7 @@ CoefficientsDict = channelCoefficients.getCoefficientsDict()
 
 # grid, with a default point and a default name
 grid = "GG_direct"
-gridTreeName = grid 
+gridTreeName = grid
 allpoints = ["1200_0"]
 
 
@@ -149,23 +149,23 @@ INPUTDIR_MC_ALTERNATIVE = inputConfig.background_alternative
 INPUTDIR_SIGNAL = inputConfig.signal
 INPUTDIR_DATA = inputConfig.data
 
-# sigSamples is set by the "-g" HistFitter option    
+# sigSamples is set by the "-g" HistFitter option
 try:
     sigSamples
 except NameError:
     sigSamples = None
-    
+
 if sigSamples != None:
     if "grid" in sigSamples[0]: # first entry allowed to specify a grid name
         grid = sigSamples[0].replace("grid", "")
         gridTreeName = grid
         allpoints = sigSamples[1:]
-        
+
         #if not os.path.exists(os.path.join(INPUTDIR_SIGNAL, grid+".root")) and not "eos" in INPUTDIR_SIGNAL:
         #     log.fatal("Input file {0} for signal does not exist!".format(os.path.join(INPUTDIR_SIGNAL, grid+".root")))
         #else:
          # allpoints = sigSamples
-   
+
 # rename the default option for the sq-sq compressed points
 if grid == "SM_SS_direct_compressedPoints":
     gridTreeName = "SM_SS_direct"
@@ -195,13 +195,13 @@ if myFitType == FitType.Background:
 configMgr.nTOYs = 5000      # number of toys when doing frequentist calculator
 configMgr.doExclusion = False
 if myFitType == FitType.Exclusion:
-    configMgr.doExclusion = True 
+    configMgr.doExclusion = True
 configMgr.calculatorType = 2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType = 3   # 3=one-sided profile likelihood test statistic (LHC default)
 configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
 
 if configMgr.calculatorType == 2:
-    configMgr.nPoints = 30 
+    configMgr.nPoints = 30
 
 #######################################################################------
 # Now we start to build the data model
@@ -223,7 +223,7 @@ zFiles = []
 gammaFiles = []
 
 if configMgr.readFromTree:
-   
+
 
 
     if zlFitterConfig.useSplittedNtuples:
@@ -235,7 +235,7 @@ if configMgr.readFromTree:
             zFiles.append(os.path.join(INPUTDIR_MC, "ZMassiveCB_nJet_{0}.root".format(i)))
 
             if zlFitterConfig.useMCQCDsample:
-                qcdFiles.append(os.path.join(INPUTDIR_MC, "QCD_nJet_{0}.root".format(i)))            
+                qcdFiles.append(os.path.join(INPUTDIR_MC, "QCD_nJet_{0}.root".format(i)))
             if not zlFitterConfig.usePrecomputedTopGeneratorSys:
                 topFiles.append(os.path.join(INPUTDIR_MC_ALTERNATIVE, "TopaMcAtNloHerwigpp_nJet_{0}.root".format(i)))
             if not zlFitterConfig.usePrecomputedTopFragmentationSys:
@@ -251,10 +251,13 @@ if configMgr.readFromTree:
         # QCD
         if zlFitterConfig.useMCQCDsample:
             qcdFiles.append(os.path.join(INPUTDIR_MC, "QCD.root"))
+#                qcdFiles.append(os.path.join(INPUTDIR_MC, "JetSmearing_2016.root"))#for now, only use 2016 JetSmearing
+
+
 
         # Diboson
         dibosonFiles.append(os.path.join(INPUTDIR_MC, "DibosonMassiveCB.root"))
-  
+
         # Top
         topFiles.append(os.path.join(INPUTDIR_MC, "Top.root"))
         if not zlFitterConfig.usePrecomputedTopGeneratorSys:
@@ -271,7 +274,7 @@ if configMgr.readFromTree:
         zFiles.append(os.path.join(INPUTDIR_MC, "ZMassiveCB.root"))
         if not zlFitterConfig.usePrecomputedZGeneratorSys:
             zFiles.append(os.path.join(INPUTDIR_MC_ALTERNATIVE, "ZMadgraphPythia8.root"))
-        
+
         # gamma
         gammaFiles.append(os.path.join(INPUTDIR_MC, "GAMMAMassiveCB.root"))
         gammaFiles.append(os.path.join(INPUTDIR_MC, "GAMMAMassiveCB_TRUTH_filtered.root"))
@@ -285,7 +288,7 @@ if configMgr.readFromTree:
     dataFiles.append(os.path.join(INPUTDIR_DATA, "DataMain.root"))
 
     log.info("Using the following inputs:")
-    log.info("topFiles = %s" % topFiles) 
+    log.info("topFiles = %s" % topFiles)
     log.info("qcdFiles = %s" % qcdFiles)
     log.info("dibosonFiles = %s" % dibosonFiles)
     log.info("dataFiles = %s" % dataFiles)
@@ -305,7 +308,7 @@ if zlFitterConfig.applyKappaCorrection:
 configMgr.weights = weights
 
 #######################################################################
-# Dump our options to user 
+# Dump our options to user
 #######################################################################
 
 if zlFitterConfig.useStat and zlFitterConfig.useStatPerSample:
@@ -341,14 +344,14 @@ log.info("No panicking detected, continuing...")
 # Diboson
 #--------------------------
 # NB: note that theoSys on diboson are applied on the level of the region definitions,
-# since we have one for the SR and one for the CR 
+# since we have one for the SR and one for the CR
 dibosonSample = Sample(zlFitterConfig.dibosonSampleName, kRed+3)
 dibosonSample.setTreeName("Diboson_SRAll")
 dibosonSample.setFileList(dibosonFiles)
 dibosonSample.setStatConfig(zlFitterConfig.useStat)
 dibosonSample.setNormFactor("mu_"+zlFitterConfig.dibosonSampleName, 1., 0., 500.)
 
-#--------------------------             
+#--------------------------
 # QCD
 #--------------------------
 qcdSample = Sample(zlFitterConfig.qcdSampleName, kOrange+2)
@@ -386,22 +389,22 @@ topSample = Sample(zlFitterConfig.topSampleName, kGreen-9)
 topSample.setTreeName("Top_SRAll")
 topSample.setNormFactor("mu_"+zlFitterConfig.topSampleName, 1., 0., 500.)
 topSample.setFileList(topFiles)
-topSample.setStatConfig(zlFitterConfig.useStat) 
+topSample.setStatConfig(zlFitterConfig.useStat)
 if zlFitterConfig.datadriven:
     #For Loose Control Region
     topLooseSample = Sample(zlFitterConfig.topLooseSampleName, kGreen-9)
     topLooseSample.setTreeName("Top_SRAll")
     topLooseSample.setNormFactor("mu_"+zlFitterConfig.topLooseSampleName, 1., 0., 500.)
     topLooseSample.setFileList(topFiles)
-    topLooseSample.setStatConfig(zlFitterConfig.useStat) 
+    topLooseSample.setStatConfig(zlFitterConfig.useStat)
 
-    #For Very Loose Control Region   
+    #For Very Loose Control Region
     topVeryLooseSample = Sample(zlFitterConfig.topVeryLooseSampleName, kGreen-9)
     topVeryLooseSample.setTreeName("Top_SRAll")
     topVeryLooseSample.setNormFactor("mu_"+zlFitterConfig.topVeryLooseSampleName, 1., 0., 500.)
     topVeryLooseSample.setFileList(topFiles)
-    topVeryLooseSample.setStatConfig(zlFitterConfig.useStat) 
-    
+    topVeryLooseSample.setStatConfig(zlFitterConfig.useStat)
+
     #For Top Constraint Region
 if zlFitterConfig.doSetNormRegion:
     if "CRT" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
@@ -411,12 +414,12 @@ if zlFitterConfig.doSetNormRegion:
     if "CRTVL" in zlFitterConfig.constrainingRegionsList:
         topVeryLooseSample.setNormRegions([("CRTVL", zlFitterConfig.binVar)])
 
-    #For Top Systematics   
+    #For Top Systematics
 if not zlFitterConfig.usePrecomputedTopGeneratorSys:
     topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
     if zlFitterConfig.datadriven:
         topLooseSample.addSystematic(Systematic("generatorTop","" , "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
-        topVeryLooseSample.addSystematic(Systematic("generatorTop","" , "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))    
+        topVeryLooseSample.addSystematic(Systematic("generatorTop","" , "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 if not zlFitterConfig.usePrecomputedTopFragmentationSys:
     topSample.addSystematic(Systematic("fragmentationTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
@@ -425,7 +428,7 @@ if not zlFitterConfig.usePrecomputedTopFragmentationSys:
         topVeryLooseSample.addSystematic(Systematic("fragmentationTop","" , "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 #--------------------------
-# W 
+# W
 #--------------------------
 wSample = Sample(zlFitterConfig.wSampleName, kAzure+1)
 wSample.setTreeName("W_SRAll")
@@ -483,14 +486,14 @@ if zlFitterConfig.doSetNormRegion:
     if "CRT" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
         wSample.setNormRegions([("CRT", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
 
-    #For W Systematics   
+    #For W Systematics
 if not zlFitterConfig.usePrecomputedWGeneratorSys:
     wSample.addSystematic(Systematic("generatorW", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
     if zlFitterConfig.datadriven:
         wLooseSample.addSystematic(Systematic("generatorW", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
         wVeryLooseSample.addSystematic(Systematic("generatorW", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
 
-#--------------------------  
+#--------------------------
 # Gamma
 #--------------------------
 gammaSample = Sample(zlFitterConfig.gammaSampleName,kYellow)
@@ -549,7 +552,7 @@ if zlFitterConfig.datadriven:
         CRYlmlASample.addNormFactor("eff_YtmlA",CoefficientsDict["CRYtmlA"].Value,CoefficientsDict["CRYtmlA"].Maxval ,CoefficientsDict["CRYtmlA"].Minval,False)
         CRYlmlASample.addNormFactor("eff_YtmtA",CoefficientsDict["CRYtmtA"].Value,CoefficientsDict["CRYtmtA"].Maxval ,CoefficientsDict["CRYtmtA"].Minval,False)
 
-    
+
 #--------------------------
 # Z
 #--------------------------
@@ -584,7 +587,7 @@ if zlFitterConfig.datadriven:
     CRZllVLSample.addNormFactor("eff_ZllVL",CoefficientsDict["CRZllVL"].Value,CoefficientsDict["CRZllVL"].Maxval ,CoefficientsDict["CRZllVL"].Minval,False)
     CRZllVLSample.addNormFactor("SF_llpernunu",CoefficientsDict["SF_llpernunu"].Value,CoefficientsDict["SF_llpernunu"].Maxval ,CoefficientsDict["SF_llpernunu"].Minval,False)
 
-    #for validation region 
+    #for validation region
     if "VRZf" in zlFitterConfig.datadrivenValidationRegionsList:
         VRZfSample = Sample("Z_VRZf",kBlue)
         VRZfSample.buildHisto([1],"VRZf","cuts")
@@ -610,10 +613,10 @@ if zlFitterConfig.datadriven:
 
 if zlFitterConfig.doSetNormRegion:
     if "CRY" in zlFitterConfig.constrainingRegionsList:
-        zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])        
+        zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
         zSample.normSampleRemap = "GAMMAjets"
     if "CRZllL" in zlFitterConfig.constrainingRegionsList:
-        zLooseSample.setNormRegions([("CRZllL", zlFitterConfig.binVar)])        
+        zLooseSample.setNormRegions([("CRZllL", zlFitterConfig.binVar)])
 if not zlFitterConfig.usePrecomputedZGeneratorSys:
     zSample.addSystematic(Systematic("generatorZ", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
     if zlFitterConfig.datadriven:
@@ -649,10 +652,10 @@ if zlFitterConfig.useShapeFit and zlFitterConfig.useShapeFactor and not zlFitter
 sysWeight_theoSysSigUp = myreplace(configMgr.weights, ["normWeightUp"], "normWeight")
 sysWeight_theoSysSigDown = myreplace(configMgr.weights, ["normWeightDown"], "normWeight")
 theoSysSig = Systematic("SigXSec", configMgr.weights, sysWeight_theoSysSigUp, sysWeight_theoSysSigDown, "weight", "overallSys")
-    
+
 
 #######################################################################
-# Set up fit 
+# Set up fit
 #######################################################################
 
 # First define HistFactory attributes
@@ -692,7 +695,7 @@ if configMgr.useCacheToTreeFallback:
 for point in allpoints:
     if point == "":
         continue
-        
+
     # Fit config instance
     name = "Fit_%s_%s" % (grid, point)
     if grid == "SM_SS_direct_compressedPoints":
@@ -713,14 +716,14 @@ for point in allpoints:
     #-------------------------------------------------
 
     # fix diboson to MC prediction
-    meas.addParamSetting("mu_"+zlFitterConfig.dibosonSampleName, True, 1) 
+    meas.addParamSetting("mu_"+zlFitterConfig.dibosonSampleName, True, 1)
 
     # fix Lumi if not exclusion fit
     if myFitType != FitType.Exclusion:
         meas.addParamSetting("Lumi", True, zlFitterConfig.luminosity)
 
     # fix error on signal
-    if configMgr.fixSigXSec: 
+    if configMgr.fixSigXSec:
         meas.addParamSetting("alpha_SigXSec", True, 1)
 
     if "CRQ" not in zlFitterConfig.constrainingRegionsList:
@@ -728,7 +731,7 @@ for point in allpoints:
     if "CRY" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.zSampleName, True, 1)
     if "CRW" not in zlFitterConfig.constrainingRegionsList:
-        meas.addParamSetting("mu_"+zlFitterConfig.wSampleName, True, 1) 
+        meas.addParamSetting("mu_"+zlFitterConfig.wSampleName, True, 1)
     if "CRT" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.topSampleName, True, 1)
     if "CRWL" in zlFitterConfig.constrainingRegionsList:
@@ -791,11 +794,11 @@ for point in allpoints:
             continue
 
         #select only regions with photons
-        if treeBaseName not in ["CRY"]: 
+        if treeBaseName not in ["CRY"]:
             continue
 
         extraWeightList = regionDict[regionName].extraWeightList
-       
+
         # Gamma control region
         if (not zlFitterConfig.useShapeFit) or zlFitterConfig.datadriven :
             REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
@@ -813,14 +816,14 @@ for point in allpoints:
                 REGION.addSample(wLooseSample)
                 REGION.addSample(topLooseSample)
         for sam in REGION.sampleList:
-            sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))               
+            sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
             if "Data" in sam.treeName:
                 #sam.setFileList(dataFiles)
                 pass
             if "GAMMA" in sam.name: #ATT: should define to which samples the extra-weight should be applied
                 for extraWeight in extraWeightList:
                     sam.addWeight(extraWeight)
-        #for datadriven 
+        #for datadriven
         if zlFitterConfig.datadriven:
             if regionName in zlFitterConfig.datadrivenRegionsList:
                 if "CRYL" == regionName:
@@ -837,25 +840,25 @@ for point in allpoints:
                     if "CRYtmlA" == regionName:
                         REGION.addSample(CRYtmlASample)
                     if "CRYlmlA" == regionName:
-                        REGION.addSample(CRYlmlASample)         
+                        REGION.addSample(CRYlmlASample)
             if doValidation and regionName in zlFitterConfig.datadrivenValidationRegionsList:
                 #this region become validation region if  ABCD
                 if "CRYtmtA" == regionName:
                     REGION.addSample(CRYtmtASample)
 
         # set region type
-        if regionName in zlFitterConfig.constrainingRegionsList:                    
+        if regionName in zlFitterConfig.constrainingRegionsList:
             # add as a constraining region
             myFitConfig.setBkgConstrainChannels(REGION)
         else:
             myFitConfig.setValidationChannels(REGION)
-        
+
     ######################################################################
     # Signal Regions
     ######################################################################
     if not zlFitterConfig.useShapeFit or zlFitterConfig.datadriven:
         #SR_loose = myFitConfig.addChannel("cuts", ["SR_meffcut_relaxed"], 1, 0.5, 1.5)
-        
+
         SR = myFitConfig.addChannel("cuts", [zlFitterConfig.SRName], 1, 0.5, 1.5)
         #SR.remapSystChanName = "cuts_SR_meffcut_relaxed"
     else:
@@ -869,11 +872,11 @@ for point in allpoints:
         SR.addSample(topSample)
         SR.addSample(wSample)
     # Use the SR as validation region in the background fit, so that we can extract info from PDF in SR
-    if myFitType == FitType.Background: 
+    if myFitType == FitType.Background:
         myFitConfig.setValidationChannels(SR)
     else:
         myFitConfig.setSignalChannels([SR])
-    
+
     # Dummy sample for discovery tests
     if myFitType == FitType.Discovery:
         SR.addDiscoverySamples(["SIG"], [1.], [0.], [1000.], [kMagenta])
@@ -882,13 +885,13 @@ for point in allpoints:
 
     ######################################################################
     # Regions with leptons
-    ######################################################################      
+    ######################################################################
 
     for regionName in zlFitterConfig.allRegionsList():
         treeBaseName = regionDict[regionName].suffixTreeName
 
         # select only regions with leptons
-        if treeBaseName not in ["CRWT","VRWT","CRZ","CRZ_VR1b"]: 
+        if treeBaseName not in ["CRWT","VRWT","CRZ","CRZ_VR1b"]:
             continue
 
         # skip validation regions
@@ -896,7 +899,7 @@ for point in allpoints:
             continue
         if regionName in ["VRWtmtA","VRWtmlA","VRWlmtA","VRWlmlA"]:
             continue
- 
+
         #setup region
         if (not zlFitterConfig.useShapeFit ) or zlFitterConfig.datadriven:
             REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
@@ -911,7 +914,7 @@ for point in allpoints:
                 REGION.addSample(topSample)
                 REGION.addSample(wSample)
                 REGION.addSample(zSample)
-            if regionName in ["VRZf"]:  
+            if regionName in ["VRZf"]:
                 REGION.addSample(topSample)
                 REGION.addSample(wSample)
             if regionName in ["CRWL","CRTL","CRZllL"]:
@@ -926,7 +929,7 @@ for point in allpoints:
                 if regionName in ["CRZllVL","CRTVL"]:
                     REGION.addSample(wVeryLooseSample)
 
-        
+
         #set the treename
         for sam in REGION.sampleList:
             sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
@@ -938,8 +941,8 @@ for point in allpoints:
         extraWeightList = regionDict[regionName].extraWeightList
         for extraWeight in extraWeightList:
             REGION.addWeight(extraWeight)
-            
-        # lepton uncertainties        
+
+        # lepton uncertainties
         if zlFitterConfig.useLeptonUncertainties and "systWeights[0]" in regionDict[regionName].extraWeightList:
 
             leptonSystematicList = []
@@ -970,7 +973,7 @@ for point in allpoints:
 
 
 
-        #bTagging uncertainties        
+        #bTagging uncertainties
         if zlFitterConfig.useBTagUncertainties and "btagSystWeights[0]" in regionDict[regionName].extraWeightList:
 
             btagSystematicList = []
@@ -997,7 +1000,7 @@ for point in allpoints:
             bTagSystWeightsExtrapolationFromCharmDown = myreplace(REGION.weights, ["btagSystWeights[10]"] , "btagSystWeights[0]")
             btagSystematicList.append(Systematic("EFF_extrapolation_from_charm", REGION.weights  , bTagSystWeightsExtrapolationFromCharmUp, bTagSystWeightsExtrapolationFromCharmDown, "weight", "overallNormHistoSys"))
 
-            
+
             for sam in REGION.sampleList:
                 if sam.name==zlFitterConfig.zSampleName: continue #ATT : prb with Z samples!!!!!
                 for sys in btagSystematicList:
@@ -1019,7 +1022,7 @@ for point in allpoints:
                 REGION.addSample(VRZfSample)
 
         # set region type
-        if regionName in zlFitterConfig.constrainingRegionsList:                    
+        if regionName in zlFitterConfig.constrainingRegionsList:
             myFitConfig.setBkgConstrainChannels(REGION)
         else:
             myFitConfig.setValidationChannels(REGION)
@@ -1049,7 +1052,7 @@ for point in allpoints:
             REGION.useOverflowBin = True
             REGION.useUnderflowBin = False
 
-        if regionName in zlFitterConfig.constrainingRegionsList:  
+        if regionName in zlFitterConfig.constrainingRegionsList:
             myFitConfig.setBkgConstrainChannels(REGION)
         else:
             myFitConfig.setValidationChannels(REGION)
@@ -1070,15 +1073,15 @@ for point in allpoints:
         if not regionName in ["VRZVL","VRZL","VRZlmlA"]:
             continue
         REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
-        if regionName in ["VRZVL"]:  
+        if regionName in ["VRZVL"]:
             REGION.addSample(topVeryLooseSample)
             REGION.addSample(wVeryLooseSample)
             REGION.addSample(VRZVLSample)
-        if regionName in ["VRZL"] and zlFitterConfig.meffABCD:  
+        if regionName in ["VRZL"] and zlFitterConfig.meffABCD:
             REGION.addSample(topLooseSample)
             REGION.addSample(wLooseSample)
             REGION.addSample(VRZLSample)
-        if regionName in ["VRZlmlA"] and zlFitterConfig.meffABCD:  
+        if regionName in ["VRZlmlA"] and zlFitterConfig.meffABCD:
             REGION.addSample(topLooseSample)
             REGION.addSample(wLooseSample)
             REGION.addSample(VRZlmlASample)
@@ -1089,17 +1092,17 @@ for point in allpoints:
     # These uncertainties correspond to the uncertainty on the TF
     # That's why they are not added in the control regions
     ###############################################################
-    
+
     if zlFitterConfig.usePrecomputedError:
         for REGION in myFitConfig.channels:
             if REGION.regionString in zlFitterConfig.constrainingRegionsList:
                 continue
-                
-            for sam in REGION.sampleList:                     
+
+            for sam in REGION.sampleList:
                 if sam.name == sigSampleName:
                     #signal
                     #Needs to add theory uncertainty on signal acceptance for low-dM points
-                    nameSys = "FlatSig"   
+                    nameSys = "FlatSig"
                     #sam.addSystematic(Systematic(nameSys, configMgr.weights, 1+zlFitterConfig.flatErrorSignal, 1-zlFitterConfig.flatErrorSignal, "user", "userOverallSys"))
                 elif sam.name == zlFitterConfig.zSampleName or sam.name == zlFitterConfig.zLooseSampleName or sam.name == zlFitterConfig.zVeryLooseSampleName:
                     # Z background
@@ -1111,14 +1114,14 @@ for point in allpoints:
                         if zlFitterConfig.applyKappaCorrection:
                             kappaError=0.066
                             sam.addSystematic(Systematic("Kappa", configMgr.weights, 1+kappaError, 1-kappaError, "user", "userOverallSys"))
-                        
-                elif sam.name == zlFitterConfig.wSampleName or sam.name == zlFitterConfig.wLooseSampleName or sam.name == zlFitterConfig.wVeryLooseSampleName: 
+
+                elif sam.name == zlFitterConfig.wSampleName or sam.name == zlFitterConfig.wLooseSampleName or sam.name == zlFitterConfig.wVeryLooseSampleName:
                     # W background
                     # generator
                     if zlFitterConfig.usePrecomputedWGeneratorSys:
                         errorGenerator = getError(channel.name, REGION.name.replace("cuts_", ""), wTheoSysGeneratorDict)
                         sam.addSystematic(Systematic("GeneratorW", configMgr.weights, 1+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
-                elif sam.name == zlFitterConfig.topSampleName or sam.name == zlFitterConfig.topLooseSampleName or sam.name == zlFitterConfig.topVeryLooseSampleName:        
+                elif sam.name == zlFitterConfig.topSampleName or sam.name == zlFitterConfig.topLooseSampleName or sam.name == zlFitterConfig.topVeryLooseSampleName:
                     # Top background
                     # generator
                     if zlFitterConfig.usePrecomputedTopGeneratorSys:
@@ -1128,11 +1131,11 @@ for point in allpoints:
                     # A14 uncertainty
                     errorA14 = getError(channel.name, REGION.name.replace("cuts_", ""), topTheoSysA14Dict)
                     sam.addSystematic(Systematic("TopTuneA14", configMgr.weights, 1+errorA14, 1-errorA14, "user", "userOverallSys"))
-                    
+
                     # PowhegHerwig
                     if zlFitterConfig.usePrecomputedTopFragmentationSys:
                         errorPowhegHerwig = getError(channel.name, REGION.name.replace("cuts_", ""), topTheoSysPowhegHerwigDict)
-                        sam.addSystematic(Systematic("FragmentationTop", configMgr.weights, 1+errorPowhegHerwig, 1-errorPowhegHerwig, "user", "userOverallSys"))                    
+                        sam.addSystematic(Systematic("FragmentationTop", configMgr.weights, 1+errorPowhegHerwig, 1-errorPowhegHerwig, "user", "userOverallSys"))
                     # radiation
                     errorRad = getError(channel.name, REGION.name.replace("cuts_", ""), topTheoSysRadDict)
                     sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
@@ -1150,12 +1153,12 @@ for point in allpoints:
     ###############################################################
     # Add systematics
     ###############################################################
-    
+
     # JET systematics
     jetSystematicList = []
 
     # JER systematics
-    # ATT: Not sure that it should be symmetrized    
+    # ATT: Not sure that it should be symmetrized
     jetSystematicList.append(Systematic("JER", "", "_JET_JER_SINGLE_NP_1up", "", "tree", "overallNormHistoSysOneSide"))
 
     # JES systematics
@@ -1167,26 +1170,26 @@ for point in allpoints:
 
     for jesSysStr in jesSystematicStrList:
         jetSystematicList.append(Systematic(jesSysStr, "", "_"+jesSysStr+"_1up", "_"+jesSysStr+"_1down", "tree", "overallNormHistoSys"))
-        
+
     # MET systematics
     metSystematicList = []
     metSystematicList.append(Systematic("MET_SoftTrk_ResoPara", "", "_MET_SoftTrk_ResoPara", "", "tree", "overallNormHistoSysOneSide"))
     metSystematicList.append(Systematic("MET_SoftTrk_ResoPerp", "", "_MET_SoftTrk_ResoPerp", "", "tree", "overallNormHistoSysOneSide"))
     metSystematicList.append(Systematic("MET_SoftTrk_Scale", "", "_MET_SoftTrk_ScaleUp", "_MET_SoftTrk_ScaleDown", "tree", "overallNormHistoSys"))
 
-    for REGION in myFitConfig.channels:        
-        for sam in REGION.sampleList:             
+    for REGION in myFitConfig.channels:
+        for sam in REGION.sampleList:
             if  sam.name in zlFitterConfig.datadrivenSampleNameList:
                 continue
             if  sam.name == "Z_VRZf":
                 continue
             if zlFitterConfig.useJETUncertainties:
                 for sys in jetSystematicList:
-                    sam.addSystematic(sys)     
+                    sam.addSystematic(sys)
             if zlFitterConfig.useMETUncertainties:
                 for sys in metSystematicList:
                     sam.addSystematic(sys)
-    
+
     ###############################################################
     # This is the end
     ###############################################################
