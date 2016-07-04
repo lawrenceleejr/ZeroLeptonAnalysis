@@ -228,9 +228,6 @@ gammaFiles = []
 
 if configMgr.readFromTree:
 
-    # QCD
-    qcdFiles.append( INPUTDIR+"/QCD.root")
-
     if zlFitterConfig.useFilteredNtuples:
         for i in range(channel.nJets, 7):
             dibosonFiles.append(os.path.join(INPUTDIR, "DibosonMassiveCB_nJet_{0}.root".format(i)))
@@ -251,7 +248,15 @@ if configMgr.readFromTree:
         # Diboson
         dibosonFiles.append(INPUTDIR+ "/Diboson.root" )
 
-        # Top
+
+        if zlFitterConfig.useDDQCDsample:
+            qcdFiles.append(os.path.join(INPUTDIR_MC, "JetSmearing_2015.root"))
+        else :
+            qcdFiles.append( INPUTDIR+"/QCD.root")
+
+
+
+        # Topa
         topFiles.append(INPUTDIR+ "/Top.root")
         if not zlFitterConfig.usePreComputedTopGeneratorSys:
             topFiles.append(INPUTDIR+ "/TopaMcAtNloHerwigpp.root")
@@ -351,24 +356,21 @@ dibosonSample.setStatConfig(zlFitterConfig.useStat)
 # QCD
 #--------------------------
 qcdSample = Sample(zlFitterConfig.qcdSampleName, kOrange+2)
-qcdSample.setTreeName("QCD_SRAll")
+qcdSample.setTreeName("Data_SRAll")
 qcdSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName, 1., 0., 500.)
 qcdSample.setFileList(qcdFiles)
 qcdSample.setStatConfig(zlFitterConfig.useStat)
 
 qcdWeight = 1
 nJets = channel.nJets
-if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList):
+if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList) + 1:
     qcdWeight = zlFitterConfig.qcdWeightList[nJets-1]/ (zlFitterConfig.luminosity)
     # qcdSample.addWeight(str(qcdWeight))
     for w in configMgr.weights: #ATT: there is a bug in HistFitter, I have to add the other weight by hand
         qcdSample.addWeight(w)
 
-if zlFitterConfig.doSetNormRegion:
-    if "CRQ" in zlFitterConfig.constrainingRegionsList:
-        qcdSample.setNormRegions([("CRQ", zlFitterConfig.binVar)])
-
-
+    if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
+        qcdSample.removeWeight("normWeight")
 
 # Define samples
 #FakePhotonSample = Sample("Bkg",kGreen-9)
@@ -937,6 +939,9 @@ for point in allpoints:
                     elif ("default","default") in dibosonFlatSysDict.keys():
                         error=dibosonFlatSysDict[("default","default")]
                     sam.addSystematic(Systematic("FlatDiboson", configMgr.weights, 1.+error, 1-error, "user", "userOverallSys"))
+                elif sam.name==zlFitterConfig.qcdSampleName:
+                    errorQCD = 0.999
+                    sam.addSystematic(Systematic("QCDError", configMgr.weights, 1+errorQCD, 1-errorQCD, "user", "userOverallSys"))
 
 
                     #continue
@@ -977,6 +982,7 @@ for point in allpoints:
         for sam in REGION.sampleList:
             if zlFitterConfig.useJETUncertainties:
                 for sys in jetSystematicList:
+                    if sam.name==zlFitterConfig.qcdSampleName: continue
                     sam.addSystematic(sys)
             if zlFitterConfig.useMETUncertainties:
                 for sys in metSystematicList:
