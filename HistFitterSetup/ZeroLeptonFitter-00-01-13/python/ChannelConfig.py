@@ -257,7 +257,7 @@ class ChannelConfig:
 
         self.RISR_loose              = None #0
         self.RISR_range              = None
-        self.RISR_looseAndInverted  = None #0
+        self.RISR_qcdlooseAndInverted  = None #0
         self.MS_loose                = None #0
         self.dphiISRI_loose          = None #0
         self.PTISR_loose             = None #0
@@ -305,7 +305,7 @@ class ChannelConfig:
 
         self.CRList = ["CRT","CRW","CRY","CRQ"]
         VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
-        VRList      += [ "VRQ" , "VRZ", "VRW", "VRT"]
+        VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT"]
         self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
 
 
@@ -448,8 +448,7 @@ class ChannelConfig:
 
         # cleaning cuts
         if self.doCleaning:
-                self.cleaningCuts = "((cleaning&0x30F)==0)"
-
+            self.cleaningCuts = "((cleaning&0x30F)==0)"
             cutList.append(self.cleaningCuts)
 
         #angular cuts
@@ -576,12 +575,12 @@ class ChannelConfig:
                              #todo  ! treat qcd a bit nicer
                              #todo  ! only going lower with qcd vars for now
                              if 'invertAndLoosen' in var :
-                                 loosenedStringVarValue = str(getattr(self, var + "_looseAndInverted")) if getattr(self, var+"_looseAndInverted")!=None else None
+                                 loosenedStringVarValue = str(getattr(self, var + "_qcdlooseAndInverted")) if getattr(self, var+"_qcdlooseAndInverted")!=None else None
                                  finalCutString = var         + " <  " + stringVarValue
                              if 'range' in var :
-                                 neededRange = getattr(self, var + "_range")) if getattr(self, var+"_range")!=None else None
+                                 neededRange = getattr(self, var + "_range") if getattr(self, var+"_range")!=None else None
                                  if not neededRange : print reg,var,val, var+"_range"
-                                 finalCutString = "(" var + " >= "+ str( neededRange[0]) + ")" + "*" + "(" var + " <= " +str( neededRange[1]) + ")"
+                                 finalCutString = "(" + var + " >= "+ str( neededRange[0]) + ")" + "*" + "(" +  var + " <= " +str( neededRange[1]) + ")"
 
                          if "upper" in var :
                              removeUpper = var.replace("upper","").strip("_")

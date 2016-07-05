@@ -35,8 +35,11 @@ regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
 regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130. && phTight[0]==1)"], [])#extra weights should be applied only to gamma+jets
 # regionDict["VRYf"] = Region("VRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 
-regionDict["CRQ"] = Region("CRQ", "SRAll", [cleaningCut])#ATT: qcd weight
-regionDict["VRQ"] = Region("VRQ", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["CRQ"] = Region("CRQ",   "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQ"] = Region("VRQa", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQa"] = Region("VRQa", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQb"] = Region("VRQb", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQc"] = Region("VRQc", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ2"] = Region("VRQ2", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ3"] = Region("VRQ3", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ4"] = Region("VRQ4", "SRAll", [cleaningCut])#ATT: qcd weight
