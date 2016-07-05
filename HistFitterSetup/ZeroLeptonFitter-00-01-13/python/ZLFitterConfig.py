@@ -18,7 +18,7 @@ class ZLFitterConfig:
 
     def __init__(self):
 
-        self.log = Logger("ZLFitterConfig")
+        self.log =  Logger("ZLFitterConfig")
 
         ##############################################
         # Fit config
