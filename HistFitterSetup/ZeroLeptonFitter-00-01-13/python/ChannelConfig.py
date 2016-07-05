@@ -570,33 +570,34 @@ class ChannelConfig:
                      finalCutString = ""
                      stringVarValue = str(getattr(self, var)) if getattr(self, var)!=None else None
                      if stringVarValue != None :#can be zero, so use this
+                         print reg, var, val, stringVarValue
                          finalCutString = ""
-                         if "qcd" in var :
-                             #todo  ! treat qcd a bit nicer
-                             #todo  ! only going lower with qcd vars for now
-                             if 'invertAndLoosen' in var :
-                                 loosenedStringVarValue = str(getattr(self, var + "_qcdlooseAndInverted")) if getattr(self, var+"_qcdlooseAndInverted")!=None else None
-                                 finalCutString = var         + " <  " + stringVarValue
-                             if 'range' in var :
+                         if val == 'qcd_range' :
                                  neededRange = getattr(self, var + "_range") if getattr(self, var+"_range")!=None else None
                                  if not neededRange : print reg,var,val, var+"_range"
                                  finalCutString = "(" + var + " >= "+ str( neededRange[0]) + ")" + "*" + "(" +  var + " <= " +str( neededRange[1]) + ")"
 
-                         if "upper" in var :
-                             removeUpper = var.replace("upper","").strip("_")
-                             if not val         : finalCutString = removeUpper + " <= "  + stringVarValue
-                             if val == 'invert' : finalCutString = removeUpper + " >  "  + stringVarValue
-                             if val == 'loosen' :
-                                 loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
-                                 if not loosenedStringVarValue : print reg,var,val
-                                 finalCutString                  = removeUpper + " <=  " + loosenedStringVarValue
+                         elif val == 'qcd_invertAndLoosen' :
+                                 cutValue = getattr(self, var + "_looseAndInverted") if getattr(self, var+"_looseAndInverted")!=None else None
+                                 if not cutValue : print reg,var,val, var+"_looseAndInverted"
+                                 finalCutString = str( var  + " < " + str(cutValue))
                          else :
-                             if not val         : finalCutString = var         + " >= " + stringVarValue
-                             if val == 'invert' : finalCutString = var         + " <  " + stringVarValue
-                             if val == 'loosen' :
-                                 loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
-                                 if not loosenedStringVarValue : print reg,var,val, var+"_loose"
-                                 finalCutString                  = var         + " >=  " + loosenedStringVarValue
+                             if "upper" in var :
+                                 removeUpper = var.replace("upper","").strip("_")
+                                 if not val         : finalCutString = removeUpper + " <= "  + stringVarValue
+                                 if val == 'invert' : finalCutString = removeUpper + " >  "  + stringVarValue
+                                 if val == 'loosen' :
+                                     loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
+                                     if not loosenedStringVarValue : print reg,var,val
+                                     finalCutString                  = removeUpper + " <=  " + loosenedStringVarValue
+                             else  :
+                                 if not val         : finalCutString = var         + " >= " + stringVarValue
+                                 if val == 'invert' : finalCutString = var         + " <  " + stringVarValue
+                                 if val == 'loosen' :
+                                     loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
+                                     if not loosenedStringVarValue : print reg,var,val, var+"_loose"
+                                     finalCutString                  = var         + " >=  " + loosenedStringVarValue
+
                      if finalCutString : cutList.append(finalCutString)
 
     def Print(self, printLevel=2):
