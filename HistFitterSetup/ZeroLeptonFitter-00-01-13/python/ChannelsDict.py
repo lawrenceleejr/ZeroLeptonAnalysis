@@ -35,8 +35,11 @@ regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
 regionDict["CRY"] = Region("CRY", "CRY", ["(phPt[0]>130. && (phSignal&0x01 == 0x01) )"], [])#extra weights should be applied only to gamma+jets
 # regionDict["VRYf"] = Region("VRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 
-regionDict["CRQ"] = Region("CRQ", "SRAll", [cleaningCut])#ATT: qcd weight
-regionDict["VRQ"] = Region("VRQ", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["CRQ"] = Region("CRQ",   "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQ"] = Region("VRQa", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQa"] = Region("VRQa", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQb"] = Region("VRQb", "SRAll", [cleaningCut])#ATT: qcd weight
+regionDict["VRQc"] = Region("VRQc", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ2"] = Region("VRQ2", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ3"] = Region("VRQ3", "SRAll", [cleaningCut])#ATT: qcd weight
 # regionDict["VRQ4"] = Region("VRQ4", "SRAll", [cleaningCut])#ATT: qcd weight
@@ -516,6 +519,8 @@ anaSRJigsawCoBasic=ChannelConfig(name="SRJigsawCoBasic",regionDict=regionDict)
 anaSRJigsawCoBasic.met            = 200
 #loosen CR cuts
 anaSRJigsawCoBasic.RISR_loose     = 0.7
+anaSRJigsawCoBasic.RISR_looseAndInverted     = 0.5
+anaSRJigsawCoBasic.RISR_range     = (0.5, 0.7)
 anaSRJigsawCoBasic.MS_loose       = 100
 anaSRJigsawCoBasic.dphiISRI_loose = 2.95
 anaSRJigsawCoBasic.PTISR_loose    = 700
@@ -526,6 +531,7 @@ anaSRJigsawSRC1Common.name = "SRJigsawSRC1"
 anaSRJigsawSRC1Common.nJets = 2
 
 anaSRJigsawSRC1Common.RISR         = 0.9
+anaSRJigsawSRC1Common.RISR_range   = (0.5, 0.9)
 anaSRJigsawSRC1Common.MS           = 100
 anaSRJigsawSRC1Common.dphiISRI     = 3.1
 anaSRJigsawSRC1Common.PTISR        = 800
@@ -540,6 +546,7 @@ finalChannelsDict[anaSRJigsawSRC1Common.name]=anaSRJigsawSRC1Common
 anaSRJigsawSRC2Common = copy.deepcopy( anaSRJigsawCoBasic )
 anaSRJigsawSRC2Common.name = "SRJigsawSRC2"
 anaSRJigsawSRC2Common.RISR        = 0.85
+anaSRJigsawSRC1Common.RISR_range  = (0.5, 0.85)
 anaSRJigsawSRC2Common.MS          = 100
 anaSRJigsawSRC2Common.dphiISRI    = 3.07
 anaSRJigsawSRC2Common.PTISR       = 800
@@ -551,6 +558,7 @@ finalChannelsDict[anaSRJigsawSRC2Common.name]=anaSRJigsawSRC2Common
 anaSRJigsawSRC3Common = copy.deepcopy( anaSRJigsawCoBasic )
 anaSRJigsawSRC3Common.name = "SRJigsawSRC3"
 anaSRJigsawSRC3Common.RISR        = 0.80
+anaSRJigsawSRC1Common.RISR_range   = (0.5, 0.8)
 anaSRJigsawSRC3Common.MS          = 200
 anaSRJigsawSRC3Common.dphiISRI    = 2.95
 anaSRJigsawSRC3Common.PTISR       = 700
@@ -562,6 +570,7 @@ finalChannelsDict[anaSRJigsawSRC3Common.name]=anaSRJigsawSRC3Common
 anaSRJigsawSRC4Common = copy.deepcopy( anaSRJigsawCoBasic )
 anaSRJigsawSRC4Common.name = "SRJigsawSRC4"
 anaSRJigsawSRC4Common.RISR        = 0.75
+anaSRJigsawSRC1Common.RISR_range   = (0.5, 0.75)
 anaSRJigsawSRC4Common.MS          = 500
 anaSRJigsawSRC4Common.dphiISRI    = 2.95
 anaSRJigsawSRC4Common.PTISR       = 700
@@ -576,6 +585,7 @@ finalChannelsDict[anaSRJigsawSRC4Common.name]=anaSRJigsawSRC4Common
 anaSRJigsawSRC5Common = copy.deepcopy( anaSRJigsawCoBasic )
 anaSRJigsawSRC5Common.name = "SRJigsawSRC5"
 anaSRJigsawSRC5Common.RISR        = 0.70
+anaSRJigsawSRC1Common.RISR_range   = (0.5, 0.7)
 anaSRJigsawSRC5Common.MS          = 500
 anaSRJigsawSRC5Common.dphiISRI    = 2.95
 anaSRJigsawSRC5Common.PTISR       = 700
