@@ -256,6 +256,8 @@ class ChannelConfig:
         self.NV                      = None #0
 
         self.RISR_loose              = None #0
+        self.RISR_range              = None
+        self.RISR_looseAndInverted  = None #0
         self.MS_loose                = None #0
         self.dphiISRI_loose          = None #0
         self.PTISR_loose             = None #0
@@ -313,13 +315,16 @@ class ChannelConfig:
                 if ('_loose' in varName) : v[varName.replace('_loose','')] = ""
 
         for k,v in self.regionListDict.iteritems() :
+            #loosen the VR*a and the CRs
             if k.endswith('a') or k in self.CRList :
                    v["H2PP" ] = "loosen"
         for k,v in self.regionListDict.iteritems() :
+            #loosen the VR*b and the CRs
                if k.endswith('b') or k in self.CRList:
                    v["HT3PP"] = "loosen"
                    v["HT5PP"] = "loosen"
         for k,v in self.regionListDict.iteritems():
+            #check if this is a compresed CRY
             isNotCompressedRegionCRY = not ('SRJigsawSRC' in self.name and 'CRY' in k)
             for varName in dir(self) :
                     if varName not in ['H2PP', 'HT3PP', 'HT5PP' ,
@@ -331,9 +336,21 @@ class ChannelConfig:
                             if '_loose' in  varName and (k in self.CRList or k.endswith('a') or k.endswith('b')) :
                                 v[varName.replace('_loose', '') ] = "loosen"
 
-        self.regionListDict["CRQ"]["RISR"]        =  "invert"
+        #let's treat these a bit special.
+        #this is getting a bit out of hand
+        self.regionListDict["CRQ"] ["RISR"]        =  "qcd_invertAndLoosen"
+        self.regionListDict["VRQc"]["RISR"]        =  "qcd_range"
+
         self.regionListDict["CRQ"]["R_H2PP_H3PP"] =  "invert"
         self.regionListDict["CRQ"]["R_H2PP_H5PP"] =  "invert"
+        self.regionListDict["CRQ"]["deltaQCD"] = "invert"
+
+        self.regionListDict["VRQa"]["deltaQCD"] = "invert"
+
+        self.regionListDict["VRQb"]["R_H2PP_H3PP"] =  "invert"
+        self.regionListDict["VRQb"]["R_H2PP_H5PP"] =  "invert"
+
+
 
         self.WithoutMeffCut = False
         self.WithoutMetOverMeffCut = False
@@ -555,6 +572,17 @@ class ChannelConfig:
                      stringVarValue = str(getattr(self, var)) if getattr(self, var)!=None else None
                      if stringVarValue != None :#can be zero, so use this
                          finalCutString = ""
+                         if "qcd" in var :
+                             #todo  ! treat qcd a bit nicer
+                             #todo  ! only going lower with qcd vars for now
+                             if 'invertAndLoosen' in var :
+                                 loosenedStringVarValue = str(getattr(self, var + "_looseAndInverted")) if getattr(self, var+"_looseAndInverted")!=None else None
+                                 finalCutString = var         + " <  " + stringVarValue
+                             if 'range' in var :
+                                 neededRange = getattr(self, var + "_range")) if getattr(self, var+"_range")!=None else None
+                                 if not neededRange : print reg,var,val, var+"_range"
+                                 finalCutString = "(" var + " >= "+ str( neededRange[0]) + ")" + "*" + "(" var + " <= " +str( neededRange[1]) + ")"
+
                          if "upper" in var :
                              removeUpper = var.replace("upper","").strip("_")
                              if not val         : finalCutString = removeUpper + " <= "  + stringVarValue
