@@ -75,8 +75,9 @@ regionDict["CRZVL"] = Region("CRZVL", "CRZ", [], [])
 # definition of the final analysis channels
 ###########################################################
 
-# FAR SRs
+'''# FAR SRs
 finalChannelsDict = {}
+
 
 #SS_direct_800_400 2jl
 # SR2jbase-MeSig15-Meff1200-sljetpt200-dphi0.8-ap0.00
@@ -313,8 +314,8 @@ anaSRFAR.meffIncl = 2000
 # #to be removed
 # #finalChannelsDict=testChannelsDict
 # #finalChannelsDict.update(testChannelsDict)
-
-# finalChannelsDict = {}
+'''
+finalChannelsDict = {}
 #----------------------------------------------------------
 # RJigsaw
 #----------------------------------------------------------
