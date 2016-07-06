@@ -364,14 +364,16 @@ qcdSample.setStatConfig(zlFitterConfig.useStat)
 
 qcdWeight = 1
 nJets = channel.nJets
-if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList) + 1:
+if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
     qcdWeight = zlFitterConfig.qcdWeightList[nJets-1]/ (zlFitterConfig.luminosity)
-    # qcdSample.addWeight(str(qcdWeight))
-    for w in configMgr.weights: #ATT: there is a bug in HistFitter, I have to add the other weight by hand
-        qcdSample.addWeight(w)
+    if zlFitterConfig.useMCQCDsample:
+        qcdWeight = 1
 
+    qcdSample.addWeight(str(qcdWeight))
+    for w in configMgr.weights: #add all other weights but not normWeight
+        qcdSample.addWeight(w)
     if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
-        qcdSample.removeWeight("normWeight")
+        qcdSample.removeWeight("weight")
 
 # Define samples
 #FakePhotonSample = Sample("Bkg",kGreen-9)
@@ -659,7 +661,7 @@ for point in allpoints:
     if myFitType == FitType.Discovery:
         SR.addDiscoverySamples(["SIG"], [1.], [0.], [1000.], [kMagenta])
 
-    if zlFitterConfig.useQCDsample:
+   if zlFitterConfig.useDDQCDsample or zlFitterConfig.useMCQCDsample:
         SR.addSample(qcdSample)
 
     ######################################################################
@@ -838,9 +840,9 @@ for point in allpoints:
     # Regions for QCD
     ######################################################################
 
+
     for regionName in zlFitterConfig.allRegionsList():
 
-        print regionName
         #select region for QCD
         if not "RQ" in regionName:
             continue
@@ -853,10 +855,7 @@ for point in allpoints:
 
         # setup region
         if not zlFitterConfig.useShapeFit:
-            try:
-                REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
-            except:
-                continue
+            REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
         else:
             REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
             REGION.useOverflowBin = True
@@ -868,10 +867,8 @@ for point in allpoints:
             myFitConfig.setValidationChannels(REGION)
 
         #add qcd samples
-        if zlFitterConfig.useQCDsample:
+        if zlFitterConfig.useDDQCDsample or zlFitterConfig.useMCQCDsample:
             REGION.addSample(qcdSample)
-
-
 
     ###############################################################
     # add precomputed error in all VR and SR

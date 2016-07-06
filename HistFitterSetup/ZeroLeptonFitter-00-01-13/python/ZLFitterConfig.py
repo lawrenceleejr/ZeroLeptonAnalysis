@@ -128,7 +128,7 @@ class ZLFitterConfig:
         # samples
         ##############################################
 
-        self.useQCDsample =True
+        self.useMCQCDsample =True
         self.useDIBOSONsample = True
 
         # QCD weight- one number per jet multiplicity starting with the monojet channel
