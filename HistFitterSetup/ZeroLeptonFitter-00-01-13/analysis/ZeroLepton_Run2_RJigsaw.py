@@ -661,7 +661,7 @@ for point in allpoints:
     if myFitType == FitType.Discovery:
         SR.addDiscoverySamples(["SIG"], [1.], [0.], [1000.], [kMagenta])
 
-   if zlFitterConfig.useDDQCDsample or zlFitterConfig.useMCQCDsample:
+    if zlFitterConfig.useDDQCDsample or zlFitterConfig.useMCQCDsample:
         SR.addSample(qcdSample)
 
     ######################################################################

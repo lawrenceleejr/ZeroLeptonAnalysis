@@ -224,7 +224,6 @@ class ZLFitterConfig:
         self.log.info("statErrThreshold  = %s" % self.statErrThreshold )
         self.log.info("luminosity  = %s" % self.luminosity )
         self.log.info("luminosityEr  = %s" % self.luminosityEr )
-        self.log.info("useQCDsample  = %s" % self.useQCDsample )
         self.log.info("useDIBOSONsample  = %s" % self.useDIBOSONsample )
         self.log.info("SRName  = %s" % self.SRName )
         self.log.info("ConstrainingRegionsList  = %s" %  self.constrainingRegionsList )
