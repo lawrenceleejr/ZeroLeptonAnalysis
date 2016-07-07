@@ -357,7 +357,10 @@ dibosonSample.setStatConfig(zlFitterConfig.useStat)
 # QCD
 #--------------------------
 qcdSample = Sample(zlFitterConfig.qcdSampleName, kOrange+2)
-qcdSample.setTreeName("Data_SRAll")
+if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
+    qcdSample.setTreeName("Data_SRAll")
+else :
+    qcdSample.setTreeName("QCD_SRAll")
 qcdSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName, 1., 0., 500.)
 qcdSample.setFileList(qcdFiles)
 qcdSample.setStatConfig(zlFitterConfig.useStat)
