@@ -338,7 +338,6 @@ anaSRJigsawSRGluinoCommon.nJets          = 4
 anaSRJigsawSRGluinoCommon.deltaQCD       = 0
 anaSRJigsawSRGluinoCommon.deltaQCD_loose = 0
 
-
 anaSRJigsawSRGluinoCommon.R_H2PP_H5PP_loose            = 0.2
 anaSRJigsawSRGluinoCommon.R_HT5PP_H5PP_loose           = 0.65
 anaSRJigsawSRGluinoCommon.RPZ_HT5PP_upper_loose        = 0.6
@@ -381,6 +380,7 @@ anaSRJigsawSRG2Common.RPZ_HT5PP_upper        = 0.55
 anaSRJigsawSRG2Common.minR_pTj2i_HT3PPi      = 0.11
 anaSRJigsawSRG2Common.maxR_H1PPi_H2PPi_upper = 0.97
 anaSRJigsawSRG2Common.H2PP                   = 800
+anaSRJigsawSRG2Common.HT5PP_loose            = 1500
 
 anaSRJigsawSRG2a = copy.deepcopy( anaSRJigsawSRG2Common )
 anaSRJigsawSRG2a.name  = "SRJigsawSRG2a"
@@ -415,6 +415,7 @@ anaSRJigsawSRG3Common.RPZ_HT5PP_upper        = 0.6
 anaSRJigsawSRG3Common.minR_pTj2i_HT3PPi      = 0.09
 anaSRJigsawSRG3Common.maxR_H1PPi_H2PPi_upper = 0.98
 anaSRJigsawSRG3Common.H2PP                   = 900
+anaSRJigsawSRG3Common.HT5PP_loose            = 2300
 
 anaSRJigsawSRG3a = copy.deepcopy( anaSRJigsawSRG3Common )
 anaSRJigsawSRG3a.name  = "SRJigsawSRG3a"
@@ -477,6 +478,7 @@ anaSRJigsawSRS2Common.R_H2PP_H3PP_upper = 0.96
 anaSRJigsawSRS2Common.RPZ_HT3PP_upper   = 0.6
 anaSRJigsawSRS2Common.R_pTj2_HT3PP      = 0.15
 anaSRJigsawSRS2Common.H2PP              = 1400
+anaSRJigsawSRS2Common.HT3PP_loose       = 1400
 
 anaSRJigsawSRS2a                         = copy.deepcopy( anaSRJigsawSRS2Common )
 anaSRJigsawSRS2a.name                    = "SRJigsawSRS2a"
@@ -500,6 +502,7 @@ anaSRJigsawSRS3Common.R_H2PP_H3PP_upper = 0.98
 anaSRJigsawSRS3Common.RPZ_HT3PP_upper   = 0.63
 anaSRJigsawSRS3Common.R_pTj2_HT3PP      = 0.13
 anaSRJigsawSRS3Common.H2PP              = 1600
+anaSRJigsawSRS3Common.HT3PP_loose       = 1800
 
 anaSRJigsawSRS3a                         = copy.deepcopy( anaSRJigsawSRS3Common )
 anaSRJigsawSRS3a.name                    = "SRJigsawSRS3a"
