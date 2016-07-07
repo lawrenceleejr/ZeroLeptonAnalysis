@@ -916,16 +916,16 @@ for point in allpoints:
                         sam.addSystematic(Systematic("GeneratorTop", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
 
                     #A14
-                    errorA14=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysA14Dict)
-                    sam.addSystematic(Systematic("TopTuneA14", configMgr.weights, 1.+errorA14, 1-errorA14, "user", "userOverallSys"))
+#                    errorA14=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysA14Dict)
+#                    sam.addSystematic(Systematic("TopTuneA14", configMgr.weights, 1.+errorA14, 1-errorA14, "user", "userOverallSys"))
 
                     #PowhegHerwig
                     if zlFitterConfig.usePreComputedTopFragmentationSys:
                         errorPowhegHerwig=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysPowhegHerwigDict)
                         sam.addSystematic(Systematic("FragmentationTop", configMgr.weights, 1.+errorPowhegHerwig, 1-errorPowhegHerwig, "user", "userOverallSys"))
                     #radiation
-                    errorRad=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysRadDict)
-                    sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1.+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
+#                    errorRad=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysRadDict)
+#                    sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1.+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
 
 
 
