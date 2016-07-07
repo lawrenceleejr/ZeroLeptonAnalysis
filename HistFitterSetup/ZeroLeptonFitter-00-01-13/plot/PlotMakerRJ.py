@@ -252,7 +252,7 @@ plotlists = {
     "Common":   [["LastCut","meffincl","mDR"],
                  ["met"],
                  ["Ratio"],
-                 ["deltaQCD"]
+                 ["deltaQCD"],
                  ],
     "SRS":      [["RPZ_HT3PP"],
                  ["R_pTj2_HT3PP"],
@@ -324,8 +324,8 @@ if doAlternativeTopMcAtNlo and doCRWT:
     print "Running alternative TopMcAtNloHerwigpp sample!"
 
 #Here you put the regions that you want to plot
-#anaImInterestedIn = []
-anaImInterestedIn = ["SRJigsawSRS1a","SRJigsawSRG1a","SRJigsawSRC1"]
+anaImInterestedIn = []
+#anaImInterestedIn = ["SRJigsawSRS1a","SRJigsawSRG1a","SRJigsawSRC1"]
 #anaImInterestedIn = ["SRJigsawSRG1a"]
 
 mc = [
@@ -796,10 +796,10 @@ def main(configMain):
                                     plotname=varinList['plotName']
                                     if "LastCut" in plotname:
                                         chnameshort = ch.name.split('Jigsaw')[1][:3]
-                                        plotname = plotname.replace("LastCut",lastcuts[chnameshort])
+                                        plotname = plotname.replace("LastCut",lastcutsfull[chnameshort])
                                     elif "Ratio" in plotname:
                                         chnameshort = ch.name.split('Jigsaw')[1][:3]
-                                        plotname = plotname.replace("Ratio",ratiocuts[chnameshort])
+                                        plotname = plotname.replace("Ratio",ratiocutsfull[chnameshort])
                                     var=varinList['varNtuple']
                                     if var == "LastCut":
                                         chnameshort = ch.name.split('Jigsaw')[1][:3]
@@ -991,7 +991,7 @@ def main(configMain):
                                     XUnitStack="units"
                                     for whichmc in mc:
                                         for h in mcHisto:
-                                            if whichmc['treePrefix'] in h.GetName():
+                                            if whichmc['treePrefix'] in h.GetName().split(varinList["varName"])[1]:
                                                 clone=h.Clone()
                                                 Clone_mcHisto.append(clone)
                                                 mcStack.Add(clone)
@@ -1095,18 +1095,19 @@ def main(configMain):
                                     SpecialArrowUpper=""
                                     varcut = None
                                     varcutupper = None
-                                    if hasattr(ch,minusvar):
-                                        varcut=getattr(ch,minusvar)
-                                    if hasattr(ch,minusvar+"_upper"):
-                                        varcutupper=getattr(ch,minusvar+"_upper")
-                                    if varcut:
-                                        print "Place arrow at", minusvar, " = ", varcut
-                                        arrow=1
-                                        SpecialArrow=plotname+">"+str(int(varcut))
-                                    if varcutupper:
-                                        print "Place arrow at", minusvar, " = ", varcut
-                                        arrowupper=1
-                                        SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
+                                    if var == minusvar:
+                                        if hasattr(ch,minusvar):
+                                            varcut=getattr(ch,minusvar)
+                                        if hasattr(ch,minusvar+"_upper"):
+                                            varcutupper=getattr(ch,minusvar+"_upper")
+                                        if not varcut==None:
+                                            print "Place arrow at", minusvar, " = ", varcut
+                                            arrow=1
+                                            SpecialArrow=plotname+">"+str(int(varcut))
+                                        if not varcutupper==None:
+                                            print "Place arrow at", minusvar, " = ", varcut
+                                            arrowupper=1
+                                            SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
                                     if ana.find("Pres")>=0:
                                         arrow=0
 
