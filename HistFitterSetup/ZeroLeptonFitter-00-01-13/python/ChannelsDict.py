@@ -438,8 +438,9 @@ anaSRJigsawSRSquarkCommon                = copy.deepcopy( anaSRJigsawBasic )
 anaSRJigsawSRSquarkCommon.name           = "anaSRJigsawSRSquarkCommon"
 anaSRJigsawSRSquarkCommon.RPTHT3PP_upper = 0.08
 anaSRJigsawSRSquarkCommon.nJets          = 2
-anaSRJigsawSRSquarkCommon.deltaQCD       = .01
-anaSRJigsawSRSquarkCommon.deltaQCD_loose = .01
+anaSRJigsawSRSquarkCommon.deltaQCD       = 0
+anaSRJigsawSRSquarkCommon.deltaQCD_loose = 0
+anaSRJigsawSRSquarkCommon.dPhi           = 0.1
 
 
 anaSRJigsawSRSquarkCommon.R_H2PP_H3PP_loose       = 0.5
