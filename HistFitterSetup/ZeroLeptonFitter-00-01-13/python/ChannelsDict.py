@@ -323,8 +323,6 @@ anaSRJigsawBasic=ChannelConfig(name="SRJigsawBasic",regionDict=regionDict)
 # trigger
 anaSRJigsawBasic.met=200
 #anaSRJigsawBasic.MDR=300
-anaSRJigsawBasic.deltaQCD = 0
-anaSRJigsawBasic.deltaQCD_loose = 0
 
 #----------------------------------------------------------
 # RJigsaw SRs - Gluinos
@@ -337,6 +335,9 @@ import copy
 anaSRJigsawSRGluinoCommon                = copy.deepcopy( anaSRJigsawBasic )
 anaSRJigsawSRGluinoCommon.RPTHT5PP_upper = 0.08
 anaSRJigsawSRGluinoCommon.nJets          = 4
+anaSRJigsawSRGluinoCommon.deltaQCD       = 0
+anaSRJigsawSRGluinoCommon.deltaQCD_loose = 0
+
 
 anaSRJigsawSRGluinoCommon.R_H2PP_H5PP_loose            = 0.2
 anaSRJigsawSRGluinoCommon.R_HT5PP_H5PP_loose           = 0.65
@@ -437,6 +438,9 @@ anaSRJigsawSRSquarkCommon                = copy.deepcopy( anaSRJigsawBasic )
 anaSRJigsawSRSquarkCommon.name           = "anaSRJigsawSRSquarkCommon"
 anaSRJigsawSRSquarkCommon.RPTHT3PP_upper = 0.08
 anaSRJigsawSRSquarkCommon.nJets          = 2
+anaSRJigsawSRSquarkCommon.deltaQCD       = .01
+anaSRJigsawSRSquarkCommon.deltaQCD_loose = .01
+
 
 anaSRJigsawSRSquarkCommon.R_H2PP_H3PP_loose       = 0.5
 anaSRJigsawSRSquarkCommon.R_H2PP_H3PP_upper_loose = 0.98
