@@ -29,7 +29,7 @@ runData=True
 doBlinding = True
 doBlindingMC = False
 DrawOverflow = True
-runSignal=True
+runSignal=False
 SignalOnTop=False
 doCRWT=False
 doVRWT=False
@@ -139,24 +139,36 @@ rootOpt=RootOption(gStyle)
 rootOpt.setUpStyle()
 gROOT.SetBatch(kTRUE)
 
+lastcutsfull = {
+    'SRG': "H_{T 4,1}^{PP}",
+    'SRS': "H_{T 2,1}^{PP}",
+    'SRC': "p_{T S}^{CM}"
+}
+
+ratiocutsfull = {
+    'SRG': "H_{1,1}^{PP} / H_{4,1}^{PP}",
+    'SRS': "H_{1,1}^{PP} / H_{2,1}^{PP}",
+    'SRC': "R_{ISR}"
+}
+
 varList = [
            {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
            {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#DeltaQCD','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
-           {'varName':'H2PP','varNtuple':'H2PP','plotName':'H2PP [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
+           {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#Delta_{QCD}','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
+           {'varName':'H2PP','varNtuple':'H2PP','plotName':'H_{1,1}^{PP} [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
            #
-           {'varName':'RPZ_HT3PP','varNtuple':'RPZ_HT3PP','plotName':'RPZ_HT3PP','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'RPZ_HT5PP','varNtuple':'RPZ_HT5PP','plotName':'RPZ_HT5PP','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'R_pTj2_HT3PP','varNtuple':'R_pTj2_HT3PP','plotName':'R_pTj2_HT3PP','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'minR_pTj2i_HT3PPi','varNtuple':'minR_pTj2i_HT3PPi','plotName':'minR_pTj2i_HT3PPi','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'maxR_H1PPi_H2PPi','varNtuple':'maxR_H1PPi_H2PPi','plotName':'maxR_H1PPi_H2PPi','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'dangle','varNtuple':'dangle','plotName':'dangle','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
+           {'varName':'RPZ_HT3PP','varNtuple':'RPZ_HT3PP','plotName':'p_{PP,z}^{lab} / (p_{PP,z}^{lab} + H_{T 2,1}^ {PP})','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'RPZ_HT5PP','varNtuple':'RPZ_HT5PP','plotName':'p_{PP,z}^{lab} / (p_{PP,z}^{lab} + H_{T 4,1}^ {PP})','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'R_pTj2_HT3PP','varNtuple':'R_pTj2_HT3PP','plotName':'p^{PP}_{j2 T} / H_{T 2,1 i}^{PP}','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'minR_pTj2i_HT3PPi','varNtuple':'minR_pTj2i_HT3PPi','plotName':'min(p_{T}^{j2 T i}/H_{T 2,1}^{PP,i}','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'maxR_H1PPi_H2PPi','varNtuple':'maxR_H1PPi_H2PPi','plotName':'min(H_{1, 0}^{Pi}/H_{2,0}^{Pi}','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'dangle','varNtuple':'dangle','plotName':'|#frac{2}{3}#Delta#phi^{PP}_{V,P}-#frac{1}{3}cos#theta_{P}|','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'sangle','varNtuple':'sangle','plotName':'sangle','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            #
-           {'varName':'dphiISR1','varNtuple':'dphiISR1','plotName':'#Delta#phi(ISRI)','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
-           {'varName':'dphiMin2','varNtuple':'dphi','plotName':'#Delta#phi(Min2)','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
-           {'varName':'MS','varNtuple':'MS','plotName':'M_{S} [GeV]','nbinvar':'30','minvar':'0','maxvar':'1500.','unit':'GeV'},
-           {'varName':'NV','varNtuple':'NV', 'plotName': 'N_{vis}', 'nbinvar':'10','minvar':'0','maxvar':'10','unit':''},
+           {'varName':'dphiISR1','varNtuple':'dphiISR1','plotName':'#Delta#phi(ISR, I)','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
+           {'varName':'dphiMin2','varNtuple':'dphi','plotName':'min(#Delta#phi_{MET,j1}, #Delta#phi_{MET,j2})','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
+           {'varName':'MS','varNtuple':'MS','plotName':'M_{T S} [GeV]','nbinvar':'30','minvar':'0','maxvar':'1500.','unit':'GeV'},
+           {'varName':'NV','varNtuple':'NV', 'plotName': 'N_{jet}^{V}', 'nbinvar':'10','minvar':'0','maxvar':'10','unit':''},
            #
            {'varName':'meffincl','varNtuple':'Meff','plotName':'m_{eff}(incl.) [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
            {'varName':'met','varNtuple':'MET','plotName':'E_{T}^{miss} [GeV]','nbinvar':'50','minvar':'0','maxvar':'2500.','unit':'GeV'},
@@ -242,13 +254,13 @@ plotlists = {
                  ["Ratio"],
                  ["deltaQCD"]
                  ],
-    "SRS":      [["H2PP"],
-                 ["RPZ_HT3PP"],
+    "SRS":      [["RPZ_HT3PP"],
                  ["R_pTj2_HT3PP"],
+                 ["H2PP"],
                  ],
-    "SRG":      [["H2PP"],
+    "SRG":      [["rpz_HT5PP"],
+                 ["H2PP"],
                  ["R_HT5PP_H5PP"],
-                 ["RPZ_HT5PP"],
                  ["minR_pTj2i_HT3PPi"],
                  ["maxR_H1PPi_H2PPi"],
                  ["dangle"],
@@ -262,14 +274,14 @@ plotlists = {
     }
 
 plotlist = {srtype:plotlists["Common"]+plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
-kindOfCuts_SR = [ {"type":"SR_minusone","var":plotlist,"name":"SR"} ]
-kindOfCuts_CRWT = [ {"type":"CRW_minusone","var":    plotlist,"name":"CRW"} ]
-kindOfCuts_CRWT = [ {"type":"CRT_minusone","var":    plotlist,"name":"CRT"} ]
-kindOfCuts_VRWT = [ {"type":"VRWM","var":    plotlist,"name":"VRWM"} ]
-kindOfCuts_VRWT = [ {"type":"VRWMf","var":    plotlist,"name":"VRWMf"} ]
-kindOfCuts_CRY = [ {"type":"CRY_minusone","var":    plotlist,"name":"CR#gamma"} ]
-kindOfCuts_CRZ = [ {"type":"CRZ_minusone","var":    plotlist,"name":"VRZ"} ]
-kindOfCuts_CRQ = [ {"type":"CRQ_minusone","var":    plotlist,"name":"CRQ"} ]
+kindOfCuts_SR =     [ {"type":"SR_minusone",    "var": plotlist,"name":"SR"} ]
+kindOfCuts_CRWT =   [ {"type":"CRW_minusone",   "var": plotlist,"name":"CRW"} ]
+kindOfCuts_CRWT =   [ {"type":"CRT_minusone",   "var": plotlist,"name":"CRT"} ]
+kindOfCuts_VRWT =   [ {"type":"VRWM",           "var": plotlist,"name":"VRWM"} ]
+kindOfCuts_VRWT =   [ {"type":"VRWMf",          "var": plotlist,"name":"VRWMf"} ]
+kindOfCuts_CRY =    [ {"type":"CRY_minusone",   "var": plotlist,"name":"CR#gamma"} ]
+kindOfCuts_CRZ =    [ {"type":"CRZ_minusone",   "var": plotlist,"name":"VRZ"} ]
+kindOfCuts_CRQ =    [ {"type":"CRQ_minusone",   "var": plotlist,"name":"CRQ"} ]
 
 if doCRY:
     kindOfCuts=kindOfCuts_CRY
@@ -314,6 +326,7 @@ if doAlternativeTopMcAtNlo and doCRWT:
 #Here you put the regions that you want to plot
 #anaImInterestedIn = []
 anaImInterestedIn = ["SRJigsawSRS1a","SRJigsawSRG1a","SRJigsawSRC1"]
+#anaImInterestedIn = ["SRJigsawSRG1a"]
 
 mc = [
       {'key':'Diboson','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
@@ -342,7 +355,7 @@ else:
 #To make sure that the dominant background is on top
 mc = sorted(mc, cmp=comparator, key=lambda k: k['key'], reverse=True)
 
-#print mc
+print mc
 
 mc_alternative = [
                   {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
@@ -676,7 +689,7 @@ def main(configMain):
                                 blindcut += minusvarname+" > "+str(getattr(ch,minusvar+"_upper"))
                             if len(blindcut)>0:
                                 blindcut = " && ("+blindcut+")"
-                            print blindcut
+                            print "BLINDCUT", minusvar, blindcut
                             if runData:
                                 plotData=[]
                                 for wData in datafile:
@@ -715,6 +728,7 @@ def main(configMain):
                             fullPlotMCTruthAlt=[]
                             
                             for process in mc:
+                                print process
                                 mcname=process['treePrefix']+"SRAll"
                                 if doCRWT: mcname=process['treePrefix']+"CRWT"
                                 if doVRWT: mcname=process['treePrefix']+"VRWT"
@@ -1081,16 +1095,16 @@ def main(configMain):
                                     SpecialArrowUpper=""
                                     varcut = None
                                     varcutupper = None
-                                    if hasattr(ch,var):
-                                        varcut=getattr(ch,var)
-                                    if hasattr(ch,var+"_upper"):
-                                        varcutupper=getattr(ch,var+"_upper")
+                                    if hasattr(ch,minusvar):
+                                        varcut=getattr(ch,minusvar)
+                                    if hasattr(ch,minusvar+"_upper"):
+                                        varcutupper=getattr(ch,minusvar+"_upper")
                                     if varcut:
-                                        print "Place arrow at", var, " = ", varcut
+                                        print "Place arrow at", minusvar, " = ", varcut
                                         arrow=1
                                         SpecialArrow=plotname+">"+str(int(varcut))
                                     if varcutupper:
-                                        print "Place arrow at", var, " = ", varcut
+                                        print "Place arrow at", minusvar, " = ", varcut
                                         arrowupper=1
                                         SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
                                     if ana.find("Pres")>=0:
@@ -1181,7 +1195,7 @@ def main(configMain):
 
                                     for whichmc in mc:
                                         for h in mcHisto:
-                                            if whichmc['treePrefix'] in h.GetName():
+                                            if whichmc['treePrefix'] in h.GetName().split(varinList["varName"])[1]:
                                                 legend.AddEntry(h,whichmc['name'],"f")
 
                                     if(runSignal) and SignalOnTop:
@@ -1299,6 +1313,8 @@ def main(configMain):
                                     DeleteList(mcHisto)
                                     DeleteList(Clone_mcHisto)
                                     DeleteList(mcSystHisto)
+                                    DeleteList(mcAltHisto)
+                                    DeleteList(mcTruthAltHisto)
                                     DeleteList(jobs)
                             if runData: DeleteList(plotData)
                             if runSignal: DeleteNtList(plotSignalList)
