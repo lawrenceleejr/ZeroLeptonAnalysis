@@ -278,7 +278,9 @@ if configMgr.readFromTree:
 
         # gamma
         gammaFiles.append(INPUTDIR+ "/GAMMAMassiveCB.root")
-        gammaFiles.append(INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root"))
+        # gammaFiles.append(INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root"))
+        # gammaFiles.append(INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"))
+
     #data
     # dataFiles.append(INPUTDIR_DATA, "/DataMain_Nov01.root")
     # dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
@@ -438,8 +440,15 @@ gammaSample.setStatConfig(zlFitterConfig.useStat)
 if zlFitterConfig.doSetNormRegion:
     if "CRY" in zlFitterConfig.constrainingRegionsList:
         gammaSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
-if not zlFitterConfig.usePrecomputedZGeneratorSys:
-    gammaSample.addSystematic(Systematic("generatorZ", "_TRUTH", "_TRUTH_MadGraph", "", "tree", "overallNormHistoSysOneSide"))
+
+gammaSyst = Systematic("generatorZ", "", "_MadGraph", "", "tree", "overallNormHistoSysOneSide")
+truthGammaList = [INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root",
+                        INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"]
+gammaSyst.setFileList(gammaSample,
+                      truthGammaList
+                      )
+gammaSample.addSystematic(Systematic("generatorZ", "_TRUTH", "_TRUTH_MadGraph", "", "tree", "overallNormHistoSysOneSide"))
+
 
 #--------------------------
 # Z
