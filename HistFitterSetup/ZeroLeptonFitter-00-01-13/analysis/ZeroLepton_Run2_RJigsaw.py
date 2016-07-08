@@ -447,8 +447,14 @@ truthGammaList = [INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root",
 gammaSyst.setFileList(gammaSample,
                       truthGammaList
                       )
-gammaSample.addSystematic(Systematic("generatorZ", "_TRUTH", "_TRUTH_MadGraph", "", "tree", "overallNormHistoSysOneSide"))
+gammaSample.addSystematic(gammaSyst)
 
+try :
+    gammaSample.Print()
+    print     gammaSample
+except :
+    pass
+exit()
 
 #--------------------------
 # Z
