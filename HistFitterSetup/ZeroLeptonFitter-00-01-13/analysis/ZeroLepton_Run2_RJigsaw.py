@@ -449,13 +449,6 @@ gammaSyst.setFileList(gammaSample,
                       )
 gammaSample.addSystematic(gammaSyst)
 
-try :
-    gammaSample.Print()
-    print     gammaSample
-except :
-    pass
-exit()
-
 #--------------------------
 # Z
 #--------------------------
