@@ -415,7 +415,7 @@ anaSRJigsawSRG3Common.RPZ_HT5PP_upper        = 0.6
 anaSRJigsawSRG3Common.minR_pTj2i_HT3PPi      = 0.09
 anaSRJigsawSRG3Common.maxR_H1PPi_H2PPi_upper = 0.98
 anaSRJigsawSRG3Common.H2PP                   = 900
-anaSRJigsawSRG3Common.HT5PP_loose            = 2300
+anaSRJigsawSRG3Common.HT5PP_loose            = 1500
 
 anaSRJigsawSRG3a = copy.deepcopy( anaSRJigsawSRG3Common )
 anaSRJigsawSRG3a.name  = "SRJigsawSRG3a"
