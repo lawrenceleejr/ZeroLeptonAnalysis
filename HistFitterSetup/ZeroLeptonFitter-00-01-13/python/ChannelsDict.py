@@ -324,8 +324,8 @@ anaSRJigsawBasic=ChannelConfig(name="SRJigsawBasic",regionDict=regionDict)
 # trigger
 anaSRJigsawBasic.met=200
 #anaSRJigsawBasic.MDR=300
-anaSRJigsawBasic.deltaQCD = 0
-anaSRJigsawBasic.deltaQCD_loose = 0
+#anaSRJigsawBasic.deltaQCD = 0
+#anaSRJigsawBasic.deltaQCD_loose = 0
 
 #----------------------------------------------------------
 # RJigsaw SRs - Gluinos
@@ -338,6 +338,8 @@ import copy
 anaSRJigsawSRGluinoCommon                = copy.deepcopy( anaSRJigsawBasic )
 anaSRJigsawSRGluinoCommon.RPTHT5PP_upper = 0.08
 anaSRJigsawSRGluinoCommon.nJets          = 4
+anaSRJigsawSRGluinoCommon.deltaQCD       = 0
+anaSRJigsawSRGluinoCommon.deltaQCD_loose = 0
 
 anaSRJigsawSRGluinoCommon.R_H2PP_H5PP_loose            = 0.2
 anaSRJigsawSRGluinoCommon.R_HT5PP_H5PP_loose           = 0.65
@@ -381,6 +383,7 @@ anaSRJigsawSRG2Common.RPZ_HT5PP_upper        = 0.55
 anaSRJigsawSRG2Common.minR_pTj2i_HT3PPi      = 0.11
 anaSRJigsawSRG2Common.maxR_H1PPi_H2PPi_upper = 0.97
 anaSRJigsawSRG2Common.H2PP                   = 800
+anaSRJigsawSRG2Common.HT5PP_loose            = 1500
 
 anaSRJigsawSRG2a = copy.deepcopy( anaSRJigsawSRG2Common )
 anaSRJigsawSRG2a.name  = "SRJigsawSRG2a"
@@ -415,6 +418,7 @@ anaSRJigsawSRG3Common.RPZ_HT5PP_upper        = 0.6
 anaSRJigsawSRG3Common.minR_pTj2i_HT3PPi      = 0.09
 anaSRJigsawSRG3Common.maxR_H1PPi_H2PPi_upper = 0.98
 anaSRJigsawSRG3Common.H2PP                   = 900
+anaSRJigsawSRG3Common.HT5PP_loose            = 2300
 
 anaSRJigsawSRG3a = copy.deepcopy( anaSRJigsawSRG3Common )
 anaSRJigsawSRG3a.name  = "SRJigsawSRG3a"
@@ -445,6 +449,8 @@ anaSRJigsawSRSquarkCommon.RPZ_HT3PP_upper_loose   = 0.63
 anaSRJigsawSRSquarkCommon.R_pTj2_HT3PP_loose      = 0.13
 anaSRJigsawSRSquarkCommon.HT3PP_loose             = 1000
 anaSRJigsawSRSquarkCommon.H2PP_loose              = 1000
+anaSRJigsawSRSquarkCommon.deltaQCD                = 0.001
+anaSRJigsawSRSquarkCommon.deltaQCD_loose          = 0.001
 
 anaSRJigsawSRS1Common                   = copy.deepcopy( anaSRJigsawSRSquarkCommon )
 anaSRJigsawSRS1Common.name              = "SRJigsawSRS1Common"
@@ -474,6 +480,7 @@ anaSRJigsawSRS2Common.R_H2PP_H3PP_upper = 0.96
 anaSRJigsawSRS2Common.RPZ_HT3PP_upper   = 0.6
 anaSRJigsawSRS2Common.R_pTj2_HT3PP      = 0.15
 anaSRJigsawSRS2Common.H2PP              = 1400
+anaSRJigsawSRS2Common.HT3PP_loose       = 1400
 
 anaSRJigsawSRS2a                         = copy.deepcopy( anaSRJigsawSRS2Common )
 anaSRJigsawSRS2a.name                    = "SRJigsawSRS2a"
@@ -497,6 +504,7 @@ anaSRJigsawSRS3Common.R_H2PP_H3PP_upper = 0.98
 anaSRJigsawSRS3Common.RPZ_HT3PP_upper   = 0.63
 anaSRJigsawSRS3Common.R_pTj2_HT3PP      = 0.13
 anaSRJigsawSRS3Common.H2PP              = 1600
+anaSRJigsawSRS3Common.HT3PP_loose       = 1800
 
 anaSRJigsawSRS3a                         = copy.deepcopy( anaSRJigsawSRS3Common )
 anaSRJigsawSRS3a.name                    = "SRJigsawSRS3a"
@@ -524,7 +532,7 @@ anaSRJigsawCoBasic.RISR_looseAndInverted     = 0.5
 anaSRJigsawCoBasic.RISR_range     = (0.5, 0.7)
 anaSRJigsawCoBasic.MS_loose       = 100
 anaSRJigsawCoBasic.dphiISRI_loose = 2.95
-anaSRJigsawCoBasic.PTISR_loose    = 700
+anaSRJigsawCoBasic.PTISR_loose    = 600
 anaSRJigsawCoBasic.NV_loose       = 1
 
 anaSRJigsawSRC1Common = copy.deepcopy( anaSRJigsawCoBasic )
@@ -562,7 +570,7 @@ anaSRJigsawSRC3Common.RISR        = 0.80
 anaSRJigsawSRC3Common.RISR_range   = (0.5, 0.8)
 anaSRJigsawSRC3Common.MS          = 200
 anaSRJigsawSRC3Common.dphiISRI    = 2.95
-anaSRJigsawSRC3Common.PTISR       = 700
+anaSRJigsawSRC3Common.PTISR       = 600
 anaSRJigsawSRC3Common.NV          = 2
 
 finalChannelsDict[anaSRJigsawSRC3Common.name]=anaSRJigsawSRC3Common
@@ -574,7 +582,7 @@ anaSRJigsawSRC4Common.RISR        = 0.75
 anaSRJigsawSRC4Common.RISR_range   = (0.5, 0.75)
 anaSRJigsawSRC4Common.MS          = 500
 anaSRJigsawSRC4Common.dphiISRI    = 2.95
-anaSRJigsawSRC4Common.PTISR       = 700
+anaSRJigsawSRC4Common.PTISR       = 600
 #anaSRJigsawSRC5Common.dPhi        = 0.2
 anaSRJigsawSRC4Common.dphiMin2    = 0.4
 #anaSRJigsawSRC4Common.deltaQCD    = -.5
@@ -589,7 +597,7 @@ anaSRJigsawSRC5Common.RISR        = 0.70
 anaSRJigsawSRC5Common.RISR_range   = (0.5, 0.7)
 anaSRJigsawSRC5Common.MS          = 500
 anaSRJigsawSRC5Common.dphiISRI    = 2.95
-anaSRJigsawSRC5Common.PTISR       = 700
+anaSRJigsawSRC5Common.PTISR       = 600
 anaSRJigsawSRC5Common.dphiMin2    = 0.4
 #anaSRJigsawSRC4Common.deltaQCD    = -.5
 anaSRJigsawSRC5Common.NV          = 3

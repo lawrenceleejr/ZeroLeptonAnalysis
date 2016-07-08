@@ -77,7 +77,7 @@ class RootOption:
         lowerPad.SetLeftMargin(0.14);
         lowerPad.SetRightMargin(0.05);
         lowerPad.SetTopMargin(0.0125);
-        lowerPad.SetBottomMargin(0.33);
+        lowerPad.SetBottomMargin(0.37);
         lowerPad.SetFrameBorderMode(0);
         lowerPad.SetFrameBorderMode(0);
         lowerPad.Draw();

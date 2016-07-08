@@ -19,8 +19,8 @@ def parseCmdLine(args):
     parser = OptionParser()
     parser.add_option("--region", default="SR", type = str)
     parser.add_option("--SignalOnTop", action = "store_true", dest="SignalOnTop", help=" Add signal to SM background in SR plots", default=False)
-    parser.add_option("--noSyst", action = "store_true", dest="noSyst", help="Run without systematics",default=True)
-    parser.add_option("--lumi", dest="lumi", help="lumi", default=3.2)
+    parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
+    parser.add_option("--lumi", dest="lumi", help="lumi", default=5.8)
     (config, args) = parser.parse_args(args)
     print config
     return config
@@ -36,9 +36,9 @@ doVRWT=False
 doCRW=False
 doCRT=False
 doCRY=False
-doCRZ=False
+doVRZ=False
 doCRQ=False
-doSyst=True
+doSyst=False
 doSignificance=False
 doAlternativeZ=False
 doAlternativeW=False
@@ -54,7 +54,7 @@ def comparator(x, y):
         if "Top" in x: return -1
     elif doCRW:
         if "Wjets" in x: return -1
-    elif doCRZ:
+    elif doVRZ:
         if "Zjets" in x: return -1
     elif doCRY:
         if "Yjets" in x: return -1
@@ -69,11 +69,14 @@ config = parseCmdLine(sys.argv[1:])
 if config.SignalOnTop:
     SignalOnTop = True
 
-if config.noSyst:
-    doSyst=False
+if config.doSyst:
+    doSyst=True
 
 if config.region=="SR":
-    doCRT = doCRW = doCRWT = doVRWT = doCRY = doCRZ = doCRQ = False
+    doCRT = doCRW = doCRWT = doVRWT = doCRY = doVRZ = doCRQ = False
+    print "Running region: ",config.region
+elif config.region=="CRWT":
+    doCRWT = True
     print "Running region: ",config.region
 elif config.region=="CRT":
     doCRT = True
@@ -87,8 +90,8 @@ elif config.region=="VRWT":
 elif config.region=="CRY":
     doCRY = True
     print "Running region: ",config.region
-elif config.region=="CRZ":
-    doCRZ = True
+elif config.region=="VRZ":
+    doVRZ = True
     print "Running region: ",config.region
 elif config.region=="CRQ":
     doCRQ = True
@@ -102,16 +105,16 @@ if doSignificance:
 
 if doAlternativeZ:
     doCRWT=doCRY=doCRQ=False
-    doCRZ=True
+    doVRZ=True
 
 if doAlternativeW or doAlternativeTopHerwig or doAlternativeTopPythia or doAlternativeTopMcAtNlo:
-    doCRZ=doCRY=doCRQ=False
+    doVRZ=doCRY=doCRQ=False
     doCRWT=True
 
 if doCRW or doCRT:
     doCRWT=True
 
-if doCRWT or doVRWT or doCRY or doCRZ or doCRQ:
+if doCRWT or doVRWT or doCRY or doVRZ or doCRQ:
         runSignal=False
 
 if not runSignal:
@@ -121,7 +124,7 @@ saveToFile=False
 
 version=107
 versionname = '{0}_baseline'.format(version)
-if doAlternativeZ and doCRZ:
+if doAlternativeZ and doVRZ:
     versionname = versionname.replace('baseline','alternativeZ')
 elif doAlternativeW and doCRWT:
     versionname = versionname.replace('baseline','alternativeW')
@@ -160,13 +163,13 @@ varList = [
            {'varName':'RPZ_HT3PP','varNtuple':'RPZ_HT3PP','plotName':'p_{PP,z}^{lab} / (p_{PP,z}^{lab} + H_{T 2,1}^ {PP})','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'RPZ_HT5PP','varNtuple':'RPZ_HT5PP','plotName':'p_{PP,z}^{lab} / (p_{PP,z}^{lab} + H_{T 4,1}^ {PP})','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'R_pTj2_HT3PP','varNtuple':'R_pTj2_HT3PP','plotName':'p^{PP}_{j2 T} / H_{T 2,1 i}^{PP}','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'minR_pTj2i_HT3PPi','varNtuple':'minR_pTj2i_HT3PPi','plotName':'min(p_{T}^{j2 T i}/H_{T 2,1}^{PP,i}','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'maxR_H1PPi_H2PPi','varNtuple':'maxR_H1PPi_H2PPi','plotName':'min(H_{1, 0}^{Pi}/H_{2,0}^{Pi}','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
-           {'varName':'dangle','varNtuple':'dangle','plotName':'|#frac{2}{3}#Delta#phi^{PP}_{V,P}-#frac{1}{3}cos#theta_{P}|','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
+           {'varName':'minR_pTj2i_HT3PPi','varNtuple':'minR_pTj2i_HT3PPi','plotName':'min(p_{T}^{j2 T i}/H_{T 2,1}^{PP,i})','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'maxR_H1PPi_H2PPi','varNtuple':'maxR_H1PPi_H2PPi','plotName':'min(H_{1, 0}^{Pi}/H_{2,0}^{Pi})','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'dangle','varNtuple':'dangle','plotName':'|#frac{2}{3}#Delta#phi^{PP}_{V,P} - #frac{1}{3}cos#theta_{P}|','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'sangle','varNtuple':'sangle','plotName':'sangle','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            #
-           {'varName':'dphiISR1','varNtuple':'dphiISR1','plotName':'#Delta#phi(ISR, I)','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
-           {'varName':'dphiMin2','varNtuple':'dphi','plotName':'min(#Delta#phi_{MET,j1}, #Delta#phi_{MET,j2})','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
+           {'varName':'dphiISRI','varNtuple':'dphiISRI','plotName':'#Delta#phi(ISR, I)','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
+           {'varName':'dphiMin2','varNtuple':'dphiMin2','plotName':'min(#Delta#phi_{MET,j1}, #Delta#phi_{MET,j2})','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
            {'varName':'MS','varNtuple':'MS','plotName':'M_{T S} [GeV]','nbinvar':'30','minvar':'0','maxvar':'1500.','unit':'GeV'},
            {'varName':'NV','varNtuple':'NV', 'plotName': 'N_{jet}^{V}', 'nbinvar':'10','minvar':'0','maxvar':'10','unit':''},
            #
@@ -227,7 +230,7 @@ else:
     mcsignaldir = sampledir
     mcaltdir = sampledir
 
-datafile = 'DataMain_data15_13TeV.root'
+datafile = 'DataMain_dataall_13TeV.root'
 
 datafile =[
            {'whichdata':'SR','filename':datadir+datafile,
@@ -238,7 +241,7 @@ datafile =[
            'dataname':'Data_VRWT'},
            {'whichdata':'CRY','filename':datadir+datafile,
            'dataname':'Data_CRY'},
-           {'whichdata':'CRZ','filename':datadir+datafile,
+           {'whichdata':'VRZ','filename':datadir+datafile,
            'dataname':'Data_CRZ'},
            {'whichdata':'CRQ','filename':datadir+datafile,
            'dataname':'Data_SRAll'},
@@ -258,7 +261,8 @@ plotlists = {
                  ["R_pTj2_HT3PP"],
                  ["H2PP"],
                  ],
-    "SRG":      [["rpz_HT5PP"],
+    "SRG":      [
+                 ["RPZ_HT5PP"],
                  ["H2PP"],
                  ["R_HT5PP_H5PP"],
                  ["minR_pTj2i_HT3PPi"],
@@ -266,21 +270,33 @@ plotlists = {
                  ["dangle"],
                  #                 ["sangle"]
                  ],
-    "SRC":      [["MS"],
+    "SRC":      [
+                 ["MS"],
                  ["dphiISRI"],
                  ["dphiMin2"],
                  ["NV"],
-                 ]
+                 ],
+    "CRWT":     [["nbJets"]]
     }
 
 plotlist = {srtype:plotlists["Common"]+plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
+#plotlist = {srtype:plotlists["Common"] for srtype in ["SRS","SRG","SRC"]}
+#plotlist = {srtype:plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
+#plotlist = {srtype:plotlists["CRWT"] for srtype in ["SRS","SRG","SRC"]}
+
 kindOfCuts_SR =     [ {"type":"SR_minusone",    "var": plotlist,"name":"SR"} ]
-kindOfCuts_CRWT =   [ {"type":"CRW_minusone",   "var": plotlist,"name":"CRW"} ]
-kindOfCuts_CRWT =   [ {"type":"CRT_minusone",   "var": plotlist,"name":"CRT"} ]
-kindOfCuts_VRWT =   [ {"type":"VRWM",           "var": plotlist,"name":"VRWM"} ]
-kindOfCuts_VRWT =   [ {"type":"VRWMf",          "var": plotlist,"name":"VRWMf"} ]
+kindOfCuts_CRWT =   [ {"type":"CRW_minusone",   "var": plotlist,"name":"CRW"},
+                      {"type":"CRT_minusone",   "var": plotlist,"name":"CRT"} ]
+kindOfCuts_VRWT =   [ {"type":"VRW_minusone",   "var": plotlist,"name":"VRW"},
+                      {"type":"VRT_minusone",   "var": plotlist,"name":"VRT"},
+                      {"type":"VRWa_minusone",  "var": plotlist,"name":"VRWa"},
+                      {"type":"VRTa_minusone",  "var": plotlist,"name":"VRTa"},
+                      {"type":"VRWb_minusone",  "var": plotlist,"name":"VRWb"},
+                      {"type":"VRTb_minusone",  "var": plotlist,"name":"VRTb"}]
 kindOfCuts_CRY =    [ {"type":"CRY_minusone",   "var": plotlist,"name":"CR#gamma"} ]
-kindOfCuts_CRZ =    [ {"type":"CRZ_minusone",   "var": plotlist,"name":"VRZ"} ]
+kindOfCuts_VRZ =    [ {"type":"VRZ_minusone",   "var": plotlist,"name":"VRZ"},
+                      {"type":"VRZa_minusone",  "var": plotlist,"name":"VRZb"},
+                      {"type":"VRZb_minusone",  "var": plotlist,"name":"VRZb"}]
 kindOfCuts_CRQ =    [ {"type":"CRQ_minusone",   "var": plotlist,"name":"CRQ"} ]
 
 if doCRY:
@@ -289,8 +305,8 @@ elif doCRWT:
     kindOfCuts=kindOfCuts_CRWT
 elif doVRWT:
     kindOfCuts=kindOfCuts_VRWT
-elif doCRZ:
-    kindOfCuts=kindOfCuts_CRZ
+elif doVRZ:
+    kindOfCuts=kindOfCuts_VRZ
 elif doCRQ:
     kindOfCuts=kindOfCuts_CRQ
 else:
@@ -307,7 +323,7 @@ if doSyst:
     ZName = 'ZMassiveCB'
     WName = 'WMassiveCB'
 
-if doAlternativeZ and doCRZ:
+if doAlternativeZ and doVRZ:
     ZName = 'ZMadgraphPythia8'
     print "Running alternative Z sample!"
 if doAlternativeW and doCRWT:
@@ -324,8 +340,11 @@ if doAlternativeTopMcAtNlo and doCRWT:
     print "Running alternative TopMcAtNloHerwigpp sample!"
 
 #Here you put the regions that you want to plot
-anaImInterestedIn = []
+#anaImInterestedIn = []
 #anaImInterestedIn = ["SRJigsawSRS1a","SRJigsawSRG1a","SRJigsawSRC1"]
+anaImInterestedIn = ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
+anaImInterestedIn += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
+anaImInterestedIn += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
 #anaImInterestedIn = ["SRJigsawSRG1a"]
 
 mc = [
@@ -347,7 +366,7 @@ if doCRY:
     mc.append({'key':'Yjets','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
               'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_','syst':commonsyst},
               )
-else:
+elif not doVRZ:
     mc.append({'key':'QCDMC','name':'Multijet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
               'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
               'syst':commonsyst})
@@ -563,7 +582,7 @@ elif doSyst:
               #         ]
 else:
     systDict=[]
-def projAll(l,var,varname,title,cuts,syst,myNtHandler,nbinvar,minvar,maxvar,output):                
+def projAll(l,var,varname,title,cuts,syst,myNtHandler,nbinvar,minvar,maxvar,output):
     print '------------------------- projAll',title,varname,nbinvar,minvar,maxvar
     myHisto=ROOT.TH1F(title,varname,nbinvar,minvar,maxvar)
     myHisto.SetFillColor(myNtHandler.color)
@@ -650,17 +669,19 @@ def main(configMain):
                     config=ChannelConfig(name=ana, regionDict=region)
                     print ana,region,whichKind
                     if   (region in whichKind['type']  and "CRW" not in region) or ("SR" in region and "L" not in region and "SR" in whichKind['type']) or ("CRW"==region and "L" not in region and ("CRW"==whichKind['type'] or "CRW_" in whichKind['type'])) or ("CRWT"==region and "L" not in region and ("CRWT"==whichKind['type'] or "CRWT_" in whichKind['type'])) or ("CRT" in region and "L" not in region and "CRT" in whichKind['type']) or ("CRY"== region and "L" not in region and "CRY" in whichKind['type']) or ("CRZ" in region and ("L" or "VL") not in region and "CRZ" in whichKind['type']):
-                        ch=allChannel[ana]
-                        chnameshort = ch.name.split('Jigsaw')[1][:3]
+                        ch_orig=allChannel[ana]
+                        chnameshort = ch_orig.name.split('Jigsaw')[1][:3]
                         for varset in whichKind["var"][chnameshort]:
                             print 'going to run', whichKind['type']
+                            ch=copy.deepcopy(ch_orig) # so as to not permanently disable cuts
                             minusvar = varset[0]
                             minusvarname = minusvar
                             for vardict in varList:
-                                if vardict["varName"]==minusvar: minusvarname = vardict["varNtuple"]
+                                if vardict["varName"]==minusvar:
+                                    minusvarname = vardict["varNtuple"]
                             if("minusone" in whichKind['type']):
-                                if minusvar == "LastCut": minusvarname = minusvar = lastcuts[chnameshort]
-                                elif minusvar == "Ratio": minusvarname = minusvar = ratiocuts[chnameshort]
+                                if minusvar == "LastCut": minusvar = minusvarname = lastcuts[chnameshort]
+                                elif minusvar == "Ratio": minusvar = minusvarname = ratiocuts[chnameshort]
                                 if hasattr(ch,minusvar):
                                     ch.regionListDict[region][minusvar] = "minusone"
                                 if hasattr(ch,minusvar+"_upper"):
@@ -669,11 +690,13 @@ def main(configMain):
                                     ch.regionListDict[region][minusvar+"_loose"] = "minusone"
                                 if hasattr(ch,minusvar+"_upper_loose"):
                                     ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
+                            print "MINUS", minusvar, minusvarname
 
                             cuts=ch.getCuts(region)
                             truthcuts = cuts
                             truthcuts = truthcuts.replace("&& (abs(timing)<4)", " ")
-                            print "channel",cuts, truthcuts
+                            #print "channel",cuts, truthcuts
+                            print "channel",cuts
                             
                             weights=allChannel[ana].getWeights(region,onlyExtraWeights)
                             truthweights = weights
@@ -682,19 +705,19 @@ def main(configMain):
                             weights = truthweights
                             print ana, region, cuts,weights,"remove pileupweights"
                             blindcut = ""
-                            if hasattr(ch,minusvar):
+                            if hasattr(ch,minusvar) and not getattr(ch,minusvar)==None:
                                 blindcut += minusvarname+" < "+str(getattr(ch,minusvar))
-                            if hasattr(ch,minusvar+"_upper"):
+                            if hasattr(ch,minusvar+"_upper") and not getattr(ch,minusvar+"_upper")==None:
                                 if len(blindcut)>0:  blindcut += " || "
                                 blindcut += minusvarname+" > "+str(getattr(ch,minusvar+"_upper"))
                             if len(blindcut)>0:
                                 blindcut = " && ("+blindcut+")"
-                            print "BLINDCUT", minusvar, blindcut
+                            print "BLINDCUT", minusvar, minusvarname, blindcut
                             if runData:
                                 plotData=[]
                                 for wData in datafile:
                                     print region, wData['whichdata']
-                                    if (wData['whichdata'] in region) or ((region == 'CRW' or region == 'CRT') and wData['whichdata'] == 'CRWT') or ((region == 'VRWM' or region == 'VRWMf') and wData['whichdata'] == 'VRWT') or ("SR" in region and "SR" in wData['whichdata']):
+                                    if (wData['whichdata'] in region) or ((region == 'CRW' or region == 'CRT') and wData['whichdata'] == 'CRWT') or ((region == 'VRW' or region == 'VRT') and wData['whichdata'] == 'VRWT') or ("SR" in region and "SR" in wData['whichdata']):
                                         print 'nthandler data',wData['whichdata']
                                         if doBlinding and "SR" in region:
                                             print "Data is blinded beyond SR cut"
@@ -714,7 +737,7 @@ def main(configMain):
                                                 tmptreename="_CRWT"
                                             elif doVRWT:
                                                 tmptreename="_VRWT"
-                                            elif doCRZ:
+                                            elif doVRZ:
                                                 tmptreename="_CRZ"
                                             ntsig=NtHandler(ana+region+point['name']+tmptreename,point['filename'],point['name']+tmptreename,cuts,point['color'],weights,"signal",configMain.lumi)
                                             plotSignalList.append({'pointname':point['name'],'pointcolor':point['color'],'pointlinestyle':point['linestyle'],'pointsigplotname':point['sigplotname'],'pointmass':point['masspoint'],'nthandle':ntsig})
@@ -733,7 +756,7 @@ def main(configMain):
                                 if doCRWT: mcname=process['treePrefix']+"CRWT"
                                 if doVRWT: mcname=process['treePrefix']+"VRWT"
                                 if doCRY: mcname=process['treePrefix']+"CRY"
-                                if doCRZ: mcname=process['treePrefix']+"CRZ"
+                                if doVRZ: mcname=process['treePrefix']+"CRZ"
                                 if doBlindingMC and "SR" in region and whichKind['type'].find("minusone")==0:
                                     if process['key'] == "Yjets":
                                         print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
@@ -756,13 +779,15 @@ def main(configMain):
                                         if doCRWT: mcname=process['treePrefix']+"CRWT"+syst
                                         if doVRWT: mcname=process['treePrefix']+"VRWT"+syst
                                         if doCRY: mcname=process['treePrefix']+"CRY"+syst
-                                        if doCRZ: mcname=process['treePrefix']+"CRZ"+syst
-                                    
+                                        if doVRZ: mcname=process['treePrefix']+"CRZ"+syst
+
+                                        treename = ana+region+process['treePrefix']+"_baseline"
+                                        if process['key'] == "QCDMC": treename += syst
                                         if process['key'] == "Yjets":
                                             print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," weight type: ", type(weights)
-                                            ntsyst=NtHandler(ana+region+process['treePrefix']+"_baseline"+syst,process['inputdir'],mcname,cuts,process['color'],weights,"mc",str(float(configMain.lumi)*kappaYjets))
+                                            ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",str(float(configMain.lumi)*kappaYjets))
                                         else:
-                                            ntsyst=NtHandler(ana+region+process['treePrefix']+"_baseline"+syst,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
+                                            ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
                                         fullPlotMCSyst.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntsyst":syst,"ntsysthandle":ntsyst})                                                                
 
                             if doSyst:
@@ -771,7 +796,7 @@ def main(configMain):
                                     if doCRWT: mcname=process['treePrefix']+"CRWT"+process['treeSuffix']
                                     if doVRWT: mcname=process['treePrefix']+"VRWT"+process['treeSuffix']
                                     if doCRY: mcname=process['treePrefix']+"CRY"+process['treeSuffix']
-                                    if doCRZ: mcname=process['treePrefix']+"CRZ"+process['treeSuffix']
+                                    if doVRZ: mcname=process['treePrefix']+"CRZ"+process['treeSuffix']
                                     print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
                                     ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
                                                                             
@@ -787,12 +812,13 @@ def main(configMain):
                                     fullPlotMCTruth.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmctruthalthandle":ntsyst})
                                 
                             for varinList in varList:
-                                if varinList['varName'] in varset or 'all' in varset:
+                                varname=varinList['varName']
+                                if varname in varset or 'all' in varset:
+                                    var=varinList['varNtuple']
                                     if 'extracuts' in varinList:
                                         temp="(("+cuts+")&&("+varinList['extracuts']+"))"
                                         cuts=temp
                                     print 'adding extracuts for var',varinList['varName'],cuts
-                                    varname=varinList['varName']
                                     plotname=varinList['plotName']
                                     if "LastCut" in plotname:
                                         chnameshort = ch.name.split('Jigsaw')[1][:3]
@@ -800,13 +826,13 @@ def main(configMain):
                                     elif "Ratio" in plotname:
                                         chnameshort = ch.name.split('Jigsaw')[1][:3]
                                         plotname = plotname.replace("Ratio",ratiocutsfull[chnameshort])
-                                    var=varinList['varNtuple']
                                     if var == "LastCut":
                                         chnameshort = ch.name.split('Jigsaw')[1][:3]
                                         var = lastcuts[chnameshort]
                                     elif var == "Ratio":
                                         chnameshort = ch.name.split('Jigsaw')[1][:3]
                                         var = ratiocuts[chnameshort]
+                                    print "VAR", varname, var
                                     nbinvar=int(varinList['nbinvar'])
                                     minvar=float(varinList['minvar'])
                                     maxvar=float(varinList['maxvar'])
@@ -965,11 +991,11 @@ def main(configMain):
                                                 yfactor = 15
                                             else:
                                                 yfactor=10
-                                        dataHisto.GetYaxis().SetRangeUser(min,max*yfactor)
-                                        datah_Poiss.GetYaxis().SetRangeUser(min,max*yfactor)
+                                        dataHisto.GetYaxis().SetRangeUser(min/2.,max*yfactor*10)
+                                        datah_Poiss.GetYaxis().SetRangeUser(min/2.,max*yfactor*10)
 
                                         binWidth=dataHisto.GetBinWidth(1)
-                                        XUnit="Events / "+str(int(binWidth))
+                                        XUnit="Events / {0:.2f}".format(binWidth)
                                         if(unit): XUnit=XUnit+" "+unit
                                         dataHisto.GetYaxis().SetTitle(XUnit)
                                         dataHisto.GetYaxis().SetLabelSize(0.05)
@@ -991,7 +1017,7 @@ def main(configMain):
                                     XUnitStack="units"
                                     for whichmc in mc:
                                         for h in mcHisto:
-                                            if whichmc['treePrefix'] in h.GetName().split(varinList["varName"])[1]:
+                                            if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
                                                 clone=h.Clone()
                                                 Clone_mcHisto.append(clone)
                                                 mcStack.Add(clone)
@@ -1095,19 +1121,21 @@ def main(configMain):
                                     SpecialArrowUpper=""
                                     varcut = None
                                     varcutupper = None
-                                    if var == minusvar:
-                                        if hasattr(ch,minusvar):
-                                            varcut=getattr(ch,minusvar)
-                                        if hasattr(ch,minusvar+"_upper"):
-                                            varcutupper=getattr(ch,minusvar+"_upper")
-                                        if not varcut==None:
-                                            print "Place arrow at", minusvar, " = ", varcut
-                                            arrow=1
-                                            SpecialArrow=plotname+">"+str(int(varcut))
-                                        if not varcutupper==None:
-                                            print "Place arrow at", minusvar, " = ", varcut
-                                            arrowupper=1
-                                            SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
+                                    arrowvar = var
+                                    if varname in ["met","meffIncl"]: arrowvar = varname
+                                    print "ARROW", varname, arrowvar
+                                    if hasattr(ch,arrowvar) and not getattr(ch,arrowvar)==None:
+                                        varcut=getattr(ch,arrowvar)
+                                    if hasattr(ch,arrowvar+"_upper") and not getattr(ch,arrowvar+"_upper")==None:
+                                        varcutupper=getattr(ch,arrowvar+"_upper")
+                                    if not varcut==None:
+                                        print "Place arrow at", arrowvar, " = ", varcut
+                                        arrow=1
+                                        SpecialArrow=plotname+">"+str(int(varcut))
+                                    if not varcutupper==None:
+                                        print "Place arrow at", arrowvar, " = ", varcutupper
+                                        arrowupper=1
+                                        SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
                                     if ana.find("Pres")>=0:
                                         arrow=0
 
@@ -1157,7 +1185,7 @@ def main(configMain):
                                     atlaslabel.SetTextFont(42)
                                     atlaslabel.Draw("same")
 
-                                    lumilabel=ROOT.TLatex(0.2,0.82,"#sqrt{s}=13 TeV, %1.1f"  % (float(configMain.lumi))+" fb^{-1} " )
+                                    lumilabel=ROOT.TLatex(0.2,0.82,"#sqrt{s}=13 TeV, %1.2f"  % (float(configMain.lumi))+" fb^{-1} " )
                                     lumilabel.SetNDC()
                                     lumilabel.SetTextSize(0.040)
                                     lumilabel.SetTextFont(42)
@@ -1196,7 +1224,8 @@ def main(configMain):
 
                                     for whichmc in mc:
                                         for h in mcHisto:
-                                            if whichmc['treePrefix'] in h.GetName().split(varinList["varName"])[1]:
+#                                            print h.GetName()
+                                            if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
                                                 legend.AddEntry(h,whichmc['name'],"f")
 
                                     if(runSignal) and SignalOnTop:
