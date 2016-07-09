@@ -61,8 +61,9 @@ hypotests = []
 print os.path.join(folder, "results")
 for root, dirs , files in os.walk(os.path.join(folder, "results")) :
 	for ifile in  files :
-		if "hypotest" in ifile :
-			hypotests.append(os.path.join(root, ifile))
+		if "upperlimit" in ifile :
+			if ifile.endswith('.root') :
+				hypotests.append(os.path.join(root, ifile))
 
 failedFitFile = open("corruptedFiles_"+grids[0]+".txt", "w")
 
