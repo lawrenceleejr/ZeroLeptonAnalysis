@@ -406,10 +406,10 @@ if zlFitterConfig.doSetNormRegion:
     # if "CRT0L" in zlFitterConfig.constrainingRegionsList:
     #     topSample.setNormRegions( [ ("CRT0L",zlFitterConfig.binVar)     ]  )
 if not zlFitterConfig.usePreComputedTopGeneratorSys:
-    topSample.addSystematic(Systematic("generatorTop",configMgr.weights , "_aMcAtNloHerwigpp", "_aMcAtNloHerwigpp", "tree", "overallNormHistoSysOneSideSym"))
+    topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 if not zlFitterConfig.usePreComputedTopFragmentationSys:
-    topSample.addSystematic(Systematic("fragmentationTop",configMgr.weights , "_PowhegHerwigpp", "_PowhegHerwigpp", "tree", "overallNormHistoSysOneSideSym"))
+       topSample.addSystematic(Systematic("fragmentationTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 
 
@@ -422,7 +422,8 @@ wSample.setNormFactor("mu_"+zlFitterConfig.wSampleName, 1., 0., 500.)
 wSample.setFileList(wFiles)
 wSample.setStatConfig(zlFitterConfig.useStat)
 if not zlFitterConfig.usePreComputedWGeneratorSys:
-    wSample.addSystematic(Systematic("generatorW",configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
+    wSample.addSystematic(Systematic("generatorW", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
+
 if zlFitterConfig.doSetNormRegion:
     if "CRT" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
         wSample.setNormRegions([("CRT", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
@@ -465,7 +466,7 @@ if zlFitterConfig.doSetNormRegion:
         zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
         zSample.normSampleRemap = "GAMMAjets"
 if not zlFitterConfig.usePreComputedZGeneratorSys:
-    zSample.addSystematic(Systematic("generatorZ",configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
+    zSample.addSystematic(Systematic("generatorZ", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
 
 
 #--------------------------
