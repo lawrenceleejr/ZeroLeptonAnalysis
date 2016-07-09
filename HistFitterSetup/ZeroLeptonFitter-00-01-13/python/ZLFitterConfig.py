@@ -25,7 +25,7 @@ class ZLFitterConfig:
         ##############################################
 
         # blinding
-        self.blindSR = True
+        self.blindSR = False
         self.blindCR = False
         self.blindVR = False
         self.useSignalInBlindedData = False
