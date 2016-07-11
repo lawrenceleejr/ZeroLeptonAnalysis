@@ -76,8 +76,9 @@ regionDict["CRZVL"] = Region("CRZVL", "CRZ", [], [])
 # definition of the final analysis channels
 ###########################################################
 
-# FAR SRs
+'''# FAR SRs
 finalChannelsDict = {}
+
 
 #SS_direct_800_400 2jl
 # SR2jbase-MeSig15-Meff1200-sljetpt200-dphi0.8-ap0.00
@@ -314,8 +315,8 @@ anaSRFAR.meffIncl = 2000
 # #to be removed
 # #finalChannelsDict=testChannelsDict
 # #finalChannelsDict.update(testChannelsDict)
-
-# finalChannelsDict = {}
+'''
+finalChannelsDict = {}
 #----------------------------------------------------------
 # RJigsaw
 #----------------------------------------------------------
@@ -450,6 +451,8 @@ anaSRJigsawSRSquarkCommon.RPZ_HT3PP_upper_loose   = 0.63
 anaSRJigsawSRSquarkCommon.R_pTj2_HT3PP_loose      = 0.13
 anaSRJigsawSRSquarkCommon.HT3PP_loose             = 1000
 anaSRJigsawSRSquarkCommon.H2PP_loose              = 1000
+anaSRJigsawSRSquarkCommon.deltaQCD                = 0.001
+anaSRJigsawSRSquarkCommon.deltaQCD_loose          = 0.001
 
 anaSRJigsawSRS1Common                   = copy.deepcopy( anaSRJigsawSRSquarkCommon )
 anaSRJigsawSRS1Common.name              = "SRJigsawSRS1Common"

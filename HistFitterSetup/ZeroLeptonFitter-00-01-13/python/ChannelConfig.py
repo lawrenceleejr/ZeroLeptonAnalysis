@@ -71,6 +71,18 @@ class Region:
                   "extraCutList    : %s") % (self.name, self.suffixTreeName, self.extraWeightList, self.extraCutList)
         return retval
 
+lastcuts = {
+    'SRG': "HT5PP",
+    'SRS': "HT3PP",
+    'SRC': "PTISR"
+}
+
+ratiocuts = {
+    'SRG': "R_H2PP_H5PP",
+    'SRS': "R_H2PP_H3PP",
+    'SRC': "RISR"
+}
+
 ########################################################
 #
 ########################################################
@@ -350,15 +362,18 @@ class ChannelConfig:
         self.regionListDict["VRdphiISRI"]["dphiISRI"] =  "invert"
 
 
+        self.WithoutLastCut = False
+        self.WithoutRatioCut = False
 
-        self.WithoutMeffCut = False
-        self.WithoutMetOverMeffCut = False
-        self.WithoutdPhiCut = False
-        self.WithoutApCut = False
-        self.WithoutJetpT1Cut = False
-        self.WithoutJetpT2Cut = False
-        self.WithoutJetpT3Cut = False
-        self.WithoutJetpT4Cut = False
+        # Hope to avoid these as much as possible
+#        self.WithoutMeffCut = False
+#        self.WithoutMetOverMeffCut = False
+#        self.WithoutdPhiCut = False
+#        self.WithoutApCut = False
+#        self.WithoutJetpT1Cut = False
+#        self.WithoutJetpT2Cut = False
+#        self.WithoutJetpT3Cut = False
+#        self.WithoutJetpT4Cut = False
 
         return
 
@@ -396,7 +411,7 @@ class ChannelConfig:
 
         cutList = []
         # Start with cuts take away a huge chunk
-
+        '''
         #effective mass cut
         if self.meffIncl >= 0 and not(self.WithoutMeffCut):
             cutList.append(" Meff >= %f " % (self.meffIncl))
@@ -541,7 +556,7 @@ class ChannelConfig:
                     #cutList.append(varName+">="+str(self.MET_over_meffNj))
                     cutList.append("%s >= %f " % (varName, self.MET_over_meffNj))
 
-
+        '''
 
         ###############################################################################
         ###############################################################################
@@ -565,22 +580,23 @@ class ChannelConfig:
 
         for reg, idict in regionDict.iteritems() :
             if regionName == reg :
-                 for var,val in idict.iteritems() :
-                     finalCutString = ""
-                     stringVarValue = str(getattr(self, var)) if getattr(self, var)!=None else None
-                     if stringVarValue != None :#can be zero, so use this
-                         print reg, var, val, stringVarValue
-                         finalCutString = ""
-                         if val == 'qcd_range' :
-                                 neededRange = getattr(self, var + "_range") if getattr(self, var+"_range")!=None else None
-                                 if not neededRange : print reg,var,val, var+"_range"
-                                 finalCutString = "(" + var + " >= "+ str( neededRange[0]) + ")" + "*" + "(" +  var + " <= " +str( neededRange[1]) + ")"
-
-                         elif val == 'qcd_invertAndLoosen' :
-                                 cutValue = getattr(self, var + "_looseAndInverted") if getattr(self, var+"_looseAndInverted")!=None else None
-                                 if not cutValue : print reg,var,val, var+"_looseAndInverted"
-                                 finalCutString = str( var  + " < " + str(cutValue))
-                         else :
+                for var,val in idict.iteritems() :
+                    finalCutString = ""
+                    stringVarValue = str(getattr(self, var)) if getattr(self, var)!=None else None
+                    #print "current var:", var, stringVarValue, val
+                    if stringVarValue != None :#can be zero, so use this
+#                        if "minusone" in  var:
+#                           print "omit var cut", var
+#                           continue
+                        if val == 'qcd_range' :
+                            neededRange = getattr(self, var + "_range") if getattr(self, var+"_range")!=None else None
+                            if not neededRange : print reg,var,val, var+"_range"
+                            finalCutString = "(" + var + " >= "+ str( neededRange[0]) + ")" + "*" + "(" +  var + " <= " +str( neededRange[1]) + ")"
+                        elif val == 'qcd_invertAndLoosen' :
+                             cutValue = getattr(self, var + "_looseAndInverted") if getattr(self, var+"_looseAndInverted")!=None else None
+                             if not cutValue : print reg,var,val, var+"_looseAndInverted"
+                             finalCutString = str( var  + " < " + str(cutValue))
+                        else :
                              if "upper" in var :
                                  removeUpper = var.replace("upper","").strip("_")
                                  if not val         : finalCutString = removeUpper + " <= "  + stringVarValue
@@ -597,7 +613,10 @@ class ChannelConfig:
                                      if not loosenedStringVarValue : print reg,var,val, var+"_loose"
                                      finalCutString                  = var         + " >=  " + loosenedStringVarValue
 
-                     if finalCutString : cutList.append(finalCutString)
+                    if finalCutString:
+                        cutList.append(finalCutString)
+                            #print finalCutString
+                            #print regionName, "cutlist", cutList
 
     def Print(self, printLevel=2):
         print "##################################################"
