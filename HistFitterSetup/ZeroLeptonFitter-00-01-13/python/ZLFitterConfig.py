@@ -172,6 +172,7 @@ class ZLFitterConfig:
         # # # ##self.validationRegionsList+=["VRT2L"]
         # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation
         self.validationRegionsList+=["VRQ","VRQa","VRQb","VRQc"]#,"VRQ2"]#,"VRQ3","VRQ4"]
+        self.validationRegionsList+=["VRdphiISRI"]#,"VRQ2"]#,"VRQ3","VRQ4"]
 
         self.datadriven = None
         self.writeXML = None
