@@ -155,7 +155,7 @@ ratiocutsfull = {
 }
 
 varList = [
-           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
+           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'2500.','unit':'GeV'},
            {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#Delta_{QCD}','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'H2PP','varNtuple':'H2PP','plotName':'H_{1,1}^{PP} [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
@@ -1196,7 +1196,7 @@ def main(configMain):
                                         anaName = anaName.replace("Pres"," Preselection")
                                     else:
                                         anaName = ana
-                                    tobewritten=(whichKind['name']+" for " if whichKind['type'].find("CR")>=0 else "") +anaName
+                                    tobewritten=(whichKind['name']+" for " if (whichKind['type'].find("CR")>=0 or whichKind['type'].find("VR")>=0) else "") +anaName
                                     if (runSignal):
                                         analabel=ROOT.TLatex(0.57, 0.91, (tobewritten))
                                     else:
