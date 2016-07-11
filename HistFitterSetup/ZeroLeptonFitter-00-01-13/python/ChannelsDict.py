@@ -324,8 +324,6 @@ anaSRJigsawBasic=ChannelConfig(name="SRJigsawBasic",regionDict=regionDict)
 # trigger
 anaSRJigsawBasic.met=200
 #anaSRJigsawBasic.MDR=300
-#anaSRJigsawBasic.deltaQCD = 0
-#anaSRJigsawBasic.deltaQCD_loose = 0
 
 #----------------------------------------------------------
 # RJigsaw SRs - Gluinos
@@ -418,7 +416,7 @@ anaSRJigsawSRG3Common.RPZ_HT5PP_upper        = 0.6
 anaSRJigsawSRG3Common.minR_pTj2i_HT3PPi      = 0.09
 anaSRJigsawSRG3Common.maxR_H1PPi_H2PPi_upper = 0.98
 anaSRJigsawSRG3Common.H2PP                   = 900
-anaSRJigsawSRG3Common.HT5PP_loose            = 2300
+anaSRJigsawSRG3Common.HT5PP_loose            = 1500
 
 anaSRJigsawSRG3a = copy.deepcopy( anaSRJigsawSRG3Common )
 anaSRJigsawSRG3a.name  = "SRJigsawSRG3a"
@@ -442,6 +440,9 @@ anaSRJigsawSRSquarkCommon                = copy.deepcopy( anaSRJigsawBasic )
 anaSRJigsawSRSquarkCommon.name           = "anaSRJigsawSRSquarkCommon"
 anaSRJigsawSRSquarkCommon.RPTHT3PP_upper = 0.08
 anaSRJigsawSRSquarkCommon.nJets          = 2
+anaSRJigsawSRSquarkCommon.deltaQCD       = 0.001
+anaSRJigsawSRSquarkCommon.deltaQCD_loose = 0.001
+#anaSRJigsawSRSquarkCommon.dPhi           = 0.1
 
 anaSRJigsawSRSquarkCommon.R_H2PP_H3PP_loose       = 0.5
 anaSRJigsawSRSquarkCommon.R_H2PP_H3PP_upper_loose = 0.98
@@ -504,7 +505,7 @@ anaSRJigsawSRS3Common.R_H2PP_H3PP_upper = 0.98
 anaSRJigsawSRS3Common.RPZ_HT3PP_upper   = 0.63
 anaSRJigsawSRS3Common.R_pTj2_HT3PP      = 0.13
 anaSRJigsawSRS3Common.H2PP              = 1600
-anaSRJigsawSRS3Common.HT3PP_loose       = 1800
+anaSRJigsawSRS3Common.HT3PP_loose       = 1400
 
 anaSRJigsawSRS3a                         = copy.deepcopy( anaSRJigsawSRS3Common )
 anaSRJigsawSRS3a.name                    = "SRJigsawSRS3a"

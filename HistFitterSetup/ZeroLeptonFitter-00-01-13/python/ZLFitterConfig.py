@@ -25,7 +25,7 @@ class ZLFitterConfig:
         ##############################################
 
         # blinding
-        self.blindSR = True
+        self.blindSR = False
         self.blindCR = False
         self.blindVR = False
         self.useSignalInBlindedData = False
@@ -84,10 +84,10 @@ class ZLFitterConfig:
         self.usePreComputedWGeneratorSys=False
         self.usePreComputedTopGeneratorSys=False
         self.usePreComputedTopFragmentationSys=False
-        self.usePreComputedZGeneratorSys=True
+        self.usePreComputedZGeneratorSys=False
 
 #jet smearing
-        self.useDDQCDsample = True
+        self.useDDQCDsample = False
 
         # JES,JER,...
         self.useJETUncertainties = True
@@ -128,7 +128,7 @@ class ZLFitterConfig:
         # samples
         ##############################################
 
-        self.useQCDsample =True
+        self.useMCQCDsample =True
         self.useDIBOSONsample = True
 
         # QCD weight- one number per jet multiplicity starting with the monojet channel
@@ -148,7 +148,7 @@ class ZLFitterConfig:
         #self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
-        self.constrainingRegionsList += ["CRQ"]
+#        self.constrainingRegionsList += ["CRQ"]
 
 
 
@@ -224,7 +224,6 @@ class ZLFitterConfig:
         self.log.info("statErrThreshold  = %s" % self.statErrThreshold )
         self.log.info("luminosity  = %s" % self.luminosity )
         self.log.info("luminosityEr  = %s" % self.luminosityEr )
-        self.log.info("useQCDsample  = %s" % self.useQCDsample )
         self.log.info("useDIBOSONsample  = %s" % self.useDIBOSONsample )
         self.log.info("SRName  = %s" % self.SRName )
         self.log.info("ConstrainingRegionsList  = %s" %  self.constrainingRegionsList )

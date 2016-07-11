@@ -278,6 +278,8 @@ if configMgr.readFromTree:
 
         # gamma
         gammaFiles.append(INPUTDIR+ "/GAMMAMassiveCB.root")
+        # gammaFiles.append(INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root"))
+        # gammaFiles.append(INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"))
 
     #data
     # dataFiles.append(INPUTDIR_DATA, "/DataMain_Nov01.root")
@@ -357,21 +359,26 @@ dibosonSample.setStatConfig(zlFitterConfig.useStat)
 # QCD
 #--------------------------
 qcdSample = Sample(zlFitterConfig.qcdSampleName, kOrange+2)
-qcdSample.setTreeName("Data_SRAll")
+if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
+    qcdSample.setTreeName("Data_SRAll")
+else :
+    qcdSample.setTreeName("QCD_SRAll")
 qcdSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName, 1., 0., 500.)
 qcdSample.setFileList(qcdFiles)
 qcdSample.setStatConfig(zlFitterConfig.useStat)
 
 qcdWeight = 1
 nJets = channel.nJets
-if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList) + 1:
+if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
     qcdWeight = zlFitterConfig.qcdWeightList[nJets-1]/ (zlFitterConfig.luminosity)
-    # qcdSample.addWeight(str(qcdWeight))
-    for w in configMgr.weights: #ATT: there is a bug in HistFitter, I have to add the other weight by hand
-        qcdSample.addWeight(w)
+    if zlFitterConfig.useMCQCDsample:
+        qcdWeight = 1
 
+    qcdSample.addWeight(str(qcdWeight))
+    for w in configMgr.weights: #add all other weights but not normWeight
+        qcdSample.addWeight(w)
     if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
-        qcdSample.removeWeight("normWeight")
+        qcdSample.removeWeight("weight")
 
 # Define samples
 #FakePhotonSample = Sample("Bkg",kGreen-9)
@@ -399,10 +406,10 @@ if zlFitterConfig.doSetNormRegion:
     # if "CRT0L" in zlFitterConfig.constrainingRegionsList:
     #     topSample.setNormRegions( [ ("CRT0L",zlFitterConfig.binVar)     ]  )
 if not zlFitterConfig.usePreComputedTopGeneratorSys:
-    topSample.addSystematic(Systematic("generatorTop",configMgr.weights , "_aMcAtNloHerwigpp", "_aMcAtNloHerwigpp", "tree", "overallNormHistoSysOneSideSym"))
+    topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 if not zlFitterConfig.usePreComputedTopFragmentationSys:
-    topSample.addSystematic(Systematic("fragmentationTop",configMgr.weights , "_PowhegHerwigpp", "_PowhegHerwigpp", "tree", "overallNormHistoSysOneSideSym"))
+       topSample.addSystematic(Systematic("fragmentationTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 
 
@@ -415,7 +422,8 @@ wSample.setNormFactor("mu_"+zlFitterConfig.wSampleName, 1., 0., 500.)
 wSample.setFileList(wFiles)
 wSample.setStatConfig(zlFitterConfig.useStat)
 if not zlFitterConfig.usePreComputedWGeneratorSys:
-    wSample.addSystematic(Systematic("generatorW",configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
+    wSample.addSystematic(Systematic("generatorW", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
+
 if zlFitterConfig.doSetNormRegion:
     if "CRT" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
         wSample.setNormRegions([("CRT", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
@@ -434,6 +442,14 @@ if zlFitterConfig.doSetNormRegion:
     if "CRY" in zlFitterConfig.constrainingRegionsList:
         gammaSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
 
+gammaSyst = Systematic("generatorZ", "", "", "", "tree", "overallNormHistoSysOneSide")
+truthGammaList = [INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root",
+                        INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"]
+gammaSyst.setFileList(gammaSample,
+                      truthGammaList
+                      )
+gammaSample.addSystematic(gammaSyst)
+
 #--------------------------
 # Z
 #--------------------------
@@ -450,7 +466,7 @@ if zlFitterConfig.doSetNormRegion:
         zSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
         zSample.normSampleRemap = "GAMMAjets"
 if not zlFitterConfig.usePreComputedZGeneratorSys:
-    zSample.addSystematic(Systematic("generatorZ",configMgr.weights , "_Madgraph", "_Madgraph", "tree", "overallNormHistoSysOneSideSym"))
+    zSample.addSystematic(Systematic("generatorZ", "", "_Madgraph", "", "tree", "overallNormHistoSysOneSide"))
 
 
 #--------------------------
@@ -659,7 +675,7 @@ for point in allpoints:
     if myFitType == FitType.Discovery:
         SR.addDiscoverySamples(["SIG"], [1.], [0.], [1000.], [kMagenta])
 
-    if zlFitterConfig.useQCDsample:
+    if zlFitterConfig.useDDQCDsample or zlFitterConfig.useMCQCDsample:
         SR.addSample(qcdSample)
 
     ######################################################################
@@ -838,9 +854,9 @@ for point in allpoints:
     # Regions for QCD
     ######################################################################
 
+
     for regionName in zlFitterConfig.allRegionsList():
 
-        print regionName
         #select region for QCD
         if not "RQ" in regionName:
             continue
@@ -853,10 +869,7 @@ for point in allpoints:
 
         # setup region
         if not zlFitterConfig.useShapeFit:
-            try:
-                REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
-            except:
-                continue
+            REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
         else:
             REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
             REGION.useOverflowBin = True
@@ -868,10 +881,8 @@ for point in allpoints:
             myFitConfig.setValidationChannels(REGION)
 
         #add qcd samples
-        if zlFitterConfig.useQCDsample:
+        if zlFitterConfig.useDDQCDsample or zlFitterConfig.useMCQCDsample:
             REGION.addSample(qcdSample)
-
-
 
     ###############################################################
     # add precomputed error in all VR and SR
@@ -919,16 +930,16 @@ for point in allpoints:
                         sam.addSystematic(Systematic("GeneratorTop", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
 
                     #A14
-                    errorA14=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysA14Dict)
-                    sam.addSystematic(Systematic("TopTuneA14", configMgr.weights, 1.+errorA14, 1-errorA14, "user", "userOverallSys"))
+#                    errorA14=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysA14Dict)
+#                    sam.addSystematic(Systematic("TopTuneA14", configMgr.weights, 1.+errorA14, 1-errorA14, "user", "userOverallSys"))
 
                     #PowhegHerwig
                     if zlFitterConfig.usePreComputedTopFragmentationSys:
                         errorPowhegHerwig=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysPowhegHerwigDict)
                         sam.addSystematic(Systematic("FragmentationTop", configMgr.weights, 1.+errorPowhegHerwig, 1-errorPowhegHerwig, "user", "userOverallSys"))
                     #radiation
-                    errorRad=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysRadDict)
-                    sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1.+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
+#                    errorRad=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysRadDict)
+#                    sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1.+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
 
 
 

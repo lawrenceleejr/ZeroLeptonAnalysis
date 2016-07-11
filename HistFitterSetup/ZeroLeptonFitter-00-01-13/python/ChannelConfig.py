@@ -353,15 +353,11 @@ class ChannelConfig:
         self.regionListDict["CRQ"] ["RISR"]        =  "qcd_invertAndLoosen"
         self.regionListDict["VRQc"]["RISR"]        =  "qcd_range"
 
-#        self.regionListDict["CRQ"]["R_H2PP_H3PP"] =  "invert"
-#        self.regionListDict["CRQ"]["R_H2PP_H5PP"] =  "invert"
         self.regionListDict["CRQ"]["H2PP"] =  "invert"
         self.regionListDict["CRQ"]["deltaQCD"] = "invert"
 
         self.regionListDict["VRQa"]["deltaQCD"] = "invert"
 
-#        self.regionListDict["VRQb"]["R_H2PP_H3PP"] =  "invert"
-#        self.regionListDict["VRQb"]["R_H2PP_H5PP"] =  "invert"
         self.regionListDict["VRQb"]["H2PP"] =  "invert"
 
 

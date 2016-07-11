@@ -297,6 +297,12 @@ def main(zlFitterConfig):
         regionList = zlFitterConfig.allRegionsList()
         regionList.remove("VRQ")#don't plot VRQ for now
 
+        if "SRC" in anaName :
+            regionList.remove("VRQa")
+            regionList.remove("VRQb")
+        if "SRG" or "SRS" in  anaName :
+            regionList.remove("VRQc")
+
         # Filename containing workspace
         filename = os.path.join(options.output_dir, "ZL_%s_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root" % anaName)
 
