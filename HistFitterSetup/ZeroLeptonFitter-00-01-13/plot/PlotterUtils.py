@@ -58,8 +58,8 @@ class RootOption:
         upperPad.SetTickx(1);
         upperPad.SetTicky(1);
         upperPad.SetLeftMargin(0.14);
-        upperPad.SetRightMargin(0.01);
-        upperPad.SetTopMargin(0.01);
+        upperPad.SetRightMargin(0.05);
+        upperPad.SetTopMargin(0.03);
         upperPad.SetBottomMargin(0.1534613);
         upperPad.SetFrameBorderMode(0);
         upperPad.SetFrameBorderMode(0);
@@ -75,9 +75,9 @@ class RootOption:
         lowerPad.SetTickx(1);
         lowerPad.SetTicky(1);
         lowerPad.SetLeftMargin(0.14);
-        lowerPad.SetRightMargin(0.01);
+        lowerPad.SetRightMargin(0.05);
         lowerPad.SetTopMargin(0.0125);
-        lowerPad.SetBottomMargin(0.33);
+        lowerPad.SetBottomMargin(0.37);
         lowerPad.SetFrameBorderMode(0);
         lowerPad.SetFrameBorderMode(0);
         lowerPad.Draw();
