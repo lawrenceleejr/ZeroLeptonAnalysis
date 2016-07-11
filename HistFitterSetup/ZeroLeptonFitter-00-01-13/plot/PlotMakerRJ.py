@@ -29,7 +29,7 @@ runData=True
 doBlinding = True
 doBlindingMC = False
 DrawOverflow = True
-runSignal=False
+runSignal=True
 SignalOnTop=False
 doCRWT=False
 doVRWT=False
@@ -155,7 +155,7 @@ ratiocutsfull = {
 }
 
 varList = [
-           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'2500.','unit':'GeV'},
+           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
            {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#Delta_{QCD}','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'H2PP','varNtuple':'H2PP','plotName':'H_{1,1}^{PP} [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
@@ -295,7 +295,7 @@ kindOfCuts_VRWT =   [ {"type":"VRW_minusone",   "var": plotlist,"name":"VRW"},
                       {"type":"VRTb_minusone",  "var": plotlist,"name":"VRTb"}]
 kindOfCuts_CRY =    [ {"type":"CRY_minusone",   "var": plotlist,"name":"CR#gamma"} ]
 kindOfCuts_VRZ =    [ {"type":"VRZ_minusone",   "var": plotlist,"name":"VRZ"},
-                      {"type":"VRZa_minusone",  "var": plotlist,"name":"VRZb"},
+                      {"type":"VRZa_minusone",  "var": plotlist,"name":"VRZa"},
                       {"type":"VRZb_minusone",  "var": plotlist,"name":"VRZb"}]
 kindOfCuts_CRQ =    [ {"type":"CRQ_minusone",   "var": plotlist,"name":"CRQ"} ]
 
@@ -340,12 +340,12 @@ if doAlternativeTopMcAtNlo and doCRWT:
     print "Running alternative TopMcAtNloHerwigpp sample!"
 
 #Here you put the regions that you want to plot
-#anaImInterestedIn = []
+anaImInterestedIn = []
 #anaImInterestedIn = ["SRJigsawSRS1a","SRJigsawSRG1a","SRJigsawSRC1"]
-anaImInterestedIn = ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
+#anaImInterestedIn += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
 anaImInterestedIn += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
-anaImInterestedIn += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
-#anaImInterestedIn = ["SRJigsawSRG1a"]
+#anaImInterestedIn += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
+#anaImInterestedIn += ["SRJigsawSRC3"]
 
 mc = [
       {'key':'Diboson','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
@@ -396,55 +396,82 @@ mc_truth = [
             ]
 
 signalPoint=[
-             {'name':'SS_direct_800_400','filename':mcsignaldir+'SS_direct.root',
-             'color':ROOT.kCyan,
-             'linestyle': 7,
-             'sigplotname':'#tilde{q}#tilde{q} direct,',
-             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(800, 400)',
-             'sigSR':['SRS1a'],
-             },
              {'name':'SS_direct_1200_0','filename':mcsignaldir+'SS_direct.root',
-             'color':ROOT.kCyan,
-             'linestyle': 7,
+             'color':ROOT.kBlue,
+             'linestyle': ROOT.kDashed,
              'sigplotname':'#tilde{q}#tilde{q} direct,',
              'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(1200, 0)',
-             'sigSR':['SRS1a', 'SRS1aPres'],
+             'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
+                      'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b'],
              },
-             {'name':'GG_direct_750_650','filename':mcsignaldir+'GG_direct.root',
-             'color':ROOT.kCyan,
-             'linestyle': 7,
+             {'name':'SS_direct_1100_300','filename':mcsignaldir+'SS_direct.root',
+             'color':ROOT.kGray+2,
+             'linestyle': ROOT.kDashDotted,
+             'sigplotname':'#tilde{q}#tilde{q} direct,',
+             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(1100, 300)',
+             'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
+                      'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b'],
+             },
+             {'name':'SS_direct_800_400','filename':mcsignaldir+'SS_direct.root',
+             'color':ROOT.kViolet-1,
+             'linestyle': ROOT.kDashDotted,
+             'sigplotname':'#tilde{q}#tilde{q} direct,',
+             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(800, 400)',
+             'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
+                      'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b'],
+             },
+             {'name':'GG_direct_1600_0','filename':mcsignaldir+'GG_direct.root',
+             'color':ROOT.kBlue,
+             'linestyle': ROOT.kDashDotted,
              'sigplotname':'#tilde{g}#tilde{g} direct,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(750, 650)',
-             'sigSR':['SRS1a'],
+             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(1600, 0)',
+             'sigSR':['SRJigsawSRG1a','SRJigsawSRG2a','SRJigsawSRG3a',
+                      'SRJigsawSRG1b','SRJigsawSRG2b','SRJigsawSRG3b'],
              },
-             {'name':'GG_direct_1400_0','filename':mcsignaldir+'GG_direct.root',
-             'color':ROOT.kViolet,
-             'linestyle': 7,
+             {'name':'GG_direct_1500_700','filename':mcsignaldir+'GG_direct.root',
+             'color':ROOT.kGray+2,
+             'linestyle': ROOT.kDashed,
              'sigplotname':'#tilde{g}#tilde{g} direct,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(1400, 0)',
-             'sigSR':['SRG1a'],
+             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(1500, 700)',
+             'sigSR':['SRJigsawSRG1a','SRJigsawSRG2a','SRJigsawSRG3a',
+                      'SRJigsawSRG1b','SRJigsawSRG2b','SRJigsawSRG3b'],
              },
-             {'name':'GG_onestepCC_825_785_745','filename':mcsignaldir+'GG_onestepCC.root',
-             'color':ROOT.kOrange+7,
-             'linestyle': 3,
-             'sigplotname':'#tilde{g}#tilde{g} onestep,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{#pm}}, #tilde{#chi_{1}^{0}})=(825, 785, 745)',
-             'sigSR':['SRG1a'],
+             {'name':'GG_direct_950_650','filename':mcsignaldir+'GG_direct.root',
+             'color':ROOT.kViolet-1,
+             'linestyle': ROOT.kDashed,
+             'sigplotname':'#tilde{g}#tilde{g} direct,',
+             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(950, 650)',
+             'sigSR':['SRJigsawSRG1a','SRJigsawSRG2a','SRJigsawSRG3a',
+                      'SRJigsawSRG1b','SRJigsawSRG2b','SRJigsawSRG3b'],
              },
-             {'name':'GG_onestepCC_1265_945_625','filename':mcsignaldir+'GG_onestepCC.root',
-             'color':ROOT.kViolet,
-             'linestyle': 7,
-             'sigplotname':'#tilde{g}#tilde{g} onestep,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{#pm}}, #tilde{#chi_{1}^{0}})=(1265, 945, 625)',
-             'sigSR':['SRG1a','SR6jm'],
+             {'name':'GG_direct_850_750','filename':mcsignaldir+'GG_direct.root',
+             'color':ROOT.kBlue,
+             'linestyle': ROOT.kDashDotted,
+             'sigplotname':'#tilde{g}#tilde{g} direct,',
+             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(850, 750)',
+             'sigSR':['SRJigsawSRC1','SRJigsawSRC2','SRJigsawSRC3','SRJigsawSRC4','SRJigsawSRC5'],
              },
-             {'name':'GG_onestepCC_1385_705_25','filename':mcsignaldir+'GG_onestepCC.root',
-             'color':ROOT.kViolet,
-             'linestyle': 7,
-             'sigplotname':'#tilde{g}#tilde{g} onestep,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{#pm}}, #tilde{#chi_{1}^{0}})=(1385, 705, 25)',
-             'sigSR':['SRG1a'],
+             {'name':'GG_direct_712_687','filename':mcsignaldir+'GG_direct.root',
+             'color':ROOT.kGray+2,
+             'linestyle': ROOT.kDashed,
+             'sigplotname':'#tilde{g}#tilde{g} direct,',
+             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(712, 687)',
+             'sigSR':['SRJigsawSRC1','SRJigsawSRC2','SRJigsawSRC3','SRJigsawSRC4','SRJigsawSRC5'],
              },
+#             {'name':'GG_onestepCC_1265_945_625','filename':mcsignaldir+'GG_onestepCC.root',
+#             'color':ROOT.kViolet,
+#             'linestyle': 7,
+#             'sigplotname':'#tilde{g}#tilde{g} onestep,',
+#             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{#pm}}, #tilde{#chi_{1}^{0}})=(1265, 945, 625)',
+#             'sigSR':['SRJigsawSRG1a'],
+#             },
+#             {'name':'GG_onestepCC_1385_705_25','filename':mcsignaldir+'GG_onestepCC.root',
+#             'color':ROOT.kViolet,
+#             'linestyle': 7,
+#             'sigplotname':'#tilde{g}#tilde{g} onestep,',
+#             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{#pm}}, #tilde{#chi_{1}^{0}})=(1385, 705, 25)',
+#             'sigSR':['SRJigsawSRG3a'],
+#             },
              #{'name':'GG_direct_1350_0','filename':mcdir+'GG_direct.root',
              # 'color':ROOT.kMagenta,
              # 'linestyle': 7,
@@ -726,9 +753,11 @@ def main(configMain):
                                             nt=NtHandler(ana+region+"data_baseline",wData['filename'],wData['dataname'],cuts,ROOT.kBlack,1.,"data",configMain.lumi)
                                         plotData.append(nt)
                             if runSignal:
+                                print "SIGNAL!"
                                 plotSignalList=[]
                                 for point in signalPoint:
                                     for sigSR in point['sigSR']:
+                                        print sigSR, ana
                                         if sigSR==ana or sigSR=='all':
                                             tmptreename="_SRAll"
                                             if doCRY:
@@ -742,7 +771,7 @@ def main(configMain):
                                             ntsig=NtHandler(ana+region+point['name']+tmptreename,point['filename'],point['name']+tmptreename,cuts,point['color'],weights,"signal",configMain.lumi)
                                             plotSignalList.append({'pointname':point['name'],'pointcolor':point['color'],'pointlinestyle':point['linestyle'],'pointsigplotname':point['sigplotname'],'pointmass':point['masspoint'],'nthandle':ntsig})
                                             print 'signal point',point['name']
-
+                            print "SIGNAL", plotSignalList
                                                                     
                             fullPlotMC=[]
                             fullPlotMCSyst=[]
@@ -912,14 +941,14 @@ def main(configMain):
                                             signalHisto=ROOT.TH1F(varname+point['pointname']+tmptreename+ana+region,varname,nbinvar,minvar,maxvar)
                                             print signalHisto
                                             point['nthandle'].project(1.,varname+point['pointname']+tmptreename+ana+region,var,cuts)
-                                            print signalHisto, signalHisto.GetEntries()
+                                            print "SIGNAL", signalHisto, signalHisto.GetEntries()
                                             signalHisto.SetLineColor(point['pointcolor'])
                                             signalHisto.SetLineStyle(point['pointlinestyle'])
                                             signalHisto.SetLineWidth(2)
                                             signalHistos.append(signalHisto)           
                                             nameSignalHistos.append(point['pointsigplotname'])
                                             nameMassSignalHistos.append(point['pointmass'])
-                                            #print signalHistos
+#                                            print "SIGNAL", signalHistos
 
                                     if doCRY and doSyst:
                                         for process in fullPlotMCTruth:
@@ -1060,7 +1089,7 @@ def main(configMain):
                                         mcStack.Draw("same:hist")
                                         mcTotal.Draw("hist:same")
                                         if(runSignal) and (SignalOnTop):
-                                            #print len(signalHistos),signalHistos
+                                            print "SIGNAL", len(signalHistos),signalHistos
                                             for hsig in signalHistos:
                                                 #print type(hsig), hsig
                                                 hsig.Add(mcTotal,1)
