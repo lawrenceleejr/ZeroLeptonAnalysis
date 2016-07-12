@@ -316,8 +316,8 @@ class ChannelConfig:
 
 
         self.CRList = ["CRT","CRW","CRY","CRQ"]
-        VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
-        VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT", "VRdphiISRI"]
+        VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" , "VRZc", "VRZca" ] #, "VRTZL"
+        VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT"]
         self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
 
 
@@ -359,7 +359,11 @@ class ChannelConfig:
         self.regionListDict["VRQa"]["deltaQCD"] = "invert"
 
         self.regionListDict["VRQb"]["H2PP"] =  "invert"
-        self.regionListDict["VRdphiISRI"]["dphiISRI"] =  "invert"
+
+        self.regionListDict["VRZc"]["dphiISRI"] =  "invert"
+        self.regionListDict["VRZca"]["dphiISRI"] =  "invert"
+        self.regionListDict["VRZc"]["dphiMin2"] =  "tightendphiMin2"
+        self.regionListDict["VRZca"]["dphiMin2"] =  "tightendphiMin2"
 
 
         self.WithoutLastCut = False
@@ -608,6 +612,7 @@ class ChannelConfig:
                              else  :
                                  if not val         : finalCutString = var         + " >= " + stringVarValue
                                  if val == 'invert' : finalCutString = var         + " <  " + stringVarValue
+                                 if val == 'tightendphiMin2': finalCutString = var         + " >= 0.4 "
                                  if val == 'loosen' :
                                      loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
                                      if not loosenedStringVarValue : print reg,var,val, var+"_loose"
@@ -615,6 +620,7 @@ class ChannelConfig:
 
                     if finalCutString:
                         cutList.append(finalCutString)
+
                             #print finalCutString
                             #print regionName, "cutlist", cutList
 

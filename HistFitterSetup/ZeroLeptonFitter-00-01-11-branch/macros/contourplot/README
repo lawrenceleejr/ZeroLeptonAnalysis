@@ -1,0 +1,32 @@
+Developed by Shunsuke Adachi (shunsuke.adachi@cern.ch)
+
+make contourplot : 
+>> source run_contourplot.sh @ ZeroLeptonFitter/macros/contourplot/
+
+input  : results in "INPUTDIR"/ 
+   This macro needs results of exclusion fits for a completed grid. 
+   You need to put them in "INPUTDIR".
+   Please see the section of "Exclusion fits for a complete grid" in $ZEROLEPTONFITTER/README.
+
+   "INPUTDIR" is defined in makeContours_Run2.py ( default : $ZEROLEPTONFITTER/results )
+
+
+output : 
+
+  - Outputs/${LUMI}/[SIGNALGRIDNAME]/
+      Outputs of makeContours_Run2.py in run_contourplot.sh
+
+      ${LUMI} is defined in run_contourplot.sh
+      [SIGNALGRIDNAME] is input argument(--grid) of makeContours_Run2.py in run_contourplot.sh
+
+  - plots/
+      Output figures (eps and pdf)
+
+  - [SIGNALGRIDNAME]_contours.root
+      Outputs of makecontours_CLs.C in run_contourplot.sh
+      Limit plots/root file of limit TH2F&TGraph
+    
+  
+To do:
+ - Fix bug in selection of mlsp!=60 for signal points in GG_onestepCC
+  (Now it does not work.)

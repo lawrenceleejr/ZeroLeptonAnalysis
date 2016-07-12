@@ -115,14 +115,16 @@ class ZLFitterConfig:
 
         # use MC stat per sample
         self.useStatPerSample = False
-        self.statErrThreshold = 0.02
+        self.statErrThreshold = 0.01
 
         ##############################################
         # Luminosity
         ##############################################
 
         self.luminosity = 5.8 # 2.674#unit is fb-1
-        self.luminosityEr = 0.09 # style the run1 error
+
+		######## SHOULD BE 0.09! CHANGED FOR TESTING
+        self.luminosityEr = 0.05 # style the run1 error ####################
 
         ##############################################
         # samples
@@ -162,6 +164,8 @@ class ZLFitterConfig:
 #        self.validationRegionsList += ["CRZVL"]
         self.validationRegionsList += ["VRZa","VRWa","VRTa"]
         self.validationRegionsList += ["VRZb","VRWb","VRTb"]
+        self.validationRegionsList += ["VRZc","VRZca"]#,"VRQ2"]#,"VRQ3","VRQ4"]
+
         # # # self.validationRegionsList +=["VRZf"]
 
         # # # self.validationRegionsList+=["VRWf","VRTf"]
@@ -172,7 +176,6 @@ class ZLFitterConfig:
         # # # ##self.validationRegionsList+=["VRT2L"]
         # self.validationRegionsList += ["CRQ"]  #CRQ are temporary added as validation
         self.validationRegionsList+=["VRQ","VRQa","VRQb","VRQc"]#,"VRQ2"]#,"VRQ3","VRQ4"]
-        self.validationRegionsList+=["VRdphiISRI"]#,"VRQ2"]#,"VRQ3","VRQ4"]
 
         self.datadriven = None
         self.writeXML = None

@@ -1,0 +1,510 @@
+
+Processing makecontourplots_CLs.C("SS_direct","Outputs/5.8ifb_RJigsaw/SS_direct")...
+Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecNominal__1_harvest_list.root Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecUp__1_harvest_list.root Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecDown__1_harvest_list.root 
+lumi=5.8ifb fb-1
+
+[1mRooFit v3.60 -- Developed by Wouter Verkerke and David Kirkby[0m 
+                Copyright (C) 2000-2013 NIKHEF, University of California & Stanford University
+                All rights reserved, please read http://roofit.sourceforge.net/license.txt
+
+Grid = SS_direct
+--- Plotting mGluino versus mLSP 
+--- Reading root base file0: Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecNominal__1_harvest_list.root
+TFile**		Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecNominal__1_harvest_list.root	
+ TFile*		Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecNominal__1_harvest_list.root	
+  KEY: TH2D	hclPmin2;1	Observed CLsplusb
+  KEY: TH2D	sigp1;1	One-sided significance of CLsplusb
+  KEY: TH2D	p1clsf;1	Observed CLs
+  KEY: TH2D	sigp1clsf;1	One-sided significalce of observed CLs
+  KEY: TH2D	sigp1expclsf;1	One-sided significalce of expected CLs
+  KEY: TH2D	sigclsu1s;1	One-sided significalce of expected CLs (+1 sigma)
+  KEY: TH2D	sigclsd1s;1	One-sided significalce of expected CLs (-1 sigma)
+  KEY: TH2D	upperLimit;1	upperlimit
+  KEY: TH2D	xsec;1	xsec
+  KEY: TH2D	excludedXsec;1	excludedXsec
+--- Reading root base file1: Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecUp__1_harvest_list.root
+TFile**		Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecUp__1_harvest_list.root	
+ TFile*		Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecUp__1_harvest_list.root	
+--- Reading root base file2: Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecDown__1_harvest_list.root
+TFile**		Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecDown__1_harvest_list.root	
+ TFile*		Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecDown__1_harvest_list.root	
+sigp1expclsf
+sigclsu1s
+sigclsd1s
+sigp1clsf
+--- Retrieveing TGraph from TH2D : sigclsu1s
+ ContourGraph in SUSY_contorplots.C : hist address : 0x56c8d20
+==> Will dumb histogram: sigclsu1s into a graph
+ contour : significance = 1.64485
+Draw contour histogram sigclsu1s : 1600
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/1 graph of contour
+Finish retrieving graph of contour
+--- Retrieveing TGraph from TH2D : sigclsd1s
+ ContourGraph in SUSY_contorplots.C : hist address : 0x56bc880
+Warning in <TCanvas::Constructor>: Deleting canvas with same name: ctmp
+==> Will dumb histogram: sigclsd1s into a graph
+ contour : significance = 1.64485
+Draw contour histogram sigclsd1s : 1600
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/3 graph of contour
+Retrieve 1th/3 graph of contour
+Set 1th graph as contour.
+Retrieve 2th/3 graph of contour
+Finish retrieving graph of contour
+--- FixAndSetBorders : sigclsu1s
+--- FixAndSetBorders : sigclsd1s
+--- Drawing 
+--- Set & Draw frame histogram 
+--- Create legend 
+--- FixAndSetBorders expected band : sigclsu1s
+--- FixAndSetBorders expected band : sigclsd1s
+--- FixAndSetBorders expected band : sigp1clsf
+TH1.Print Name  = sigp1clsf, Entries= 1600, Total sum= 3369.62
+--- Draw expected band 
+ ContourGraph in SUSY_contorplots.C : hist address : 0x57bf350
+Warning in <TCanvas::Constructor>: Deleting canvas with same name: ctmp
+==> Will dumb histogram: contour_1su into a graph
+ contour : significance = 1.64485
+Draw contour histogram contour_1su : 1936
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/1 graph of contour
+Finish retrieving graph of contour
+ ContourGraph in SUSY_contorplots.C : hist address : 0x57cc850
+Warning in <TCanvas::Constructor>: Deleting canvas with same name: ctmp
+==> Will dumb histogram: contour_1sd into a graph
+ contour : significance = 1.64485
+Draw contour histogram contour_1sd : 1936
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/1 graph of contour
+Finish retrieving graph of contour
+ ContourGraph in SUSY_contorplots.C : hist address : 0x57da920
+Warning in <TCanvas::Constructor>: Deleting canvas with same name: ctmp
+==> Will dumb histogram: contour_obscls_1 into a graph
+ contour : significance = 1.64485
+Draw contour histogram contour_obscls_1 : 1936
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/1 graph of contour
+Finish retrieving graph of contour
+ ContourGraph in SUSY_contorplots.C : hist address : 0x57d86d0
+Warning in <TCanvas::Constructor>: Deleting canvas with same name: ctmp
+==> Will dumb histogram: contour_obscls_0 into a graph
+ contour : significance = 1.64485
+Draw contour histogram contour_obscls_0 : 1936
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/1 graph of contour
+Finish retrieving graph of contour
+ ContourGraph in SUSY_contorplots.C : hist address : 0x57e0e20
+Warning in <TCanvas::Constructor>: Deleting canvas with same name: ctmp
+==> Will dumb histogram: contour_obscls_2 into a graph
+ contour : significance = 1.64485
+Draw contour histogram contour_obscls_2 : 1936
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/1 graph of contour
+Finish retrieving graph of contour
+ ContourGraph in SUSY_contorplots.C : hist address : 0x57e2760
+Warning in <TCanvas::Constructor>: Deleting canvas with same name: ctmp
+==> Will dumb histogram: contourobs_comb into a graph
+ contour : significance = 1.64485
+Draw contour histogram contourobs_comb : 1936
+Canvas update
+Retrieve contours as TGraph
+Retrieve first graph of contour
+Retrieve 0th/1 graph of contour
+Finish retrieving graph of contour
+--- Get 8 TeV exclusionend 
+--- Draw graph : /HepData/8678/d52x1y1
+nLegEntry=3
+leg X=0.45--0.7
+leg Y=0.72--0.9
+marginX=0.0625
+line Y =0.87
+deleta leg Y=0.012
+--- printing best SRs
+Draw signal region labels.
+******************************************************************************
+*Tree    :tree      : data from ascii file                                   *
+*Entries :       78 : Total =           37007 bytes  File  Size =          0 *
+*        :          : Tree compression factor =   1.00                       *
+******************************************************************************
+*Br    0 :expectedUpperLimitMinus1Sig : expectedUpperLimitMinus1Sig/F        *
+*Entries :       78 : Total  Size=       1078 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    1 :upperLimitEstimatedError : upperLimitEstimatedError/F              *
+*Entries :       78 : Total  Size=       1060 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    2 :fitstatus : fitstatus/F                                            *
+*Entries :       78 : Total  Size=        970 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    3 :p0d2s     : p0d2s/F                                                *
+*Entries :       78 : Total  Size=        946 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    4 :p0u2s     : p0u2s/F                                                *
+*Entries :       78 : Total  Size=        946 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    5 :m12       : m12/F                                                  *
+*Entries :       78 : Total  Size=        934 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    6 :CLsexp    : CLsexp/F                                               *
+*Entries :       78 : Total  Size=        952 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    7 :sigma1    : sigma1/F                                               *
+*Entries :       78 : Total  Size=        952 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    8 :sigma0    : sigma0/F                                               *
+*Entries :       78 : Total  Size=        952 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br    9 :expectedUpperLimitPlus2Sig : expectedUpperLimitPlus2Sig/F          *
+*Entries :       78 : Total  Size=       1072 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   10 :nofit     : nofit/F                                                *
+*Entries :       78 : Total  Size=        946 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   11 :nexp      : nexp/F                                                 *
+*Entries :       78 : Total  Size=        940 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   12 :failedfit : failedfit/F                                            *
+*Entries :       78 : Total  Size=        970 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   13 :clsd2s    : clsd2s/F                                               *
+*Entries :       78 : Total  Size=        952 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   14 :m0        : m0/F                                                   *
+*Entries :       78 : Total  Size=        928 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   15 :expectedUpperLimit : expectedUpperLimit/F                          *
+*Entries :       78 : Total  Size=       1024 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   16 :failedstatus : failedstatus/F                                      *
+*Entries :       78 : Total  Size=        988 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   17 :xsec      : xsec/F                                                 *
+*Entries :       78 : Total  Size=        940 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   18 :covqual   : covqual/F                                              *
+*Entries :       78 : Total  Size=        958 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   19 :p0d1s     : p0d1s/F                                                *
+*Entries :       78 : Total  Size=        946 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   20 :CLs       : CLs/F                                                  *
+*Entries :       78 : Total  Size=        934 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   21 :fID       : fID/F                                                  *
+*Entries :       78 : Total  Size=        934 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   22 :failedp0  : failedp0/F                                             *
+*Entries :       78 : Total  Size=        964 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   23 :failedcov : failedcov/F                                            *
+*Entries :       78 : Total  Size=        970 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   24 :p0exp     : p0exp/F                                                *
+*Entries :       78 : Total  Size=        946 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   25 :clsu1s    : clsu1s/F                                               *
+*Entries :       78 : Total  Size=        952 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   26 :p0u1s     : p0u1s/F                                                *
+*Entries :       78 : Total  Size=        946 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   27 :excludedXsec : excludedXsec/F                                      *
+*Entries :       78 : Total  Size=        988 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   28 :p0        : p0/F                                                   *
+*Entries :       78 : Total  Size=        928 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   29 :p1        : p1/F                                                   *
+*Entries :       78 : Total  Size=        928 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   30 :clsu2s    : clsu2s/F                                               *
+*Entries :       78 : Total  Size=        952 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   31 :expectedUpperLimitMinus2Sig : expectedUpperLimitMinus2Sig/F        *
+*Entries :       78 : Total  Size=       1078 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   32 :expectedUpperLimitPlus1Sig : expectedUpperLimitPlus1Sig/F          *
+*Entries :       78 : Total  Size=       1072 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   33 :seed      : seed/F                                                 *
+*Entries :       78 : Total  Size=        940 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   34 :mode      : mode/F                                                 *
+*Entries :       78 : Total  Size=        940 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   35 :clsd1s    : clsd1s/F                                               *
+*Entries :       78 : Total  Size=        952 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   36 :dodgycov  : dodgycov/F                                             *
+*Entries :       78 : Total  Size=        964 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+*Br   37 :upperLimit : upperLimit/F                                          *
+*Entries :       78 : Total  Size=        976 bytes  One basket in memory    *
+*Baskets :        0 : Basket Size=      32000 bytes  Compression=   1.00     *
+*............................................................................*
+Outputs/5.8ifb_RJigsaw/SS_direct/SS_direct_combined_fixSigXSecNominal__1_harvest_list
+3
+BestSR for 1100 300 is: 3 S2b xmax=1400
+draw
+4
+BestSR for 900 0 is: 4 S2a xmax=1400
+draw
+6
+BestSR for 200 0 is: 6 S1a xmax=1400
+2
+BestSR for 1500 400 is: 2 S3b xmax=1400
+6
+BestSR for 700 400 is: 6 S1a xmax=1400
+draw
+5
+BestSR for 900 200 is: 5 S1b xmax=1400
+draw
+2
+BestSR for 1300 200 is: 2 S3b xmax=1400
+draw
+11
+BestSR for 300 275 is: 11 C3 xmax=1400
+draw
+2
+BestSR for 1500 200 is: 2 S3b xmax=1400
+11
+BestSR for 425 375 is: 11 C3 xmax=1400
+draw
+1
+BestSR for 1100 100 is: 1 S3a xmax=1400
+draw
+3
+BestSR for 1000 200 is: 3 S2b xmax=1400
+draw
+2
+BestSR for 1500 300 is: 2 S3b xmax=1400
+6
+BestSR for 400 0 is: 6 S1a xmax=1400
+draw
+2
+BestSR for 1600 100 is: 2 S3b xmax=1400
+5
+BestSR for 1000 500 is: 5 S1b xmax=1400
+draw
+6
+BestSR for 600 300 is: 6 S1a xmax=1400
+draw
+2
+BestSR for 1600 200 is: 2 S3b xmax=1400
+1
+BestSR for 1200 300 is: 1 S3a xmax=1400
+draw
+3
+BestSR for 1300 600 is: 3 S2b xmax=1400
+draw
+11
+BestSR for 300 250 is: 11 C3 xmax=1400
+draw
+3
+BestSR for 1200 400 is: 3 S2b xmax=1400
+draw
+5
+BestSR for 900 300 is: 5 S1b xmax=1400
+draw
+2
+BestSR for 1300 300 is: 2 S3b xmax=1400
+draw
+3
+BestSR for 1000 300 is: 3 S2b xmax=1400
+draw
+6
+BestSR for 900 500 is: 6 S1a xmax=1400
+draw
+6
+BestSR for 800 400 is: 6 S1a xmax=1400
+draw
+2
+BestSR for 1600 600 is: 2 S3b xmax=1400
+2
+BestSR for 1300 0 is: 2 S3b xmax=1400
+draw
+2
+BestSR for 1600 0 is: 2 S3b xmax=1400
+15
+BestSR for 700 500 is: 15 G2a xmax=1400
+draw
+5
+BestSR for 800 200 is: 5 S1b xmax=1400
+draw
+1
+BestSR for 1400 600 is: 1 S3a xmax=1400
+10
+BestSR for 500 475 is: 10 C2 xmax=1400
+draw
+1
+BestSR for 1300 500 is: 1 S3a xmax=1400
+draw
+5
+BestSR for 800 300 is: 5 S1b xmax=1400
+draw
+7
+BestSR for 700 600 is: 7 C4 xmax=1400
+draw
+2
+BestSR for 1400 400 is: 2 S3b xmax=1400
+2
+BestSR for 1400 500 is: 2 S3b xmax=1400
+4
+BestSR for 1000 400 is: 4 S2a xmax=1400
+draw
+10
+BestSR for 600 575 is: 10 C2 xmax=1400
+draw
+2
+BestSR for 1300 400 is: 2 S3b xmax=1400
+draw
+5
+BestSR for 900 400 is: 5 S1b xmax=1400
+draw
+6
+BestSR for 1000 600 is: 6 S1a xmax=1400
+draw
+6
+BestSR for 900 600 is: 6 S1a xmax=1400
+draw
+2
+BestSR for 1200 100 is: 2 S3b xmax=1400
+draw
+5
+BestSR for 800 0 is: 5 S1b xmax=1400
+draw
+2
+BestSR for 1200 200 is: 2 S3b xmax=1400
+draw
+3
+BestSR for 1000 100 is: 3 S2b xmax=1400
+draw
+3
+BestSR for 900 100 is: 3 S2b xmax=1400
+draw
+2
+BestSR for 1400 100 is: 2 S3b xmax=1400
+2
+BestSR for 1600 400 is: 2 S3b xmax=1400
+2
+BestSR for 1400 200 is: 2 S3b xmax=1400
+4
+BestSR for 1100 500 is: 4 S2a xmax=1400
+draw
+3
+BestSR for 1100 400 is: 3 S2b xmax=1400
+draw
+5
+BestSR for 1100 600 is: 5 S1b xmax=1400
+draw
+2
+BestSR for 1400 300 is: 2 S3b xmax=1400
+2
+BestSR for 1500 0 is: 2 S3b xmax=1400
+6
+BestSR for 700 300 is: 6 S1a xmax=1400
+draw
+2
+BestSR for 1500 600 is: 2 S3b xmax=1400
+15
+BestSR for 800 600 is: 15 G2a xmax=1400
+draw
+5
+BestSR for 800 100 is: 5 S1b xmax=1400
+draw
+2
+BestSR for 1400 0 is: 2 S3b xmax=1400
+2
+BestSR for 1600 500 is: 2 S3b xmax=1400
+10
+BestSR for 600 550 is: 10 C2 xmax=1400
+draw
+3
+BestSR for 1000 0 is: 3 S2b xmax=1400
+draw
+15
+BestSR for 500 300 is: 15 G2a xmax=1400
+draw
+2
+BestSR for 1500 500 is: 2 S3b xmax=1400
+10
+BestSR for 400 375 is: 10 C2 xmax=1400
+draw
+2
+BestSR for 1600 300 is: 2 S3b xmax=1400
+2
+BestSR for 1500 100 is: 2 S3b xmax=1400
+6
+BestSR for 800 500 is: 6 S1a xmax=1400
+draw
+2
+BestSR for 1200 0 is: 2 S3b xmax=1400
+draw
+1
+BestSR for 1100 0 is: 1 S3a xmax=1400
+draw
+3
+BestSR for 1200 500 is: 3 S2b xmax=1400
+draw
+3
+BestSR for 1200 600 is: 3 S2b xmax=1400
+draw
+2
+BestSR for 1300 100 is: 2 S3b xmax=1400
+draw
+1
+BestSR for 1100 200 is: 1 S3a xmax=1400
+draw
+Info in <TCanvas::Print>: eps file plots/atlasCLs_SS_direct_showSR.eps has been created
+Info in <TCanvas::Print>: pdf file plots/atlasCLs_SS_direct_showSR.pdf has been created
