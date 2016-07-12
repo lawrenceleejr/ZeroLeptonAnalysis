@@ -310,12 +310,17 @@ def getFileList(inputdir):
         i=1
         print "Found %d directories, reading them all..." % len(dirnames)
         for d in dirnames:
+
+            if "summary" in d:
+                continue
+
             sys.stdout.write('%d / %d \r' % (i, len(dirnames)))
             sys.stdout.flush()
-            
             # get file name in inputdir/*/
             fnames = os.listdir(os.path.join(inputdir, d))
             for f in fnames:
+                if "summary" in f:
+                    continue
                 filenames.append(os.path.join(inputdir, d, f))
             i+=1
 
@@ -586,8 +591,10 @@ def mergeFileList(config, clsFileName, upperFileName):
 
     with open(clsFileName) as data_file:    
         data_clsFile = json.load(data_file)
-    with open(upperFileName) as data_file:    
-        data_upperFile = json.load(data_file)
+    # with open(upperFileName) as data_file:    
+    #     data_upperFile = json.load(data_file)
+
+    myfile = TFile(upperFileName)
 
     # print data_clsFile
     # print data_upperFile
@@ -597,18 +604,23 @@ def mergeFileList(config, clsFileName, upperFileName):
             continue
         mass0 = massPoint["m0"]
         mass1 = massPoint["m12"]
-        for upperLimitMassPoint in data_upperFile:
-            if upperLimitMassPoint["m0"] != mass0:
-                continue
-            if upperLimitMassPoint["m12"] != mass1:
-                continue
+        ht = myfile.Get("hypo_%s_%d_%d"%(config.grid, mass0,mass1)   )
 
-            for tmpstring in ["upperLimit","expectedUpperLimit",
-                            "expectedUpperLimitMinus1Sig",
-                            "expectedUpperLimitMinus2Sig",
-                            "expectedUpperLimitPlus1Sig",
-                            "expectedUpperLimitPlus2Sig",]:
-                massPoint[tmpstring] = upperLimitMassPoint[tmpstring]
+        # massPoint[tmpstring] = upperLimitMassPoint[tmpstring]
+        gr = TGraph(t.ArraySize() )
+        for i in xrange(ht.ArraySize()):
+            gr.SetPoint(i,ht.GetXValue(i), ht.CLs(i) )
+        massPoint["CLs"] = gr.Eval(1.0)
+
+
+        # gr = TGraph(t.ArraySize() )
+        # for i in xrange(ht.ArraySize()):
+        #     gr.SetPoint(i,ht.GetXValue(i), ht.CLs(i) )
+        # massPoint[tmpstring] = gr.Eval(1.0)
+
+
+
+
             # massPoint["upperLimit"] = upperLimitMassPoint["upperLimit"]
             # massPoint["expectedUpperLimit"] = upperLimitMassPoint["expectedUpperLimit"]
 
@@ -616,7 +628,7 @@ def mergeFileList(config, clsFileName, upperFileName):
 
 
     for massPoint in data_clsFile:
-        print massPoint["expectedUpperLimit"]
+        print massPoint["CLs"]
 
     print clsFileName+".wUL"
     with open(clsFileName+".wUL", 'w') as outfile:
@@ -860,22 +872,22 @@ def MakeContours(config):
                 #subprocess.call(cmd, shell=True)
 
             # get extra information from upper limits computation
-            # and merge the files
-            if config.makeUL and xs == "Nominal":
-                inputfile = basenameUL+".root"
-                if os.path.isfile(inputfile):
-                    # by defition, ULs are not discovery -> don't care about passing -d
-                    CollectAndWriteHypoTestResults( inputfile, format, interpretation, cutStr, int(automaticRejection), config.outputDir  ) ;
-                    
-                    #subprocess.call('ls *list.json', shell=True)
-                    #cmd="mv *_list.json "+config.outputDir
-                    #subprocess.call(cmd, shell=True)
-                    
-                    # merge the output files for hypotest and upperlimit in 1 output file
-                    mergeFileList(config, basename+listSuffix, basenameUL+listSuffix)
-            
-                    os.system("cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix)   )
-                    print "cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix) 
+            # # and merge the files
+            # if config.makeUL and xs == "Nominal":
+            inputfile = basenameUL+".root"
+            if os.path.isfile(inputfile):
+                # by defition, ULs are not discovery -> don't care about passing -d
+                CollectAndWriteHypoTestResults( inputfile, format, interpretation, cutStr, int(automaticRejection), config.outputDir  ) ;
+                
+                #subprocess.call('ls *list.json', shell=True)
+                #cmd="mv *_list.json "+config.outputDir
+                #subprocess.call(cmd, shell=True)
+                
+                # merge the output files for hypotest and upperlimit in 1 output file
+                mergeFileList(config, basename+listSuffix, basenameUL+listSuffix)
+        
+                os.system("cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix)   )
+                print "cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix) 
             if not os.path.exists(basename+listSuffix):
                 print "INFO: file %s does not exist, skipping call to makecontourhists.C" % (basename+listSuffix)
                 continue
@@ -1854,14 +1866,14 @@ def Oring(config):
         # if no UL's available, merge on CLsexp. Otherwise, use expectedUpperLimit
         # you should use CLsexp even if it's for observed limit because it can be bias?
         selectpar = "CLsexp"
-        #selectpar = "CLs" 
+        # selectpar = "CLs" 
 
-        if config.makeUL and xsecStr == "Nominal": # ULs only available for Nominal
-            selectpar = "expectedUpperLimit"
+        # if config.makeUL and xsecStr == "Nominal": # ULs only available for Nominal
+        #     selectpar = "expectedUpperLimit"
 
-        # select best SR based on p0exp    
-        if config.discovery:
-            selectpar = "p0exp"
+        # # select best SR based on p0exp    
+        # if config.discovery:
+        #     selectpar = "p0exp"
 
         print "Using selectpar = %s" % selectpar
 
@@ -1903,6 +1915,8 @@ def Oring(config):
 
             ###### Turning off SRCx for right now.......
             # if "SRC" in ana:
+            #     continue
+            # if not "SRG1a" in ana:
             #     continue
 
             filename = config.outputDir+config.outputName+"_"+ana+"_fixSigXSec"+xsecStr+listSuffix

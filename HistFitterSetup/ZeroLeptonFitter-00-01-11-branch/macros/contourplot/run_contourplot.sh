@@ -15,9 +15,9 @@ for TYPE in ${SIGNAL[@]}
 do
   echo $TYPE
   # -o -c, --all
-  # ./makeContours_Run2.py -o --ul --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-GG_direct-20160709-113641/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
-  # ./makeContours_Run2.py -o --ul --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-SS_direct-20160709-113655/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
-  ./makeContours_Run2.py --all  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-13/optimisation/optimisation-GG_direct-20160711-145217/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  ./makeContours_Run2.py -o  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-13/optimisation/optimisation-GG_direct-20160711-145217/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  # ./makeContours_Run2.py -o  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-SS_direct-20160709-113655/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  # ./makeContours_Run2.py --all  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-13/optimisation/optimisation-GG_direct-20160711-145217/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
   #./makeContours_Run2.py -c -o --grid ${TYPE} --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
   #./makeContours_Run2.py -o --grid ${TYPE} --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
 done

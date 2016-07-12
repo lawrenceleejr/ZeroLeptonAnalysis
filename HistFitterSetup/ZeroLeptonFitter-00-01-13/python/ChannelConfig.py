@@ -362,6 +362,8 @@ class ChannelConfig:
 
         self.regionListDict["VRZc"]["dphiISRI"] =  "invert"
         self.regionListDict["VRZca"]["dphiISRI"] =  "invert"
+        self.regionListDict["VRZca"]["RISR"] =  "loosen"
+        self.regionListDict["VRZca"]["NV"] =  "loosen"
         self.regionListDict["VRZc"]["dphiMin2"] =  "tightendphiMin2"
         self.regionListDict["VRZca"]["dphiMin2"] =  "tightendphiMin2"
 
