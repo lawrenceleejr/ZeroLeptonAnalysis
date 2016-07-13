@@ -14,16 +14,54 @@ sys.path.append(file_path)
 from ChannelConfig import *
 from ChannelsDict import *
 
+allRegionsList = []
+allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
+allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
+allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
+
 def parseCmdLine(args):
+#Here you put the regions that you want to plot
+
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("--region", default="SR", type = str)
+    parser.add_option("--baseDir", default =  os.getcwd() , help="location of samples to run")
+    parser.add_option("--inputSampleDir", default =  "/Users/khoo/Work/ATLAS/", help="location of samples to run")
+    parser.add_option("--version", default = 107, help="ntuple version")
     parser.add_option("--SignalOnTop", action = "store_true", dest="SignalOnTop", help=" Add signal to SM background in SR plots", default=False)
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--lumi", dest="lumi", help="lumi", default=5.8)
+    parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
+    parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
+
     (config, args) = parser.parse_args(args)
+
     print config
     return config
+
+
+config = parseCmdLine(sys.argv[1:])
+
+version = config.version
+versionname = '{0}_baseline'.format(version)
+
+basedir = config.baseDir + "/"
+outplotdir = basedir+"Outplots/v"+str(versionname)
+
+if not os.path.isdir(outplotdir): os.makedirs(outplotdir)
+if 'nikhef' in socket.getfqdn():
+    datadir = mcdir = mcaltdir = mcsignaldir = "ZeroLeptonFitter/data/atlas/users/ideigaar/ZeroLeptonRun2/NtuplesWSysForPlotting_160204/"
+else:
+    sampledir = config.inputSampleDir
+    mcdir = sampledir
+    datadir = sampledir
+    mcsignaldir = sampledir
+    mcaltdir = sampledir
+
+anaImInterestedIn = [ana for ana in allRegionsList if (config.regionsToRun in ana)]
+print anaImInterestedIn
+exit()
+
 
 runData=True
 doBlinding = True
@@ -63,8 +101,6 @@ def comparator(x, y):
     return 0
 
 
-
-config = parseCmdLine(sys.argv[1:])
 
 if config.SignalOnTop:
     SignalOnTop = True
@@ -122,8 +158,6 @@ if not runSignal:
 
 saveToFile=False
 
-version=107
-versionname = '{0}_baseline'.format(version)
 if doAlternativeZ and doVRZ:
     versionname = versionname.replace('baseline','alternativeZ')
 elif doAlternativeW and doCRWT:
@@ -218,32 +252,21 @@ varList = [
            {'varName':'origmetPhi', 'varNtuple':'origmetPhi', 'plotName': '#phi(E_{T}^{miss,orig})', 'nbinvar':'40','minvar':'-1','maxvar':'7','unit':''},
            ]
 
-basedir = "/Users/khoo/Work/ATLAS/"
-outplotdir = basedir+"ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-13/Outplots/v"+str(versionname)+"/"
-if not os.path.isdir(outplotdir): os.mkdir(outplotdir)
-if 'nikhef' in socket.getfqdn():
-    datadir = mcdir = mcaltdir = mcsignaldir = "ZeroLeptonFitter/data/atlas/users/ideigaar/ZeroLeptonRun2/NtuplesWSysForPlotting_160204/"
-else:
-    sampledir = basedir+'samples/Jigsaw/v{0}/'.format(version)
-    mcdir = sampledir
-    datadir = mcdir
-    mcsignaldir = sampledir
-    mcaltdir = sampledir
-
-datafile = 'DataMain_dataall_13TeV.root'
+datafile =  'DataMain_2016_302391.root' #'DataMain_dataall_13TeV.root'
+fullDataPath = config.inputDataFile if config.inputDataFile else (datadir + datafile)
 
 datafile =[
-           {'whichdata':'SR','filename':datadir+datafile,
+           {'whichdata':'SR','filename':fullDataPath,
            'dataname':'Data_SRAll'},
-           {'whichdata':'CRWT','filename':datadir+datafile,
+           {'whichdata':'CRWT','filename':fullDataPath,
            'dataname':'Data_CRWT'},
-           {'whichdata':'VRWT','filename':datadir+datafile,
+           {'whichdata':'VRWT','filename':fullDataPath,
            'dataname':'Data_VRWT'},
-           {'whichdata':'CRY','filename':datadir+datafile,
+           {'whichdata':'CRY','filename':fullDataPath,
            'dataname':'Data_CRY'},
-           {'whichdata':'VRZ','filename':datadir+datafile,
+           {'whichdata':'VRZ','filename':fullDataPath,
            'dataname':'Data_CRZ'},
-           {'whichdata':'CRQ','filename':datadir+datafile,
+           {'whichdata':'CRQ','filename':fullDataPath,
            'dataname':'Data_SRAll'},
            ]
 
@@ -339,13 +362,6 @@ if doAlternativeTopMcAtNlo and doCRWT:
     TopName = 'TopaMcAtNloHerwigpp'
     print "Running alternative TopMcAtNloHerwigpp sample!"
 
-#Here you put the regions that you want to plot
-anaImInterestedIn = []
-#anaImInterestedIn = ["SRJigsawSRS1a","SRJigsawSRG1a","SRJigsawSRC1"]
-#anaImInterestedIn += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
-anaImInterestedIn += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
-#anaImInterestedIn += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
-#anaImInterestedIn += ["SRJigsawSRC3"]
 
 mc = [
       {'key':'Diboson','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
@@ -662,7 +678,7 @@ def DeleteList(List):
     for entry in List:
         del entry
     del List
-    
+
 
 def DrawErrorsOutsidePad(ratiohist):
     Lines = []
@@ -724,7 +740,7 @@ def main(configMain):
                             truthcuts = truthcuts.replace("&& (abs(timing)<4)", " ")
                             #print "channel",cuts, truthcuts
                             print "channel",cuts
-                            
+
                             weights=allChannel[ana].getWeights(region,onlyExtraWeights)
                             truthweights = weights
                             truthweights = truthweights.replace("pileupWeight *","")
@@ -772,13 +788,13 @@ def main(configMain):
                                             plotSignalList.append({'pointname':point['name'],'pointcolor':point['color'],'pointlinestyle':point['linestyle'],'pointsigplotname':point['sigplotname'],'pointmass':point['masspoint'],'nthandle':ntsig})
                                             print 'signal point',point['name']
                             print "SIGNAL", plotSignalList
-                                                                    
+
                             fullPlotMC=[]
                             fullPlotMCSyst=[]
                             fullPlotMCAlt=[]
                             fullPlotMCTruth=[]
                             fullPlotMCTruthAlt=[]
-                            
+
                             for process in mc:
                                 print process
                                 mcname=process['treePrefix']+"SRAll"
@@ -799,9 +815,9 @@ def main(configMain):
                                         ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",str(float(configMain.lumi)*kappaYjets))
                                     else:
                                         ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
-                                                                            
+
                                 fullPlotMC.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntmchandle":ntmc})
-                                
+
                                 if doSyst:
                                     for syst in systDict:
                                         mcname=process['treePrefix']+"SRAll"+syst
@@ -817,7 +833,7 @@ def main(configMain):
                                             ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",str(float(configMain.lumi)*kappaYjets))
                                         else:
                                             ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
-                                        fullPlotMCSyst.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntsyst":syst,"ntsysthandle":ntsyst})                                                                
+                                        fullPlotMCSyst.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntsyst":syst,"ntsysthandle":ntsyst})
 
                             if doSyst:
                                 for process in mc_alternative:
@@ -828,18 +844,18 @@ def main(configMain):
                                     if doVRZ: mcname=process['treePrefix']+"CRZ"+process['treeSuffix']
                                     print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
                                     ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
-                                                                            
+
                                     fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmcalthandle":ntsyst})
                             if doCRY and doSyst:
                                 for process in mc_truth:
                                     mcname=process['treePrefix']+"CRY"+process['treeSuffix']
                                     print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
                                     print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
-                                            
+
                                     ntsyst=NtHandler(ana+region+process['treePrefix']+process['treeSuffix'],process['inputdir'],mcname,truthcuts,process['color'],truthweights,"mc",str(float(configMain.lumi)*kappaYjets))
-                                    
+
                                     fullPlotMCTruth.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmctruthalthandle":ntsyst})
-                                
+
                             for varinList in varList:
                                 varname=varinList['varName']
                                 if varname in varset or 'all' in varset:
@@ -908,15 +924,15 @@ def main(configMain):
                                             OverflowBin = clone.GetBinContent(nBins+1)
                                             print "Adding overflow bin!"
                                             clone.SetBinContent(nBins,LastBin+OverflowBin)
-                                            
-                                        
+
+
                                         lock_sys=0
                                         if "TRUTH" in histo.GetName():
                                             lock_sys=3
                                         elif 'alternative' in histo.GetName():
                                             lock_sys=2
                                         for sys in systDict:
-                                            if sys in histo.GetName(): 
+                                            if sys in histo.GetName():
                                                 lock_sys=1
                                         if lock_sys == 0:
                                             mcHisto.append(clone)
@@ -926,14 +942,14 @@ def main(configMain):
                                             mcTruthAltHisto.append(clone)
                                         else:
                                             mcAltHisto.append(clone)
-                                    
+
                                     for j in jobs:
                                         j.terminate()
                                     output.close()
                                     output.join_thread()
-                                    
-                                    
-                                    lock=1    
+
+
+                                    lock=1
 
                                     if runSignal:
                                         for point in plotSignalList:
@@ -945,7 +961,7 @@ def main(configMain):
                                             signalHisto.SetLineColor(point['pointcolor'])
                                             signalHisto.SetLineStyle(point['pointlinestyle'])
                                             signalHisto.SetLineWidth(2)
-                                            signalHistos.append(signalHisto)           
+                                            signalHistos.append(signalHisto)
                                             nameSignalHistos.append(point['pointsigplotname'])
                                             nameMassSignalHistos.append(point['pointmass'])
 #                                            print "SIGNAL", signalHistos
@@ -968,8 +984,8 @@ def main(configMain):
                                         upperPad.SetFrameFillStyle(4000)
                                         lowerPad.SetFrameFillStyle(4000)
                                         upperPad.cd()
-      
-                                                                    
+
+
                                     if(runData):
                                         print 'new data plot',varname+"data"+ana+region,varname,nbinvar,minvar,maxvar
                                         dataHisto=ROOT.TH1F(varname+"data"+ana+region,varname,nbinvar,minvar,maxvar)
@@ -997,10 +1013,10 @@ def main(configMain):
                                         datah_Poiss.SetLineColor(kBlack)
                                         datah_Poiss.SetLineWidth(3)
                                         setAsymmErrors(dataHisto,datah_Poiss)
-                                                                            
+
                                         dataClone = ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
                                         dataClone.SetMarkerStyle(20)
-                                        dataClone.SetMarkerSize(1.5) 
+                                        dataClone.SetMarkerSize(1.5)
                                         dataClone.SetLineWidth(5)
                                         dataClone.SetMarkerColor(kWhite)
                                         dataClone.SetLineColor(kWhite)
@@ -1011,7 +1027,7 @@ def main(configMain):
                                             max = 1e5
                                             min = 0.03
                                         if (max <= 2.) :  min = 0.02
-                                        if max < 20: 
+                                        if max < 20:
                                             yfactor=6
                                         else:
                                             if doCRQ:
@@ -1031,7 +1047,7 @@ def main(configMain):
                                         dataHisto.GetYaxis().SetTitleSize(0.055)
                                         dataHisto.GetYaxis().SetTitleOffset(1.35)
                                         dataHisto.GetYaxis().SetTitleFont(42)
-                                                                            
+
                                         dataHisto.Draw("p")
                                         dataClone.Draw("p:e:same")
                                         datah_Poiss.Draw("p:e:same")
@@ -1040,7 +1056,7 @@ def main(configMain):
                                     mcTotal = ROOT.TH1F("mcTotal",varname,nbinvar,minvar,maxvar)
                                     mcTotal.SetLineColor(2)
                                     mcTotal.SetLineWidth(2)
-                                    
+
                                     Clone_mcHisto=[]
                                     binWidth=0
                                     XUnitStack="units"
@@ -1053,14 +1069,14 @@ def main(configMain):
                                                 mcTotal.Add(clone)
                                                 binWidth=clone.GetBinWidth(1) if varname.find("Jets")<0 else int(clone.GetBinWidth(1))
                                                 XUnitStack="events / "+str(binWidth)+" "+unit
-                                                                                            
+
                                     sumSystHist=[]
                                     for isyst in systDict:
                                         tempHist=ROOT.TH1D("tempHist","tempHist",mcSystHisto[0].GetNbinsX(),mcSystHisto[0].GetXaxis().GetXmin(),mcSystHisto[0].GetXaxis().GetXmax())
                                         #tempHist.Print()
                                         print 'init',tempHist.GetBinContent(8)
                                         for h in mcSystHisto:
-                                            if isyst in h.GetName():        
+                                            if isyst in h.GetName():
                                                 tempHist.Add(h)
                                         sumSystHist.append(tempHist)
                                     for hAlt in mcAltHisto:
@@ -1083,7 +1099,7 @@ def main(configMain):
                                             else:
                                                 mcTruthAltTotal.Add(h,-1)
                                         sumSystHist.append(mcTruthAltTotal)
-                                        
+
 
                                     if(runData):
                                         mcStack.Draw("same:hist")
@@ -1094,13 +1110,13 @@ def main(configMain):
                                                 #print type(hsig), hsig
                                                 hsig.Add(mcTotal,1)
                                                 hsig.SetLineWidth(4)
-                                                hsig.Draw("hist:same")  
+                                                hsig.Draw("hist:same")
                                         elif(runSignal):
                                             #print len(signalHistos),signalHistos
                                             for hsig in signalHistos:
                                                 #print type(hsig), hsig
                                                 hsig.SetLineWidth(4)
-                                                hsig.Draw("hist:same")  
+                                                hsig.Draw("hist:same")
                                         dataClone.Draw("p:e:same")
                                         datah_Poiss.Draw("p:e:same")
                                     else:
@@ -1124,7 +1140,7 @@ def main(configMain):
                                         min = 0.25
                                         maxbkg = mcStack.GetMaximum()
                                         max = TMath.Max(maxbkg, maxsig)
-                                        if (max <= 2.) :  min = 0.02   
+                                        if (max <= 2.) :  min = 0.02
                                         yfactor=4
                                         mcStack.SetMinimum(min)
                                         mcStack.SetMaximum(max*yfactor)
@@ -1208,7 +1224,7 @@ def main(configMain):
                                     if(runData):
                                         PrintText(dataHisto.GetName(),text)
 
-                                    atlaslabel=ROOT.TLatex(0.2,0.89,"#bf{#it{ATLAS}} Internal") 
+                                    atlaslabel=ROOT.TLatex(0.2,0.89,"#bf{#it{ATLAS}} Internal")
                                     atlaslabel.SetNDC()
                                     atlaslabel.SetTextSize(0.055)
                                     atlaslabel.SetTextFont(42)
@@ -1233,7 +1249,7 @@ def main(configMain):
                                     analabel.SetNDC()
                                     analabel.SetTextSize(0.035)
                                     analabel.SetTextFont(42)
-                                    analabel.Draw("same")          
+                                    analabel.Draw("same")
                                     if (runSignal) and SignalOnTop:
                                         legend=ROOT.TLegend(0.57,0.48,0.85,0.90)
                                     elif (runSignal):
@@ -1242,13 +1258,13 @@ def main(configMain):
                                         legend=ROOT.TLegend(0.65,0.53,0.89,0.90)
                                     if(runData):
                                         legend.AddEntry(dataHisto,"Data 2015","p")
-                                    legend.AddEntry(mcTotal,"SM Total","l")    
+                                    legend.AddEntry(mcTotal,"SM Total","l")
                                     if SignalOnTop:
                                         legend.SetTextSize(0.03)
                                     else:
                                         legend.SetTextSize(0.035)
                                     legend.SetFillColor(0)
-                                    legend.SetFillStyle(0) 
+                                    legend.SetFillStyle(0)
                                     legend.SetBorderSize(0)
 
                                     for whichmc in mc:
@@ -1274,7 +1290,7 @@ def main(configMain):
                                     legend.SetLineColor(10)
                                     legend.SetFillColor(10)
                                     legend.Draw()
-                                    
+
                                     if(runData or len(mcSystHisto)>0 or doSignificance):
                                         lowerPad.cd()
                                         if(runData):
@@ -1326,7 +1342,7 @@ def main(configMain):
 
                                         skeletonRatio.GetXaxis().SetLabelSize(0.13)
                                         skeletonRatio.GetXaxis().SetTitleSize(0.15)
-                                                                            
+
                                         skeletonRatio.GetXaxis().SetTitleOffset(1)
                                         skeletonRatio.GetYaxis().SetLabelSize(0.10)
                                         skeletonRatio.GetYaxis().SetTitleSize(0.15)
@@ -1345,7 +1361,7 @@ def main(configMain):
                                         Redline.SetLineColor(2)
                                         Redline.SetLineStyle(2)
                                         Redline.SetLineWidth(2)
-                                                                            
+
                                         skeletonRatio.Draw()
                                         if doSyst:
                                             Allsys_plusTheory_band.Draw("2 same")
@@ -1359,8 +1375,8 @@ def main(configMain):
                                             lines.Draw()
 
                                         if not doSignificance:
-                                            Redline.Draw("same")  
-                                        lowerPad.RedrawAxis("same") 
+                                            Redline.Draw("same")
+                                        lowerPad.RedrawAxis("same")
 
                                     if SignalOnTop:
                                         canvas.SaveAs(outplotdir+str('intL%0difb' % (float(configMain.lumi)))+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+"_SignalOnTop"+".pdf")
