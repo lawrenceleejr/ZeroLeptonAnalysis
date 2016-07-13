@@ -317,7 +317,7 @@ class ChannelConfig:
 
         self.CRList = ["CRT","CRW","CRY","CRQ"]
         VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
-        VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT", "VRdphiISRI"]
+        VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT", "VRZc"]
         self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
 
 
@@ -359,7 +359,7 @@ class ChannelConfig:
         self.regionListDict["VRQa"]["deltaQCD"] = "invert"
 
         self.regionListDict["VRQb"]["H2PP"] =  "invert"
-        self.regionListDict["VRdphiISRI"]["dphiISRI"] =  "invert"
+        self.regionListDict["VRZc"]["dphiISRI"] =  "invert"
 
 
         self.WithoutLastCut = False

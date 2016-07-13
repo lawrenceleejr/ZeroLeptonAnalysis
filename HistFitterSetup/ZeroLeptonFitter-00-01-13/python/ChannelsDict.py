@@ -8,7 +8,6 @@ cleaningCut="( abs(m_jet1_eta)>2.4 || m_jet1_chf/m_jet1_FracSamplingMax>0.1)"
 
 regionDict={}
 regionDict["SR"] = Region("SR", "SRAll", [cleaningCut], [])
-regionDict["VRdphiISRI"] = Region("VRdphiISRI", "SRAll", [cleaningCut], [])
 
 regionDict["CRW"] = Region("CRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
 regionDict["CRT"] = Region("CRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
@@ -48,6 +47,7 @@ regionDict["VRQc"] = Region("VRQc", "SRAll", [cleaningCut])#ATT: qcd weight
 regionDict["VRZ"] = Region("VRZ", "CRZ", [], [])
 regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
 regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
+regionDict["VRZc"] = Region("VRZc", "SRAll", [cleaningCut], [])
 regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
 
 # regionDict["VRZf"] = Region("VRZf", "CRZ", [], [])
