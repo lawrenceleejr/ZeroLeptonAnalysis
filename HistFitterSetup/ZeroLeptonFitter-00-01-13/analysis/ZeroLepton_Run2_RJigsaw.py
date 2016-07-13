@@ -405,11 +405,15 @@ if zlFitterConfig.doSetNormRegion:
     #### LL
     # if "CRT0L" in zlFitterConfig.constrainingRegionsList:
     #     topSample.setNormRegions( [ ("CRT0L",zlFitterConfig.binVar)     ]  )
+
 if not zlFitterConfig.usePreComputedTopGeneratorSys:
     topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
-
 if not zlFitterConfig.usePreComputedTopFragmentationSys:
-       topSample.addSystematic(Systematic("fragmentationTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+    topSample.addSystematic(Systematic("Pythia8Top", "" , "_PowhegPythia8", "" , "tree", "overallNormHistoSysOneSide"))
+    topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+
+if not zlFitterConfig.usePreComputedTopRadiationSys:
+    topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
 
 
 
@@ -796,7 +800,7 @@ for point in allpoints:
         # skip validation regions
         if not doValidation and regionName not in zlFitterConfig.constrainingRegionsList:
             continue
-            
+
         if not( regionName in ["VRZc","VRZca"]):
             continue
 
