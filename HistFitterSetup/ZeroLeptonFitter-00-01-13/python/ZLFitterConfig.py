@@ -84,6 +84,7 @@ class ZLFitterConfig:
         self.usePreComputedWGeneratorSys=False
         self.usePreComputedTopGeneratorSys=False
         self.usePreComputedTopFragmentationSys=False
+        self.usePreComputedTopRadiationSys=False
         self.usePreComputedZGeneratorSys=False
 
 #jet smearing

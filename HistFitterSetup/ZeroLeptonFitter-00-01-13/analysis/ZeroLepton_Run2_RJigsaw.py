@@ -260,9 +260,13 @@ if configMgr.readFromTree:
         # Topa
         topFiles.append(INPUTDIR+ "/Top.root")
         if not zlFitterConfig.usePreComputedTopGeneratorSys:
-            topFiles.append(INPUTDIR+ "/TopaMcAtNloHerwigpp.root")
+            topFiles.append(INPUTDIR + "TopMCatNLO.root")
         if not zlFitterConfig.usePreComputedTopFragmentationSys:
-            topFiles.append(INPUTDIR+ "/TopPowhegHerwigpp.root")
+            topFiles.append(INPUTDIR + "TopPowhegPythia8.root")
+#            topFiles.append(INPUTDIR + "TopPowhegHerwig.root")
+        if not zlFitterConfig.usePreComputedTopRadiationSys:
+            topFiles.append(INPUTDIR + "TopRadLo.root")
+            topFiles.append(INPUTDIR + "TopRadHi.root")
 
 
         # W
@@ -405,11 +409,15 @@ if zlFitterConfig.doSetNormRegion:
     #### LL
     # if "CRT0L" in zlFitterConfig.constrainingRegionsList:
     #     topSample.setNormRegions( [ ("CRT0L",zlFitterConfig.binVar)     ]  )
+
 if not zlFitterConfig.usePreComputedTopGeneratorSys:
     topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
-
 if not zlFitterConfig.usePreComputedTopFragmentationSys:
-       topSample.addSystematic(Systematic("fragmentationTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+    topSample.addSystematic(Systematic("Pythia8Top", "" , "_PowhegPythia8", "" , "tree", "overallNormHistoSysOneSide"))
+#    topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+
+if not zlFitterConfig.usePreComputedTopRadiationSys:
+    topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
 
 
 
@@ -796,7 +804,7 @@ for point in allpoints:
         # skip validation regions
         if not doValidation and regionName not in zlFitterConfig.constrainingRegionsList:
             continue
-            
+
         if not( regionName in ["VRZc","VRZca"]):
             continue
 
@@ -944,9 +952,9 @@ for point in allpoints:
 #                    sam.addSystematic(Systematic("TopTuneA14", configMgr.weights, 1.+errorA14, 1-errorA14, "user", "userOverallSys"))
 
                     #PowhegHerwig
-                    if zlFitterConfig.usePreComputedTopFragmentationSys:
-                        errorPowhegHerwig=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysPowhegHerwigDict)
-                        sam.addSystematic(Systematic("FragmentationTop", configMgr.weights, 1.+errorPowhegHerwig, 1-errorPowhegHerwig, "user", "userOverallSys"))
+                    # if zlFitterConfig.usePreComputedTopFragmentationSys:
+                    #     errorPowhegHerwig=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysPowhegHerwigDict)
+                    #     sam.addSystematic(Systematic("FragmentationTop", configMgr.weights, 1.+errorPowhegHerwig, 1-errorPowhegHerwig, "user", "userOverallSys"))
                     #radiation
 #                    errorRad=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysRadDict)
 #                    sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1.+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
