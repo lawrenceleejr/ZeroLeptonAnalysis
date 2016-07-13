@@ -14,7 +14,14 @@ sys.path.append(file_path)
 from ChannelConfig import *
 from ChannelsDict import *
 
+allRegionsList = []
+allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
+allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
+allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
+
 def parseCmdLine(args):
+#Here you put the regions that you want to plot
+
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("--region", default="SR", type = str)
@@ -25,7 +32,10 @@ def parseCmdLine(args):
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--lumi", dest="lumi", help="lumi", default=5.8)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
+    parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
+
     (config, args) = parser.parse_args(args)
+
     print config
     return config
 
@@ -47,6 +57,10 @@ else:
     datadir = sampledir
     mcsignaldir = sampledir
     mcaltdir = sampledir
+
+anaImInterestedIn = [ana for ana in allRegionsList if (config.regionsToRun in ana)]
+print anaImInterestedIn
+exit()
 
 
 runData=True
@@ -348,13 +362,6 @@ if doAlternativeTopMcAtNlo and doCRWT:
     TopName = 'TopaMcAtNloHerwigpp'
     print "Running alternative TopMcAtNloHerwigpp sample!"
 
-#Here you put the regions that you want to plot
-anaImInterestedIn = []
-#anaImInterestedIn = ["SRJigsawSRS1a","SRJigsawSRG1a","SRJigsawSRC1"]
-#anaImInterestedIn += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
-anaImInterestedIn += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
-#anaImInterestedIn += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
-#anaImInterestedIn += ["SRJigsawSRC3"]
 
 mc = [
       {'key':'Diboson','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
