@@ -608,6 +608,7 @@ class ChannelConfig:
                              else  :
                                  if not val         : finalCutString = var         + " >= " + stringVarValue
                                  if val == 'invert' : finalCutString = var         + " <  " + stringVarValue
+                                 if val == 'tightendphiMin2': finalCutString = var         + " >= 0.4 "
                                  if val == 'loosen' :
                                      loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
                                      if not loosenedStringVarValue : print reg,var,val, var+"_loose"
@@ -615,6 +616,7 @@ class ChannelConfig:
 
                     if finalCutString:
                         cutList.append(finalCutString)
+
                             #print finalCutString
                             #print regionName, "cutlist", cutList
 

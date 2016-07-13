@@ -196,8 +196,8 @@ configMgr.nTOYs = 5000      # number of toys when doing frequentist calculator
 configMgr.doExclusion = False
 if myFitType == FitType.Exclusion:
     configMgr.doExclusion = True
-configMgr.useCLs = True #LL
-configMgr.cppMgr.doUpperLimitAll()
+# configMgr.useCLs = True #LL
+# configMgr.cppMgr.doUpperLimitAll()
 configMgr.calculatorType = 2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType = 3   # 3=one-sided profile likelihood test statistic (LHC default)
 configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
@@ -790,12 +790,22 @@ for point in allpoints:
     # Hadronic CRs - LL
     ######################################################################
 
-    # for regionName in zlFitterConfig.allRegionsList():
-    #     treeBaseName = regionDict[regionName].suffixTreeName
+    for regionName in zlFitterConfig.allRegionsList():
+
+
+        # skip validation regions
+        if not doValidation and regionName not in zlFitterConfig.constrainingRegionsList:
+            continue
+            
+        if not( regionName in ["VRZc","VRZca"]):
+            continue
+
+        treeBaseName = regionDict[regionName].suffixTreeName
+
 
     #     # select only regions with leptons
-    #     if treeBaseName not in ["SRAll"]:
-    #         continue
+        if treeBaseName not in ["SRAll"]:
+            continue
     #     if "CR" not in regionName:
     #         continue
 
@@ -803,9 +813,9 @@ for point in allpoints:
     #     if not zlFitterConfig.useShapeFit:
     #         REGION = myFitConfig.addChannel("cuts", [regionName], 1, 0.5, 1.5)
     #     else:
-    #         REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
-    #         REGION.useOverflowBin = True
-    #         REGION.useUnderflowBin = False
+        REGION = myFitConfig.addChannel(zlFitterConfig.binVar, [regionName], zlFitterConfig.nBins, zlFitterConfig.minbin, zlFitterConfig.maxbin)
+        REGION.useOverflowBin = True
+        REGION.useUnderflowBin = False
 
     #     #set the treename
     #     for sam in REGION.sampleList:
@@ -843,7 +853,7 @@ for point in allpoints:
     #     if regionName in zlFitterConfig.constrainingRegionsList:
     #         myFitConfig.setBkgConstrainChannels(REGION)
     #     else:
-    #         myFitConfig.setValidationChannels(REGION)
+        myFitConfig.setValidationChannels(REGION)
 
 
     #     if zlFitterConfig.useQCDsample:
