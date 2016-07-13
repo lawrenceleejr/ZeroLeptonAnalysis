@@ -259,12 +259,12 @@ if configMgr.readFromTree:
 
         # Topa
         topFiles.append(INPUTDIR+ "/Top.root")
-        if not zlFitterConfig.usePreCcomputedTopGeneratorSys:
+        if not zlFitterConfig.usePreComputedTopGeneratorSys:
             topFiles.append(INPUTDIR + "TopMCatNLO.root")
-        if not zlFitterConfig.usePrecomputedTopFragmentationSys:
+        if not zlFitterConfig.usePreComputedTopFragmentationSys:
             topFiles.append(INPUTDIR + "TopPowhegPythia8.root")
 #            topFiles.append(INPUTDIR + "TopPowhegHerwig.root")
-        if not zlFitterConfig.usePrecomputedTopRadiationSys:
+        if not zlFitterConfig.usePreComputedTopRadiationSys:
             topFiles.append(INPUTDIR + "TopRadLo.root")
             topFiles.append(INPUTDIR + "TopRadHi.root")
 
