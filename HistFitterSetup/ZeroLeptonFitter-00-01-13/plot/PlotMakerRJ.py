@@ -308,13 +308,13 @@ plotlists = {
                  ["dphiMin2"],
                  ["NV"],
                  ],
-    "CRWT":     [["nbJets"]]
+#    "CRWT":     [["nbJets"]]
     }
 
 #plotlist = {srtype:plotlists["Common"]+plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
 #plotlist = {srtype:plotlists["Common"] for srtype in ["SRS","SRG","SRC"]}
 #plotlist = {srtype:plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
-plotlist = {srtype:plotlists["CRWT"] for srtype in ["SRS","SRG","SRC"]}
+plotlist = {srtype:plotlists["SRS"] for srtype in ["SRS","SRG","SRC"]}
 
 kindOfCuts_SR =     [ {"type":"SR_minusone",    "var": plotlist, "name":"SR"} ]
 kindOfCuts_CRWT =   [ {"type":"CRW_minusone",   "var": plotlist, "name":"CRW"},
