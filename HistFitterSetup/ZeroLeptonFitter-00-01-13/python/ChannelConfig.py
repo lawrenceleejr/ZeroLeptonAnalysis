@@ -316,8 +316,8 @@ class ChannelConfig:
 
 
         self.CRList = ["CRT","CRW","CRY","CRQ"]
-        VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" , "VRZc", "VRZca" ] #, "VRTZL"
-        VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT"]
+        VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
+        VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT", "VRZc"]
         self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
 
 
@@ -359,13 +359,7 @@ class ChannelConfig:
         self.regionListDict["VRQa"]["deltaQCD"] = "invert"
 
         self.regionListDict["VRQb"]["H2PP"] =  "invert"
-
         self.regionListDict["VRZc"]["dphiISRI"] =  "invert"
-        self.regionListDict["VRZca"]["dphiISRI"] =  "invert"
-        self.regionListDict["VRZca"]["RISR"] =  "loosen"
-        self.regionListDict["VRZca"]["NV"] =  "loosen"
-        self.regionListDict["VRZc"]["dphiMin2"] =  "tightendphiMin2"
-        self.regionListDict["VRZca"]["dphiMin2"] =  "tightendphiMin2"
 
 
         self.WithoutLastCut = False

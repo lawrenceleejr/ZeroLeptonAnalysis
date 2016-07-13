@@ -30,16 +30,13 @@ def parseCmdLine(args):
     parser.add_option("--version", default = 107, help="ntuple version")
     parser.add_option("--SignalOnTop", action = "store_true", dest="SignalOnTop", help=" Add signal to SM background in SR plots", default=False)
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
-    parser.add_option("--lumi", dest="lumi", help="lumi", default=5.8)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
-
+    parser.add_option("--lumi", dest="lumi", help="lumi", default=8.3)
     (config, args) = parser.parse_args(args)
 
     print config
     return config
-
-
 config = parseCmdLine(sys.argv[1:])
 
 version = config.version
@@ -60,11 +57,11 @@ else:
 
 anaImInterestedIn = [ana for ana in allRegionsList if (config.regionsToRun in ana)]
 print anaImInterestedIn
-exit()
 
+binscale = 10 # extra bins for more precision in integrals
 
 runData=True
-doBlinding = True
+doBlinding = False
 doBlindingMC = False
 DrawOverflow = True
 runSignal=True
@@ -75,6 +72,7 @@ doCRW=False
 doCRT=False
 doCRY=False
 doVRZ=False
+doVRZc=False
 doCRQ=False
 doSyst=False
 doSignificance=False
@@ -85,14 +83,14 @@ doAlternativeTopPythia=False
 doAlternativeTopMcAtNlo=False
 
 #scale for Yjets
-kappaYjets = 1.55
+kappaYjets = 1.5
 
 def comparator(x, y):
     if doCRT:
         if "Top" in x: return -1
     elif doCRW:
         if "Wjets" in x: return -1
-    elif doVRZ:
+    elif doVRZ or doVRZc:
         if "Zjets" in x: return -1
     elif doCRY:
         if "Yjets" in x: return -1
@@ -109,7 +107,7 @@ if config.doSyst:
     doSyst=True
 
 if config.region=="SR":
-    doCRT = doCRW = doCRWT = doVRWT = doCRY = doVRZ = doCRQ = False
+    doCRT = doCRW = doCRWT = doVRWT = doCRY = doVRZ = doVRZc = doCRQ = False
     print "Running region: ",config.region
 elif config.region=="CRWT":
     doCRWT = True
@@ -129,6 +127,9 @@ elif config.region=="CRY":
 elif config.region=="VRZ":
     doVRZ = True
     print "Running region: ",config.region
+elif config.region=="VRZc":
+    doVRZc = True
+    print "Running region: ",config.region
 elif config.region=="CRQ":
     doCRQ = True
     print "Running region: ",config.region
@@ -142,15 +143,16 @@ if doSignificance:
 if doAlternativeZ:
     doCRWT=doCRY=doCRQ=False
     doVRZ=True
+    doVRZc=True
 
 if doAlternativeW or doAlternativeTopHerwig or doAlternativeTopPythia or doAlternativeTopMcAtNlo:
-    doVRZ=doCRY=doCRQ=False
+    doVRZ=doVRZc=doCRY=doCRQ=False
     doCRWT=True
 
 if doCRW or doCRT:
     doCRWT=True
 
-if doCRWT or doVRWT or doCRY or doVRZ or doCRQ:
+if doCRWT or doVRWT or doCRY or doVRZ or doVRZc or doCRQ:
         runSignal=False
 
 if not runSignal:
@@ -189,7 +191,7 @@ ratiocutsfull = {
 }
 
 varList = [
-           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
+           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'25','minvar':'0','maxvar':'2500.','unit':'GeV'},
            {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#Delta_{QCD}','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'H2PP','varNtuple':'H2PP','plotName':'H_{1,1}^{PP} [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
@@ -202,7 +204,7 @@ varList = [
            {'varName':'dangle','varNtuple':'dangle','plotName':'|#frac{2}{3}#Delta#phi^{PP}_{V,P} - #frac{1}{3}cos#theta_{P}|','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'sangle','varNtuple':'sangle','plotName':'sangle','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            #
-           {'varName':'dphiISRI','varNtuple':'dphiISRI','plotName':'#Delta#phi(ISR, I)','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
+           {'varName':'dphiISRI','varNtuple':'dphiISRI','plotName':'#Delta#phi(ISR, I)','nbinvar':'30','minvar':'2','maxvar':'3.5','unit':''},
            {'varName':'dphiMin2','varNtuple':'dphiMin2','plotName':'min(#Delta#phi_{MET,j1}, #Delta#phi_{MET,j2})','nbinvar':'40','minvar':'0','maxvar':'4.0','unit':''},
            {'varName':'MS','varNtuple':'MS','plotName':'M_{T S} [GeV]','nbinvar':'30','minvar':'0','maxvar':'1500.','unit':'GeV'},
            {'varName':'NV','varNtuple':'NV', 'plotName': 'N_{jet}^{V}', 'nbinvar':'10','minvar':'0','maxvar':'10','unit':''},
@@ -252,22 +254,29 @@ varList = [
            {'varName':'origmetPhi', 'varNtuple':'origmetPhi', 'plotName': '#phi(E_{T}^{miss,orig})', 'nbinvar':'40','minvar':'-1','maxvar':'7','unit':''},
            ]
 
-datafile =  'DataMain_2016_302391.root' #'DataMain_dataall_13TeV.root'
+
+datafile = 'DataMain_2016_302391.root'
 fullDataPath = config.inputDataFile if config.inputDataFile else (datadir + datafile)
 
 datafile =[
-           {'whichdata':'SR','filename':fullDataPath,
-           'dataname':'Data_SRAll'},
-           {'whichdata':'CRWT','filename':fullDataPath,
-           'dataname':'Data_CRWT'},
-           {'whichdata':'VRWT','filename':fullDataPath,
-           'dataname':'Data_VRWT'},
-           {'whichdata':'CRY','filename':fullDataPath,
-           'dataname':'Data_CRY'},
-           {'whichdata':'VRZ','filename':fullDataPath,
-           'dataname':'Data_CRZ'},
-           {'whichdata':'CRQ','filename':fullDataPath,
-           'dataname':'Data_SRAll'},
+           {'whichdata':['SR','VRZc'],
+            'filename':fullDataPath,
+            'dataname':'Data_SRAll'},
+           {'whichdata':['CRWT','CRW','CRT','CRWa','CRWb','CRT','CRTa','CRTb'],
+            'filename':fullDataPath,
+            'dataname':'Data_CRWT'},
+           {'whichdata':['VRW','VRWa','VRWb','VRT','VRTa','VRTb'],
+            'filename':fullDataPath,
+            'dataname':'Data_VRWT'},
+           {'whichdata':['CRY'],
+            'filename':fullDataPath,
+            'dataname':'Data_CRY'},
+           {'whichdata':['VRZ','VRZa','VRZb','VRTZl'],
+            'filename':fullDataPath,
+            'dataname':'Data_CRZ'},
+           {'whichdata':['CRQ','VRQ','VRQa','VRQb','VRQc'],
+            'filename':fullDataPath,
+            'dataname':'Data_SRAll'},
            ]
 
 commonsyst=" "
@@ -302,25 +311,26 @@ plotlists = {
     "CRWT":     [["nbJets"]]
     }
 
-plotlist = {srtype:plotlists["Common"]+plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
+#plotlist = {srtype:plotlists["Common"]+plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
 #plotlist = {srtype:plotlists["Common"] for srtype in ["SRS","SRG","SRC"]}
 #plotlist = {srtype:plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
-#plotlist = {srtype:plotlists["CRWT"] for srtype in ["SRS","SRG","SRC"]}
+plotlist = {srtype:plotlists["CRWT"] for srtype in ["SRS","SRG","SRC"]}
 
-kindOfCuts_SR =     [ {"type":"SR_minusone",    "var": plotlist,"name":"SR"} ]
-kindOfCuts_CRWT =   [ {"type":"CRW_minusone",   "var": plotlist,"name":"CRW"},
-                      {"type":"CRT_minusone",   "var": plotlist,"name":"CRT"} ]
-kindOfCuts_VRWT =   [ {"type":"VRW_minusone",   "var": plotlist,"name":"VRW"},
-                      {"type":"VRT_minusone",   "var": plotlist,"name":"VRT"},
-                      {"type":"VRWa_minusone",  "var": plotlist,"name":"VRWa"},
-                      {"type":"VRTa_minusone",  "var": plotlist,"name":"VRTa"},
-                      {"type":"VRWb_minusone",  "var": plotlist,"name":"VRWb"},
-                      {"type":"VRTb_minusone",  "var": plotlist,"name":"VRTb"}]
-kindOfCuts_CRY =    [ {"type":"CRY_minusone",   "var": plotlist,"name":"CR#gamma"} ]
-kindOfCuts_VRZ =    [ {"type":"VRZ_minusone",   "var": plotlist,"name":"VRZ"},
-                      {"type":"VRZa_minusone",  "var": plotlist,"name":"VRZa"},
-                      {"type":"VRZb_minusone",  "var": plotlist,"name":"VRZb"}]
-kindOfCuts_CRQ =    [ {"type":"CRQ_minusone",   "var": plotlist,"name":"CRQ"} ]
+kindOfCuts_SR =     [ {"type":"SR_minusone",    "var": plotlist, "name":"SR"} ]
+kindOfCuts_CRWT =   [ {"type":"CRW_minusone",   "var": plotlist, "name":"CRW"},
+                      {"type":"CRT_minusone",   "var": plotlist, "name":"CRT"} ]
+kindOfCuts_VRWT =   [ {"type":"VRW_minusone",   "var": plotlist, "name":"VRW"},
+                      {"type":"VRT_minusone",   "var": plotlist, "name":"VRT"},
+                      {"type":"VRWa_minusone",  "var": plotlist, "name":"VRWa"},
+                      {"type":"VRTa_minusone",  "var": plotlist, "name":"VRTa"},
+                      {"type":"VRWb_minusone",  "var": plotlist, "name":"VRWb"},
+                      {"type":"VRTb_minusone",  "var": plotlist, "name":"VRTb"}]
+kindOfCuts_CRY =    [ {"type":"CRY_minusone",   "var": plotlist, "name":"CR#gamma"} ]
+kindOfCuts_VRZ =    [ {"type":"VRZ_minusone",   "var": plotlist, "name":"VRZ"},
+                      {"type":"VRZa_minusone",  "var": plotlist, "name":"VRZa"},
+                      {"type":"VRZb_minusone",  "var": plotlist, "name":"VRZb"} ]
+kindOfCuts_VRZc =   [ {"type":"VRZc_minusone",  "var": plotlist, "name":"VRZc"} ]
+kindOfCuts_CRQ =    [ {"type":"CRQ_minusone",   "var": plotlist, "name":"CRQ"} ]
 
 if doCRY:
     kindOfCuts=kindOfCuts_CRY
@@ -330,6 +340,8 @@ elif doVRWT:
     kindOfCuts=kindOfCuts_VRWT
 elif doVRZ:
     kindOfCuts=kindOfCuts_VRZ
+elif doVRZc:
+    kindOfCuts=kindOfCuts_VRZc
 elif doCRQ:
     kindOfCuts=kindOfCuts_CRQ
 else:
@@ -346,7 +358,7 @@ if doSyst:
     ZName = 'ZMassiveCB'
     WName = 'WMassiveCB'
 
-if doAlternativeZ and doVRZ:
+if doAlternativeZ and (doVRZ or doVRZc):
     ZName = 'ZMadgraphPythia8'
     print "Running alternative Z sample!"
 if doAlternativeW and doCRWT:
@@ -366,26 +378,27 @@ if doAlternativeTopMcAtNlo and doCRWT:
 mc = [
       {'key':'Diboson','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
       'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
-      'syst':commonsyst},
+      'syst':commonsyst, 'mufact':1.},
       {'key':'Zjets','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
       'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
-      'syst':commonsyst},
+      'syst':commonsyst, 'mufact':0.9},
       {'key':'Top','name':'t#bar{t}(+EW) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
       'color':ROOT.kGreen-9,'inputdir':mcdir+TopName+'.root',
-      'treePrefix':'Top_','syst':commonsyst},
+      'treePrefix':'Top_','syst':commonsyst, 'mufact':0.9},
       {'key':'Wjets','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
       'color':ROOT.kAzure-4,'inputdir':mcdir+WName+'.root','veto':1,'treePrefix':'W_',
-      'syst':commonsyst},
+      'syst':commonsyst, 'mufact':0.65},
       ]
 
 if doCRY:
     mc.append({'key':'Yjets','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
-              'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_','syst':commonsyst},
+              'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_',
+              'syst':commonsyst,'mufact':1.},
               )
 elif not doVRZ:
     mc.append({'key':'QCDMC','name':'Multijet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
               'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
-              'syst':commonsyst})
+              'syst':commonsyst, 'mufact':1.})
 
 #To make sure that the dominant background is on top
 mc = sorted(mc, cmp=comparator, key=lambda k: k['key'], reverse=True)
@@ -637,7 +650,7 @@ class NtHandler:
         self.data=dataormc
         self.color=color
         self.weights=weights
-        self.lumi=lumi
+        self.lumi=str(lumi)
         if type(filename) is list:
             self.tfile = ROOT.TChain(treename)
             for f in filename:
@@ -708,695 +721,685 @@ def main(configMain):
 
         for ana in allAna:
             if ana in anaImInterestedIn or len(anaImInterestedIn)==0:
-                for region in allRegion:
-                    config=ChannelConfig(name=ana, regionDict=region)
-                    print ana,region,whichKind
-                    if   (region in whichKind['type']  and "CRW" not in region) or ("SR" in region and "L" not in region and "SR" in whichKind['type']) or ("CRW"==region and "L" not in region and ("CRW"==whichKind['type'] or "CRW_" in whichKind['type'])) or ("CRWT"==region and "L" not in region and ("CRWT"==whichKind['type'] or "CRWT_" in whichKind['type'])) or ("CRT" in region and "L" not in region and "CRT" in whichKind['type']) or ("CRY"== region and "L" not in region and "CRY" in whichKind['type']) or ("CRZ" in region and ("L" or "VL") not in region and "CRZ" in whichKind['type']):
-                        ch_orig=allChannel[ana]
-                        chnameshort = ch_orig.name.split('Jigsaw')[1][:3]
-                        for varset in whichKind["var"][chnameshort]:
-                            print 'going to run', whichKind['type']
-                            ch=copy.deepcopy(ch_orig) # so as to not permanently disable cuts
-                            minusvar = varset[0]
-                            minusvarname = minusvar
-                            for vardict in varList:
-                                if vardict["varName"]==minusvar:
-                                    minusvarname = vardict["varNtuple"]
-                            if("minusone" in whichKind['type']):
-                                if minusvar == "LastCut": minusvar = minusvarname = lastcuts[chnameshort]
-                                elif minusvar == "Ratio": minusvar = minusvarname = ratiocuts[chnameshort]
-                                if hasattr(ch,minusvar):
-                                    ch.regionListDict[region][minusvar] = "minusone"
-                                if hasattr(ch,minusvar+"_upper"):
-                                    ch.regionListDict[region][minusvar+"_upper"] = "minusone"
-                                if hasattr(ch,minusvar+"_loose"):
-                                    ch.regionListDict[region][minusvar+"_loose"] = "minusone"
-                                if hasattr(ch,minusvar+"_upper_loose"):
-                                    ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
-                            print "MINUS", minusvar, minusvarname
 
-                            cuts=ch.getCuts(region)
-                            truthcuts = cuts
-                            truthcuts = truthcuts.replace("&& (abs(timing)<4)", " ")
-                            #print "channel",cuts, truthcuts
-                            print "channel",cuts
+                region = whichKind['type'].split('_',1)[0]
+                print ana,region,whichKind
+                chnameshort = allChannel[ana].name.split('Jigsaw')[1][:3]
+                for varset in whichKind["var"][chnameshort]:
+                    print 'going to run', whichKind['type']
+                    ch=copy.deepcopy(allChannel[ana]) # so as to not permanently disable cuts
 
-                            weights=allChannel[ana].getWeights(region,onlyExtraWeights)
-                            truthweights = weights
-                            truthweights = truthweights.replace("pileupWeight *","")
+                    minusvar = varset[0]
+                    minusvarname = minusvar
+                    for vardict in varList:
+                        if vardict["varName"]==minusvar:
+                            minusvarname = vardict["varNtuple"]
+                    if("minusone" in whichKind['type']):
+                        if minusvar == "LastCut": minusvar = minusvarname = lastcuts[chnameshort]
+                        elif minusvar == "Ratio": minusvar = minusvarname = ratiocuts[chnameshort]
+                        if hasattr(ch,minusvar):
+                            ch.regionListDict[region][minusvar] = "minusone"
+                        if hasattr(ch,minusvar+"_upper"):
+                            ch.regionListDict[region][minusvar+"_upper"] = "minusone"
+                        if hasattr(ch,minusvar+"_loose"):
+                            ch.regionListDict[region][minusvar+"_loose"] = "minusone"
+                        if hasattr(ch,minusvar+"_upper_loose"):
+                            ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
+                    print "MINUS", minusvar, minusvarname
 
-                            weights = truthweights
-                            print ana, region, cuts,weights,"remove pileupweights"
-                            blindcut = ""
-                            if hasattr(ch,minusvar) and not getattr(ch,minusvar)==None:
-                                blindcut += minusvarname+" < "+str(getattr(ch,minusvar))
-                            if hasattr(ch,minusvar+"_upper") and not getattr(ch,minusvar+"_upper")==None:
-                                if len(blindcut)>0:  blindcut += " || "
-                                blindcut += minusvarname+" > "+str(getattr(ch,minusvar+"_upper"))
-                            if len(blindcut)>0:
-                                blindcut = " && ("+blindcut+")"
-                            print "BLINDCUT", minusvar, minusvarname, blindcut
-                            if runData:
-                                plotData=[]
-                                for wData in datafile:
-                                    print region, wData['whichdata']
-                                    if (wData['whichdata'] in region) or ((region == 'CRW' or region == 'CRT') and wData['whichdata'] == 'CRWT') or ((region == 'VRW' or region == 'VRT') and wData['whichdata'] == 'VRWT') or ("SR" in region and "SR" in wData['whichdata']):
-                                        print 'nthandler data',wData['whichdata']
-                                        if doBlinding and "SR" in region:
-                                            print "Data is blinded beyond SR cut"
-                                            nt=NtHandler(ana+region+"data_baseline",wData['filename'],wData['dataname'],cuts+blindcut,ROOT.kBlack,1.,"data",configMain.lumi)
-                                        else:
-                                            nt=NtHandler(ana+region+"data_baseline",wData['filename'],wData['dataname'],cuts,ROOT.kBlack,1.,"data",configMain.lumi)
-                                        plotData.append(nt)
-                            if runSignal:
-                                print "SIGNAL!"
-                                plotSignalList=[]
-                                for point in signalPoint:
-                                    for sigSR in point['sigSR']:
-                                        print sigSR, ana
-                                        if sigSR==ana or sigSR=='all':
-                                            tmptreename="_SRAll"
-                                            if doCRY:
-                                                tmptreename="_CRY"
-                                            elif doCRWT:
-                                                tmptreename="_CRWT"
-                                            elif doVRWT:
-                                                tmptreename="_VRWT"
-                                            elif doVRZ:
-                                                tmptreename="_CRZ"
-                                            ntsig=NtHandler(ana+region+point['name']+tmptreename,point['filename'],point['name']+tmptreename,cuts,point['color'],weights,"signal",configMain.lumi)
-                                            plotSignalList.append({'pointname':point['name'],'pointcolor':point['color'],'pointlinestyle':point['linestyle'],'pointsigplotname':point['sigplotname'],'pointmass':point['masspoint'],'nthandle':ntsig})
-                                            print 'signal point',point['name']
-                            print "SIGNAL", plotSignalList
+                    cuts=ch.getCuts(region)
+                    truthcuts = cuts
+                    truthcuts = truthcuts.replace("&& (abs(timing)<4)", " ")
+                    #print "channel",cuts, truthcuts
+                    print "channel",cuts
 
-                            fullPlotMC=[]
-                            fullPlotMCSyst=[]
-                            fullPlotMCAlt=[]
-                            fullPlotMCTruth=[]
-                            fullPlotMCTruthAlt=[]
+                    weights=allChannel[ana].getWeights(region,onlyExtraWeights)
+                    truthweights = weights
+                    truthweights = truthweights.replace("pileupWeight *","")
 
-                            for process in mc:
-                                print process
-                                mcname=process['treePrefix']+"SRAll"
-                                if doCRWT: mcname=process['treePrefix']+"CRWT"
-                                if doVRWT: mcname=process['treePrefix']+"VRWT"
-                                if doCRY: mcname=process['treePrefix']+"CRY"
-                                if doVRZ: mcname=process['treePrefix']+"CRZ"
-                                if doBlindingMC and "SR" in region and whichKind['type'].find("minusone")==0:
-                                    if process['key'] == "Yjets":
-                                        print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
-                                        ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",str(float(configMain.lumi)*kappaYjets))
-                                    else:
-                                        ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",configMain.lumi)
-                                        print "MC is blinded beyond meffincl of 1000 GeV"
+                    weights = truthweights
+                    print ana, region, cuts,weights,"remove pileupweights"
+                    blindcut = ""
+                    if hasattr(ch,minusvar) and not getattr(ch,minusvar)==None:
+                        blindcutlow = getattr(ch,minusvar)
+                        blindcut += minusvarname+" < "+str(blindcutlow)
+                    if hasattr(ch,minusvar+"_upper") and not getattr(ch,minusvar+"_upper")==None:
+                        if len(blindcut)>0:  blindcut += " || "
+                        blindcuthigh = getattr(ch,minusvar+"_upper")
+                        blindcut += minusvarname+" > "+str(blindcuthigh)
+                    if len(blindcut)>0:
+                        blindcut = " && ("+blindcut+")"
+                    print "BLINDCUT", minusvar, minusvarname, blindcut
+                    if runData:
+                        plotData=[]
+                        for wData in datafile:
+                            print region, wData['whichdata']
+                            if (region in wData['whichdata']):
+                                print 'nthandler data',wData['whichdata']
+                                if doBlinding and "SR" in region:
+                                    print "Data is blinded beyond SR cut"
+                                    nt=NtHandler(ana+region+"data_baseline",wData['filename'],wData['dataname'],cuts+blindcut,ROOT.kBlack,1.,"data",configMain.lumi)
                                 else:
-                                    if process['key'] == "Yjets":
-                                        print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," lumi type: ", type(configMain.lumi), configMain.lumi
-                                        ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",str(float(configMain.lumi)*kappaYjets))
-                                    else:
-                                        ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
+                                    nt=NtHandler(ana+region+"data_baseline",wData['filename'],wData['dataname'],cuts,ROOT.kBlack,1.,"data",configMain.lumi)
+                                plotData.append(nt)
+                    if runSignal:
+                        print "SIGNAL!"
+                        plotSignalList=[]
+                        for point in signalPoint:
+                            for sigSR in point['sigSR']:
+                                print sigSR, ana
+                                if sigSR==ana or sigSR=='all':
+                                    tmptreename="_"+ch.getSuffixTreeName(region)
+                                    ntsig=NtHandler(ana+region+point['name']+tmptreename,point['filename'],point['name']+tmptreename,cuts,point['color'],weights,"signal",configMain.lumi)
+                                    plotSignalList.append({'pointname':point['name'],'pointcolor':point['color'],'pointlinestyle':point['linestyle'],'pointsigplotname':point['sigplotname'],'pointmass':point['masspoint'],'nthandle':ntsig})
+                                    print 'signal point',point['name']
+                        print "SIGNAL", plotSignalList
 
-                                fullPlotMC.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntmchandle":ntmc})
+                    fullPlotMC=[]
+                    fullPlotMCSyst=[]
+                    fullPlotMCAlt=[]
+                    fullPlotMCTruth=[]
+                    fullPlotMCTruthAlt=[]
 
-                                if doSyst:
-                                    for syst in systDict:
-                                        mcname=process['treePrefix']+"SRAll"+syst
-                                        if doCRWT: mcname=process['treePrefix']+"CRWT"+syst
-                                        if doVRWT: mcname=process['treePrefix']+"VRWT"+syst
-                                        if doCRY: mcname=process['treePrefix']+"CRY"+syst
-                                        if doVRZ: mcname=process['treePrefix']+"CRZ"+syst
+                    for process in mc:
+                        print process
+                        mcname=process['treePrefix']+ch.getSuffixTreeName(region)
+                        if doBlindingMC and "SR" in region and whichKind['type'].find("minusone")==0:
+                            if process['key'] == "Yjets":
+                                print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",configMain.lumi*kappaYjets*process['mufact'])
+                            else:
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",configMain.lumi*process['mufact'])
+                                print "MC is blinded beyond meffincl of 1000 GeV"
+                        else:
+                            if process['key'] == "Yjets":
+                                print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," lumi type: ", type(configMain.lumi), configMain.lumi
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets*process['mufact'])
+                            else:
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*process['mufact'])
 
-                                        treename = ana+region+process['treePrefix']+"_baseline"
-                                        if process['key'] == "QCDMC": treename += syst
-                                        if process['key'] == "Yjets":
-                                            print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," weight type: ", type(weights)
-                                            ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",str(float(configMain.lumi)*kappaYjets))
-                                        else:
-                                            ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
-                                        fullPlotMCSyst.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntsyst":syst,"ntsysthandle":ntsyst})
+                        fullPlotMC.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntmchandle":ntmc})
 
-                            if doSyst:
-                                for process in mc_alternative:
-                                    mcname=process['treePrefix']+"SRAll"+process['treeSuffix']
-                                    if doCRWT: mcname=process['treePrefix']+"CRWT"+process['treeSuffix']
-                                    if doVRWT: mcname=process['treePrefix']+"VRWT"+process['treeSuffix']
-                                    if doCRY: mcname=process['treePrefix']+"CRY"+process['treeSuffix']
-                                    if doVRZ: mcname=process['treePrefix']+"CRZ"+process['treeSuffix']
-                                    print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
-                                    ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi)
+                        if doSyst:
+                            for syst in systDict:
+                                mcname=process['treePrefix']+ch.getSuffixTreeName(region)+syst
 
-                                    fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmcalthandle":ntsyst})
-                            if doCRY and doSyst:
-                                for process in mc_truth:
-                                    mcname=process['treePrefix']+"CRY"+process['treeSuffix']
-                                    print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
-                                    print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
+                                treename = ana+region+process['treePrefix']+"_baseline"
+                                if process['key'] == "Yjets":
+                                    print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," weight type: ", type(weights)
+                                    ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets*process['mufact'])
+                                else:
+                                    ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*process['mufact'])
+                                fullPlotMCSyst.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntsyst":syst,"ntsysthandle":ntsyst})
 
-                                    ntsyst=NtHandler(ana+region+process['treePrefix']+process['treeSuffix'],process['inputdir'],mcname,truthcuts,process['color'],truthweights,"mc",str(float(configMain.lumi)*kappaYjets))
+                    if doSyst:
+                        for process in mc_alternative:
+                            mcname=process['treePrefix']+ch.getSuffixTreeName(region)+process['treeSuffix']
+                            print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
+                            ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*process['mufact'])
 
-                                    fullPlotMCTruth.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmctruthalthandle":ntsyst})
+                            fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmcalthandle":ntsyst})
+                    if doCRY and doSyst:
+                        for process in mc_truth:
+                            mcname=process['treePrefix']+ch.getSuffixTreeName(region)+process['treeSuffix']
+                            print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
+                            print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
 
-                            for varinList in varList:
-                                varname=varinList['varName']
-                                if varname in varset or 'all' in varset:
-                                    var=varinList['varNtuple']
-                                    if 'extracuts' in varinList:
-                                        temp="(("+cuts+")&&("+varinList['extracuts']+"))"
-                                        cuts=temp
-                                    print 'adding extracuts for var',varinList['varName'],cuts
-                                    plotname=varinList['plotName']
-                                    if "LastCut" in plotname:
-                                        chnameshort = ch.name.split('Jigsaw')[1][:3]
-                                        plotname = plotname.replace("LastCut",lastcutsfull[chnameshort])
-                                    elif "Ratio" in plotname:
-                                        chnameshort = ch.name.split('Jigsaw')[1][:3]
-                                        plotname = plotname.replace("Ratio",ratiocutsfull[chnameshort])
-                                    if var == "LastCut":
-                                        chnameshort = ch.name.split('Jigsaw')[1][:3]
-                                        var = lastcuts[chnameshort]
-                                    elif var == "Ratio":
-                                        chnameshort = ch.name.split('Jigsaw')[1][:3]
-                                        var = ratiocuts[chnameshort]
-                                    print "VAR", varname, var
-                                    nbinvar=int(varinList['nbinvar'])
-                                    minvar=float(varinList['minvar'])
-                                    maxvar=float(varinList['maxvar'])
-                                    unit=varinList['unit']
+                            ntsyst=NtHandler(ana+region+process['treePrefix']+process['treeSuffix'],process['inputdir'],mcname,truthcuts,process['color'],truthweights,"mc",configMain.lumi*kappaYjets*process['mufact'])
 
-                                    signalHistos=[]
-                                    nameSignalHistos=[]
-                                    nameMassSignalHistos=[]
+                            fullPlotMCTruth.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmctruthalthandle":ntsyst})
 
-                                    jobs=[]
-                                    output=Queue()
-                                    for process in fullPlotMC:
-                                        p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+"",cuts,"",process['ntmchandle'],nbinvar,minvar,maxvar,output,))
-                                        jobs.append(p)
-                                    for process in fullPlotMCAlt:
-                                        p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+'_alternative',cuts,"Alternative",process['ntmcalthandle'],nbinvar,minvar,maxvar,output,))
-                                        jobs.append(p)
-                                    for process in fullPlotMCTruth:
-                                        p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+process['mctreeSuffix'],truthcuts,"TruthAlternative",process['ntmctruthalthandle'],nbinvar,minvar,maxvar,output,))
-                                    for processSyst in fullPlotMCSyst:
-                                        p=Process(target=projAll,args=(1,var,varname,varname+processSyst['mctreePrefix']+ana+region+processSyst['ntsyst'],cuts,processSyst['ntsyst'],processSyst['ntsysthandle'],nbinvar,minvar,maxvar,output,))
-                                        jobs.append(p)
-                                    for j in jobs:
-                                        j.start()
-                                        print 'START',j
-                                    for j in jobs:
-                                        print "Joining job: ",j
-                                        j.join()
+                    for varinList in varList:
+                        varname=varinList['varName']
+                        if varname in varset or 'all' in varset:
+                            var=varinList['varNtuple']
+                            if 'extracuts' in varinList:
+                                temp="(("+cuts+")&&("+varinList['extracuts']+"))"
+                                cuts=temp
+                            print 'adding extracuts for var',varinList['varName'],cuts
+                            plotname=varinList['plotName']
+                            if "LastCut" in plotname:
+                                chnameshort = ch.name.split('Jigsaw')[1][:3]
+                                plotname = plotname.replace("LastCut",lastcutsfull[chnameshort])
+                            elif "Ratio" in plotname:
+                                chnameshort = ch.name.split('Jigsaw')[1][:3]
+                                plotname = plotname.replace("Ratio",ratiocutsfull[chnameshort])
+                            if var == "LastCut":
+                                chnameshort = ch.name.split('Jigsaw')[1][:3]
+                                var = lastcuts[chnameshort]
+                            elif var == "Ratio":
+                                chnameshort = ch.name.split('Jigsaw')[1][:3]
+                                var = ratiocuts[chnameshort]
+                            print "VAR", varname, var
+                            nbinvar=int(varinList['nbinvar'])*binscale
+                            minvar=float(varinList['minvar'])
+                            maxvar=float(varinList['maxvar'])
+                            unit=varinList['unit']
 
-                                    mcHisto=[]
-                                    mcSystHisto=[]
-                                    mcAltHisto=[]
-                                    mcTruthAltHisto=[]
-                                    for j in jobs:
-                                        print 'GET OUTPUT',j
-                                        j.result_queue=output
-                                        histo=output.get()
-                                        print histo.GetName(), histo.GetEntries()
-                                        clone=histo.Clone()
-                                        if DrawOverflow:
-                                            print "INGRID: nbins: ",clone.GetNbinsX(), ", Overflowbin: ", clone.GetBinContent(clone.GetNbinsX()+1)
-                                            nBins = clone.GetNbinsX()
-                                            LastBin = clone.GetBinContent(nBins)
-                                            OverflowBin = clone.GetBinContent(nBins+1)
-                                            print "Adding overflow bin!"
-                                            clone.SetBinContent(nBins,LastBin+OverflowBin)
+                            signalHistos=[]
+                            nameSignalHistos=[]
+                            nameMassSignalHistos=[]
 
-
-                                        lock_sys=0
-                                        if "TRUTH" in histo.GetName():
-                                            lock_sys=3
-                                        elif 'alternative' in histo.GetName():
-                                            lock_sys=2
-                                        for sys in systDict:
-                                            if sys in histo.GetName():
-                                                lock_sys=1
-                                        if lock_sys == 0:
-                                            mcHisto.append(clone)
-                                        elif lock_sys == 1:
-                                            mcSystHisto.append(clone)
-                                        elif lock_sys == 3:
-                                            mcTruthAltHisto.append(clone)
-                                        else:
-                                            mcAltHisto.append(clone)
-
-                                    for j in jobs:
-                                        j.terminate()
-                                    output.close()
-                                    output.join_thread()
+                            jobs=[]
+                            output=Queue()
+                            for process in fullPlotMC:
+                                p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+"",cuts,"",process['ntmchandle'],nbinvar,minvar,maxvar,output,))
+                                jobs.append(p)
+                            for process in fullPlotMCAlt:
+                                p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+'_alternative',cuts,"Alternative",process['ntmcalthandle'],nbinvar,minvar,maxvar,output,))
+                                jobs.append(p)
+                            for process in fullPlotMCTruth:
+                                p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+process['mctreeSuffix'],truthcuts,"TruthAlternative",process['ntmctruthalthandle'],nbinvar,minvar,maxvar,output,))
+                            for processSyst in fullPlotMCSyst:
+                                p=Process(target=projAll,args=(1,var,varname,varname+processSyst['mctreePrefix']+ana+region+processSyst['ntsyst'],cuts,processSyst['ntsyst'],processSyst['ntsysthandle'],nbinvar,minvar,maxvar,output,))
+                                jobs.append(p)
+                            for j in jobs:
+                                j.start()
+                                print 'START',j
+                            for j in jobs:
+                                print "Joining job: ",j
+                                j.join()
 
 
-                                    lock=1
+                            arrow=-1
+                            arrowupper=-1
+                            SpecialArrow=""
+                            SpecialArrowUpper=""
+                            varcut = None
+                            varcutupper = None
+                            arrowvar = var
+                            if varname in ["met","meffIncl"]: arrowvar = varname
+                            print "ARROW", varname, arrowvar
+                            if hasattr(ch,arrowvar) and not getattr(ch,arrowvar)==None:
+                                varcut=getattr(ch,arrowvar)
+                            if hasattr(ch,arrowvar+"_upper") and not getattr(ch,arrowvar+"_upper")==None:
+                                varcutupper=getattr(ch,arrowvar+"_upper")
+                            if not varcut==None:
+                                print "Place arrow at", arrowvar, " = ", varcut
+                                arrow=1
+                                SpecialArrow=plotname+">"+str(int(varcut))
+                            if not varcutupper==None:
+                                print "Place uppercut arrow at", arrowvar, " = ", varcutupper
+                                arrowupper=1
+                                SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
+                            if ana.find("Pres")>=0:
+                                arrow=0
 
-                                    if runSignal:
-                                        for point in plotSignalList:
-                                            print 'Signal Point: ',point['pointname']
-                                            signalHisto=ROOT.TH1F(varname+point['pointname']+tmptreename+ana+region,varname,nbinvar,minvar,maxvar)
-                                            print signalHisto
-                                            point['nthandle'].project(1.,varname+point['pointname']+tmptreename+ana+region,var,cuts)
-                                            print "SIGNAL", signalHisto, signalHisto.GetEntries()
-                                            signalHisto.SetLineColor(point['pointcolor'])
-                                            signalHisto.SetLineStyle(point['pointlinestyle'])
-                                            signalHisto.SetLineWidth(2)
-                                            signalHistos.append(signalHisto)
-                                            nameSignalHistos.append(point['pointsigplotname'])
-                                            nameMassSignalHistos.append(point['pointmass'])
+                            mcInt = {}
+                            firstbin = 0
+                            lastbin = -1
+                            smTotal = 0.
+                            mcHisto=[]
+                            mcSystHisto=[]
+                            mcAltHisto=[]
+                            mcTruthAltHisto=[]
+                            for j in jobs:
+                                print 'GET OUTPUT',j
+                                j.result_queue=output
+                                histo=output.get()
+                                print histo.GetName(), histo.GetEntries()
+                                clone=histo.Clone()
+                                if varcut != None: firstbin = histo.GetXaxis().FindBin(varcut)
+                                if varcutupper != None: lastbin = histo.GetXaxis().FindBin(varcutupper)
+                                mcInt[clone] = histo.Integral(firstbin,lastbin)
+                                smTotal += mcInt[clone]
+                                clone.Rebin(binscale)
+                                if DrawOverflow:
+                                    print "INGRID: nbins: ",clone.GetNbinsX(), ", Overflowbin: ", clone.GetBinContent(clone.GetNbinsX()+1)
+                                    nBins = clone.GetNbinsX()
+                                    LastBin = clone.GetBinContent(nBins)
+                                    OverflowBin = clone.GetBinContent(nBins+1)
+                                    print "Adding overflow bin!"
+                                    clone.SetBinContent(nBins,LastBin+OverflowBin)
+
+
+                                lock_sys=0
+                                if "TRUTH" in histo.GetName():
+                                    lock_sys=3
+                                elif 'alternative' in histo.GetName():
+                                    lock_sys=2
+                                for sys in systDict:
+                                    if sys in histo.GetName():
+                                        lock_sys=1
+                                if lock_sys == 0:
+                                    mcHisto.append(clone)
+                                elif lock_sys == 1:
+                                    mcSystHisto.append(clone)
+                                elif lock_sys == 3:
+                                    mcTruthAltHisto.append(clone)
+                                else:
+                                    mcAltHisto.append(clone)
+
+                            for j in jobs:
+                                j.terminate()
+                            output.close()
+                            output.join_thread()
+
+
+                            lock=1
+
+                            if runSignal:
+                                for point in plotSignalList:
+                                    print 'Signal Point: ',point['pointname']
+                                    signalHisto=ROOT.TH1F(varname+point['pointname']+tmptreename+ana+region,varname,nbinvar,minvar,maxvar)
+                                    print signalHisto
+                                    point['nthandle'].project(1.,varname+point['pointname']+tmptreename+ana+region,var,cuts)
+                                    print "SIGNAL", signalHisto, signalHisto.GetEntries()
+                                    signalHisto.SetLineColor(point['pointcolor'])
+                                    signalHisto.SetLineStyle(point['pointlinestyle'])
+                                    signalHisto.SetLineWidth(2)
+                                    signalHistos.append(signalHisto)
+                                    nameSignalHistos.append(point['pointsigplotname'])
+                                    nameMassSignalHistos.append(point['pointmass'])
 #                                            print "SIGNAL", signalHistos
 
-                                    if doCRY and doSyst:
-                                        for process in fullPlotMCTruth:
-                                            TruthHisto = ROOT.TH1F(varname+process['mctreePrefix']+ana+region+process['mctreeSuffix'],varname,nbinvar,minvar,maxvar)
-                                            process['ntmctruthalthandle'].project(1.,varname+process['mctreePrefix']+ana+region+process['mctreeSuffix'],var,truthcuts)
-                                            #print TruthHisto.GetName()
-                                            mcTruthAltHisto.append(TruthHisto)
+                            if doCRY and doSyst:
+                                for process in fullPlotMCTruth:
+                                    TruthHisto = ROOT.TH1F(varname+process['mctreePrefix']+ana+region+process['mctreeSuffix'],varname,nbinvar,minvar,maxvar)
+                                    process['ntmctruthalthandle'].project(1.,varname+process['mctreePrefix']+ana+region+process['mctreeSuffix'],var,truthcuts)
+                                    #print TruthHisto.GetName()
+                                    mcTruthAltHisto.append(TruthHisto)
 
-                                    canvas = ROOT.TCanvas(" "," ",10,32,668,643)
-                                    canvas.SetFrameFillColor(kWhite)
-                                    canvas.SetLogy(ROOT.kTRUE)
-                                    if(runData or len(systDict)>0 or doSignificance ):
-                                        upperPad = ROOT.TPad("upperPad", "upperPad", .001, .15, .995, .995)
-                                        lowerPad = ROOT.TPad("lowerPad", "lowerPad", .001, .001, .995, .27)
-                                        rootOpt.setUpPads("_logy",upperPad,lowerPad)
-                                        lowerPad.SetTopMargin(0.026)
-                                        upperPad.SetFrameFillStyle(4000)
-                                        lowerPad.SetFrameFillStyle(4000)
-                                        upperPad.cd()
+                            canvas = ROOT.TCanvas(" "," ",10,32,668,643)
+                            canvas.SetFrameFillColor(kWhite)
+                            canvas.SetLogy(ROOT.kTRUE)
+                            if(runData or len(systDict)>0 or doSignificance ):
+                                upperPad = ROOT.TPad("upperPad", "upperPad", .001, .15, .995, .995)
+                                lowerPad = ROOT.TPad("lowerPad", "lowerPad", .001, .001, .995, .27)
+                                rootOpt.setUpPads("_logy",upperPad,lowerPad)
+                                lowerPad.SetTopMargin(0.026)
+                                upperPad.SetFrameFillStyle(4000)
+                                lowerPad.SetFrameFillStyle(4000)
+                                upperPad.cd()
 
-
-                                    if(runData):
-                                        print 'new data plot',varname+"data"+ana+region,varname,nbinvar,minvar,maxvar
-                                        dataHisto=ROOT.TH1F(varname+"data"+ana+region,varname,nbinvar,minvar,maxvar)
-                                        dataHisto.GetXaxis().SetTitle(plotname)
-                                        lock=1
-                                        for plot in plotData:
-                                            if doBlinding and "SR" in region:
-                                                print "Data is blinded beyond SR cut"
-                                                plot.project(lock,varname+"data"+ana+region,var,cuts+blindcut)
-                                            else:
-                                                plot.project(lock,varname+"data"+ana+region,var,cuts)
-
-                                        if DrawOverflow:
-                                            print "INGRID: nbins: ",dataHisto.GetNbinsX(), ", Overflowbin: ", dataHisto.GetBinContent(dataHisto.GetNbinsX()+1)
-                                            nBinsdata = dataHisto.GetNbinsX()
-                                            LastBindata = dataHisto.GetBinContent(nBinsdata)
-                                            OverflowBindata = dataHisto.GetBinContent(nBinsdata+1)
-                                            print "Adding overflow bin!"
-                                            dataHisto.SetBinContent(nBinsdata,LastBindata+OverflowBindata)
-
-                                        datah_Poiss = ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
-                                        datah_Poiss.SetMarkerStyle(20)
-                                        datah_Poiss.SetMarkerSize(1.2)
-                                        datah_Poiss.SetMarkerColor(kBlack)
-                                        datah_Poiss.SetLineColor(kBlack)
-                                        datah_Poiss.SetLineWidth(3)
-                                        setAsymmErrors(dataHisto,datah_Poiss)
-
-                                        dataClone = ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
-                                        dataClone.SetMarkerStyle(20)
-                                        dataClone.SetMarkerSize(1.5)
-                                        dataClone.SetLineWidth(5)
-                                        dataClone.SetMarkerColor(kWhite)
-                                        dataClone.SetLineColor(kWhite)
-                                        setAsymmErrors(dataHisto,dataClone)
-                                        min = 0.25
-                                        max = dataHisto.GetMaximum()
-                                        if dataHisto.Integral()==0:
-                                            max = 1e5
-                                            min = 0.03
-                                        if (max <= 2.) :  min = 0.02
-                                        if max < 20:
-                                            yfactor=6
-                                        else:
-                                            if doCRQ:
-                                                yfactor=60
-                                            elif doCRW:
-                                                yfactor = 15
-                                            else:
-                                                yfactor=10
-                                        dataHisto.GetYaxis().SetRangeUser(min/2.,max*yfactor*10)
-                                        datah_Poiss.GetYaxis().SetRangeUser(min/2.,max*yfactor*10)
-
-                                        binWidth=dataHisto.GetBinWidth(1)
-                                        XUnit="Events / {0:.2f}".format(binWidth)
-                                        if(unit): XUnit=XUnit+" "+unit
-                                        dataHisto.GetYaxis().SetTitle(XUnit)
-                                        dataHisto.GetYaxis().SetLabelSize(0.05)
-                                        dataHisto.GetYaxis().SetTitleSize(0.055)
-                                        dataHisto.GetYaxis().SetTitleOffset(1.35)
-                                        dataHisto.GetYaxis().SetTitleFont(42)
-
-                                        dataHisto.Draw("p")
-                                        dataClone.Draw("p:e:same")
-                                        datah_Poiss.Draw("p:e:same")
-
-                                    mcStack = ROOT.THStack("stack","title_stack")
-                                    mcTotal = ROOT.TH1F("mcTotal",varname,nbinvar,minvar,maxvar)
-                                    mcTotal.SetLineColor(2)
-                                    mcTotal.SetLineWidth(2)
-
-                                    Clone_mcHisto=[]
-                                    binWidth=0
-                                    XUnitStack="units"
-                                    for whichmc in mc:
-                                        for h in mcHisto:
-                                            if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
-                                                clone=h.Clone()
-                                                Clone_mcHisto.append(clone)
-                                                mcStack.Add(clone)
-                                                mcTotal.Add(clone)
-                                                binWidth=clone.GetBinWidth(1) if varname.find("Jets")<0 else int(clone.GetBinWidth(1))
-                                                XUnitStack="events / "+str(binWidth)+" "+unit
-
-                                    sumSystHist=[]
-                                    for isyst in systDict:
-                                        tempHist=ROOT.TH1D("tempHist","tempHist",mcSystHisto[0].GetNbinsX(),mcSystHisto[0].GetXaxis().GetXmin(),mcSystHisto[0].GetXaxis().GetXmax())
-                                        #tempHist.Print()
-                                        print 'init',tempHist.GetBinContent(8)
-                                        for h in mcSystHisto:
-                                            if isyst in h.GetName():
-                                                tempHist.Add(h)
-                                        sumSystHist.append(tempHist)
-                                    for hAlt in mcAltHisto:
-                                        mcAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
-                                        mcAltTotal = mcTotal.Clone()
-                                        for h in mcHisto:
-                                            if h.GetName() in hAlt.GetName():
-                                                clonealt=hAlt.Clone()
-                                                clonealt.Add(h,-1.)
-                                        mcAltTotal.Add(clonealt)
-                                        sumSystHist.append(mcAltTotal)
-
-                                    if doCRY and len(mcTruthAltHisto)>0:
-                                        #print mcTruthAltHisto
-                                        mcTruthAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
-                                        mcTruthAltTotal = mcTotal.Clone()
-                                        for h in mcTruthAltHisto:
-                                            if "MadGraph" in h.GetName():
-                                                mcTruthAltTotal.Add(h,1)
-                                            else:
-                                                mcTruthAltTotal.Add(h,-1)
-                                        sumSystHist.append(mcTruthAltTotal)
-
-
-                                    if(runData):
-                                        mcStack.Draw("same:hist")
-                                        mcTotal.Draw("hist:same")
-                                        if(runSignal) and (SignalOnTop):
-                                            print "SIGNAL", len(signalHistos),signalHistos
-                                            for hsig in signalHistos:
-                                                #print type(hsig), hsig
-                                                hsig.Add(mcTotal,1)
-                                                hsig.SetLineWidth(4)
-                                                hsig.Draw("hist:same")
-                                        elif(runSignal):
-                                            #print len(signalHistos),signalHistos
-                                            for hsig in signalHistos:
-                                                #print type(hsig), hsig
-                                                hsig.SetLineWidth(4)
-                                                hsig.Draw("hist:same")
-                                        dataClone.Draw("p:e:same")
-                                        datah_Poiss.Draw("p:e:same")
+                            dataInt = 0
+                            if(runData):
+                                print 'new data plot',varname+"data"+ana+region,varname,nbinvar,minvar,maxvar
+                                dataHisto=ROOT.TH1F(varname+"data"+ana+region,varname,nbinvar,minvar,maxvar)
+                                dataHisto.GetXaxis().SetTitle(plotname)
+                                lock=1
+                                for plot in plotData:
+                                    if doBlinding and "SR" in region:
+                                        print "Data is blinded beyond SR cut"
+                                        plot.project(lock,varname+"data"+ana+region,var,cuts+blindcut)
                                     else:
-                                        mcStack.Draw("hist")
-                                        mcTotal.Draw("hist:same")
-                                        mcTotal_Poiss = ROOT.TGraphAsymmErrors(mcTotal.GetNbinsX())
-                                        mcTotal_Poiss.SetMarkerStyle(20)
-                                        mcTotal_Poiss.SetMarkerSize(1.2)
-                                        mcTotal_Poiss.SetMarkerColor(kBlack)
-                                        mcTotal_Poiss.SetLineColor(kBlack)
-                                        mcTotal_Poiss.SetLineWidth(3)
-                                        setAsymmErrors(mcTotal,mcTotal_Poiss)
-                                        mcTotal_Poiss.SetFillStyle(3444)
-                                        mcTotal_Poiss.SetFillColor(2)
-                                        maxsig = -1.
-                                        if(runSignal):
-                                            for hsig in signalHistos:
-                                                hsig.SetLineWidth(4)
-                                                hsig.Draw("hist:same")
-                                                maxsig = TMath.Max(maxsig, hsig.GetMaximum())
-                                        min = 0.25
-                                        maxbkg = mcStack.GetMaximum()
-                                        max = TMath.Max(maxbkg, maxsig)
-                                        if (max <= 2.) :  min = 0.02
-                                        yfactor=4
-                                        mcStack.SetMinimum(min)
-                                        mcStack.SetMaximum(max*yfactor)
-                                        mcStack.GetYaxis().SetRangeUser(min,max*yfactor)
-                                        mcStack.GetYaxis().SetTitle(XUnitStack)
-                                        mcStack.GetYaxis().SetLabelSize(0.05)
-                                        mcStack.GetYaxis().SetTitleOffset(1.4)
-                                        mcStack.GetYaxis().SetTitleFont(42)
-                                        xti=plotname
-                                        if(unit): xti=xti+" ["+unit+"]"
-                                        mcStack.GetXaxis().SetTitle(xti)
-                                        if(len(systDict)>0):
-                                            mcStack.GetXaxis().SetLabelSize(0.)
-                                        else:
-                                            mcStack.GetXaxis().SetLabelSize(0.03)
-                                        mcStack.GetXaxis().SetTitleOffset(.9)
-                                        mcStack.GetXaxis().SetTitleSize(0.04)
-                                        canvas.Modified()
+                                        plot.project(lock,varname+"data"+ana+region,var,cuts)
 
-                                    arrow=-1
-                                    arrowupper=-1
-                                    SpecialArrow=""
-                                    SpecialArrowUpper=""
-                                    varcut = None
-                                    varcutupper = None
-                                    arrowvar = var
-                                    if varname in ["met","meffIncl"]: arrowvar = varname
-                                    print "ARROW", varname, arrowvar
-                                    if hasattr(ch,arrowvar) and not getattr(ch,arrowvar)==None:
-                                        varcut=getattr(ch,arrowvar)
-                                    if hasattr(ch,arrowvar+"_upper") and not getattr(ch,arrowvar+"_upper")==None:
-                                        varcutupper=getattr(ch,arrowvar+"_upper")
-                                    if not varcut==None:
-                                        print "Place arrow at", arrowvar, " = ", varcut
-                                        arrow=1
-                                        SpecialArrow=plotname+">"+str(int(varcut))
-                                    if not varcutupper==None:
-                                        print "Place arrow at", arrowvar, " = ", varcutupper
-                                        arrowupper=1
-                                        SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
-                                    if ana.find("Pres")>=0:
-                                        arrow=0
+                                if DrawOverflow:
+                                    print "INGRID: nbins: ",dataHisto.GetNbinsX(), ", Overflowbin: ", dataHisto.GetBinContent(dataHisto.GetNbinsX()+1)
+                                    nBinsdata = dataHisto.GetNbinsX()
+                                    LastBindata = dataHisto.GetBinContent(nBinsdata)
+                                    OverflowBindata = dataHisto.GetBinContent(nBinsdata+1)
+                                    print "Adding overflow bin!"
+                                    dataHisto.SetBinContent(nBinsdata,LastBindata+OverflowBindata)
+                                dataInt = dataHisto.Integral(firstbin,lastbin)
+                                dataHisto.Rebin(binscale)
 
+                                datah_Poiss = ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
+                                datah_Poiss.SetMarkerStyle(20)
+                                datah_Poiss.SetMarkerSize(1.2)
+                                datah_Poiss.SetMarkerColor(kBlack)
+                                datah_Poiss.SetLineColor(kBlack)
+                                datah_Poiss.SetLineWidth(3)
+                                setAsymmErrors(dataHisto,datah_Poiss)
 
-                                    upperPad.RedrawAxis("same")
-
-                                    if arrow>0:
-
-                                        ar=TArrow(varcut,1.05*min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                        ar.SetLineWidth(5)
-                                        ar.SetLineColor(kBlack)
-                                        ar.SetFillColor(kBlack)
-                                        ar.Draw("")
-
-                                        ar1=TArrow(varcut,1.05*min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                        ar1.SetLineWidth(3)
-                                        ar1.SetLineColor(kWhite)
-                                        ar1.SetFillColor(kWhite)
-                                        ar1.Draw("")
-
-                                    if arrowupper>0:
-
-                                        aru=TArrow(varcutupper,1.05*min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                        aru.SetLineWidth(5)
-                                        aru.SetLineColor(kBlack)
-                                        aru.SetFillColor(kBlack)
-                                        aru.Draw("")
-
-                                        aru1=TArrow(varcutupper,1.05*min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                        aru1.SetLineWidth(3)
-                                        aru1.SetLineColor(kWhite)
-                                        aru1.SetFillColor(kWhite)
-                                        aru1.Draw("")
-
-                                    forPlotMcHisto=mcHisto[0]
-                                    cHisto=0
-                                    for h in mcHisto:
-                                        if cHisto>0: forPlotMcHisto.Add(h)
-                                        cHisto=cHisto+1
-                                    text=ROOT.TLatex()
-                                    if(runData):
-                                        PrintText(dataHisto.GetName(),text)
-
-                                    atlaslabel=ROOT.TLatex(0.2,0.89,"#bf{#it{ATLAS}} Internal")
-                                    atlaslabel.SetNDC()
-                                    atlaslabel.SetTextSize(0.055)
-                                    atlaslabel.SetTextFont(42)
-                                    atlaslabel.Draw("same")
-
-                                    lumilabel=ROOT.TLatex(0.2,0.82,"#sqrt{s}=13 TeV, %1.2f"  % (float(configMain.lumi))+" fb^{-1} " )
-                                    lumilabel.SetNDC()
-                                    lumilabel.SetTextSize(0.040)
-                                    lumilabel.SetTextFont(42)
-                                    lumilabel.Draw("same")
-
-                                    if "Pres" in ana:
-                                        anaName = ana
-                                        anaName = anaName.replace("Pres"," Preselection")
+                                dataClone = ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
+                                dataClone.SetMarkerStyle(20)
+                                dataClone.SetMarkerSize(1.5)
+                                dataClone.SetLineWidth(5)
+                                dataClone.SetMarkerColor(kWhite)
+                                dataClone.SetLineColor(kWhite)
+                                setAsymmErrors(dataHisto,dataClone)
+                                min = 0.25
+                                max = dataHisto.GetMaximum()
+                                if dataHisto.Integral()==0:
+                                    max = 1e5
+                                    min = 0.03
+                                if (max <= 2.) :  min = 0.02
+                                if max < 20:
+                                    yfactor=6
+                                else:
+                                    if doCRQ:
+                                        yfactor=60
+                                    elif doCRW:
+                                        yfactor = 15
                                     else:
-                                        anaName = ana
-                                    tobewritten=(whichKind['name']+" for " if (whichKind['type'].find("CR")>=0 or whichKind['type'].find("VR")>=0) else "") +anaName
-                                    if (runSignal):
-                                        analabel=ROOT.TLatex(0.57, 0.91, (tobewritten))
-                                    else:
-                                        analabel=ROOT.TLatex(0.65, 0.91, (tobewritten))
-                                    analabel.SetNDC()
-                                    analabel.SetTextSize(0.035)
-                                    analabel.SetTextFont(42)
-                                    analabel.Draw("same")
-                                    if (runSignal) and SignalOnTop:
-                                        legend=ROOT.TLegend(0.57,0.48,0.85,0.90)
-                                    elif (runSignal):
-                                        legend=ROOT.TLegend(0.57,0.48,0.85,0.90)
-                                    else:
-                                        legend=ROOT.TLegend(0.65,0.53,0.89,0.90)
-                                    if(runData):
-                                        legend.AddEntry(dataHisto,"Data 2015","p")
-                                    legend.AddEntry(mcTotal,"SM Total","l")
-                                    if SignalOnTop:
-                                        legend.SetTextSize(0.03)
-                                    else:
-                                        legend.SetTextSize(0.035)
-                                    legend.SetFillColor(0)
-                                    legend.SetFillStyle(0)
-                                    legend.SetBorderSize(0)
+                                        yfactor=10
+                                dataHisto.GetYaxis().SetRangeUser(min/10.,max*yfactor*100)
+                                datah_Poiss.GetYaxis().SetRangeUser(min/10.,max*yfactor*100)
 
-                                    for whichmc in mc:
-                                        for h in mcHisto:
+                                binWidth=dataHisto.GetBinWidth(1)
+                                XUnit="Events / {0:.2f}".format(binWidth)
+                                if(unit): XUnit=XUnit+" "+unit
+                                dataHisto.GetYaxis().SetTitle(XUnit)
+                                dataHisto.GetYaxis().SetLabelSize(0.05)
+                                dataHisto.GetYaxis().SetTitleSize(0.055)
+                                dataHisto.GetYaxis().SetTitleOffset(1.35)
+                                dataHisto.GetYaxis().SetTitleFont(42)
+
+                                dataHisto.Draw("p")
+                                dataClone.Draw("p:e:same")
+                                datah_Poiss.Draw("p:e:same")
+
+                            mcStack = ROOT.THStack("stack","title_stack")
+                            mcTotal = ROOT.TH1F("mcTotal",varname,nbinvar,minvar,maxvar)
+                            mcTotal.SetLineColor(2)
+                            mcTotal.SetLineWidth(2)
+
+                            Clone_mcHisto=[]
+                            binWidth=0
+                            XUnitStack="units"
+                            for whichmc in mc:
+                                for h in mcHisto:
+                                    if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
+                                        clone=h.Clone()
+                                        Clone_mcHisto.append(clone)
+                                        mcStack.Add(clone)
+                                        mcTotal.Add(clone)
+                                        binWidth=clone.GetBinWidth(1) if varname.find("Jets")<0 else int(clone.GetBinWidth(1))
+                                        XUnitStack="events / "+str(binWidth)+" "+unit
+
+                            sumSystHist=[]
+                            for isyst in systDict:
+                                tempHist=ROOT.TH1D("tempHist","tempHist",mcSystHisto[0].GetNbinsX(),mcSystHisto[0].GetXaxis().GetXmin(),mcSystHisto[0].GetXaxis().GetXmax())
+                                #tempHist.Print()
+                                print 'init',tempHist.GetBinContent(8)
+                                for h in mcSystHisto:
+                                    if isyst in h.GetName():
+                                        tempHist.Add(h)
+                                sumSystHist.append(tempHist)
+                            for hAlt in mcAltHisto:
+                                mcAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
+                                mcAltTotal = mcTotal.Clone()
+                                for h in mcHisto:
+                                    if h.GetName() in hAlt.GetName():
+                                        clonealt=hAlt.Clone()
+                                        clonealt.Add(h,-1.)
+                                mcAltTotal.Add(clonealt)
+                                sumSystHist.append(mcAltTotal)
+
+                            if doCRY and len(mcTruthAltHisto)>0:
+                                #print mcTruthAltHisto
+                                mcTruthAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
+                                mcTruthAltTotal = mcTotal.Clone()
+                                for h in mcTruthAltHisto:
+                                    if "MadGraph" in h.GetName():
+                                        mcTruthAltTotal.Add(h,1)
+                                    else:
+                                        mcTruthAltTotal.Add(h,-1)
+                                sumSystHist.append(mcTruthAltTotal)
+
+                            if(runData):
+                                mcStack.Draw("same:hist")
+                                mcTotal.Draw("hist:same")
+                                if(runSignal) and (SignalOnTop):
+                                    print "SIGNAL", len(signalHistos),signalHistos
+                                    for hsig in signalHistos:
+                                        #print type(hsig), hsig
+                                        hsig.Add(mcTotal,1)
+                                        hsig.SetLineWidth(4)
+                                        hsig.Draw("hist:same")
+                                elif(runSignal):
+                                    #print len(signalHistos),signalHistos
+                                    for hsig in signalHistos:
+                                        #print type(hsig), hsig
+                                        hsig.SetLineWidth(4)
+                                        hsig.Draw("hist:same")
+                                dataClone.Draw("p:e:same")
+                                datah_Poiss.Draw("p:e:same")
+                            else:
+                                mcStack.Draw("hist")
+                                mcTotal.Draw("hist:same")
+                                mcTotal_Poiss = ROOT.TGraphAsymmErrors(mcTotal.GetNbinsX())
+                                mcTotal_Poiss.SetMarkerStyle(20)
+                                mcTotal_Poiss.SetMarkerSize(1.2)
+                                mcTotal_Poiss.SetMarkerColor(kBlack)
+                                mcTotal_Poiss.SetLineColor(kBlack)
+                                mcTotal_Poiss.SetLineWidth(3)
+                                setAsymmErrors(mcTotal,mcTotal_Poiss)
+                                mcTotal_Poiss.SetFillStyle(3444)
+                                mcTotal_Poiss.SetFillColor(2)
+                                maxsig = -1.
+                                if(runSignal):
+                                    for hsig in signalHistos:
+                                        hsig.SetLineWidth(4)
+                                        hsig.Draw("hist:same")
+                                        maxsig = TMath.Max(maxsig, hsig.GetMaximum())
+                                min = 0.25
+                                maxbkg = mcStack.GetMaximum()
+                                max = TMath.Max(maxbkg, maxsig)
+                                if (max <= 2.) :  min = 0.02
+                                yfactor=4
+                                mcStack.SetMinimum(min)
+                                mcStack.SetMaximum(max*yfactor)
+                                mcStack.GetYaxis().SetRangeUser(min,max*yfactor)
+                                mcStack.GetYaxis().SetTitle(XUnitStack)
+                                mcStack.GetYaxis().SetLabelSize(0.05)
+                                mcStack.GetYaxis().SetTitleOffset(1.4)
+                                mcStack.GetYaxis().SetTitleFont(42)
+                                xti=plotname
+                                if(unit): xti=xti+" ["+unit+"]"
+                                mcStack.GetXaxis().SetTitle(xti)
+                                if(len(systDict)>0):
+                                    mcStack.GetXaxis().SetLabelSize(0.)
+                                else:
+                                    mcStack.GetXaxis().SetLabelSize(0.03)
+                                mcStack.GetXaxis().SetTitleOffset(.9)
+                                mcStack.GetXaxis().SetTitleSize(0.04)
+                                canvas.Modified()
+
+                            upperPad.RedrawAxis("same")
+
+                            if arrow>0:
+
+                                ar=TArrow(varcut,1.05*min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                ar.SetLineWidth(5)
+                                ar.SetLineColor(kBlack)
+                                ar.SetFillColor(kBlack)
+                                ar.Draw("")
+
+                                ar1=TArrow(varcut,1.05*min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                ar1.SetLineWidth(3)
+                                ar1.SetLineColor(kWhite)
+                                ar1.SetFillColor(kWhite)
+                                ar1.Draw("")
+
+                            if arrowupper>0:
+
+                                aru=TArrow(varcutupper,1.05*min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                aru.SetLineWidth(5)
+                                aru.SetLineColor(kBlack)
+                                aru.SetFillColor(kBlack)
+                                aru.Draw("")
+
+                                aru1=TArrow(varcutupper,1.05*min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                aru1.SetLineWidth(3)
+                                aru1.SetLineColor(kWhite)
+                                aru1.SetFillColor(kWhite)
+                                aru1.Draw("")
+
+                            forPlotMcHisto=mcHisto[0]
+                            cHisto=0
+                            for h in mcHisto:
+                                if cHisto>0: forPlotMcHisto.Add(h)
+                                cHisto=cHisto+1
+                            text=ROOT.TLatex()
+                            if(runData):
+                                PrintText(dataHisto.GetName(),text)
+
+                            atlaslabel=ROOT.TLatex(0.2,0.89,"#bf{#it{ATLAS}} Internal")
+                            atlaslabel.SetNDC()
+                            atlaslabel.SetTextSize(0.055)
+                            atlaslabel.SetTextFont(42)
+                            atlaslabel.Draw("same")
+
+                            lumilabel=ROOT.TLatex(0.2,0.82,"#sqrt{s}=13 TeV, %1.2f"  % configMain.lumi+" fb^{-1} " )
+                            lumilabel.SetNDC()
+                            lumilabel.SetTextSize(0.040)
+                            lumilabel.SetTextFont(42)
+                            lumilabel.Draw("same")
+
+                            if "Pres" in ana:
+                                anaName = ana
+                                anaName = anaName.replace("Pres"," Preselection")
+                            else:
+                                anaName = ana
+                            tobewritten=(whichKind['name']+" for " if (whichKind['type'].find("CR")>=0 or whichKind['type'].find("VR")>=0) else "") +anaName
+                            if (runSignal):
+                                analabel=ROOT.TLatex(0.5, 0.91, (tobewritten))
+                            else:
+                                analabel=ROOT.TLatex(0.6, 0.91, (tobewritten))
+                            analabel.SetNDC()
+                            analabel.SetTextSize(0.035)
+                            analabel.SetTextFont(42)
+                            analabel.Draw("same")
+                            if (runSignal) and SignalOnTop:
+                                legend=ROOT.TLegend(0.5,0.48,0.85,0.90)
+                            elif (runSignal):
+                                legend=ROOT.TLegend(0.5,0.48,0.85,0.90)
+                            else:
+                                legend=ROOT.TLegend(0.6,0.53,0.89,0.90)
+                            if(runData):
+                                legend.AddEntry(dataHisto,"Data 2015" + (" ({0})".format(dataInt) if varname=="LastCut" else ""),"p")
+                            legend.AddEntry(mcTotal,"SM Total" + (" ({0:.2f})".format(smTotal) if varname=="LastCut" else ""),"l")
+                            if SignalOnTop:
+                                legend.SetTextSize(0.03)
+                            else:
+                                legend.SetTextSize(0.035)
+                            legend.SetFillColor(0)
+                            legend.SetFillStyle(0)
+                            legend.SetBorderSize(0)
+
+                            for whichmc in mc:
+                                for h in mcHisto:
 #                                            print h.GetName()
-                                            if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
-                                                legend.AddEntry(h,whichmc['name'],"f")
+                                    if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
+                                        legend.AddEntry(h,whichmc['name'] + (" ({0:.2f})".format(mcInt[h]) if varname=="LastCut" else ""),"f")
 
-                                    if(runSignal) and SignalOnTop:
-                                        isig=0
-                                        for hsig in signalHistos:
-                                            legend.AddEntry(hsig,"SM Total + Signal","l")
-                                            legend.AddEntry("",nameSignalHistos[isig],"")
-                                            legend.AddEntry("",nameMassSignalHistos[isig],"")
-                                            isig+=1
-                                    elif(runSignal):
-                                        isig=0
-                                        for hsig in signalHistos:
-                                            legend.AddEntry(hsig,nameSignalHistos[isig],"l")
-                                            legend.AddEntry("",nameMassSignalHistos[isig],"")
-                                            isig+=1
+                            if(runSignal) and SignalOnTop:
+                                isig=0
+                                for hsig in signalHistos:
+                                    legend.AddEntry(hsig,"SM Total + Signal","l")
+                                    legend.AddEntry("",nameSignalHistos[isig],"")
+                                    legend.AddEntry("",nameMassSignalHistos[isig],"")
+                                    isig+=1
+                            elif(runSignal):
+                                isig=0
+                                for hsig in signalHistos:
+                                    sigInt = hsig.Integral(firstbin,lastbin)
+                                    hsig.Rebin(binscale)
+                                    legend.AddEntry(hsig,nameSignalHistos[isig]+(" ({0:.2f})".format(sigInt) if varname=="LastCut" else ""),"l")
+                                    legend.AddEntry("",nameMassSignalHistos[isig],"")
+                                    isig+=1
 
-                                    legend.SetLineColor(10)
-                                    legend.SetFillColor(10)
-                                    legend.Draw()
+                            legend.SetLineColor(10)
+                            legend.SetFillColor(10)
+                            legend.Draw()
 
-                                    if(runData or len(mcSystHisto)>0 or doSignificance):
-                                        lowerPad.cd()
-                                        if(runData):
-                                            ratio=ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
-                                            Allsys_band=ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
-                                            Allsys_plusTheory_band=ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
-                                            skeletonRatio=ROOT.TH1D("skeleton","skeleton",dataHisto.GetNbinsX(),dataHisto.GetXaxis().GetXmin(),dataHisto.GetXaxis().GetXmax())
-                                            Redline=ROOT.TLine(dataHisto.GetXaxis().GetXmin(),1,dataHisto.GetXaxis().GetXmax(),1)
-                                            skeletonRatio.GetXaxis().SetTitle(dataHisto.GetXaxis().GetTitle())
-                                        elif doSyst:
-                                            ratio=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
-                                            Allsys_band=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
-                                            Allsys_plusTheory_band=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
-                                            skeletonRatio=ROOT.TH1D("skeleton","skeleton",forPlotMcHisto.GetNbinsX(),forPlotMcHisto.GetXaxis().GetXmin(),forPlotMcHisto.GetXaxis().GetXmax())
-                                            Redline=ROOT.TLine(forPlotMcHisto.GetXaxis().GetXmin(),1,forPlotMcHisto.GetXaxis().GetXmax(),1)
-                                            xti=plotname
-                                            if(unit): xti=xti+" ["+unit+"]"
-                                            forPlotMcHisto.GetXaxis().SetTitle(xti)
-                                            skeletonRatio.GetXaxis().SetTitle(forPlotMcHisto.GetXaxis().GetTitle())
-                                        elif doSignificance:
-                                            ratio=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
-                                            Allsys_band=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
-                                            skeletonRatio=ROOT.TH1D("skeleton","skeleton",forPlotMcHisto.GetNbinsX(),forPlotMcHisto.GetXaxis().GetXmin(),forPlotMcHisto.GetXaxis().GetXmax())
-                                            Redline=ROOT.TLine(forPlotMcHisto.GetXaxis().GetXmin(),1,forPlotMcHisto.GetXaxis().GetXmax(),1)
-                                            xti=plotname
-                                            if(unit): xti=xti+" ["+unit+"]"
-                                            forPlotMcHisto.GetXaxis().SetTitle(xti)
-                                            skeletonRatio.GetXaxis().SetTitle(forPlotMcHisto.GetXaxis().GetTitle())
-                                        ratio.SetMarkerStyle(20 if runData else 19)
-                                        ratio.SetMarkerSize(0.1 if runData else 1.2)
-                                        ratio.SetLineWidth(3)
-                                        Allsys_band.SetFillColor(kYellow)
-                                        Allsys_plusTheory_band.SetFillColor(kRed+2)
-                                        Allsys_plusTheory_band.SetFillStyle(3354)
-                                        gStyle.SetHatchesLineWidth(2)
-                                        estimSystwTheory(forPlotMcHisto,sumSystHist,Allsys_band,Allsys_plusTheory_band)
-                                        #print forPlotMcHisto, sumSystHist
-                                        if(runData): GetDataMCRatio(dataHisto,forPlotMcHisto,ratio)
-                                        if doSignificance:
-                                            sigRatios=[]
-                                            for s in signalHistos:
-                                                print 'in PlotMaker run over s'
-                                                sigRatio=ROOT.TH1D("sigR","sigR",s.GetNbinsX(),s.GetXaxis().GetXmin(),s.GetXaxis().GetXmax())
-                                                sig_temp=s.Clone()
-                                                ComputeSignificance(sig_temp,forPlotMcHisto,sigRatio)
-                                                keep_ratio=sigRatio.Clone()
-                                                keep_ratio.SetLineColor(s.GetLineColor())
-                                                sigRatios.append(keep_ratio)
+                            if(runData or len(mcSystHisto)>0 or doSignificance):
+                                lowerPad.cd()
+                                if(runData):
+                                    ratio=ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
+                                    Allsys_band=ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
+                                    Allsys_plusTheory_band=ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
+                                    skeletonRatio=ROOT.TH1D("skeleton","skeleton",dataHisto.GetNbinsX(),dataHisto.GetXaxis().GetXmin(),dataHisto.GetXaxis().GetXmax())
+                                    Redline=ROOT.TLine(dataHisto.GetXaxis().GetXmin(),1,dataHisto.GetXaxis().GetXmax(),1)
+                                    skeletonRatio.GetXaxis().SetTitle(dataHisto.GetXaxis().GetTitle())
+                                elif doSyst:
+                                    ratio=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
+                                    Allsys_band=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
+                                    Allsys_plusTheory_band=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
+                                    skeletonRatio=ROOT.TH1D("skeleton","skeleton",forPlotMcHisto.GetNbinsX(),forPlotMcHisto.GetXaxis().GetXmin(),forPlotMcHisto.GetXaxis().GetXmax())
+                                    Redline=ROOT.TLine(forPlotMcHisto.GetXaxis().GetXmin(),1,forPlotMcHisto.GetXaxis().GetXmax(),1)
+                                    xti=plotname
+                                    if(unit): xti=xti+" ["+unit+"]"
+                                    forPlotMcHisto.GetXaxis().SetTitle(xti)
+                                    skeletonRatio.GetXaxis().SetTitle(forPlotMcHisto.GetXaxis().GetTitle())
+                                elif doSignificance:
+                                    ratio=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
+                                    Allsys_band=ROOT.TGraphAsymmErrors(forPlotMcHisto.GetNbinsX())
+                                    skeletonRatio=ROOT.TH1D("skeleton","skeleton",forPlotMcHisto.GetNbinsX(),forPlotMcHisto.GetXaxis().GetXmin(),forPlotMcHisto.GetXaxis().GetXmax())
+                                    Redline=ROOT.TLine(forPlotMcHisto.GetXaxis().GetXmin(),1,forPlotMcHisto.GetXaxis().GetXmax(),1)
+                                    xti=plotname
+                                    if(unit): xti=xti+" ["+unit+"]"
+                                    forPlotMcHisto.GetXaxis().SetTitle(xti)
+                                    skeletonRatio.GetXaxis().SetTitle(forPlotMcHisto.GetXaxis().GetTitle())
+                                ratio.SetMarkerStyle(20 if runData else 19)
+                                ratio.SetMarkerSize(0.1 if runData else 1.2)
+                                ratio.SetLineWidth(3)
+                                Allsys_band.SetFillColor(kYellow)
+                                Allsys_plusTheory_band.SetFillColor(kRed+2)
+                                Allsys_plusTheory_band.SetFillStyle(3354)
+                                gStyle.SetHatchesLineWidth(2)
+                                estimSystwTheory(forPlotMcHisto,sumSystHist,Allsys_band,Allsys_plusTheory_band)
+                                #print forPlotMcHisto, sumSystHist
+                                if(runData): GetDataMCRatio(dataHisto,forPlotMcHisto,ratio)
+                                if doSignificance:
+                                    sigRatios=[]
+                                    for s in signalHistos:
+                                        print 'in PlotMaker run over s'
+                                        sigRatio=ROOT.TH1D("sigR","sigR",s.GetNbinsX(),s.GetXaxis().GetXmin(),s.GetXaxis().GetXmax())
+                                        sig_temp=s.Clone()
+                                        ComputeSignificance(sig_temp,forPlotMcHisto,sigRatio)
+                                        keep_ratio=sigRatio.Clone()
+                                        keep_ratio.SetLineColor(s.GetLineColor())
+                                        sigRatios.append(keep_ratio)
 
-                                        skeletonRatio.GetXaxis().SetLabelSize(0.13)
-                                        skeletonRatio.GetXaxis().SetTitleSize(0.15)
+                                skeletonRatio.GetXaxis().SetLabelSize(0.13)
+                                skeletonRatio.GetXaxis().SetTitleSize(0.15)
 
-                                        skeletonRatio.GetXaxis().SetTitleOffset(1)
-                                        skeletonRatio.GetYaxis().SetLabelSize(0.10)
-                                        skeletonRatio.GetYaxis().SetTitleSize(0.15)
-                                        skeletonRatio.GetYaxis().SetTitleOffset(0.48)
-                                        skeletonRatio.GetYaxis().SetRangeUser(0,3.2)
-                                        skeletonRatio.GetYaxis().SetRangeUser(0,2.)
-                                        skeletonRatio.GetYaxis().SetNdivisions(504,False)
-                                        if runData :
-                                            skeletonRatio.GetYaxis().SetTitle("Data / MC")
-                                        elif doSignificance:
-                                            skeletonRatio.GetYaxis().SetTitle("Significance")
-                                            skeletonRatio.GetYaxis().SetRangeUser(0,6.)
-                                        else:
-                                            skeletonRatio.GetYaxis().SetTitle("MC syst")
+                                skeletonRatio.GetXaxis().SetTitleOffset(1)
+                                skeletonRatio.GetYaxis().SetLabelSize(0.10)
+                                skeletonRatio.GetYaxis().SetTitleSize(0.15)
+                                skeletonRatio.GetYaxis().SetTitleOffset(0.48)
+                                skeletonRatio.GetYaxis().SetRangeUser(0,3.2)
+                                skeletonRatio.GetYaxis().SetRangeUser(0,2.)
+                                skeletonRatio.GetYaxis().SetNdivisions(504,False)
+                                if runData :
+                                    skeletonRatio.GetYaxis().SetTitle("Data / MC")
+                                elif doSignificance:
+                                    skeletonRatio.GetYaxis().SetTitle("Significance")
+                                    skeletonRatio.GetYaxis().SetRangeUser(0,6.)
+                                else:
+                                    skeletonRatio.GetYaxis().SetTitle("MC syst")
 
-                                        Redline.SetLineColor(2)
-                                        Redline.SetLineStyle(2)
-                                        Redline.SetLineWidth(2)
+                                Redline.SetLineColor(2)
+                                Redline.SetLineStyle(2)
+                                Redline.SetLineWidth(2)
 
-                                        skeletonRatio.Draw()
-                                        if doSyst:
-                                            Allsys_plusTheory_band.Draw("2 same")
-                                        elif doSignificance:
-                                            for s in sigRatios:
-                                                s.Draw("2 same")
-                                        ratio.Draw("same:p:e")
-                                        ErrorLines = DrawErrorsOutsidePad(ratio)
+                                skeletonRatio.Draw()
+                                if doSyst:
+                                    Allsys_plusTheory_band.Draw("2 same")
+                                elif doSignificance:
+                                    for s in sigRatios:
+                                        s.Draw("2 same")
+                                ratio.Draw("same:p:e")
+                                ErrorLines = DrawErrorsOutsidePad(ratio)
 
-                                        for lines in ErrorLines:
-                                            lines.Draw()
+                                for lines in ErrorLines:
+                                    lines.Draw()
 
-                                        if not doSignificance:
-                                            Redline.Draw("same")
-                                        lowerPad.RedrawAxis("same")
+                                if not doSignificance:
+                                    Redline.Draw("same")
+                                lowerPad.RedrawAxis("same")
 
-                                    if SignalOnTop:
-                                        canvas.SaveAs(outplotdir+str('intL%0difb' % (float(configMain.lumi)))+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+"_SignalOnTop"+".pdf")
-                                        canvas.SaveAs(outplotdir+str('intL%0difb' % (float(configMain.lumi)))+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+"_SignalOnTop"+".eps")
-                                    else:
-                                        canvas.SaveAs(outplotdir+str('intL%0difb' % (float(configMain.lumi)))+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+".pdf")
-                                        canvas.SaveAs(outplotdir+str('intL%0difb' % (float(configMain.lumi)))+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+".eps")
-                                    del canvas,mcTotal,legend,mcStack
-                                    DeleteList(mcHisto)
-                                    DeleteList(Clone_mcHisto)
-                                    DeleteList(mcSystHisto)
-                                    DeleteList(mcAltHisto)
-                                    DeleteList(mcTruthAltHisto)
-                                    DeleteList(jobs)
-                            if runData: DeleteList(plotData)
-                            if runSignal: DeleteNtList(plotSignalList)
-                            DeleteNtList(fullPlotMC)
-                            if doSyst: DeleteNtList(fullPlotMCSyst)
-
-
+                            if SignalOnTop:
+                                canvas.SaveAs(outplotdir+('intL%0difb' % configMain.lumi)+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+"_SignalOnTop"+".pdf")
+                                canvas.SaveAs(outplotdir+('intL%0difb' % configMain.lumi)+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+"_SignalOnTop"+".eps")
+                            else:
+                                canvas.SaveAs(outplotdir+('intL%0difb' % configMain.lumi)+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+".pdf")
+                                canvas.SaveAs(outplotdir+('intL%0difb' % configMain.lumi)+"_"+region+"_"+ana+"_"+varname+"_"+whichKind['type']+".eps")
+                            del canvas,mcTotal,legend,mcStack
+                            DeleteList(mcHisto)
+                            DeleteList(Clone_mcHisto)
+                            DeleteList(mcSystHisto)
+                            DeleteList(mcAltHisto)
+                            DeleteList(mcTruthAltHisto)
+                            DeleteList(jobs)
+                    if runData: DeleteList(plotData)
+                    if runSignal: DeleteNtList(plotSignalList)
+                    DeleteNtList(fullPlotMC)
+                    if doSyst: DeleteNtList(fullPlotMCSyst)
 
 if __name__ == "__main__":
     main(config)
