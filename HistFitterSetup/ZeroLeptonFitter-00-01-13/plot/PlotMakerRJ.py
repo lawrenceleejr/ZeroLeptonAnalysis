@@ -24,6 +24,7 @@ def parseCmdLine(args):
     parser.add_option("--SignalOnTop", action = "store_true", dest="SignalOnTop", help=" Add signal to SM background in SR plots", default=False)
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--lumi", dest="lumi", help="lumi", default=5.8)
+    parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     (config, args) = parser.parse_args(args)
     print config
     return config
@@ -43,7 +44,7 @@ if 'nikhef' in socket.getfqdn():
 else:
     sampledir = config.inputSampleDir
     mcdir = sampledir
-    datadir = mcdir
+    datadir = sampledir
     mcsignaldir = sampledir
     mcaltdir = sampledir
 
@@ -237,20 +238,21 @@ varList = [
            {'varName':'origmetPhi', 'varNtuple':'origmetPhi', 'plotName': '#phi(E_{T}^{miss,orig})', 'nbinvar':'40','minvar':'-1','maxvar':'7','unit':''},
            ]
 
-datafile = 'DataMain_dataall_13TeV.root'
+datafile =  'DataMain_2016_302391.root' #'DataMain_dataall_13TeV.root'
+fullDataPath = config.inputDataFile if config.inputDataFile else (datadir + datafile)
 
 datafile =[
-           {'whichdata':'SR','filename':datadir+datafile,
+           {'whichdata':'SR','filename':fullDataPath,
            'dataname':'Data_SRAll'},
-           {'whichdata':'CRWT','filename':datadir+datafile,
+           {'whichdata':'CRWT','filename':fullDataPath,
            'dataname':'Data_CRWT'},
-           {'whichdata':'VRWT','filename':datadir+datafile,
+           {'whichdata':'VRWT','filename':fullDataPath,
            'dataname':'Data_VRWT'},
-           {'whichdata':'CRY','filename':datadir+datafile,
+           {'whichdata':'CRY','filename':fullDataPath,
            'dataname':'Data_CRY'},
-           {'whichdata':'VRZ','filename':datadir+datafile,
+           {'whichdata':'VRZ','filename':fullDataPath,
            'dataname':'Data_CRZ'},
-           {'whichdata':'CRQ','filename':datadir+datafile,
+           {'whichdata':'CRQ','filename':fullDataPath,
            'dataname':'Data_SRAll'},
            ]
 
