@@ -274,7 +274,7 @@ def main(zlFitterConfig):
 
     parser = OptionParser()
     parser.add_option("--blind"  , default=False, action="store_true", help="")
-    parser.add_option("--doSignal", default=False, action="store_true", help="")
+    parser.add_option("--signal", default="", help="Give a signal point that you want to get the syst table for")
     parser.add_option("--PrintOnly", default=False, action="store_true", help="do not execute the command")
     parser.add_option("--doVR", default=False, action="store_true", help="include tables with VRs that are not the _all.tex version")#ATT: remove
     parser.add_option("-s", "--shape", default=False, action="store_true", help="workspace has shape fits")#ATT: remove
@@ -306,13 +306,31 @@ def main(zlFitterConfig):
 
         # Filename containing workspace
         filenames = [os.path.join(options.output_dir, "ZL_%s_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root" % anaName)]
-        if options.doSignal :
+        if options.signal :
             filenames = []
             for root, dirs, files in os.walk("results/", topdown=False):
                 for name in files:
                     if "combined_NormalMeasurement_model_afterFit.root" in name :
 #                        print(os.path.join(root, name))
-                        filenames.append(os.path.join(root,name))
+                        if options.signal in name :
+                            filenames.append(os.path.join(root,name))
+
+
+        print filenames
+        if not filenames :
+            print "Failed to find any fit results in this directory"
+            if options.signal :
+                print "You ran looking for signal fits. you either ran in the wrong directory, or you gave a signal point which is not a fit result. Printing the list of afterFit workspaces : "
+                filenames = []
+                for root, dirs, files in os.walk("results/", topdown=False):
+                    for name in files:
+                        if "combined_NormalMeasurement_model_afterFit.root" in name :
+                            print(os.path.join(root, name))
+            else :
+                print "For background fits, you probably just ran in the wrong directory"
+            print "exiting"
+            exit()
+
 
         for filename in filenames :
             if not os.path.isfile(filename):
