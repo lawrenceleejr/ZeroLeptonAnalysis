@@ -367,7 +367,7 @@ def main(zlFitterConfig):
                         pickle.dump( pullMap, open( pullFileName, "wb" ) )
 
 
-            #makeSummaryPlots(options.PrintOnly)
+            makeSummaryPlots(options.PrintOnly)
 
 if __name__ == "__main__":
     zlFitterConfig = ZLFitterConfig()
