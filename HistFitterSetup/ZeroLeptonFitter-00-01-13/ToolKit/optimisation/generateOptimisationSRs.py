@@ -235,7 +235,7 @@ SignalRegions = [
 for SignalRegion in SignalRegions:
     for subsetPoints in chunks(points, pointsPerCommand):
         # ROOT5 has a tendency to crash if we don't run the -t step seperately, so do that
-        cmd = "HistFitter.py -D allPlots -t -w -f -z -p -l -F excl -g grid{0},{1}  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( grid, ",".join(subsetPoints) , SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
+        cmd = "HistFitter.py -D allPlots -t -w -f -p -l -F excl -g grid{0},{1}  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( grid, ",".join(subsetPoints) , SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
 
         # NOTE: I need to become clever enough to recycle histograms for the final discriminating variable.
         # print cmd
