@@ -39,12 +39,16 @@ void makecontourplots_CLs(const TString Grid="GG_direct",TString dirname = "Outp
     }
   }
   cout<<"lumi="<<lumi<<" fb-1"<<endl;
+
+  TFile * customContourFile = TFile::Open(  "output.root", "READ" );
+  customContourFile->ls();
+
   (void) SUSY_contourplots(
       infilelist.at(0), infilelist.at(1), infilelist.at(2),
       "0-leptons, 2-6 jets", 
       lumi,
       Grid,
       showSR,
-      discexcl=1);
+      discexcl=1,customContourFile);
 }
 

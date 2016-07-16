@@ -564,6 +564,42 @@ DrawContourLine95( TLegend *leg, TH2F* hist, const TString& text="", Int_t linec
 }
 
 
+
+
+void 
+DrawContourLineCustom( TLegend *leg, TGraph* graph, const TString& text="", Int_t linecolor=CombinationGlob::c_VDarkGray, Int_t linestyle=2, Int_t linewidth=2 , TString Grid="" )
+{
+
+  // contour plot
+  // TH2F* h = new TH2F( *hist );
+  // h->SetContourLevel( 0, signif );
+
+  cout << graph << endl;
+  cout << graph->GetName() << endl;
+
+  graph->SetLineColor( linecolor );
+  graph->SetLineWidth( linewidth );
+  graph->SetLineStyle( linestyle );
+  graph->Draw( "L" );
+
+  if (!text.IsNull()) leg->AddEntry(graph,text.Data(),"l");
+
+  TString outfileName = Grid+"_customContours.root" ;
+  TString histname = graph->GetName();
+  if(!outfile) outfile = new TFile(outfileName, "recreate");
+  // TGraph* g = (TGraph*) ContourGraph( h )->Clone("g"+histname);
+  // if( histname!="contour_obscls_1"&&histname!="contour_obscls_2" ){
+    outfile->cd();
+    graph->Write();
+    // h->Write();
+  // }
+
+}
+
+
+
+
+
 void
 DrawContourLine3sigma( TLegend *leg, TH2F* hist, const TString& text="", Int_t linecolor=CombinationGlob::c_VDarkGray, Int_t linestyle=2, Int_t linewidth=2 )
 {
@@ -723,13 +759,13 @@ TString GetSRName(int fID, TString txtfile){
   nameList.push_back("C5");
   nameList.push_back("C1");
   nameList.push_back("C2");
-  nameList.push_back( "C3");
-  nameList.push_back( "G3a");
-  nameList.push_back( "G3b");
-  nameList.push_back( "G2b");
-  nameList.push_back( "G2a");
-  nameList.push_back( "G1b");
-  nameList.push_back( "G1a");
+  nameList.push_back("C3");
+  nameList.push_back("G3a");
+  nameList.push_back("G3b");
+  nameList.push_back("G2b");
+  nameList.push_back("G2a");
+  nameList.push_back("G1b");
+  nameList.push_back("G1a");
 
   return nameList.at(fID-1);
   // return text;
@@ -830,7 +866,8 @@ void SUSY_contourplots(
     TString lumi = 5,
     TString Grid="GG_direct",
     bool showSR=false,
-    int discexcl = 1)
+    int discexcl = 1, 
+    TFile* customContourFile=0)
 {
 
   initialize();
@@ -1074,67 +1111,96 @@ void SUSY_contourplots(
     targetpoint_white->SetPoint(2,825,745);
   }
 
-  // cout << "--- Get observed limit errors " << endl;
-  // TH2F* histe_esigxsp1s;                              
-  // TH2F* histe_esigxsm1s;      
-  // if(f1&&0) histe_esigxsp1s = (TH2F*)f1->Get( "sigp1clsf" ); 
-  // if(f2&&0) histe_esigxsm1s = (TH2F*)f2->Get( "sigp1clsf" );
-  // if(doSmooth){
-  //   histe_esigxsp1s->Smooth();
-  //   histe_esigxsm1s->Smooth();
-  // }
-
-  // f1->ls();
-  // f2->ls();
-
-  // cout << "--- FixAndSetBorders expected band : " << histe_esigxsp1s->GetName()<< endl;
-  // TH2F* contour_esigxsp1s
-  //   = ( histe_esigxsp1s!=0 ? FixAndSetBorders( *histe_esigxsp1s, "contour_esigxsp1s", "contour_esigxsp1s", 0 ) : 0);                              
-  // cout << "--- FixAndSetBorders expected band : " << histe_esigxsm1s->GetName()<< endl;
-  // TH2F* contour_esigxsm1s                              
-  //   = ( histe_esigxsm1s!=0 ? FixAndSetBorders( *histe_esigxsm1s, "contour_esigxsm1s", "contour_esigxsm1s", 0 ) : 0);      
-
-  // cout << "--- FixAndSetBorders expected band : " << histecls1->GetName()<< endl;
-  // TH2F* contour_obscls_1(0);
-  // FixAndSetBorders( *histecls1, "contour_obscls_1", "contour_obscls_1", 0 );
-  // if (histecls1!=0) { contour_obscls_1     = FixAndSetBorders( *histecls1, "contour_obscls_1", "contour_obscls_1", 0 ); }   
-  // TH2F* contour_obscls_2(0);
-  // cout << "--- FixAndSetBorders expected band : " << histecls2->GetName()<< endl;
-  // if (histecls2!=0) { contour_obscls_2     = FixAndSetBorders( *histecls2, "contour_obscls_2", "contour_obscls_2", 0 ); }   
-  TH2F* contour_obscls_0(0);
-  cout << "--- FixAndSetBorders expected band : " << histecls0zz->GetName()<< endl;
-  // histecls0zz->Print("all");
-  if (histecls0zz!=0) { contour_obscls_0     = FixAndSetBorders( *histecls0zz, "contour_obscls_0", "contour_obscls_0", 0 ); }   
-
-  cout << "--- Draw expected band " << endl;
-  // c->cd();
-  // TGraph* grshadeExp =  (TGraph*) DrawExpectedBand( gr_contour_1su, gr_contour_1sd,   c_myYellow , 1001   , 0 )->Clone();
-  c->cd();
-  DrawContourLine95( leg, contour_1su,         "", c_myYellow, 1, 2 , Grid );
-  c->cd();
-  DrawContourLine95( leg, contour_1sd,         "", c_myYellow, 1, 2 , Grid );
-
-  // c->cd();
-  // if (contour_esigxsp1s!=0) DrawContourLine95( leg, contour_esigxsp1s, "", CombinationGlob::c_DarkRed, 3, 2 , Grid );
-  // c->cd();
-  // if (contour_esigxsm1s!=0) DrawContourLine95( leg, contour_esigxsm1s, "", CombinationGlob::c_DarkRed, 3, 2 , Grid );
-
-  // c->cd();
-  // if (contour_obscls_1!=0) DrawContourLine95( leg, contour_obscls_1, ""              , CombinationGlob::c_DarkRed, 3, 2 , Grid ); 
-  c->cd();
-  if (contour_obscls_0!=0) DrawContourLine95( leg, contour_obscls_0, "Observed limit (#pm1 #sigma_{theory}^{SUSY})", CombinationGlob::c_DarkRed, 1, 4 , Grid );
-  // histecls0zz->Write();
-  // if (contour_obscls_0!=0) DrawContourLine95( leg, histecls0zz, "Observed limit (#pm1 #sigma_{theory}^{SUSY})", CombinationGlob::c_DarkRed, 1, 4 , Grid );
-  // c->cd();
-  // if (contour_obscls_2!=0) DrawContourLine95( leg, contour_obscls_2, ""              , CombinationGlob::c_DarkRed, 3, 2 , Grid ); 
 
 
 
-  c->cd();
-  DrawContourLine95( leg, contourexp_comb, "", c_myExp, 6, 2 , Grid );
+  if(customContourFile&&0){
+
+
+        // cout << "--- Get observed limit errors " << endl;
+        // TH2F* histe_esigxsp1s;                              
+        // TH2F* histe_esigxsm1s;      
+        // if(f1&&0) histe_esigxsp1s = (TH2F*)f1->Get( "sigp1clsf" ); 
+        // if(f2&&0) histe_esigxsm1s = (TH2F*)f2->Get( "sigp1clsf" );
+        // if(doSmooth){
+        //   histe_esigxsp1s->Smooth();
+        //   histe_esigxsm1s->Smooth();
+        // }
+
+        // f1->ls();
+        // f2->ls();
+
+        // cout << "--- FixAndSetBorders expected band : " << histe_esigxsp1s->GetName()<< endl;
+        // TH2F* contour_esigxsp1s
+        //   = ( histe_esigxsp1s!=0 ? FixAndSetBorders( *histe_esigxsp1s, "contour_esigxsp1s", "contour_esigxsp1s", 0 ) : 0);                              
+        // cout << "--- FixAndSetBorders expected band : " << histe_esigxsm1s->GetName()<< endl;
+        // TH2F* contour_esigxsm1s                              
+        //   = ( histe_esigxsm1s!=0 ? FixAndSetBorders( *histe_esigxsm1s, "contour_esigxsm1s", "contour_esigxsm1s", 0 ) : 0);      
+
+        // cout << "--- FixAndSetBorders expected band : " << histecls1->GetName()<< endl;
+        // TH2F* contour_obscls_1(0);
+        // FixAndSetBorders( *histecls1, "contour_obscls_1", "contour_obscls_1", 0 );
+        // if (histecls1!=0) { contour_obscls_1     = FixAndSetBorders( *histecls1, "contour_obscls_1", "contour_obscls_1", 0 ); }   
+        // TH2F* contour_obscls_2(0);
+        // cout << "--- FixAndSetBorders expected band : " << histecls2->GetName()<< endl;
+        // if (histecls2!=0) { contour_obscls_2     = FixAndSetBorders( *histecls2, "contour_obscls_2", "contour_obscls_2", 0 ); }   
+        TH2F* contour_obscls_0(0);
+        cout << "--- FixAndSetBorders expected band : " << histecls0zz->GetName()<< endl;
+        // histecls0zz->Print("all");
+        if (histecls0zz!=0) { contour_obscls_0     = FixAndSetBorders( *histecls0zz, "contour_obscls_0", "contour_obscls_0", 0 ); }   
+
+        cout << "--- Draw expected band " << endl;
+        // c->cd();
+        // TGraph* grshadeExp =  (TGraph*) DrawExpectedBand( gr_contour_1su, gr_contour_1sd,   c_myYellow , 1001   , 0 )->Clone();
+        c->cd();
+        DrawContourLine95( leg, contour_1su,         "", c_myYellow, 1, 2 , Grid );
+        c->cd();
+        DrawContourLine95( leg, contour_1sd,         "", c_myYellow, 1, 2 , Grid );
+
+        // c->cd();
+        // if (contour_esigxsp1s!=0) DrawContourLine95( leg, contour_esigxsp1s, "", CombinationGlob::c_DarkRed, 3, 2 , Grid );
+        // c->cd();
+        // if (contour_esigxsm1s!=0) DrawContourLine95( leg, contour_esigxsm1s, "", CombinationGlob::c_DarkRed, 3, 2 , Grid );
+
+        // c->cd();
+        // if (contour_obscls_1!=0) DrawContourLine95( leg, contour_obscls_1, ""              , CombinationGlob::c_DarkRed, 3, 2 , Grid ); 
+        c->cd();
+        if (contour_obscls_0!=0) DrawContourLine95( leg, contour_obscls_0, "Observed limit (#pm1 #sigma_{theory}^{SUSY})", CombinationGlob::c_DarkRed, 1, 4 , Grid );
+        // histecls0zz->Write();
+        // if (contour_obscls_0!=0) DrawContourLine95( leg, histecls0zz, "Observed limit (#pm1 #sigma_{theory}^{SUSY})", CombinationGlob::c_DarkRed, 1, 4 , Grid );
+        // c->cd();
+        // if (contour_obscls_2!=0) DrawContourLine95( leg, contour_obscls_2, ""              , CombinationGlob::c_DarkRed, 3, 2 , Grid ); 
+
+
+
+        c->cd();
+        DrawContourLine95( leg, contourexp_comb, "", c_myExp, 6, 2 , Grid );
+
+  } else {
+
+    // customContourFile->Get("clsu1s");
+
+    customContourFile->ls();
+
+    c->cd();
+    cout << "--- Draw expected band " << endl;
+    DrawContourLineCustom( leg, (TGraph*) customContourFile->Get("clsu1s_Contour_0"),         "", c_myYellow, 1, 2 , Grid );
+    c->cd();
+    cout << "--- Draw expected band " << endl;
+
+    DrawContourLineCustom( leg, (TGraph*) customContourFile->Get("clsd1s_Contour_0"),         "", c_myYellow, 1, 2 , Grid );
+    c->cd();
+    DrawContourLineCustom( leg, (TGraph*) customContourFile->Get("CLs_Contour_0"), "Observed limit (#pm1 #sigma_{theory}^{SUSY})", CombinationGlob::c_DarkRed, 1, 4 , Grid );
+    c->cd();
+    DrawContourLineCustom( leg, (TGraph*) customContourFile->Get("CLsexp_Contour_0"), "", c_myExp, 6, 2 , Grid );
+
+  }
+
+
 
   c->cd();
   DummyLegendExpected(leg, "Exp. limits (#pm1 #sigma_{exp})",  c_myYellow, 1001, c_myExp, 6, 2);
+
 
   // plot 8 TeV exclusion:
   cout << "--- Get 8 TeV exclusionend " << endl;

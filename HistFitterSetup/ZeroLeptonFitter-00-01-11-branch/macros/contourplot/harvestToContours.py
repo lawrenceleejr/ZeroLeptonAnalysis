@@ -34,11 +34,13 @@ def main():
 	addZerosToDict(tmpdict,maxyvalue = 1000)
 
 	# Step 2 - Interpolate the fit results
+	print ">>> Interpolating mass plane"
 	(xi,yi,zi) = interpolateMassPlane( tmpdict , args.interpolation )
 
 
 	f = ROOT.TFile(args.outputFile,"recreate")
 
+	print ">>> Writing contours out"
 	# Step 3 - 
 	for whichEntry in ["CLs","CLsexp","clsu1s","clsu2s","clsd1s","clsd2s"]:
 		contourList = getContourPoints(xi,yi,zi[whichEntry], args.level)
@@ -49,6 +51,7 @@ def main():
 			graph =	ROOT.TGraph(len(contour[0]), contour[0].flatten('C'), contour[1].flatten('C') )
 			graph.Write("%s_Contour_%d"%(whichEntry,i)  )
 
+	print ">>> Closing file"
 
 	f.Write()
 	f.Close()
@@ -144,6 +147,7 @@ def interpolateMassPlane(massPlaneDict = {}, interpolationFunction = "linear"):
 
 	zi = {}
 	for whichEntry in ["CLs","CLsexp","clsu1s","clsu2s","clsd1s","clsd2s"]:	
+		print ">>>> Interpolating %s"%whichEntry
 		rbf = LSQ_Rbf(x, y, zValues[whichEntry], function=interpolationFunction)
 		zi[whichEntry] = rbf(xi, yi)
 
