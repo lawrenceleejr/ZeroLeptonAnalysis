@@ -824,8 +824,10 @@ LimitResult RooStats::get_Pvalue(     RooWorkspace* w,
                 modelSBName, modelBName,
                 dataName, 
                 nuisPriorName ) ;
+	
         if (result==0) { return lres; }    
-        lres = RooStats::get_Pvalue( result );
+        if (result->ArraySize()<1) return lres;
+	lres = RooStats::get_Pvalue( result );
 
     } else {  // discovery
         if (testStatType==3) {

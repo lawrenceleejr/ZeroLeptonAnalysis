@@ -15,8 +15,8 @@ void makecontourplots_CLs(const TString Grid="GG_direct",TString dirname = "Outp
   vector<TString> inlist;
   
   // XSec Nominal Up Down
-  TString combined[3]={"combined_fixSigXSecNominal", "combined_fixSigXSecUp","combined_fixSigXSecDown"};
-  //TString combined[3]={"combined_fixSigXSecNominal", "combined_fixSigXSecNominal","combined_fixSigXSecNominal"}; // no xsection error
+  // TString combined[1]={"combined_fixSigXSecNominal"};
+  TString combined[3]={"combined_fixSigXSecNominal", "combined_fixSigXSecNominal","combined_fixSigXSecNominal"}; // no xsection error
 
   TString listSuffix="__1_harvest_list";
   if(Grid=="GG_onestepCC"){

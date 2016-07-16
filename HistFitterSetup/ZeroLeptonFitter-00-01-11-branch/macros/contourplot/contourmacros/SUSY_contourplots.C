@@ -1161,6 +1161,7 @@ void SUSY_contourplots(
     g->SetFillColor(kBlue-7);
     g->SetLineWidth(2);
     g->SetFillStyle(3490);
+    g->SetFillStyle(1001);
 
     g->SetLineColor(17);
     g->Draw("F same");

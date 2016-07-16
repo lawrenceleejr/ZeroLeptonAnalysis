@@ -171,8 +171,8 @@ gridInfo["GG_onestepCC_LSP60"] = ("Gluino mass [GeV]", "x = #Deltam(#chi^{#pm}, 
 
 # Cross sections to use. (Up, down is the theory uncertainty)
 # Our plotting always uses Nominal for exp+obs+yellow band, up and down only for two extra obs curves
-#allXS=["Nominal"]
-allXS=["Nominal", "Up", "Down"]
+allXS=["Nominal"]
+# allXS=["Nominal", "Up", "Down"]
 
 ###########################################################################
 # useful functions
@@ -313,6 +313,8 @@ def getFileList(inputdir):
 
             if "summary" in d:
                 continue
+            if "tmp.root" in d:
+                continue
 
             sys.stdout.write('%d / %d \r' % (i, len(dirnames)))
             sys.stdout.flush()
@@ -320,6 +322,8 @@ def getFileList(inputdir):
             fnames = os.listdir(os.path.join(inputdir, d))
             for f in fnames:
                 if "summary" in f:
+                    continue
+                if "tmp.root" in f:
                     continue
                 filenames.append(os.path.join(inputdir, d, f))
             i+=1
@@ -571,7 +575,7 @@ def extractCrossSections(config, DBfile):
 
     return xsecs       
            
-def mergeFileList(config, clsFileName, upperFileName):
+def mergeFileList(config, clsFileName, upperFileName,ana=""):
     # This method merges the two files where the hypotest and hypotestinverter results are stored
     # Information on the cross-section is also added
   
@@ -594,23 +598,96 @@ def mergeFileList(config, clsFileName, upperFileName):
     # with open(upperFileName) as data_file:    
     #     data_upperFile = json.load(data_file)
 
-    myfile = TFile(upperFileName)
+    # myfile = TFile(upperFileName)
 
     # print data_clsFile
     # print data_upperFile
 
     for massPoint in data_clsFile:
-        if massPoint["upperLimit"]!=-1.:
-            continue
+
+
+
+        # if massPoint["upperLimit"]!=-1.:
+            # continue
         mass0 = massPoint["m0"]
         mass1 = massPoint["m12"]
-        ht = myfile.Get("hypo_%s_%d_%d"%(config.grid, mass0,mass1)   )
+
+        # if mass0!=1000.0:
+        #     continue
+        # if mass1!=800.0:
+        #     continue
+
+        os.system('hadd -f %s/tmp.root %s/*%s*/%s'%(config.inputDir, config.inputDir ,ana, "/Fit_%s_%d_%d_combined_NormalMeasurement_model.root"%(config.grid,mass0,mass1))   )
+
+        # fitResultFileName = upperFileName.split("/")[:-1]
+        # fitResultFileName = "/".join(fitResultFileName)
+        # fitResultFileName = fitResultFileName + "/Fit_%s_%d_%d_combined_NormalMeasurement_model.root"%(config.grid,mass0,mass1)
+
+
+
+        # myf = ROOT.TFile("/data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-GG_direct-20160709-113641/results/ZL_SRJigsawSRG1a_GG_direct_112_87/Fit_GG_direct_1000_800_combined_NormalMeasurement_model.root")
+        # myf.ls()
+        # workspace = myf.Get("combined")
+        # result =     RooStats.get_Pvalue(workspace,1,1000,2,)
+        # result.Summary()
+
+
+        myfile = TFile(config.inputDir+"/tmp.root")
+        myfile.ls()
+
+        workspace = myfile.Get("combined")
+
+        if not workspace:
+            continue
+
+        print workspace
+        try:
+
+            result = RooStats.get_Pvalue(workspace,1,1000,2,)
+
+        except:
+            continue
+
+        if not result:
+            continue
+
+        try:
+
+            result.Summary()
+
+        except:
+            continue
+
+        massPoint["CLs"] = result.GetCLs()
+        massPoint["CLsexp"] = result.GetCLsexp()
+        massPoint["clsu1s"] = result.GetCLsu1S()
+        massPoint["clsu2s"] = result.GetCLsu2S()
+        massPoint["clsd1s"] = result.GetCLsd1S()
+        massPoint["clsd2s"] = result.GetCLsd2S()
+
+            # massPoint["expectedUpperLimit"] = upperLimitMassPoint["expectedUpperLimit"]
+
+
+        # ht = myfile.Get("hypo_%s_%d_%d"%(config.grid, mass0,mass1)   )
+        # ht.UseCLs()
 
         # massPoint[tmpstring] = upperLimitMassPoint[tmpstring]
-        gr = TGraph(t.ArraySize() )
-        for i in xrange(ht.ArraySize()):
-            gr.SetPoint(i,ht.GetXValue(i), ht.CLs(i) )
-        massPoint["CLs"] = gr.Eval(1.0)
+        # graphsToInterpolate = ["CLs","CLsexp","clsd1s","clsd2s","clsu1s","clsu2s"]
+        # gr = {}
+
+        # gr["CLs"] = TGraph(t.ArraySize() )
+        # for i in xrange(ht.ArraySize()):
+        #     gr["CLs"].SetPoint(i,ht.GetXValue(i), ht.CLs(i) )
+
+
+        # gr["CLsexp"] = TGraph(t.ArraySize() )
+        # for i in xrange(ht.ArraySize()):
+        #     gr["CLsexp"].SetPoint(i,ht.GetXValue(i), ht.CLs(i) )
+
+
+
+        # for thisGraph in graphsToInterpolate:
+        #     massPoint[thisGraph] = gr[thisGraph].Eval(1.0)
 
 
         # gr = TGraph(t.ArraySize() )
@@ -628,6 +705,7 @@ def mergeFileList(config, clsFileName, upperFileName):
 
 
     for massPoint in data_clsFile:
+        print massPoint["m0"], massPoint["m12"]
         print massPoint["CLs"]
 
     print clsFileName+".wUL"
@@ -812,6 +890,12 @@ def MakeContours(config):
     for ana in config.anaList:        
         print "MakeContours:", ana
 
+        # if not not("G1a" in ana):
+        #     continue
+
+        if "SRG" in ana:
+            continue
+
         # loop over cross-section nominal or up or down
         for xs in allXS:
             # skip up/down when --discovery
@@ -875,16 +959,18 @@ def MakeContours(config):
             # # and merge the files
             # if config.makeUL and xs == "Nominal":
             inputfile = basenameUL+".root"
-            if os.path.isfile(inputfile):
+            if os.path.isfile(inputfile) or 1:
                 # by defition, ULs are not discovery -> don't care about passing -d
-                CollectAndWriteHypoTestResults( inputfile, format, interpretation, cutStr, int(automaticRejection), config.outputDir  ) ;
+                # CollectAndWriteHypoTestResults( inputfile, format, interpretation, cutStr, int(automaticRejection), config.outputDir  ) ;
                 
                 #subprocess.call('ls *list.json', shell=True)
                 #cmd="mv *_list.json "+config.outputDir
                 #subprocess.call(cmd, shell=True)
                 
+
+
                 # merge the output files for hypotest and upperlimit in 1 output file
-                mergeFileList(config, basename+listSuffix, basenameUL+listSuffix)
+                mergeFileList(config, basename+listSuffix, basenameUL+listSuffix,ana)
         
                 os.system("cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix)   )
                 print "cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix) 
@@ -898,11 +984,16 @@ def MakeContours(config):
             subprocess.call(cmd, shell=True)
             
             # mv summary_harvest_tree_description.* from config.outputDir to here
-            cmd="cp -v "+config.outputDir+"summary_harvest_tree_description.py ./summary_harvest_tree_description.py"
+            cmd="cp -v "+config.outputDir+"summary_harvest_tree_description.py ./summary_harvest_tree_description.py;"
+            cmd+="sed -i -e 's/fID\/C/fID\/F/g' ./summary_harvest_tree_description.py"
             subprocess.call(cmd, shell=True)
-            cmd="cp -v "+config.outputDir+"summary_harvest_tree_description.h  ./summary_harvest_tree_description.h"
+            cmd="cp -v "+config.outputDir+"summary_harvest_tree_description.h  ./summary_harvest_tree_description.h;"
+            cmd+="sed -i -e 's/fID\/C/fID\/F/g' ./summary_harvest_tree_description.h"
             subprocess.call(cmd, shell=True)
            
+            # os.system("sed -i -e 's/fID\/C/fID\/F/g' ./summary_harvest_tree_description.h")
+            # os.system("sed -i -e 's/fID\/C/fID\/F/g' ./summary_harvest_tree_description.py")
+
             # convert : plain text file --> root file
             listSuffix = "".join(listSuffix.split(".")[:-1]) # remove ".json"
             cmd = "root -b -q \"$ZEROLEPTONFITTER/macros/contourplot/makecontourhists.C(\\\""+basename+listSuffix+"\\\",\\\""+config.grid+"\\\")\""
@@ -1209,7 +1300,7 @@ def MakeLines(config):
             else:
                 leg.AddEntry(g,"Best all analysis","PL")
                 
-        value=1##0.05###1.64485
+        value=0.05###1.64485
         tline=TLine(MASSMIN,value,MASSMAX,value)
         tline.SetLineStyle(2)
         tline.Draw("same")
@@ -1855,6 +1946,19 @@ def Oring(config):
     ROOT.gROOT.Reset()
     ROOT.gROOT.SetBatch(True)
 
+
+    #########################################################
+    # print "The following is a test..."
+
+    # myf = ROOT.TFile("/data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-GG_direct-20160709-113641/results/ZL_SRJigsawSRG1a_GG_direct_112_87/Fit_GG_direct_1000_800_combined_NormalMeasurement_model.root")
+    # myf.ls()
+    # workspace = myf.Get("combined")
+    # result =     RooStats.get_Pvalue(workspace,1,1000,2,)
+    # result.Summary()
+
+    # print "Done w test"
+    ###########################################################
+
     # For all xsecs, merge on best selectpar (normally expected CLs)
     for xsecStr in allXS:
         myMap = {}
@@ -1905,7 +2009,7 @@ def Oring(config):
             
         infoFilename = config.outputDir+config.outputName+"_combined_fixSigXSec"+xsecStr+listSuffix+"_infoFile"
         file_info = open(infoFilename,"w")
-     
+    
         # loop over ana (SRs)
         print " Oring :",config.anaList;
         for indx,ana in enumerate(config.anaList):
@@ -1918,6 +2022,9 @@ def Oring(config):
             #     continue
             # if not "SRG1a" in ana:
             #     continue
+
+            if "SRS" in ana:
+                continue
 
             filename = config.outputDir+config.outputName+"_"+ana+"_fixSigXSec"+xsecStr+listSuffix
             print filename
@@ -1935,8 +2042,21 @@ def Oring(config):
                     print "summary file says %d components; file has %d per line" % (len(allpar),len(vals))
                     continue
                 
-                vals[allpar.index("fID/F")]=(indx+1)
+
+
+                print allpar
+                print len(allpar)
+                print vals
+                print len(vals)
+
+                try:
+
+                    vals[allpar.index("fID/F")]=(indx+1)
  
+                except:
+                    print "This fit didn't work for some reason"
+                    continue
+
                 pval = float( vals[allpar.index(selectpar+"/F")])
                 par1 = float( vals[allpar.index(par1_s+"/F")])
                 par2 = float( vals[allpar.index(par2_s+"/F")])
@@ -1987,6 +2107,10 @@ def Oring(config):
                     vals[allpar.index("clsd1s/F")] = str(0.01)
                     vals[allpar.index("p1/F")] = str(0.01)
                  
+
+
+                # print vals[allpar.index("m0/F")], vals[allpar.index("m12/F")], vals[allpar.index("CLs/F")]
+
                 newline=""
                 #print vals;
                 for val in vals:
@@ -2214,6 +2338,9 @@ def main():
 
     if config.doOring or config.doAll:
         print "## Start Oring ##"
+        os.system('ls')
+        # os.system("sed -i -e 's/fID\/C/fID\/F/g' ./summary_harvest_tree_description.h")
+        # os.system("sed -i -e 's/fID\/C/fID\/F/g' ./summary_harvest_tree_description.py")
         Oring(config)
   
     """

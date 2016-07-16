@@ -26,10 +26,10 @@
 /**
 Initialzing the macro: loading the description of the list text file from summary_harvest_tree_description.h
 */
-// void initialize() {
-//   //gROOT->ProcessLine(".L summary_harvest_tree_description.h+");
-//   gSystem->Load("libSusyFitter.so");
-// }
+void initialize() {
+  //gROOT->ProcessLine(".L summary_harvest_tree_description.h+");
+  gSystem->Load("libSusyFitter.so");
+}
 
 /**
 Convert the text lists into ROOT histograms by interpolating between the discrete points 
@@ -123,10 +123,8 @@ mX_vs_mY_nofloat(const char* textfile = 0, TH2D* inputHist = 0, const char* root
      TH2D *clonesigp1clsf=(TH2D*)inputHist->Clone();
      sigp1clsf = DrawUtil::triwsmooth( tree, "StatTools::GetSigma( CLs ):m12:m0", "sigp1clsf" , "One-sided significalce of observed CLs", "p1>0 && p1<=1",clonesigp1clsf );}
    else{
-     // sigp1clsf = DrawUtil::triwsmooth( tree, "StatTools::GetSigma( CLs ):m12:m0", "sigp1clsf" , "One-sided significalce of observed CLs", "p1>0 && p1<=1", inputHist );}
      sigp1clsf = DrawUtil::triwsmooth( tree, "StatTools::GetSigma( CLs ):m12:m0", "sigp1clsf" , "One-sided significalce of observed CLs", "p1>0 && p1<=1", inputHist );}
 
-  tree->Scan("StatTools::GetSigma( CLs ):CLs:CLsexp:m12:m0","abs(m0-1200)<201 && m12 > 500");
 
    if (sigp1clsf!=0) {
      sigp1clsf->Write();
