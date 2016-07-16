@@ -367,7 +367,7 @@ if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
     qcdSample.setTreeName("Data_SRAll")
 else :
     qcdSample.setTreeName("QCD_SRAll")
-qcdSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName, 1., 0., 500.)
+qcdSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName, 1., 0., 5000.)
 qcdSample.setFileList(qcdFiles)
 qcdSample.setStatConfig(zlFitterConfig.useStat)
 
@@ -383,6 +383,7 @@ if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
         qcdSample.addWeight(w)
     if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
         qcdSample.removeWeight("weight")
+        qcdSample.addWeight("0.01")
 
 # Define samples
 #FakePhotonSample = Sample("Bkg",kGreen-9)

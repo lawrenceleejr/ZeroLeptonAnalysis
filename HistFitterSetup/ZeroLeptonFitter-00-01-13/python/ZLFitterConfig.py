@@ -88,7 +88,7 @@ class ZLFitterConfig:
         self.usePreComputedZGeneratorSys=False
 
 #jet smearing
-        self.useDDQCDsample = False
+        self.useDDQCDsample = True
 
         # JES,JER,...
         self.useJETUncertainties = True
@@ -151,9 +151,7 @@ class ZLFitterConfig:
         #self.constrainingRegionsList += ["CRTZL","CRW","CRT"]
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
-#        self.constrainingRegionsList += ["CRQ"]
-
-
+        self.constrainingRegionsList += ["CRQ"]
 
 
         # list of validation regions
