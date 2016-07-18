@@ -360,7 +360,7 @@ class ChannelConfig:
 
         self.regionListDict["VRQb"]["H2PP"] =  "invert"
         self.regionListDict["VRZc"] ["dphiISRI"] =  "invert"
-        self.regionListDict["VRZca"]["dphiISRI"] =  "invert"
+        self.regionListDict["VRZca"]["dphiISRI"] =  "invertAndLoosen"
 
 
         self.WithoutLastCut = False
@@ -617,6 +617,9 @@ class ChannelConfig:
                                      loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
                                      if not loosenedStringVarValue : print reg,var,val, var+"_loose"
                                      finalCutString                  = var         + " >=  " + loosenedStringVarValue
+                                 if val == "invertAndLoosen":
+                                     loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
+                                     finalCutString                  = var         + " <  " + loosenedStringVarValue
 
                     if finalCutString:
                         cutList.append(finalCutString)
