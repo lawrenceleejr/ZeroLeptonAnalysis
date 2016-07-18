@@ -358,7 +358,7 @@ anaSRJigsawSRG1Common.RPZ_HT5PP_upper        = 0.5
 anaSRJigsawSRG1Common.minR_pTj2i_HT3PPi      = 0.125
 anaSRJigsawSRG1Common.maxR_H1PPi_H2PPi_upper = 0.95
 anaSRJigsawSRG1Common.dangle_upper           = 0.6#TODOO CHECK IF THIS IS OKAY WITHOUT DANGLE
-anaSRJigsawSRG1Common.dangle_upper_loose    = 0.6#TODOO CHECK IF THIS IS OKAY WITHOUT DANGLE
+anaSRJigsawSRG1Common.dangle_upper_loose    = 1.#TODOO CHECK IF THIS IS OKAY WITHOUT DANGLE
 anaSRJigsawSRG1Common.H2PP                   = 600
 
 anaSRJigsawSRG1a = copy.deepcopy( anaSRJigsawSRG1Common )
