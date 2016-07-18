@@ -598,7 +598,10 @@ class ChannelConfig:
                              if not cutValue : print reg,var,val, var+"_looseAndInverted"
                              finalCutString = str( var  + " < " + str(cutValue))
                         else :
-                             if "upper" in var :
+                             if "dangle_upper" in var :
+                                 removeUpper = var.replace("upper","").strip("_")
+                                 if not val         : finalCutString = "abs(dangle) <= "  + stringVarValue
+                             elif "upper" in var :
                                  removeUpper = var.replace("upper","").strip("_")
                                  if not val         : finalCutString = removeUpper + " <= "  + stringVarValue
                                  if val == 'invert' : finalCutString = removeUpper + " >  "  + stringVarValue
