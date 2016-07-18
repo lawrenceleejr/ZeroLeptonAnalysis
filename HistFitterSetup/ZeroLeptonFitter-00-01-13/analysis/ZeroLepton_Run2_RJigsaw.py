@@ -220,6 +220,7 @@ configMgr.setLumiUnits("fb-1")
 bgdFiles = []
 topFiles = []
 qcdFiles = []
+qcdGammaFakeFiles = []
 dibosonFiles = []
 dataFiles = []
 wFiles = []
@@ -255,6 +256,7 @@ if configMgr.readFromTree:
         else :
             qcdFiles.append( INPUTDIR+"/QCD.root")
 
+        qcdGammaFakeFiles.append( INPUTDIR+"/QCD.root" )
 
 
         # Topa
@@ -290,11 +292,13 @@ if configMgr.readFromTree:
     # dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data15_13TeV.root")
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data16_13TeV.root")
-    dataFiles.append(INPUTDIR_DATA+ "/DataMain_2016_302391.root")
+    # dataFiles.append(INPUTDIR_DATA+ "/DataMain_2016_302391.root")
+    dataFiles.append(INPUTDIR_DATA+ "/DataMain_303291_RJ_17072016.root")
 
     log.info("Using the following inputs:")
     log.info("topFiles = %s" % topFiles)
     log.info("qcdFiles = %s" % qcdFiles)
+    log.info("qcdGammaFakeFiles = %s" % qcdGammaFakeFiles)
     log.info("dibosonFiles = %s" % dibosonFiles)
     log.info("dataFiles = %s" % dataFiles)
     log.info("wFiles = %s" % wFiles)
@@ -384,6 +388,34 @@ if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
     if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
         qcdSample.removeWeight("weight")
         qcdSample.addWeight("0.01")
+
+
+#--------------------------
+# QCD Gamma Fakes - for CRY
+#--------------------------
+qcdGammaFakeSample = Sample(zlFitterConfig.qcdSampleName+"GammaFakes", kOrange+2)
+qcdGammaFakeSample.setTreeName("QCD_SRAll")
+qcdGammaFakeSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", 1., 0., 500.)
+qcdGammaFakeSample.setFileList(qcdGammaFakeFiles)
+qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
+# qcdGammaFakeSample.setStatConfig(False)
+qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
+
+
+# qcdWeight = 1
+# nJets = channel.nJets
+# if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
+#     qcdWeight = zlFitterConfig.qcdWeightList[nJets-1]/ (zlFitterConfig.luminosity)
+#     qcdGammaFakeSample.addWeight(str(qcdWeight))
+#     for w in configMgr.weights: #add all other weights but not normWeight
+#         qcdGammaFakeSample.addWeight(w)
+
+
+
+if zlFitterConfig.doSetNormRegion:
+    if "CRYQ" in zlFitterConfig.constrainingRegionsList:
+        qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
+
 
 # Define samples
 #FakePhotonSample = Sample("Bkg",kGreen-9)
@@ -577,6 +609,8 @@ for point in allpoints:
     if configMgr.fixSigXSec:
         meas.addParamSetting("alpha_SigXSec", True, 1)
 
+    if "CRYQ" not in zlFitterConfig.constrainingRegionsList:
+        meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", True, 1) # fix QCD
     if "CRQ" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName, True, 1) # fix QCD
     if "CRY" not in zlFitterConfig.constrainingRegionsList and "CRZ" not in zlFitterConfig.constrainingRegionsList:
@@ -627,6 +661,9 @@ for point in allpoints:
         if treeBaseName not in ["CRY"]:
             continue
 
+        print "========================"
+        print "Running on %s"%regionName
+
         extraWeightList = regionDict[regionName].extraWeightList
 
         # Gamma control region
@@ -637,8 +674,12 @@ for point in allpoints:
             REGION.useOverflowBin = True
             REGION.useUnderflowBin = False
 
+        # REGION.addSample(qcdGammaFakeSample )
         REGION.addSample(gammaSample, 0) ##order is important!!!!
+        REGION.addSample(qcdGammaFakeSample ,1)
+        # print REGION.sampleList
         for sam in REGION.sampleList:
+            print sam.name
             sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
             if sam.treeName.find("Data") >= 0:
                 sam.setFileList(dataFiles)
@@ -882,6 +923,9 @@ for point in allpoints:
 
         treeBaseName = regionDict[regionName].suffixTreeName
 
+        if treeBaseName not in ["SRAll"]:
+            continue
+
         # skip validation regions when not needed
         if not doValidation and regionName not in zlFitterConfig.constrainingRegionsList:
             continue
@@ -1011,9 +1055,10 @@ for point in allpoints:
 
     for REGION in myFitConfig.channels:
         for sam in REGION.sampleList:
+            if zlFitterConfig.qcdSampleName in sam.name: continue
             if zlFitterConfig.useJETUncertainties:
                 for sys in jetSystematicList:
-                    if sam.name==zlFitterConfig.qcdSampleName: continue
+                    # if sam.name==zlFitterConfig.qcdSampleName: continue
                     sam.addSystematic(sys)
             if zlFitterConfig.useMETUncertainties:
                 for sys in metSystematicList:
