@@ -93,7 +93,7 @@ def main():
     colors["GAMMAjets"]=ROOT.kYellow
     colors["Diboson"]=ROOT.kPink-4
 
-    MaxFac=89
+    MaxFac=1000.
     MinThres=0.1
     Min2=0.
     Max2=3.1
