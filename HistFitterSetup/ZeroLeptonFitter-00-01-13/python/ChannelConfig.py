@@ -360,7 +360,7 @@ class ChannelConfig:
 
         self.regionListDict["VRQb"]["H2PP"] =  "invert"
         self.regionListDict["VRZc"] ["dphiISRI"] =  "invert"
-        self.regionListDict["VRZca"]["dphiISRI"] =  "invert"
+        self.regionListDict["VRZca"]["dphiISRI"] =  "invertAndLoosen"
 
 
         self.WithoutLastCut = False
@@ -598,7 +598,10 @@ class ChannelConfig:
                              if not cutValue : print reg,var,val, var+"_looseAndInverted"
                              finalCutString = str( var  + " < " + str(cutValue))
                         else :
-                             if "upper" in var :
+                             if "dangle_upper" in var :
+                                 removeUpper = var.replace("upper","").strip("_")
+                                 if not val         : finalCutString = "abs(dangle) <= "  + stringVarValue
+                             elif "upper" in var :
                                  removeUpper = var.replace("upper","").strip("_")
                                  if not val         : finalCutString = removeUpper + " <= "  + stringVarValue
                                  if val == 'invert' : finalCutString = removeUpper + " >  "  + stringVarValue
@@ -614,6 +617,9 @@ class ChannelConfig:
                                      loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
                                      if not loosenedStringVarValue : print reg,var,val, var+"_loose"
                                      finalCutString                  = var         + " >=  " + loosenedStringVarValue
+                                 if val == "invertAndLoosen":
+                                     loosenedStringVarValue = str(getattr(self, var + "_loose")) if getattr(self, var+"_loose")!=None else None
+                                     finalCutString                  = var         + " <  " + loosenedStringVarValue
 
                     if finalCutString:
                         cutList.append(finalCutString)
