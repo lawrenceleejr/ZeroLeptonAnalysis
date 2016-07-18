@@ -123,8 +123,6 @@ class ZLFitterConfig:
         ##############################################
 
         self.luminosity = 11.3 # 2.674#unit is fb-1
-
-		######## SHOULD BE 0.09! CHANGED FOR TESTING
         self.luminosityEr = 0.04 # style the run1 error ####################
 
         ##############################################
@@ -152,6 +150,7 @@ class ZLFitterConfig:
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
         self.constrainingRegionsList += ["CRQ"]
+        self.constrainingRegionsList += ["CRYQ"]
 
 
         # list of validation regions
