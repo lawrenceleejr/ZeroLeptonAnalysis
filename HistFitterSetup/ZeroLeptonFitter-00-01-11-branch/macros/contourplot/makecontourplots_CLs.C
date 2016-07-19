@@ -40,8 +40,9 @@ void makecontourplots_CLs(const TString Grid="GG_direct",TString dirname = "Outp
   }
   cout<<"lumi="<<lumi<<" fb-1"<<endl;
 
-  TFile * customContourFile = TFile::Open(  "output.root", "READ" );
-  customContourFile->ls();
+  // TFile * customContourFile = TFile::Open(  "output.root", "READ" );
+  TFile * customContourFile = 0;
+  // customContourFile->ls();
 
   (void) SUSY_contourplots(
       infilelist.at(0), infilelist.at(1), infilelist.at(2),

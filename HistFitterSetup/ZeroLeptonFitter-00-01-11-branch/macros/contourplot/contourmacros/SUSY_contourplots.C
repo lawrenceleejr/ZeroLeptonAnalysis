@@ -1114,7 +1114,7 @@ void SUSY_contourplots(
 
 
 
-  if(customContourFile&&0){
+  if(customContourFile==0){
 
 
         // cout << "--- Get observed limit errors " << endl;

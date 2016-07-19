@@ -21,9 +21,13 @@ do
 
 
   #8ifb
-  ./makeContours_Run2.py -o  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-SS_direct-20160713-171848/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  # ./makeContours_Run2.py -o  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-SS_direct-20160713-171848/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
   # ./makeContours_Run2.py -o  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-GG_direct-20160713-171755/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
 
+
+  #11ifb
+  ./makeContours_Run2.py --all --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-SS_direct-20160717-073824/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  # ./makeContours_Run2.py --all --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-GG_direct-20160717-073727/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
 
   # ./makeContours_Run2.py --all  --grid ${TYPE} --inputDir /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-13/optimisation/optimisation-GG_direct-20160711-145217/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
   #./makeContours_Run2.py -c -o --grid ${TYPE} --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
@@ -40,7 +44,7 @@ do
   cp -v $OUTPUTDIR/$LUMI/$TYPE/summary_harvest_tree_description.* .
   sed  -i -e 's/fID\/C/fID\/F/g' *.h
   sed  -i -e 's/fID\/C/fID\/F/g' *.py
-  python harvestToContours.py --inputFile $OUTPUTDIR/$LUMI/$TYPE/${TYPE}_combined_fixSigXSecNominal__1_harvest_list --interpolation cubic
+  # python harvestToContours.py --inputFile $OUTPUTDIR/$LUMI/$TYPE/${TYPE}_combined_fixSigXSecNominal__1_harvest_list --interpolation cubic
   root -l -q -b "makecontourplots_CLs.C(\"$TYPE\",\"$OUTPUTDIR/$LUMI/$TYPE\")" 2>&1 | tee makecontoursplots_CLs_${TYPE}.out
 done
 
