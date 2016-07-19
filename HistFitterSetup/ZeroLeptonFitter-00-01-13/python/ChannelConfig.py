@@ -412,6 +412,11 @@ class ChannelConfig:
 
         cutList = []
         # Start with cuts take away a huge chunk
+
+        if self.doCleaning:
+            self.cleaningCuts = "((cleaning&0x30F)==0)"
+            cutList.append(self.cleaningCuts)
+
         '''
         #effective mass cut
         if self.meffIncl >= 0 and not(self.WithoutMeffCut):
@@ -462,9 +467,6 @@ class ChannelConfig:
             cutList.append("(abs(timing)<4)")
 
         # cleaning cuts
-        if self.doCleaning:
-            self.cleaningCuts = "((cleaning&0x30F)==0)"
-            cutList.append(self.cleaningCuts)
 
         #angular cuts
         if self.dPhi>=0 and regionName not in self.regionsWithoutDPHICutList:
