@@ -449,7 +449,7 @@ anaSRJigsawSRSquarkCommon.deltaQCD_loose = 0.001
 
 anaSRJigsawSRSquarkCommon.R_H2PP_H3PP_loose       = 0.5
 anaSRJigsawSRSquarkCommon.R_H2PP_H3PP_upper_loose = 0.98
-anaSRJigsawSRSquarkCommon.RPZ_HT3PP_upper_loose   = 0.63
+anaSRJigsawSRSquarkCommon.RPZ_HT3PP_upper_loose   = 0.60
 anaSRJigsawSRSquarkCommon.R_pTj2_HT3PP_loose      = 0.13
 anaSRJigsawSRSquarkCommon.HT3PP_loose             = 1000
 anaSRJigsawSRSquarkCommon.H2PP_loose              = 1000
@@ -460,7 +460,7 @@ anaSRJigsawSRS1Common                   = copy.deepcopy( anaSRJigsawSRSquarkComm
 anaSRJigsawSRS1Common.name              = "SRJigsawSRS1Common"
 anaSRJigsawSRS1Common.R_H2PP_H3PP       = 0.6
 anaSRJigsawSRS1Common.R_H2PP_H3PP_upper = 0.95
-anaSRJigsawSRS1Common.RPZ_HT3PP_upper   = 0.55
+anaSRJigsawSRS1Common.RPZ_HT3PP_upper   = 0.50
 anaSRJigsawSRS1Common.R_pTj2_HT3PP      = 0.16
 anaSRJigsawSRS1Common.H2PP              = 1000
 
@@ -481,7 +481,7 @@ anaSRJigsawSRS2Common                   = copy.deepcopy( anaSRJigsawSRSquarkComm
 anaSRJigsawSRS2Common.name              = "SRJigsawSRS2Common"
 anaSRJigsawSRS2Common.R_H2PP_H3PP       = 0.55
 anaSRJigsawSRS2Common.R_H2PP_H3PP_upper = 0.96
-anaSRJigsawSRS2Common.RPZ_HT3PP_upper   = 0.6
+anaSRJigsawSRS2Common.RPZ_HT3PP_upper   = 0.55
 anaSRJigsawSRS2Common.R_pTj2_HT3PP      = 0.15
 anaSRJigsawSRS2Common.H2PP              = 1400
 anaSRJigsawSRS2Common.HT3PP_loose       = 1400
@@ -505,7 +505,7 @@ anaSRJigsawSRS3Common.name = "SRJigsawSRS3Common"
 
 anaSRJigsawSRS3Common.R_H2PP_H3PP       = 0.5
 anaSRJigsawSRS3Common.R_H2PP_H3PP_upper = 0.98
-anaSRJigsawSRS3Common.RPZ_HT3PP_upper   = 0.63
+anaSRJigsawSRS3Common.RPZ_HT3PP_upper   = 0.60
 anaSRJigsawSRS3Common.R_pTj2_HT3PP      = 0.13
 anaSRJigsawSRS3Common.H2PP              = 1600
 anaSRJigsawSRS3Common.HT3PP_loose       = 1400
