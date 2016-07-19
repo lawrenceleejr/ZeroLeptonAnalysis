@@ -337,7 +337,8 @@ import copy
 ###################################################################
 #for all gluino regions, use the same loose CRs
 anaSRJigsawSRGluinoCommon                = copy.deepcopy( anaSRJigsawBasic )
-anaSRJigsawSRGluinoCommon.RPTHT5PP_upper = 0.08
+anaSRJigsawSRGluinoCommon.RPT_HT5PP_upper = 0.08
+anaSRJigsawSRGluinoCommon.RPT_HT5PP_upper_loose = 0.08
 anaSRJigsawSRGluinoCommon.nJets          = 4
 anaSRJigsawSRGluinoCommon.deltaQCD       = 0
 anaSRJigsawSRGluinoCommon.deltaQCD_loose = 0
@@ -358,8 +359,8 @@ anaSRJigsawSRG1Common.R_HT5PP_H5PP           = 0.8
 anaSRJigsawSRG1Common.RPZ_HT5PP_upper        = 0.5
 anaSRJigsawSRG1Common.minR_pTj2i_HT3PPi      = 0.12
 anaSRJigsawSRG1Common.maxR_H1PPi_H2PPi_upper = 0.95
-anaSRJigsawSRG1Common.dangle_upper           = 0.6#TODOO CHECK IF THIS IS OKAY WITHOUT DANGLE
-anaSRJigsawSRG1Common.dangle_upper_loose    = 1.#TODOO CHECK IF THIS IS OKAY WITHOUT DANGLE
+anaSRJigsawSRG1Common.dangle_upper           = 0.5
+anaSRJigsawSRG1Common.dangle_upper_loose    = 1.
 anaSRJigsawSRG1Common.H2PP                   = 600
 
 anaSRJigsawSRG1a = copy.deepcopy( anaSRJigsawSRG1Common )
@@ -441,7 +442,8 @@ finalChannelsDict[anaSRJigsawSRG3b.name] = anaSRJigsawSRG3b
 
 anaSRJigsawSRSquarkCommon                = copy.deepcopy( anaSRJigsawBasic )
 anaSRJigsawSRSquarkCommon.name           = "anaSRJigsawSRSquarkCommon"
-anaSRJigsawSRSquarkCommon.RPTHT3PP_upper = 0.08
+anaSRJigsawSRSquarkCommon.RPT_HT3PP_upper = 0.08
+anaSRJigsawSRSquarkCommon.RPT_HT3PP_upper_loose = 0.08
 anaSRJigsawSRSquarkCommon.nJets          = 2
 anaSRJigsawSRSquarkCommon.deltaQCD       = 0.001
 anaSRJigsawSRSquarkCommon.deltaQCD_loose = 0.001

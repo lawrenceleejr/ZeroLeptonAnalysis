@@ -251,14 +251,14 @@ class ChannelConfig:
         self.dangle_upper            = None #+999
         self.HT5PP                   = None #-1
 
-        self.RPT_HT5PP_upper_loose   = None #+999
-        self.R_H2PP_H5PP_loose       = None #-1
-        self.R_HT5PP_H5PP_loose      = None #-1
-        self.RPZ_HT5PP_upper_loose   = None #+999
-        self.minR_pTj2i_HT3PPi_loose = None #-1
-        self.maxR_H1PPi_H2PPi_upper  = None #+999
-        self.dangle_upper_loose      = None #+999
-        self.HT5PP_loose             = None #-1
+        self.RPT_HT5PP_upper_loose        = None #+999
+        self.R_H2PP_H5PP_loose            = None #-1
+        self.R_HT5PP_H5PP_loose           = None #-1
+        self.RPZ_HT5PP_upper_loose        = None #+999
+        self.minR_pTj2i_HT3PPi_loose      = None #-1
+        self.maxR_H1PPi_H2PPi_upper_loose = None #+999
+        self.dangle_upper_loose           = None #+999
+        self.HT5PP_loose                  = None #-1
 
         #Compressed Variables
         self.RISR                    = None #0
@@ -412,6 +412,11 @@ class ChannelConfig:
 
         cutList = []
         # Start with cuts take away a huge chunk
+
+        if self.doCleaning:
+            self.cleaningCuts = "((cleaning&0x30F)==0)"
+            cutList.append(self.cleaningCuts)
+
         '''
         #effective mass cut
         if self.meffIncl >= 0 and not(self.WithoutMeffCut):
@@ -462,9 +467,6 @@ class ChannelConfig:
             cutList.append("(abs(timing)<4)")
 
         # cleaning cuts
-        if self.doCleaning:
-            self.cleaningCuts = "((cleaning&0x30F)==0)"
-            cutList.append(self.cleaningCuts)
 
         #angular cuts
         if self.dPhi>=0 and regionName not in self.regionsWithoutDPHICutList:
