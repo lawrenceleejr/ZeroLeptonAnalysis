@@ -191,7 +191,7 @@ ratiocutsfull = {
 }
 
 varList = [
-           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'25','minvar':'0','maxvar':'2500.','unit':'GeV'},
+           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
            {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#Delta_{QCD}','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'H2PP','varNtuple':'H2PP','plotName':'H_{1,1}^{PP} [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
@@ -1192,13 +1192,13 @@ def main(configMain):
 
                             if arrow>0:
 
-                                ar=TArrow(varcut,1.05*min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                ar=TArrow(varcut,min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
                                 ar.SetLineWidth(5)
                                 ar.SetLineColor(kBlack)
                                 ar.SetFillColor(kBlack)
                                 ar.Draw("")
 
-                                ar1=TArrow(varcut,1.05*min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                ar1=TArrow(varcut,min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
                                 ar1.SetLineWidth(3)
                                 ar1.SetLineColor(kWhite)
                                 ar1.SetFillColor(kWhite)
@@ -1206,13 +1206,13 @@ def main(configMain):
 
                             if arrowupper>0:
 
-                                aru=TArrow(varcutupper,1.05*min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                aru=TArrow(varcutupper,min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
                                 aru.SetLineWidth(5)
                                 aru.SetLineColor(kBlack)
                                 aru.SetFillColor(kBlack)
                                 aru.Draw("")
 
-                                aru1=TArrow(varcutupper,1.05*min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                aru1=TArrow(varcutupper,min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
                                 aru1.SetLineWidth(3)
                                 aru1.SetLineColor(kWhite)
                                 aru1.SetFillColor(kWhite)
