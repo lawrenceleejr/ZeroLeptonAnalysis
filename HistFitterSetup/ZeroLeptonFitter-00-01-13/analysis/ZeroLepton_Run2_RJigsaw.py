@@ -313,7 +313,7 @@ def anaNameEnum (anaName) :
     if "SRS" in anaName : return 3
     else : return 0
 
-weights = ["weight"] #["weight", "WZweight"]
+weights = ["weight", "WZweight"]
 if zlFitterConfig.applyKappaCorrection:
     weights.append("gammaCorWeight(RunNumber, "+str(anaNameEnum(anaName))+")")
     # weights.append("1./1.6")
