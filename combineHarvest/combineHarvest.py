@@ -42,10 +42,15 @@ for MEffline in open(MEffInput).readlines():
 		if MEffdata[m12index]!=RJRdata[m12index]:
 			continue
 
-		if MEffdata[CLsexpindex] < RJRdata[CLsexpindex]:
-			print "MEff:\t%s\t%s\t%s"%(RJRdata[m0index],RJRdata[m12index],RJRdata[CLsexpindex])
+		# print "MEff:\t%s\t%s\t%s"%(RJRdata[m0index],RJRdata[m12index],MEffdata[CLsexpindex])
+		# print "RJR:\t%s\t%s\t%s"%(RJRdata[m0index],RJRdata[m12index],RJRdata[CLsexpindex])
+
+		# print MEffdata[CLsexpindex] < RJRdata[CLsexpindex]
+
+		if float(MEffdata[CLsexpindex]) < float(RJRdata[CLsexpindex]):
+			print "MEff:\t%s\t%s\t%s"%(RJRdata[m0index],RJRdata[m12index],MEffdata[CLsexpindex])
 			outputfile.write(MEffline+'\n')
-		elif MEffdata[CLsexpindex] >= RJRdata[CLsexpindex]:
+		elif float(MEffdata[CLsexpindex]) >= float(RJRdata[CLsexpindex]):
 			print "RJR:\t%s\t%s\t%s"%(RJRdata[m0index],RJRdata[m12index],RJRdata[CLsexpindex])
 			outputfile.write(RJRline+"\n")
 
