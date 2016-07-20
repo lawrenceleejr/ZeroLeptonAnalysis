@@ -749,25 +749,50 @@ TString GetSRName(int fID, TString txtfile){
   std::vector<TString> nameList;
   // nameList.push_back();
 
-  nameList.push_back("S3a");
-  nameList.push_back("S3b");
-  nameList.push_back("S2b");
-  nameList.push_back("S2a");
-  nameList.push_back("S1b");
-  nameList.push_back("S1a");
-  nameList.push_back("C4");
-  nameList.push_back("C5");
-  nameList.push_back("C1");
-  nameList.push_back("C2");
-  nameList.push_back("C3");
-  nameList.push_back("G3a");
-  nameList.push_back("G3b");
-  nameList.push_back("G2b");
-  nameList.push_back("G2a");
-  nameList.push_back("G1b");
-  nameList.push_back("G1a");
+  cout << fID << endl;
 
-  return nameList.at(fID-1);
+  // if(fID>99){
+
+    nameList.push_back("S3a");
+    nameList.push_back("S3b");
+    nameList.push_back("S2b");
+    nameList.push_back("S2a");
+    nameList.push_back("S1b");
+    nameList.push_back("S1a");
+    nameList.push_back("C4");
+    nameList.push_back("C5");
+    nameList.push_back("C1");
+    nameList.push_back("C2");
+    nameList.push_back("C3");
+    nameList.push_back("G3a");
+    nameList.push_back("G3b");
+    nameList.push_back("G2b");
+    nameList.push_back("G2a");
+    nameList.push_back("G1b");
+    nameList.push_back("G1a");
+
+    // return nameList.at(fID-1-100);
+    return nameList.at(fID-1);
+//   } else {
+
+// nameList.push_back("4j-1400");
+// nameList.push_back("2j-2000");
+// nameList.push_back("4j-1000");
+// nameList.push_back("4j-2200");
+// nameList.push_back("5j-1400");
+// nameList.push_back("6j-1800");
+// nameList.push_back("6j-2200");
+// nameList.push_back("2j-1600");
+// nameList.push_back("4j-2600");
+// nameList.push_back("2j-1200");
+// nameList.push_back("2j-0800");
+// nameList.push_back("4j-0825");
+// nameList.push_back("4j-1800");
+// nameList.push_back("3j-1200");
+
+// return nameList.at(fID-1);
+//   }
+
   // return text;
 }
 
@@ -793,6 +818,7 @@ void Show_SR(TString oredList,  TCanvas *can, TH1* frame, float xlow, float xhig
   txtfile.ReplaceAll(".root","");
   // os.system("sed -i -- 's/fID\\/C/fID\\/F/g' *")
 
+  cout << txtfile << endl;
   TTree* tree = harvesttree( txtfile!=0 ? txtfile : "" );
   tree->Print();
   cout << txtfile << endl;
@@ -1164,10 +1190,13 @@ void SUSY_contourplots(
 
         // c->cd();
         // if (contour_obscls_1!=0) DrawContourLine95( leg, contour_obscls_1, ""              , CombinationGlob::c_DarkRed, 3, 2 , Grid ); 
+
+
+        // This is the observed line!
         c->cd();
         if (contour_obscls_0!=0) DrawContourLine95( leg, contour_obscls_0, "Observed limit (#pm1 #sigma_{theory}^{SUSY})", CombinationGlob::c_DarkRed, 1, 4 , Grid );
-        // histecls0zz->Write();
-        // if (contour_obscls_0!=0) DrawContourLine95( leg, histecls0zz, "Observed limit (#pm1 #sigma_{theory}^{SUSY})", CombinationGlob::c_DarkRed, 1, 4 , Grid );
+
+
         // c->cd();
         // if (contour_obscls_2!=0) DrawContourLine95( leg, contour_obscls_2, ""              , CombinationGlob::c_DarkRed, 3, 2 , Grid ); 
 
@@ -1400,6 +1429,7 @@ void SUSY_contourplots(
   if(showSR){
     std::cout << "--- printing best SRs" << std::endl;
     Show_SR(fname0, c, frame, xmin, xmax, ymin, ymax, Grid);
+    // Show_SR("Outputs/11.3ifb_RJigsaw/SS_direct_MEffRJRCombined_fixSigXSecNominal__1_harvest_list", c, frame, xmin, xmax, ymin, ymax, Grid);
     TLatex lat;
     //lat.SetTextAlign( 11 );
     lat.SetTextSize( 0.0265 );

@@ -2023,8 +2023,8 @@ def Oring(config):
             # if not "SRG1a" in ana:
             #     continue
 
-            # if "SRS" in ana:
-            #     continue
+            if "SRS" in ana:
+                continue
 
             filename = config.outputDir+config.outputName+"_"+ana+"_fixSigXSec"+xsecStr+listSuffix
             print filename

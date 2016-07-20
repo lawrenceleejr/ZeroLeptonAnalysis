@@ -16,6 +16,7 @@ import scipy.interpolate
 import json
 
 import argparse
+import math
 
 
 parser = argparse.ArgumentParser()
@@ -40,8 +41,25 @@ def main():
 
 	f = ROOT.TFile(args.outputFile,"recreate")
 
+	# from array import array
+
+	# if np.isnan(zi["CLsexp"]).any():
+	# 	print "something's nan!"
+	# if np.isinf(zi["CLsexp"]).any():
+	# 	print "something's inf!"
+
+	# gr = ROOT.TGraph2D(len(xi),
+	# 	array('f',xi),
+	# 	array('f',yi),
+	# 	array('f',zi["CLsexp"] ) )
+
+
+	# gr.Write()
+	# f.Close()
+	# return
+
 	print ">>> Writing contours out"
-	# Step 3 - 
+	# Step 3 -
 	for whichEntry in ["CLs","CLsexp","clsu1s","clsu2s","clsd1s","clsd2s"]:
 		contourList = getContourPoints(xi,yi,zi[whichEntry], args.level)
 
@@ -72,19 +90,19 @@ def harvestToDict( harvestInputFileName = "" ):
 	if ".json" in harvestInputFileName and 0:
 		print ">>> Interpreting json file"
 
-		with open(harvestInput) as inputJSONFile:    
+		with open(harvestInput) as inputJSONFile:
 			inputJSONFile = json.load(inputJSONFile)
 
 	else:
 		print ">>> Interpreting text file"
 
 		for massLine in harvestInput.readlines():
-			values = massLine.split()	    
+			values = massLine.split()
 			values = dict(zip(fieldNames, values))
 
 			massPoint = (  float(values["m0/F"])  , float(values["m12/F"])   )
 
-			massPlaneDict[massPoint] = { 
+			massPlaneDict[massPoint] = {
 				"CLs":        ROOT.RooStats.PValueToSignificance( float(values["CLs/F"])     ) ,
 				"CLsexp":     ROOT.RooStats.PValueToSignificance( float(values["CLsexp/F"])  ) ,
 				"clsu1s":     ROOT.RooStats.PValueToSignificance( float(values["clsu1s/F"])  ) ,
@@ -98,7 +116,7 @@ def harvestToDict( harvestInputFileName = "" ):
 
 def addZerosToDict(mydict, maxyvalue = 0):
 	for x in np.linspace( 0, 2000, 100 ):
-		mydict[(x,x)] = { 
+		mydict[(x,x)] = {
 				"CLs":    0,
 				"CLsexp": 0,
 				"clsu1s": 0,
@@ -109,7 +127,7 @@ def addZerosToDict(mydict, maxyvalue = 0):
 
 	if maxyvalue:
 		for x in np.linspace( 0, 2000, 100 ):
-			mydict[(x,maxyvalue)] = { 
+			mydict[(x,maxyvalue)] = {
 					"CLs":    0,
 					"CLsexp": 0,
 					"clsu1s": 0,
@@ -127,14 +145,42 @@ def interpolateMassPlane(massPlaneDict = {}, interpolationFunction = "linear"):
 	massPoints = massPlaneDict.keys()
 	massPointsValues = massPlaneDict.values()
 
-	x =   list( zip( *massPoints )[0] )  
-	y =   list( zip( *massPoints )[1] )  
+	x =   list( zip( *massPoints )[0] )
+	y =   list( zip( *massPoints )[1] )
 
 	zValues = {}
 	for whichEntry in ["CLs","CLsexp","clsu1s","clsu2s","clsd1s","clsd2s"]:
 		zValues[whichEntry] = [ tmpEntry[whichEntry] for tmpEntry in massPointsValues]
 
+
 	# print zValues
+
+
+
+	if np.isinf( zValues["CLs"]  ).any():
+		print "infs!"
+
+	while np.isinf( zValues["CLs"]  ).any():
+		myindex = np.isinf( zValues["CLs"]  ).tolist().index(True)
+		x.pop(myindex)
+		y.pop(myindex)
+
+		for k,v in zValues.iteritems():
+			zValues[k].pop(myindex)
+
+	# for i in xrange(len(zValues["CLs"]) ):
+	# 	if i-1 > len(zValues["CLs"]):
+	# 		break
+	# 	if np.isinf(zValues["CLs"][i]):
+	# 		x.pop(i)
+	# 		y.pop(i)
+	# 		for k,v in zValues.iteritems():
+	# 			zValues[k].pop(i)
+	# 		i = i-1
+	if np.isinf( zValues["CLs"]  ).any():
+		print "still infs!"
+
+
 
 	xArray = np.array(x)
 	yArray = np.array(y)
@@ -146,12 +192,16 @@ def interpolateMassPlane(massPlaneDict = {}, interpolationFunction = "linear"):
 	xi, yi = np.meshgrid(xi, yi)
 
 	zi = {}
-	for whichEntry in ["CLs","CLsexp","clsu1s","clsu2s","clsd1s","clsd2s"]:	
+	for whichEntry in ["CLs","CLsexp","clsu1s","clsu2s","clsd1s","clsd2s"]:
 		print ">>>> Interpolating %s"%whichEntry
+		print len(x)
+		print len(zValues[whichEntry])
 		rbf = LSQ_Rbf(x, y, zValues[whichEntry], function=interpolationFunction)
+		print "setting zi"
 		zi[whichEntry] = rbf(xi, yi)
 
 	return (xi,yi,zi)
+	# return (x,y,zValues)
 
 
 
@@ -162,7 +212,7 @@ def getContourPoints(xi,yi,zi,level ):
 
 	contourList = []
 
-	for i in xrange( len(contour.get_paths() ) ): 
+	for i in xrange( len(contour.get_paths() ) ):
 		v = contour.get_paths()[i].vertices
 
 		x = v[:,0]
@@ -201,7 +251,7 @@ class LSQ_Rbf(scipy.interpolate.Rbf):
             setattr(self, item, value)
 
         self.A = self._init_function(r) - np.eye(self.N)*self.smooth
-        # use linalg.lstsq rather than linalg.solve to deal with 
+        # use linalg.lstsq rather than linalg.solve to deal with
         # overdetermined cases
         self.nodes = np.linalg.lstsq(self.A, self.di)[0]
 
