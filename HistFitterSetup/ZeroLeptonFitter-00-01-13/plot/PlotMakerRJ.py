@@ -14,17 +14,13 @@ sys.path.append(file_path)
 from ChannelConfig import *
 from ChannelsDict import *
 
-allRegionsList = []
-allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
-allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
-allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
-
 def parseCmdLine(args):
 #Here you put the regions that you want to plot
 
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("--region", default="SR", type = str)
+    parser.add_option("--doCompressed", default=False, action = "store_true")
     parser.add_option("--baseDir", default =  os.getcwd() , help="location of samples to run")
     parser.add_option("--inputSampleDir", default =  "/Users/khoo/Work/ATLAS/", help="location of samples to run")
     parser.add_option("--version", default = 107, help="ntuple version")
@@ -32,18 +28,26 @@ def parseCmdLine(args):
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
-    parser.add_option("--lumi", dest="lumi", help="lumi", default=8.3)
+    parser.add_option("--lumi", dest="lumi", help="lumi", default=11.3)
     (config, args) = parser.parse_args(args)
 
     print config
     return config
 config = parseCmdLine(sys.argv[1:])
 
+allRegionsList = []
+if config.doCompressed:
+    allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
+else:
+    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
+    allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
+
+
 version = config.version
 versionname = '{0}_baseline'.format(version)
 
 basedir = config.baseDir + "/"
-outplotdir = basedir+"Outplots/v"+str(versionname)
+outplotdir = basedir+"Outplots/v"+str(versionname)+"/"
 
 if not os.path.isdir(outplotdir): os.makedirs(outplotdir)
 if 'nikhef' in socket.getfqdn():
@@ -253,9 +257,11 @@ varList = [
            {'varName':'origmet','varNtuple':'origmet','plotName':'E_{T}^{miss,orig} [GeV]','nbinvar':'40','minvar':'0','maxvar':'2000.','unit':'GeV'},
            {'varName':'origmetPhi', 'varNtuple':'origmetPhi', 'plotName': '#phi(E_{T}^{miss,orig})', 'nbinvar':'40','minvar':'-1','maxvar':'7','unit':''},
            ]
+if config.doCompressed:
+    varList[0]['nbinvar'] = '25'
+    varList[0]['maxvar'] = '2500.'
 
-
-datafile = 'DataMain_2016_302391.root'
+datafile = 'DataMain_303291_RJ_17072016.root'
 fullDataPath = config.inputDataFile if config.inputDataFile else (datadir + datafile)
 
 datafile =[
@@ -308,13 +314,14 @@ plotlists = {
                  ["dphiMin2"],
                  ["NV"],
                  ],
-#    "CRWT":     [["nbJets"]]
+    "CRWT":     [["nbJets"]]
     }
 
-#plotlist = {srtype:plotlists["Common"]+plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
+plotlist = {srtype:plotlists["Common"]+plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
 #plotlist = {srtype:plotlists["Common"] for srtype in ["SRS","SRG","SRC"]}
+#plotlist = {srtype:plotlists["CRWT"] for srtype in ["SRS","SRG","SRC"]}
 #plotlist = {srtype:plotlists[srtype] for srtype in ["SRS","SRG","SRC"]}
-plotlist = {srtype:plotlists["SRS"] for srtype in ["SRS","SRG","SRC"]}
+#plotlist = {srtype:plotlists["SRS"] for srtype in ["SRS","SRG","SRC"]}
 
 kindOfCuts_SR =     [ {"type":"SR_minusone",    "var": plotlist, "name":"SR"} ]
 kindOfCuts_CRWT =   [ {"type":"CRW_minusone",   "var": plotlist, "name":"CRW"},
@@ -381,13 +388,13 @@ mc = [
       'syst':commonsyst, 'mufact':1.},
       {'key':'Zjets','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
       'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
-      'syst':commonsyst, 'mufact':0.9},
+      'syst':commonsyst, 'mufact':0.85},
       {'key':'Top','name':'t#bar{t}(+EW) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
       'color':ROOT.kGreen-9,'inputdir':mcdir+TopName+'.root',
       'treePrefix':'Top_','syst':commonsyst, 'mufact':0.9},
       {'key':'Wjets','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
       'color':ROOT.kAzure-4,'inputdir':mcdir+WName+'.root','veto':1,'treePrefix':'W_',
-      'syst':commonsyst, 'mufact':0.65},
+      'syst':commonsyst, 'mufact':0.8},
       ]
 
 if doCRY:
@@ -1065,8 +1072,10 @@ def main(configMain):
                                         yfactor = 15
                                     else:
                                         yfactor=10
-                                dataHisto.GetYaxis().SetRangeUser(min/10.,max*yfactor*100)
-                                datah_Poiss.GetYaxis().SetRangeUser(min/10.,max*yfactor*100)
+                                min /= 10
+                                max *= 100
+                                dataHisto.GetYaxis().SetRangeUser(min,max*yfactor)
+                                datah_Poiss.GetYaxis().SetRangeUser(min,max*yfactor)
 
                                 binWidth=dataHisto.GetBinWidth(1)
                                 XUnit="Events / {0:.2f}".format(binWidth)
