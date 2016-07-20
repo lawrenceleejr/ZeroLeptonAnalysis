@@ -40,7 +40,7 @@ if makeCutFlowTables:
 
 samples = [
 			# 'Data',
-			'QCD',
+			# 'QCD',
 			'Top',
 			'W',
 			'Z',
@@ -99,33 +99,66 @@ plottedsignals["SR5j"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_11
 plottedsignals["SR6jm"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
 plottedsignals["SR6jt"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
 
-plottedsignals["SRS1a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SRS1b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SRS2a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SRS2b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SRS3a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
-plottedsignals["SRS3b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+# plottedsignals["SRJigsawSRS1a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+# plottedsignals["SRJigsawSRS1b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+# plottedsignals["SRJigsawSRS2a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+# plottedsignals["SRJigsawSRS2b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+# plottedsignals["SRJigsawSRS3a"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
+# plottedsignals["SRJigsawSRS3b"] = ["SS_direct_900_0","SS_direct_1000_0","SS_direct_900_200" ]
 
 
-plottedsignals["SRC1a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-plottedsignals["SRC1b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-plottedsignals["SRC2a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-plottedsignals["SRC2b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-plottedsignals["SRC3a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-plottedsignals["SRC3b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-plottedsignals["SRC4a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-plottedsignals["SRC4b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC1a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC1b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC2a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC2b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC3a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC3b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC4a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
+# plottedsignals["SRJigsawSRC4b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
 
 
-plottedsignals["SRG1a"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-plottedsignals["SRG1b"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-plottedsignals["SRG1c"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
-plottedsignals["SRG2a"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
-plottedsignals["SRG2b"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
-plottedsignals["SRG2c"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
-plottedsignals["SRG3a"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
-plottedsignals["SRG3b"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
-plottedsignals["SRG3c"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+# plottedsignals["SRJigsawSRG1a"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+# plottedsignals["SRJigsawSRG1b"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
+# plottedsignals["SRJigsawSRG1c"] = ["GG_direct_1100_500","GG_direct_1200_600","GG_direct_1200_800" ]
+# plottedsignals["SRJigsawSRG2a"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+# plottedsignals["SRJigsawSRG2b"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+# plottedsignals["SRJigsawSRG2c"] = ["GG_direct_1200_400","GG_direct_1300_300","GG_direct_1400_600" ]
+# plottedsignals["SRJigsawSRG3a"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+# plottedsignals["SRJigsawSRG3b"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+# plottedsignals["SRJigsawSRG3c"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
+
+
+
+
+
+
+plottedsignals["SRJigsawSRS1a"] = ["SS_direct_1000_600","SS_direct_1200_600" ]
+plottedsignals["SRJigsawSRS1b"] = ["SS_direct_1000_600","SS_direct_1200_600" ]
+plottedsignals["SRJigsawSRS2a"] = ["SS_direct_1000_500","SS_direct_1200_400" ]
+plottedsignals["SRJigsawSRS2b"] = ["SS_direct_1000_500","SS_direct_1200_400" ]
+plottedsignals["SRJigsawSRS3a"] = ["SS_direct_1000_200","SS_direct_1400_100" ]
+plottedsignals["SRJigsawSRS3b"] = ["SS_direct_1000_200","SS_direct_1400_100" ]
+
+
+plottedsignals["SRJigsawSRC1"] = ["SS_direct_1000_600","SS_direct_1200_600", "GG_direct_1250_750" ]
+plottedsignals["SRJigsawSRC2"] = ["SS_direct_1000_600","SS_direct_1200_600", "GG_direct_1250_750" ]
+plottedsignals["SRJigsawSRC3"] = ["SS_direct_1000_600","SS_direct_1200_600", "GG_direct_1250_750" ]
+plottedsignals["SRJigsawSRC4"] = ["SS_direct_1000_600","SS_direct_1200_600", "GG_direct_1250_750" ]
+plottedsignals["SRJigsawSRC5"] = ["SS_direct_1000_600","SS_direct_1200_600", "GG_direct_1250_750" ]
+
+
+plottedsignals["SRJigsawSRG1a"] = [ "GG_direct_1250_750", "GG_direct_1350_650" ]
+plottedsignals["SRJigsawSRG1b"] = [ "GG_direct_1250_750", "GG_direct_1350_650" ]
+plottedsignals["SRJigsawSRG2a"] = [ "GG_direct_1450_550", "GG_direct_1650_550" ]
+plottedsignals["SRJigsawSRG2b"] = [ "GG_direct_1450_550", "GG_direct_1650_550" ]
+plottedsignals["SRJigsawSRG3a"] = [ "GG_direct_1300_100", "GG_direct_1600_0" ]
+plottedsignals["SRJigsawSRG3b"] = [ "GG_direct_1300_100", "GG_direct_1600_0" ]
+
+
+
+
+
+
 
 
 plottedsignals["CRDB1B"] = ["_1400_0","_1500_100","_1600_0" ]
@@ -141,38 +174,31 @@ regions = [
 # "SR2jt",
 
 
-"SRS1a",
-"SRS1b",
-"SRS2a",
-"SRS2b",
-"SRS3a",
-"SRS3b",
+	"SRJigsawSRC1",
+	"SRJigsawSRC2",
+	"SRJigsawSRC3",
+	"SRJigsawSRC4",
+	"SRJigsawSRC5",
 
-"SRC1a",
-"SRC1b",
-"SRC2a",
-"SRC2b",
-"SRC3a",
-"SRC3b",
-"SRC4a",
-"SRC4b",
+	"SRJigsawSRS1a",
+	"SRJigsawSRS1b",
+	"SRJigsawSRS2a",
+	"SRJigsawSRS2b",
+	"SRJigsawSRS3a",
+	"SRJigsawSRS3b",
 
-"SRG1a",
-"SRG1b",
-"SRG1c",
-"SRG2a",
-"SRG2b",
-"SRG2c",
-"SRG3a",
-"SRG3b",
-"SRG3c",
+	"SRJigsawSRG1a",
+	"SRJigsawSRG1b",
+	"SRJigsawSRG2a",
+	"SRJigsawSRG2b",
+	"SRJigsawSRG3a",
+	"SRJigsawSRG3b",
 
-
-# "SR5j",
-# "CRDB1B"
 ]
 
 for region in regions:
+	print region
+
 
 	histogramName = "cutflow_%s"%region
 
@@ -204,7 +230,9 @@ for region in regions:
 	mybinlabels = []
 	for ibin in xrange(1,hists[samples[0]].GetNbinsX()+1 ):
 		# print hists[samples[0]].GetXaxis().GetBinLabel(ibin)
-		label = hists[samples[0]].GetXaxis().GetBinLabel(ibin).translate(None, " _(),.").replace("<","$<$").replace(">","$>$")
+		label = hists[samples[0]].GetXaxis().GetBinLabel(ibin).translate(None, " &_(),.").replace("<","$<$").replace(">","$>$")
+		if ibin==1:
+			label = "Weights+Cleaning"
 		mybinlabels.append(  label )
 
 	axes = plt.subplot(211)
@@ -265,6 +293,7 @@ for region in regions:
 		if skip:
 			continue
 		signalfile = root_open("hists/output/%s/hist-%s.root.root"%(signalsample,  "_".join(signalsample.split("_")[:2])  ) )
+		print signalfile
 		try:
 			hists[signalsample] = signalfile.Get(histogramName).Clone( signalsample )
 			hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")   )

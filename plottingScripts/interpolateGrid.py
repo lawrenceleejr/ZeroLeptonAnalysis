@@ -13,6 +13,7 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 	if runUncertainty:
 		zd1s =   list( zip( *dictionary1.values())[2]   ) 
 		zu1s =   list( zip( *dictionary1.values())[3]   ) 
+		zobs =   list( zip( *dictionary1.values())[4]   ) 
 
 
 	# print "1441414"*100
@@ -26,6 +27,7 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 		if runUncertainty:
 			meffzd1s =   list( zip( *dictionary2.values())[2]   ) 
 			meffzu1s =   list( zip( *dictionary2.values())[3]   ) 
+			meffobs =   list( zip( *dictionary2.values())[4]   ) 
 
 		zminusmeffz = [tmpx-tmpy for tmpx,tmpy in  zip(z,meffz)  ]
 
@@ -39,6 +41,7 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 			if runUncertainty:
 				zd1s.append(0)
 				zu1s.append(0)
+				zobs.append(0)
 
 			# for offsety in [50]:
 			# 	x.append(thing)
@@ -49,11 +52,6 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 		# for thing in [10*i for i in xrange(39) ]:
 		# 	x.append(thing)
 		# 	y.append(thing)
-		# 	z.append(0)
-
-		# for thing in [400+10*i for i in xrange(59) ]:
-		# 	x.append(thing)
-		# 	y.append(1200)
 		# 	z.append(0)
 
 
@@ -77,6 +75,7 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 			if runUncertainty:
 				zd1s.append(0)
 				zu1s.append(0)
+				zobs.append(0)
 
 	x.append(1800)
 	y.append(1200)
@@ -85,6 +84,7 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 	if runUncertainty:
 		zd1s.append(0)
 		zu1s.append(0)
+		zobs.append(0)
 
 	if withZeros:
 		x.append(1500)
@@ -94,6 +94,7 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 		if runUncertainty:
 			zd1s.append(0)
 			zu1s.append(0)
+			zobs.append(0)
 
 	x = np.array(x)
 	y = np.array(y)
@@ -101,6 +102,7 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 	if runUncertainty:
 		zd1s = np.array(zd1s)
 		zu1s = np.array(zu1s)
+		zobs = np.array(zobs)
 
 	# print x,y,z
 
@@ -127,12 +129,15 @@ def interpolateGridDictionary(dictionary1, dictionary2=0, withZeros=0, runUncert
 		# rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
 		rbf = LSQ_Rbf(x, y, z, function='linear')
 
-	if runUncertainty>0:
+	if runUncertainty==1:
 		# rbf = scipy.interpolate.Rbf(x, y, zu1s, function='linear')
 		rbf = LSQ_Rbf(x, y, zu1s, function='linear')
-	if runUncertainty<0:
+	if runUncertainty==-1:
 		# rbf = scipy.interpolate.Rbf(x, y, zd1s, function='linear')
 		rbf = LSQ_Rbf(x, y, zd1s, function='linear')
+	if runUncertainty==2:
+		# rbf = scipy.interpolate.Rbf(x, y, zd1s, function='linear')
+		rbf = LSQ_Rbf(x, y, zobs, function='linear')
 
 	zi = rbf(xi, yi)
 
@@ -194,7 +199,7 @@ def interpolateGridArray(x,y,z, withZeros=0):
 	xi, yi = np.meshgrid(xi, yi)
 
 	print len(x), len(y), len(z)
-	rbf = scipy.interpolate.Rbf(x, y, z, function='cubic')
+	rbf = scipy.interpolate.Rbf(x, y, z, function='linear')
 	zi = rbf(xi, yi)
 
 	return x,y,z,xi,yi,zi

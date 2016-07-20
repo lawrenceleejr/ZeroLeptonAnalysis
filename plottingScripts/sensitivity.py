@@ -60,8 +60,8 @@ lumiscale = 10
 writePlots = True
 combineRegions = 1
 
-SignalGrids = ["SS_direct"]
-# SignalGrids = ["GG_direct"]
+# SignalGrids = ["SS_direct"]
+SignalGrids = ["GG_direct"]
 # SignalGrids = ["SS_direct","GG_direct"]
 # SignalGrids = ["GG_onestepCC"]
 
@@ -74,13 +74,13 @@ myxlabel["GG_onestepCC"] = r"$m_{\tilde{g}}$ [GeV]"
 # MeffRegions = 0
 MeffRegions = [
 # "SR2jCo",
-"SR2jl",
-"SR2jm",
-"SR2jt",
-"SR4jt",
-"SR5j",
-"SR6jm",
-"SR6jt",
+# "SR2jl",
+# "SR2jm",
+# "SR2jt",
+# "SR4jt",
+# "SR5j",
+# "SR6jm",
+# "SR6jt",
 ]
 
 
@@ -105,13 +105,13 @@ cuts = [
 
 		"SRG1a",
 		"SRG1b",
-		"SRG1c",
+		# "SRG1c",
 		"SRG2a",
 		"SRG2b",
-		"SRG2c",
+		# "SRG2c",
 		"SRG3a",
 		"SRG3b",
-		"SRG3c",
+		# "SRG3c",
 
 		"SRS1a",
 		"SRS1b",
@@ -123,8 +123,8 @@ cuts = [
 		"SRC1",
 		"SRC2",
 		"SRC3",
-		"SRC4q",
-		"SRC4g",
+		"SRC4",
+		"SRC5",
 		# "SR1BCo",
 		# "SR2ACo",
 		# "SR2BCo",
@@ -256,7 +256,7 @@ for SignalGrid in SignalGrids:
 			# signalfile = root_open("hists/rundir_signal/"+signalsample)
 			# print signalfile.ls()
 			try:
-				signalfile = root_open("hists/output/%s/hist-%s_ALL.root.root"%(signalsample,SignalGrid))
+				signalfile = root_open("hists/output/%s/hist-%s.root.root"%(signalsample,SignalGrid))
 				sig =  signalfile.Get("MET_%s"%tmpcut ).Clone( signalsample )
 				sig.Scale(lumiscale)
 				if SignalGrid == "SS_direct":
