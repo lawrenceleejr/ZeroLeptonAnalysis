@@ -259,6 +259,11 @@ def makeSummaryPlots(doPrintOnly=False):
     print cmd
     if not doPrintOnly: subprocess.call(cmd, shell=True)
 
+    cmd = "python $ZEROLEPTONFITTER/ToolKit/PlotPull.py;python $ZEROLEPTONFITTER/ToolKit/PlotPull.py --doPaper"
+    print cmd
+    if not doPrintOnly: subprocess.call(cmd, shell=True)
+
+
     cmd = "python $ZEROLEPTONFITTER/ToolKit/PlotSRs.py"
     print cmd
     if not doPrintOnly: subprocess.call(cmd, shell=True)
@@ -298,27 +303,27 @@ def main(zlFitterConfig):
 
     for anaName in myAnaList:
         regionList = zlFitterConfig.allRegionsList()
-        try :
-            regionList.remove("VRQ")#don't plot VRQ for now
-        except ValueError  :
-            pass
+        # try :
+        #     regionList.remove("VRQ")#don't plot VRQ for now
+        # except ValueError  :
+        #     pass
 
-        if "SRC" in anaName :
-            try :
-                regionList.remove("VRQa")
-                regionList.remove("VRQb")
-                regionList.remove("VRZ")
-                regionList.remove("VRZa")
-                regionList.remove("VRZb")
-            except ValueError :
-                pass
-        if "SRG" or "SRS" in  anaName :
-            try :
-                regionList.remove("VRQc")
-                regionList.remove("VRZc")
-                regionList.remove("VRZa")
-            except ValueError :
-                pass
+        # if "SRC" in anaName :
+        #     try :
+        #         regionList.remove("VRQa")
+        #         regionList.remove("VRQb")
+        #         regionList.remove("VRZ")
+        #         regionList.remove("VRZa")
+        #         regionList.remove("VRZb")
+        #     except ValueError :
+        #         pass
+        # if "SRG" or "SRS" in  anaName :
+        #     try :
+        #         regionList.remove("VRQc")
+        #         regionList.remove("VRZc")
+        #         regionList.remove("VRZa")
+        #     except ValueError :
+        #         pass
 
         # Filename containing workspace
         filenames = [os.path.join(options.output_dir, "ZL_%s_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root" % anaName)]
