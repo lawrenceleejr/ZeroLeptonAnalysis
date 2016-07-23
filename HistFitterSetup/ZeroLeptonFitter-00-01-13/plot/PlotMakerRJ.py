@@ -29,6 +29,8 @@ def parseCmdLine(args):
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
     parser.add_option("--lumi", dest="lumi", help="lumi", default=11.3)
+    parser.add_option("--integral", dest="int", help="integrals", default=False, action = "store_true")
+    parser.add_option("--vrebin", dest="vbins", help="variable binning", default=False, action = "store_true")
     (config, args) = parser.parse_args(args)
 
     print config
@@ -61,8 +63,6 @@ else:
 
 anaImInterestedIn = [ana for ana in allRegionsList if (config.regionsToRun in ana)]
 print anaImInterestedIn
-
-binscale = 10 # extra bins for more precision in integrals
 
 runData=True
 doBlinding = False
@@ -196,7 +196,7 @@ ratiocutsfull = {
 
 varList = [
            {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
-           {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'60','minvar':'0','maxvar':'1.2','unit':''},
+           {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'30','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#Delta_{QCD}','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'H2PP','varNtuple':'H2PP','plotName':'H_{1,1}^{PP} [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
            #
@@ -257,9 +257,18 @@ varList = [
            {'varName':'origmet','varNtuple':'origmet','plotName':'E_{T}^{miss,orig} [GeV]','nbinvar':'40','minvar':'0','maxvar':'2000.','unit':'GeV'},
            {'varName':'origmetPhi', 'varNtuple':'origmetPhi', 'plotName': '#phi(E_{T}^{miss,orig})', 'nbinvar':'40','minvar':'-1','maxvar':'7','unit':''},
            ]
+
+from array import array
+varbin_lastcut = [0,100,200,300,400,500,600,700,800,900,1000,1100,1200,1400,1600,1800,2000,2500,3000,3500,4000,4500,5000]
+varbin_rescale = [1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,.5,.5,.5,.5,.5,.2,.2,.2,.2,.2]
+Nvarbin_lastcut = len(varbin_lastcut)-1
+
 if config.doCompressed:
     varList[0]['nbinvar'] = '25'
     varList[0]['maxvar'] = '2500.'
+    varbin_lastcut = varbin_lastcut[:-5]
+    varbin_rescale = varbin_rescale[:-5]
+    Nvarbin_lastcut = len(varbin_lastcut)-1
 
 datafile = 'DataMain_303291_RJ_17072016.root'
 fullDataPath = config.inputDataFile if config.inputDataFile else (datadir + datafile)
@@ -378,7 +387,7 @@ if doAlternativeTopPythia and doCRWT:
     TopName = 'TopPowhegPythia8'
     print "Running alternative TopPowhegPythia8 sample!"
 if doAlternativeTopMcAtNlo and doCRWT:
-    TopName = 'TopaMcAtNloHerwigpp'
+    TopName = 'TopMCatNLO.root'
     print "Running alternative TopMcAtNloHerwigpp sample!"
 
 
@@ -402,9 +411,13 @@ if doCRY:
               'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_',
               'syst':commonsyst,'mufact':1.},
               )
-elif not doVRZ:
+elif not config.region=='SR':
     mc.append({'key':'QCDMC','name':'Multijet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
               'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
+              'syst':commonsyst, 'mufact':1.})
+else:
+    mc.append({'key':'QCDJS','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
               'syst':commonsyst, 'mufact':1.})
 
 #To make sure that the dominant background is on top
@@ -415,13 +428,13 @@ print mc
 mc_alternative = [
                   {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kBlue+3,'inputdir':mcaltdir+'ZMadgraphPythia8.root','veto':1,'treePrefix':'Z_','treeSuffix':'_Madgraph',
-                  'syst':commonsyst},
+                  'syst':commonsyst, 'mufact':0.85},
                   {'key':'Top_alternative','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopaMcAtNloHerwigpp.root',
-                  'treePrefix':'Top_','treeSuffix':'_aMcAtNloHerwigpp','syst':commonsyst},
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopMCatNLO.root',
+                  'treePrefix':'Top_','treeSuffix':'_aMcAtNloHerwigpp','syst':commonsyst, 'mufact':0.9},
                   {'key':'Wjets_alternative','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kAzure-4,'inputdir':mcaltdir+'WMadgraphPythia8.root','veto':1,'treePrefix':'W_','treeSuffix':'_Madgraph',
-                  'syst':commonsyst},
+                  'syst':commonsyst, 'mufact':0.8},
                   ]
 
 mc_truth = [
@@ -537,120 +550,125 @@ signalPoint=[
 
 start_time = time.time()
 
-if doSyst and doRun2 and version>30:
-    systDict=[
-              "_JET_GroupedNP_1_1down",
-              "_JET_GroupedNP_2_1down",
-              "_JET_GroupedNP_3_1down",
+if doSyst:
+    if doRun2 and version>30:
+        systDict=[
+                  "_JET_GroupedNP_1_1down",
+                  "_JET_GroupedNP_2_1down",
+                  "_JET_GroupedNP_3_1down",
 
-              "_JET_GroupedNP_1_1up",
-              "_JET_GroupedNP_2_1up",
-              "_JET_GroupedNP_3_1up",
-              "_JET_JER_SINGLE_NP_1up",
+                  "_JET_GroupedNP_1_1up",
+                  "_JET_GroupedNP_2_1up",
+                  "_JET_GroupedNP_3_1up",
+                  "_JET_JER_SINGLE_NP_1up",
 
-              "_MET_SoftTrk_ResoPara",
-              "_MET_SoftTrk_ResoPerp",
-              "_MET_SoftTrk_ScaleDown",
-              "_MET_SoftTrk_ScaleUp",
+                  "_MET_SoftTrk_ResoPara",
+                  "_MET_SoftTrk_ResoPerp",
+                  "_MET_SoftTrk_ScaleDown",
+                  "_MET_SoftTrk_ScaleUp",
 
-              #"_EG_SCALE_ALL_1down",
-              #"_EG_RESOLUTION_ALL_1down",
-              #"_JET_BJES_Response_1down",
-              #"_JET_EffectiveNP_1_1down",
-              #"_JET_EffectiveNP_2_1down",
-              #"_JET_EffectiveNP_3_1down",
-              #"_JET_EffectiveNP_4_1down",
-              #"_JET_EffectiveNP_5_1down",
-              #"_JET_EffectiveNP_6restTerm_1down",
-              #"_JET_EtaIntercalibration_Modelling_1down",
-              #"_JET_EtaIntercalibration_TotalStat_1down",
-              #"_JET_Flavor_Composition_1down",
-              #"_JET_Flavor_Response_1down",
-              #"_JET_Pileup_OffsetMu_1down",
-              #"_JET_Pileup_OffsetNPV_1down",
-              #"_JET_Pileup_PtTerm_1down",
-              #"_JET_Pileup_RhoTopology_1down",
-              #"_JET_PunchThrough_MC12_1down",
-              #"_JET_SingleParticle_HighPt_1down",
-              #"_MET_SoftTrk_ScaleDown",
-              #"_MUONS_ID_1down",
-              #"_MUONS_MS_1down",
-              #"_MUONS_SCALE_1down",
-              #"_TAUS_SME_TOTAL_1down",
+                  #"_EG_SCALE_ALL_1down",
+                  #"_EG_RESOLUTION_ALL_1down",
+                  #"_JET_BJES_Response_1down",
+                  #"_JET_EffectiveNP_1_1down",
+                  #"_JET_EffectiveNP_2_1down",
+                  #"_JET_EffectiveNP_3_1down",
+                  #"_JET_EffectiveNP_4_1down",
+                  #"_JET_EffectiveNP_5_1down",
+                  #"_JET_EffectiveNP_6restTerm_1down",
+                  #"_JET_EtaIntercalibration_Modelling_1down",
+                  #"_JET_EtaIntercalibration_TotalStat_1down",
+                  #"_JET_Flavor_Composition_1down",
+                  #"_JET_Flavor_Response_1down",
+                  #"_JET_Pileup_OffsetMu_1down",
+                  #"_JET_Pileup_OffsetNPV_1down",
+                  #"_JET_Pileup_PtTerm_1down",
+                  #"_JET_Pileup_RhoTopology_1down",
+                  #"_JET_PunchThrough_MC12_1down",
+                  #"_JET_SingleParticle_HighPt_1down",
+                  #"_MET_SoftTrk_ScaleDown",
+                  #"_MUONS_ID_1down",
+                  #"_MUONS_MS_1down",
+                  #"_MUONS_SCALE_1down",
+                  #"_TAUS_SME_TOTAL_1down",
 
-              #"_EG_SCALE_ALL_1up",
-              #"_EG_RESOLUTION_ALL_1up",
-              #"_JET_BJES_Response_1up",
-              #"_JET_EffectiveNP_1_1up",
-              #"_JET_EffectiveNP_2_1up",
-              #"_JET_EffectiveNP_3_1up",
-              #"_JET_EffectiveNP_4_1up",
-              #"_JET_EffectiveNP_5_1up",
-              #"_JET_EffectiveNP_6restTerm_1up",
-              #"_JET_EtaIntercalibration_Modelling_1up",
-              #"_JET_EtaIntercalibration_TotalStat_1up",
-              #"_JET_Flavor_Composition_1up",
-              #"_JET_Flavor_Response_1up",
-              #"_JET_JER_SINGLE_NP_1up",
-              #"_JET_Pileup_OffsetMu_1up",
-              #"_JET_Pileup_OffsetNPV_1up",
-              #"_JET_Pileup_PtTerm_1up",
-              #"_JET_Pileup_RhoTopology_1up",
-              #"_JET_PunchThrough_MC12_1up",
-              #"_JET_SingleParticle_HighPt_1up",
-              #"_MET_SoftTrk_ScaleUp",
-              #"_MUONS_ID_1up",
-              #"_MUONS_MS_1up",
-              #"_MUONS_SCALE_1up",
-              #"_TAUS_SME_TOTAL_1up",
+                  #"_EG_SCALE_ALL_1up",
+                  #"_EG_RESOLUTION_ALL_1up",
+                  #"_JET_BJES_Response_1up",
+                  #"_JET_EffectiveNP_1_1up",
+                  #"_JET_EffectiveNP_2_1up",
+                  #"_JET_EffectiveNP_3_1up",
+                  #"_JET_EffectiveNP_4_1up",
+                  #"_JET_EffectiveNP_5_1up",
+                  #"_JET_EffectiveNP_6restTerm_1up",
+                  #"_JET_EtaIntercalibration_Modelling_1up",
+                  #"_JET_EtaIntercalibration_TotalStat_1up",
+                  #"_JET_Flavor_Composition_1up",
+                  #"_JET_Flavor_Response_1up",
+                  #"_JET_JER_SINGLE_NP_1up",
+                  #"_JET_Pileup_OffsetMu_1up",
+                  #"_JET_Pileup_OffsetNPV_1up",
+                  #"_JET_Pileup_PtTerm_1up",
+                  #"_JET_Pileup_RhoTopology_1up",
+                  #"_JET_PunchThrough_MC12_1up",
+                  #"_JET_SingleParticle_HighPt_1up",
+                  #"_MET_SoftTrk_ScaleUp",
+                  #"_MUONS_ID_1up",
+                  #"_MUONS_MS_1up",
+                  #"_MUONS_SCALE_1up",
+                  #"_TAUS_SME_TOTAL_1up",
 
-              #"_MET_SoftTrk_ResoPara",
-              #"_MET_SoftTrk_ResoPerp",
+                  #"_MET_SoftTrk_ResoPara",
+                  #"_MET_SoftTrk_ResoPerp",
 
-              #"_JET_GroupedNP_1_1up",
-              #"_JET_GroupedNP_2_1up",
-              #"_JET_GroupedNP_3_1up",
-              #"_JET_GroupedNP_1_1down",
-              #"_JET_GroupedNP_2_1down",
-              #"_JET_GroupedNP_3_1down",
-              #"_JER_1up",
-              ]
-elif doSyst:
-    systDict=[
-              #        "_PUup",
-              #        "_PUdown",
-              "_JESUP",
-              "_JESDOWN",
-              "_JER",
-              ]
-              #         "_SCALESTUP",
-              #         "_SCALESTDOWN",
-              #         "_RESOST",
-              #         "_bTagBup",
-              #         "_bTagBdown",
-              #         "_bTagCup",
-              #         "_bTagCdown",
-              #         "_bTagLup",
-              #         "_bTagLdown",
-              #         "_GamWeightUP",
-              #         "_GamWeightDOWN",
-              #         "_mu1Up",
-              #         "_mu1Down",
-              #         "_mu2Up",
-              #         "_mu2Down",
-              #         "_ghi",
-              #         "_glo",
-              #         "_thi",
-              #         "_tlo",
-              #         ]
+                  #"_JET_GroupedNP_1_1up",
+                  #"_JET_GroupedNP_2_1up",
+                  #"_JET_GroupedNP_3_1up",
+                  #"_JET_GroupedNP_1_1down",
+                  #"_JET_GroupedNP_2_1down",
+                  #"_JET_GroupedNP_3_1down",
+                  #"_JER_1up",
+                  ]
 else:
     systDict=[]
+
 def projAll(l,var,varname,title,cuts,syst,myNtHandler,nbinvar,minvar,maxvar,output):
     print '------------------------- projAll',title,varname,nbinvar,minvar,maxvar
     myHisto=ROOT.TH1F(title,varname,nbinvar,minvar,maxvar)
     myHisto.SetFillColor(myNtHandler.color)
     myNtHandler.project(l,title,var,cuts)
     output.put(myHisto)
+
+def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlername,nbinvar,minvar,maxvar):
+    if len(processList)==0: return []
+    hists = []
+    jobs = []
+    output=Queue()
+
+    label = syst
+    for process in processList:
+        suffix = syst
+        if "mcTreeSuffix" in process.keys(): suffix = process["mcTreeSuffix"]
+        if syst=="Syst":
+            suffix = process["ntsyst"]
+            label = process["ntsyst"]
+        title = varname+process['mctreePrefix']+ana+region+suffix
+        pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
+        p=Process(target=projAll,args=pargs)
+        jobs.append(p)
+        print 'START',p, title
+        p.result_queue = output
+        p.start()
+    working=True
+    while working:
+        hists.append(output.get())
+        if len(hists)==len(jobs): working=False
+    for j in jobs:
+        j.terminate()
+    DeleteList(jobs)
+    output.close()
+    output.join_thread()
+    return hists
 
 class NtHandler:
     def __init__(self,name,filename,treename,basecuts,color,weights,dataormc,lumi):
@@ -672,11 +690,12 @@ class NtHandler:
             if not self.tree:
                 print "no tree:",treename
                 sys.exit(1)
-        print basecuts, self.tree.GetEntries()
-        print self.tree.Draw('>>entryList'+name,basecuts,'entrylist')
+        #print basecuts, self.tree.GetEntries()
+        #print
+        self.tree.Draw('>>entryList'+name,basecuts,'entrylist')
         elist = ROOT.gDirectory.Get('entryList'+name)
         self.tree.SetEntryList(elist)
-        print 'done,',name," ",elist.GetN(),' entries'
+        #print 'done,',name," ",elist.GetN(),' entries'
         return
     def printAll(self):
         print 'printall from nthandler',self.lumi,self.tree.GetName()
@@ -684,7 +703,7 @@ class NtHandler:
     def project(self,l,histname,var,cuts):
         weight=str(self.weights)+"*"+str(self.lumi)
         if self.data=="data":  weight="1"
-        print 'histname',self.data,histname,"weight",weight,"var",var,cuts,self.tree.GetEntries(cuts)
+        #print 'histname',self.data,histname,"weight",weight,"var",var,cuts,self.tree.GetEntries(cuts)
         self.tree.Project(histname,var,"("+cuts+")*("+weight+")")
         print 'time Project',time.time()-start_time,histname
 
@@ -794,8 +813,7 @@ def main(configMain):
                         plotSignalList=[]
                         for point in signalPoint:
                             for sigSR in point['sigSR']:
-                                print sigSR, ana
-                                if sigSR==ana or sigSR=='all':
+                                if (sigSR==ana) or (sigSR=='all'):
                                     tmptreename="_"+ch.getSuffixTreeName(region)
                                     ntsig=NtHandler(ana+region+point['name']+tmptreename,point['filename'],point['name']+tmptreename,cuts,point['color'],weights,"signal",configMain.lumi)
                                     plotSignalList.append({'pointname':point['name'],'pointcolor':point['color'],'pointlinestyle':point['linestyle'],'pointsigplotname':point['sigplotname'],'pointmass':point['masspoint'],'nthandle':ntsig})
@@ -822,6 +840,9 @@ def main(configMain):
                             if process['key'] == "Yjets":
                                 print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," lumi type: ", type(configMain.lumi), configMain.lumi
                                 ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets*process['mufact'])
+                            elif process['key'] == "QCDJS":
+                                print "Process is: ", process['key'], ", applying flat weight of ", 0.01," lumi type: ", type(configMain.lumi), configMain.lumi
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],0.01,"mc",configMain.lumi*process['mufact'])
                             else:
                                 ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*process['mufact'])
 
@@ -829,6 +850,8 @@ def main(configMain):
 
                         if doSyst:
                             for syst in systDict:
+                                if process['key'] == "QCDMC": continue
+                                if process['key'] == "QCDJS": continue
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)+syst
 
                                 treename = ana+region+process['treePrefix']+"_baseline"
@@ -878,7 +901,7 @@ def main(configMain):
                                 chnameshort = ch.name.split('Jigsaw')[1][:3]
                                 var = ratiocuts[chnameshort]
                             print "VAR", varname, var
-                            nbinvar=int(varinList['nbinvar'])*binscale
+                            nbinvar=int(varinList['nbinvar'])
                             minvar=float(varinList['minvar'])
                             maxvar=float(varinList['maxvar'])
                             unit=varinList['unit']
@@ -887,26 +910,13 @@ def main(configMain):
                             nameSignalHistos=[]
                             nameMassSignalHistos=[]
 
-                            jobs=[]
-                            output=Queue()
-                            for process in fullPlotMC:
-                                p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+"",cuts,"",process['ntmchandle'],nbinvar,minvar,maxvar,output,))
-                                jobs.append(p)
-                            for process in fullPlotMCAlt:
-                                p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+'_alternative',cuts,"Alternative",process['ntmcalthandle'],nbinvar,minvar,maxvar,output,))
-                                jobs.append(p)
-                            for process in fullPlotMCTruth:
-                                p=Process(target=projAll,args=(1,var,varname,varname+process['mctreePrefix']+ana+region+process['mctreeSuffix'],truthcuts,"TruthAlternative",process['ntmctruthalthandle'],nbinvar,minvar,maxvar,output,))
-                            for processSyst in fullPlotMCSyst:
-                                p=Process(target=projAll,args=(1,var,varname,varname+processSyst['mctreePrefix']+ana+region+processSyst['ntsyst'],cuts,processSyst['ntsyst'],processSyst['ntsysthandle'],nbinvar,minvar,maxvar,output,))
-                                jobs.append(p)
-                            for j in jobs:
-                                j.start()
-                                print 'START',j
-                            for j in jobs:
-                                print "Joining job: ",j
-                                j.join()
+                            histsout = []
+                            histsout += parallelProcessProj( fullPlotMC,1,var,varname,ana,region,cuts,"",'ntmchandle',nbinvar,minvar,maxvar )
+                            histsout += parallelProcessProj( fullPlotMCAlt,1,var,varname,ana,region,cuts,"Alternative",'ntmcalthandle',nbinvar,minvar,maxvar )
+                            histsout += parallelProcessProj( fullPlotMCTruth,1,var,varname,ana,region,truthcuts,"TruthAlternative",'ntmctruthalthandle',nbinvar,minvar,maxvar )
+                            histsout += parallelProcessProj( fullPlotMCSyst,1,var,varname,ana,region,cuts,"Syst",'ntsysthandle',nbinvar,minvar,maxvar )
 
+                            print "WHEREAMI"
 
                             arrow=-1
                             arrowupper=-1
@@ -940,17 +950,19 @@ def main(configMain):
                             mcSystHisto=[]
                             mcAltHisto=[]
                             mcTruthAltHisto=[]
-                            for j in jobs:
-                                print 'GET OUTPUT',j
-                                j.result_queue=output
-                                histo=output.get()
+                            for histo in histsout:
                                 print histo.GetName(), histo.GetEntries()
                                 clone=histo.Clone()
                                 if varcut != None: firstbin = histo.GetXaxis().FindBin(varcut)
                                 if varcutupper != None: lastbin = histo.GetXaxis().FindBin(varcutupper)
-                                mcInt[clone] = histo.Integral(firstbin,lastbin)
-                                smTotal += mcInt[clone]
-                                clone.Rebin(binscale)
+                                mcInt[clone.GetName()] = histo.Integral(firstbin,lastbin)
+                                smTotal += mcInt[clone.GetName()]
+
+                                if config.vbins and (varname=="LastCut" or varname=="H2PP"):
+                                    clone = clone.Rebin(Nvarbin_lastcut,clone.GetName()+"_rebin",array('d',varbin_lastcut))
+                                    for ibin in range(clone.GetNbinsX()):
+                                        clone.SetBinContent(ibin+1,clone.GetBinContent(ibin+1)*varbin_rescale[ibin])
+                                        clone.SetBinError(ibin+1,clone.GetBinError(ibin+1)*varbin_rescale[ibin])
                                 if DrawOverflow:
                                     print "INGRID: nbins: ",clone.GetNbinsX(), ", Overflowbin: ", clone.GetBinContent(clone.GetNbinsX()+1)
                                     nBins = clone.GetNbinsX()
@@ -963,7 +975,7 @@ def main(configMain):
                                 lock_sys=0
                                 if "TRUTH" in histo.GetName():
                                     lock_sys=3
-                                elif 'alternative' in histo.GetName():
+                                elif 'alternative' in histo.GetName().lower():
                                     lock_sys=2
                                 for sys in systDict:
                                     if sys in histo.GetName():
@@ -976,12 +988,6 @@ def main(configMain):
                                     mcTruthAltHisto.append(clone)
                                 else:
                                     mcAltHisto.append(clone)
-
-                            for j in jobs:
-                                j.terminate()
-                            output.close()
-                            output.join_thread()
-
 
                             lock=1
 
@@ -1040,7 +1046,11 @@ def main(configMain):
                                     print "Adding overflow bin!"
                                     dataHisto.SetBinContent(nBinsdata,LastBindata+OverflowBindata)
                                 dataInt = dataHisto.Integral(firstbin,lastbin)
-                                dataHisto.Rebin(binscale)
+                                if config.vbins and (varname=="LastCut" or varname=="H2PP"):
+                                    dataHisto = dataHisto.Rebin(Nvarbin_lastcut,dataHisto.GetName()+"_rebin",array('d',varbin_lastcut))
+                                    for ibin in range(dataHisto.GetNbinsX()):
+                                        dataHisto.SetBinContent(ibin+1,dataHisto.GetBinContent(ibin+1)*varbin_rescale[ibin])
+                                        dataHisto.SetBinError(ibin+1,0.)
 
                                 datah_Poiss = ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
                                 datah_Poiss.SetMarkerStyle(20)
@@ -1048,7 +1058,10 @@ def main(configMain):
                                 datah_Poiss.SetMarkerColor(kBlack)
                                 datah_Poiss.SetLineColor(kBlack)
                                 datah_Poiss.SetLineWidth(3)
-                                setAsymmErrors(dataHisto,datah_Poiss)
+                                if config.vbins and (varname=="LastCut" or varname=="H2PP"):
+                                    setAsymmErrors(dataHisto,datah_Poiss,varbin_rescale)
+                                else:
+                                    setAsymmErrors(dataHisto,datah_Poiss)
 
                                 dataClone = ROOT.TGraphAsymmErrors(dataHisto.GetNbinsX())
                                 dataClone.SetMarkerStyle(20)
@@ -1057,6 +1070,10 @@ def main(configMain):
                                 dataClone.SetMarkerColor(kWhite)
                                 dataClone.SetLineColor(kWhite)
                                 setAsymmErrors(dataHisto,dataClone)
+                                if config.vbins and (varname=="LastCut" or varname=="H2PP"):
+                                    setAsymmErrors(dataHisto,dataClone,varbin_rescale)
+                                else:
+                                    setAsymmErrors(dataHisto,dataClone)
                                 min = 0.25
                                 max = dataHisto.GetMaximum()
                                 if dataHisto.Integral()==0:
@@ -1085,6 +1102,8 @@ def main(configMain):
                                 dataHisto.GetYaxis().SetTitleSize(0.055)
                                 dataHisto.GetYaxis().SetTitleOffset(1.35)
                                 dataHisto.GetYaxis().SetTitleFont(42)
+                                for ibin in range(1,dataHisto.GetNbinsX()+1):
+                                    dataHisto.SetBinError(ibin,0.)
 
                                 dataHisto.Draw("p")
                                 dataClone.Draw("p:e:same")
@@ -1101,12 +1120,13 @@ def main(configMain):
                             for whichmc in mc:
                                 for h in mcHisto:
                                     if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
+                                        print "MCSTACK:", h.GetName()
                                         clone=h.Clone()
                                         Clone_mcHisto.append(clone)
                                         mcStack.Add(clone)
                                         mcTotal.Add(clone)
                                         binWidth=clone.GetBinWidth(1) if varname.find("Jets")<0 else int(clone.GetBinWidth(1))
-                                        XUnitStack="events / "+str(binWidth)+" "+unit
+                                        XUnitStack="Events / "+str(binWidth)+" "+unit
 
                             sumSystHist=[]
                             for isyst in systDict:
@@ -1120,11 +1140,15 @@ def main(configMain):
                             for hAlt in mcAltHisto:
                                 mcAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
                                 mcAltTotal = mcTotal.Clone()
+                                clonealt=None
                                 for h in mcHisto:
+                                    print "MCALT:", h.GetName(), hAlt.GetName()
                                     if h.GetName() in hAlt.GetName():
+                                        print "MCALTTOTAL: rm", h.GetName()
+                                        print h.GetName(), hAlt.GetName()
                                         clonealt=hAlt.Clone()
                                         clonealt.Add(h,-1.)
-                                mcAltTotal.Add(clonealt)
+                                if clonealt: mcAltTotal.Add(clonealt)
                                 sumSystHist.append(mcAltTotal)
 
                             if doCRY and len(mcTruthAltHisto)>0:
@@ -1141,19 +1165,23 @@ def main(configMain):
                             if(runData):
                                 mcStack.Draw("same:hist")
                                 mcTotal.Draw("hist:same")
-                                if(runSignal) and (SignalOnTop):
-                                    print "SIGNAL", len(signalHistos),signalHistos
+                                if(runSignal):
                                     for hsig in signalHistos:
-                                        #print type(hsig), hsig
-                                        hsig.Add(mcTotal,1)
-                                        hsig.SetLineWidth(4)
-                                        hsig.Draw("hist:same")
-                                elif(runSignal):
-                                    #print len(signalHistos),signalHistos
-                                    for hsig in signalHistos:
-                                        #print type(hsig), hsig
-                                        hsig.SetLineWidth(4)
-                                        hsig.Draw("hist:same")
+                                        if config.vbins and (varname=="LastCut" or varname=="H2PP"):
+                                            hsig = hsig.Rebin(Nvarbin_lastcut,hsig.GetName()+"_rebin",array('d',varbin_lastcut))
+                                            for ibin in range(hsig.GetNbinsX()):
+                                                hsig.SetBinContent(ibin+1,hsig.GetBinContent(ibin+1)*varbin_rescale[ibin])
+                                                hsig.SetBinError(ibin+1,hsig.GetBinError(ibin+1)*varbin_rescale[ibin])
+                                        if SignalOnTop:
+                                            print "SIGNAL", len(signalHistos),signalHistos
+                                            #print type(hsig), hsig
+                                            hsig.Add(mcTotal,1)
+                                            hsig.SetLineWidth(4)
+                                            hsig.Draw("hist:same")
+                                        else:
+                                            #print type(hsig), hsig
+                                            hsig.SetLineWidth(4)
+                                            hsig.Draw("hist:same")
                                 dataClone.Draw("p:e:same")
                                 datah_Poiss.Draw("p:e:same")
                             else:
@@ -1174,10 +1202,10 @@ def main(configMain):
                                         hsig.SetLineWidth(4)
                                         hsig.Draw("hist:same")
                                         maxsig = TMath.Max(maxsig, hsig.GetMaximum())
-                                min = 0.25
+                                min = 0.07
                                 maxbkg = mcStack.GetMaximum()
                                 max = TMath.Max(maxbkg, maxsig)
-                                if (max <= 2.) :  min = 0.02
+                                if (max <= 2.) :  min = 0.007
                                 yfactor=4
                                 mcStack.SetMinimum(min)
                                 mcStack.SetMaximum(max*yfactor)
@@ -1263,14 +1291,14 @@ def main(configMain):
                             analabel.SetTextFont(42)
                             analabel.Draw("same")
                             if (runSignal) and SignalOnTop:
-                                legend=ROOT.TLegend(0.5,0.48,0.85,0.90)
+                                legend=ROOT.TLegend(0.6,0.45,0.85,0.90)
                             elif (runSignal):
-                                legend=ROOT.TLegend(0.5,0.48,0.85,0.90)
+                                legend=ROOT.TLegend(0.6,0.45,0.85,0.90)
                             else:
                                 legend=ROOT.TLegend(0.6,0.53,0.89,0.90)
                             if(runData):
-                                legend.AddEntry(dataHisto,"Data 2015" + (" ({0})".format(dataInt) if varname=="LastCut" else ""),"p")
-                            legend.AddEntry(mcTotal,"SM Total" + (" ({0:.2f})".format(smTotal) if varname=="LastCut" else ""),"l")
+                                legend.AddEntry(dataHisto,"Data 2015" + (" ({0})".format(dataInt) if varname=="LastCut" and config.int else ""),"p")
+                            legend.AddEntry(mcTotal,"SM Total" + (" ({0:.2f})".format(smTotal) if varname=="LastCut" and config.int else ""),"l")
                             if SignalOnTop:
                                 legend.SetTextSize(0.03)
                             else:
@@ -1283,7 +1311,7 @@ def main(configMain):
                                 for h in mcHisto:
 #                                            print h.GetName()
                                     if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
-                                        legend.AddEntry(h,whichmc['name'] + (" ({0:.2f})".format(mcInt[h]) if varname=="LastCut" else ""),"f")
+                                        legend.AddEntry(h,whichmc['name'] + (" ({0:.2f})".format(mcInt[h.GetName()[:-6]]) if varname=="LastCut" and config.int else ""),"f")
 
                             if(runSignal) and SignalOnTop:
                                 isig=0
@@ -1296,8 +1324,7 @@ def main(configMain):
                                 isig=0
                                 for hsig in signalHistos:
                                     sigInt = hsig.Integral(firstbin,lastbin)
-                                    hsig.Rebin(binscale)
-                                    legend.AddEntry(hsig,nameSignalHistos[isig]+(" ({0:.2f})".format(sigInt) if varname=="LastCut" else ""),"l")
+                                    legend.AddEntry(hsig,nameSignalHistos[isig]+(" ({0:.2f})".format(sigInt) if varname=="LastCut" and config.int else ""),"l")
                                     legend.AddEntry("",nameMassSignalHistos[isig],"")
                                     isig+=1
 
@@ -1404,7 +1431,6 @@ def main(configMain):
                             DeleteList(mcSystHisto)
                             DeleteList(mcAltHisto)
                             DeleteList(mcTruthAltHisto)
-                            DeleteList(jobs)
                     if runData: DeleteList(plotData)
                     if runSignal: DeleteNtList(plotSignalList)
                     DeleteNtList(fullPlotMC)
