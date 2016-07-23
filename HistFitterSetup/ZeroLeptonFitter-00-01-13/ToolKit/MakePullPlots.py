@@ -263,6 +263,17 @@ def makeSummaryPlots(doPrintOnly=False):
     print cmd
     if not doPrintOnly: subprocess.call(cmd, shell=True)
 
+
+    regionList = zlFitterConfig.allRegionsList()
+    regionList.remove("VRQ")#don't plot VRQ for now
+    for region in regionList:
+        if "VR" not in region:
+            continue
+        cmd = "python $ZEROLEPTONFITTER/ToolKit/PlotSRs.py --name %s"%region
+        print cmd
+        if not doPrintOnly: subprocess.call(cmd, shell=True)
+
+
     return
 
 ##############################################################################
@@ -310,13 +321,15 @@ def main(zlFitterConfig):
                 regionList.remove("VRZ")
                 regionList.remove("VRZa")
                 regionList.remove("VRZb")
+                regionList.remove("VRTb")
+                regionList.remove("VRWb")
             except ValueError :
                 pass
         if "SRG" or "SRS" in  anaName :
             try :
                 regionList.remove("VRQc")
                 regionList.remove("VRZc")
-                regionList.remove("VRZa")
+                regionList.remove("VRZca")
             except ValueError :
                 pass
 
@@ -383,7 +396,7 @@ def main(zlFitterConfig):
                         pickle.dump( pullMap, open( pullFileName, "wb" ) )
 
 
-            makeSummaryPlots(options.PrintOnly)
+    makeSummaryPlots(options.PrintOnly)
 
 if __name__ == "__main__":
     zlFitterConfig = ZLFitterConfig()

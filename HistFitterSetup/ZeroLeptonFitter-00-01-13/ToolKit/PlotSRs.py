@@ -149,14 +149,20 @@ def main():
             print "Could not open yield_%s_all.pickl" % channel
             continue
 
+        print channel
+
         theMap = pickle.load(fYield)
 
-        #print theMap["names"]
+        print theMap["names"]
 
         #ATT: Assume that SR is the last one!!!
 
+        try:
+            index=theMap["names"].index(REGIONNAME+"_cuts")
+        except:
+            continue
 
-        index=theMap["names"].index(REGIONNAME+"_cuts")
+
         nobs=float(theMap["nobs"][index])
         print nobs
         nsumbkgEr=theMap["TOTAL_FITTED_bkg_events_err"][index]
