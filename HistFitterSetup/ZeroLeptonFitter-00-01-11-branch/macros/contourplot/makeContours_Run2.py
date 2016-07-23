@@ -893,8 +893,8 @@ def MakeContours(config):
         # if not not("G1a" in ana):
         #     continue
 
-        # if "SRG" in ana:
-        #     continue
+        if not("SRG3b" in ana) and not("SRG1b" in ana):
+            continue
 
         # loop over cross-section nominal or up or down
         for xs in allXS:
@@ -959,7 +959,7 @@ def MakeContours(config):
             # # and merge the files
             # if config.makeUL and xs == "Nominal":
             inputfile = basenameUL+".root"
-            if os.path.isfile(inputfile) and 0:
+            if os.path.isfile(inputfile) or 1:
                 # by defition, ULs are not discovery -> don't care about passing -d
                 # CollectAndWriteHypoTestResults( inputfile, format, interpretation, cutStr, int(automaticRejection), config.outputDir  ) ;
 
@@ -970,7 +970,7 @@ def MakeContours(config):
 
 
                 # merge the output files for hypotest and upperlimit in 1 output file
-                # mergeFileList(config, basename+listSuffix, basenameUL+listSuffix,ana)
+                mergeFileList(config, basename+listSuffix, basenameUL+listSuffix,ana)
 
                 os.system("cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix)   )
                 print "cp %s.wUL %s"%(basename+listSuffix,basename+listSuffix)

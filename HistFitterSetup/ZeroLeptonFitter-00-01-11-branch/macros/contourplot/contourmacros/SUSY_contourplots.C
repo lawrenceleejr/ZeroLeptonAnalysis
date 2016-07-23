@@ -1430,6 +1430,7 @@ void SUSY_contourplots(
     std::cout << "--- printing best SRs" << std::endl;
     Show_SR(fname0, c, frame, xmin, xmax, ymin, ymax, Grid);
     // Show_SR("Outputs/11.3ifb_RJigsaw/SS_direct_MEffRJRCombined_fixSigXSecNominal__1_harvest_list", c, frame, xmin, xmax, ymin, ymax, Grid);
+    // Show_SR("Outputs/11.3ifb_RJigsaw/GG_direct_MEffRJRCombined_fixSigXSecNominal__1_harvest_list", c, frame, xmin, xmax, ymin, ymax, Grid);
     TLatex lat;
     //lat.SetTextAlign( 11 );
     lat.SetTextSize( 0.0265 );
