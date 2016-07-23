@@ -94,9 +94,9 @@ def main():
     colors["Diboson"]=ROOT.kPink-4
 
     MaxFac=1000.
-    MinThres=0.1
+    MinThres=0.2
     Min2=0.
-    Max2=3.1
+    Max2=2.1
 
 
 
@@ -207,7 +207,12 @@ def main():
 
 
 
+    nonzeroBins = []
+    for ibin in xrange(hist_data.GetNbinsX() ):
+        if hist_data.GetBinContent(ibin) != 0.:
+            nonzeroBins.append( ibin )
 
+    hist_data.GetXaxis().SetRange(nonzeroBins[0],nonzeroBins[-1])
 
     stack=THStack("stack","stack")
     for sam in samples:
@@ -402,6 +407,9 @@ def main():
 
 
     lowerPad.cd()
+    highestBinContent = hist_ratio.GetBinContent(hist_ratio.GetMaximumBin() )
+    if highestBinContent > Max2:
+        Max2 = highestBinContent+0.5
     hist_ratio.SetMaximum(Max2)
     hist_ratio.SetMinimum(Min2)
     hist_ratio.GetYaxis().SetTitle("Data/SM Total")

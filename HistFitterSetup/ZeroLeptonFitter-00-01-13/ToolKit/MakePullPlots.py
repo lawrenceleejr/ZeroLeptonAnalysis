@@ -123,14 +123,13 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
     print "regionsForTables"
     print regionsForTables
 
-    if len(regionsForTables.split(',')) >8:
-        print "long table"
+    if len(regionsForTables.split(',')) >6:
         nsplit = len(regionsForTables.split(','))
         nloop=0
-        if nsplit%8==0:
-            nloop=nsplit/8
+        if nsplit%6==0:
+            nloop=nsplit/6
         else:
-            nloop=nsplit/8+1
+            nloop=nsplit/6+1
         for i in range(nloop):
             print i
             theRegions=""
@@ -138,24 +137,23 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
             k=-1
             for region in regionsForTables.split(','):
                 j +=1
-                if j< i*8 or j >= (i+1)*8:
+                if j< i*6 or j >= (i+1)*6:
                     continue
                 k+=1
                 if(0==k):
                     theRegions +=region
                 else:
                     theRegions +=','+region
-        #if "SR" not in theRegions : theRegions+= ',SR_cuts' #make sure SR_cuts is included here
-        cmd = "YieldsTable.py "
-        if doBlind:
-            cmd += "-B "
-        if showErrorBeforeFits:
-            cmd += "-b "
-        cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_%d.tex -t %s" % (theRegions, samples, filename, makeCaption(anaconv, theRegions), makeLabel(anaconv, theRegions), anaconv,i+1, anaconv)
-        print cmd
-        if not doPrintOnly:subprocess.call(cmd, shell=True)
+            cmd = "YieldsTable.py "
+            if doBlind:
+                cmd += "-B "
+            if showErrorBeforeFits:
+                cmd += "-b "
+            cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_%d.tex -t %s" % (theRegions, samples, filename, makeCaption(anaconv, theRegions), makeLabel(anaconv, theRegions), anaconv,i+1, anaconv)
+            print cmd
+            if not doPrintOnly:subprocess.call(cmd, shell=True)
+
     else:
-        print "short table"
         cmd = "YieldsTable.py "
         if doBlind:
             cmd += "-B "
@@ -167,13 +165,13 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
 
 
     # make plots for subset of VRs if doVR==True
-    if doVR and len(regionsForTablesAll.split(',')) - len(regionsForTables.split(',')) > 8:
+    if doVR and len(regionsForTablesAll.split(',')) - len(regionsForTables.split(',')) > 6:
         nVRs = len(regionsForTablesAll.split(',')) - len(regionsForTables.split(','))
         nloop=0
-        if nVRs%8==0:
-            nloop=nVRs/8
+        if nVRs%6==0:
+            nloop=nVRs/6
         else:
-            nloop=nVRs/8+1
+            nloop=nVRs/6+1
 
         for i in range(nloop):
             #theRegions=copy.deepcopy(regionsForTables)
@@ -189,7 +187,7 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
                 if (found):
                     continue
                 j += 1
-                if j < i * 8 or j >= (i + 1) * 8:
+                if j < i * 6 or j >= (i + 1) * 6:
                     continue
                 k += 1
                 if 0==k:
@@ -203,7 +201,7 @@ def makeYieldTables(anaconv, filename, regionList, samples, renamedRegions, useS
             if showErrorBeforeFits:
                 cmd += "-b "
             cmd += "-c %s -s %s -w %s -C \"%s\" -L \"%s\" -o yield_%s_all%d.tex -t %s" % (theRegions, samples, filename, makeCaption(anaconv, theRegions), makeLabel(anaconv, theRegions), anaconv, i+1, anaconv)
-            print i,nVRs,nVRs/8,cmd
+            print i,nVRs,nVRs/6,cmd
             if  not doPrintOnly: subprocess.call(cmd, shell=True)
 
     # make combined table with all VRs and all CRs (note: we always need this for the pickle not  not )
@@ -309,29 +307,25 @@ def main(zlFitterConfig):
 
     for anaName in myAnaList:
         regionList = zlFitterConfig.allRegionsList()
-        try :
-            regionList.remove("VRQ")#don't plot VRQ for now
-        except ValueError  :
-            pass
+
+        print "Printing regionList"
+        print regionList
+
+        regionList.remove("VRQ")#don't plot VRQ for now
 
         if "SRC" in anaName :
-            try :
-                regionList.remove("VRQa")
-                regionList.remove("VRQb")
-                regionList.remove("VRZ")
-                regionList.remove("VRZa")
-                regionList.remove("VRZb")
-                regionList.remove("VRTb")
-                regionList.remove("VRWb")
-            except ValueError :
-                pass
-        if "SRG" or "SRS" in  anaName :
-            try :
-                regionList.remove("VRQc")
-                regionList.remove("VRZc")
-                regionList.remove("VRZca")
-            except ValueError :
-                pass
+            regionList.remove("VRQa")
+            regionList.remove("VRQb")
+            regionList.remove("VRTb")
+            regionList.remove("VRWb")
+            regionList.remove("VRZb")
+        if ("SRG" in anaName) or ("SRS" in  anaName) :
+            regionList.remove("VRQc")
+            regionList.remove("VRZc")
+            regionList.remove("VRZca")
+
+        print "Printing regionList"
+        print regionList
 
         # Filename containing workspace
         filenames = [os.path.join(options.output_dir, "ZL_%s_Background/Fit__Background_combined_NormalMeasurement_model_afterFit.root" % anaName)]
