@@ -251,7 +251,7 @@ def main():
         line.Draw("same")
         all.append(line)
 
-    leg1= TLegend(0.6,0.52,0.93,0.9);
+    leg1= TLegend(0.6,0.52,0.85,0.9);
     leg1.SetTextSize( 0.05 );
     leg1.SetTextFont( 42 );
     leg1.SetFillColor( 10 );
@@ -332,6 +332,7 @@ def main():
     
     canvas = TCanvas("canvas","canvas",1000,800)
     canvas.SetLeftMargin(0.1)
+    canvas.SetRightMargin(0.1)
     upperPad = ROOT.TPad("upperPad","upperPad",0.001,0.35,0.995,0.995)
     lowerPad = ROOT.TPad("lowerPad","lowerPad",0.001,0.001,0.995,0.35)
 
@@ -341,7 +342,7 @@ def main():
     upperPad.SetBorderSize(2);
     #upperPad.SetTicks() 
     upperPad.SetTopMargin   ( 0.05 );
-    upperPad.SetRightMargin ( 0.05 );
+    upperPad.SetRightMargin ( 0.1 );
     upperPad.SetBottomMargin( 0.00 );
     upperPad.SetLeftMargin( 0.10 );
     upperPad.SetFrameBorderMode(0);
@@ -356,7 +357,7 @@ def main():
     #lowerPad.SetTickx(1);
     #lowerPad.SetTicky(1);
     lowerPad.SetTopMargin   ( 0.00 );
-    lowerPad.SetRightMargin ( 0.05 );
+    lowerPad.SetRightMargin ( 0.1 );
     lowerPad.SetBottomMargin( 0.4 );
     lowerPad.SetLeftMargin( 0.10 );
     lowerPad.Draw()
@@ -434,7 +435,7 @@ def main():
         line.Draw("same")
         all.append(line)
 
-    line=TLine(0,1,nSR,1)
+    line=TLine(0,1,hist_ratio.GetXaxis().GetBinUpEdge(nonzeroBins[-1]),1)
     line.SetLineWidth(2)
     line.SetLineColor(18)
     line.Draw("same")

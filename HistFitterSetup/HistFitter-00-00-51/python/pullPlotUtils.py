@@ -353,7 +353,7 @@ def MakeHistPullPlot(samples, regionList, outFileNamePrefix, hresults, renamedRe
         if hdata.Integral():
             upperPad.cd()
             hdata.SetMinimum(0.1)
-            hdata.SetMinimum(1000)
+            hdata.SetMaximum(10*hdata.GetMaximum())
             gPad.SetLogy()
             c.Print("histpull_"+outFileNamePrefix+"_log.pdf")
         else : print "Integral is 0 when asking for log scale! not printing"
