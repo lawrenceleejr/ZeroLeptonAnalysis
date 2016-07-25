@@ -192,13 +192,14 @@ if myFitType == FitType.Background:
 # Parameters for hypothesis test
 #######################################################################
 
-configMgr.nTOYs = 5000      # number of toys when doing frequentist calculator
+configMgr.nTOYs = 1000      # number of toys when doing frequentist calculator
 configMgr.doExclusion = False
 if myFitType == FitType.Exclusion:
     configMgr.doExclusion = True
 # configMgr.useCLs = True #LL
 # configMgr.cppMgr.doUpperLimitAll()
 configMgr.calculatorType = 2 # 2=asymptotic calculator, 0=frequentist calculator
+# configMgr.calculatorType = 0 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType = 3   # 3=one-sided profile likelihood test statistic (LHC default)
 configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
 #configMgr.nPoints = 20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
@@ -401,16 +402,6 @@ qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
 qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
 
 
-# qcdWeight = 1
-# nJets = channel.nJets
-# if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
-#     qcdWeight = zlFitterConfig.qcdWeightList[nJets-1]/ (zlFitterConfig.luminosity)
-#     qcdGammaFakeSample.addWeight(str(qcdWeight))
-#     for w in configMgr.weights: #add all other weights but not normWeight
-#         qcdGammaFakeSample.addWeight(w)
-
-
-
 if zlFitterConfig.doSetNormRegion:
     if "CRYQ" in zlFitterConfig.constrainingRegionsList:
         qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
@@ -438,9 +429,6 @@ if zlFitterConfig.doSetNormRegion:
         topSample.setNormRegions([("CRT", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
     if "CRTZL" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
         topSample.setNormRegions([("CRTZL", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
-    #### LL
-    # if "CRT0L" in zlFitterConfig.constrainingRegionsList:
-    #     topSample.setNormRegions( [ ("CRT0L",zlFitterConfig.binVar)     ]  )
 
 if not zlFitterConfig.usePreComputedTopGeneratorSys:
     topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
@@ -660,9 +648,6 @@ for point in allpoints:
         if treeBaseName not in ["CRY"]:
             continue
 
-        print "========================"
-        print "Running on %s"%regionName
-
         extraWeightList = regionDict[regionName].extraWeightList
 
         # Gamma control region
@@ -673,12 +658,16 @@ for point in allpoints:
             REGION.useOverflowBin = True
             REGION.useUnderflowBin = False
 
+        if regionName=="CRY":
+            qcdGammaFakeSample.addSystematic(Systematic("PhFakeRateUncertainty", configMgr.weights, 1.+.6, 1-.6, "user", "userOverallSys"))
+
         # REGION.addSample(qcdGammaFakeSample )
         REGION.addSample(gammaSample, 0) ##order is important!!!!
         REGION.addSample(qcdGammaFakeSample ,1)
+
         # print REGION.sampleList
         for sam in REGION.sampleList:
-            print sam.name
+
             sam.setTreeName(sam.treeName.replace("SRAll", treeBaseName))
             if sam.treeName.find("Data") >= 0:
                 sam.setFileList(dataFiles)
@@ -959,6 +948,10 @@ for point in allpoints:
 
 
             for sam in REGION.sampleList:
+
+                # if sam.name == zlFitterConfig.qcdSampleName+"GammaFakes":
+                #     sam.addSystematic(Systematic("FlatDiboson", configMgr.weights, 1.+error, 1-error, "user", "userOverallSys"))
+
                 #signal
                 if sam.name == sigSampleName:
                     #Needs to add theory uncertainty on signal acceptance for low-dM points

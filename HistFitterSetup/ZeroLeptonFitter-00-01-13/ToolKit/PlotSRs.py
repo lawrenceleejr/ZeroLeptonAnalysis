@@ -94,9 +94,9 @@ def main():
     colors["Diboson"]=ROOT.kPink-4
 
     MaxFac=1000.
-    MinThres=0.1
+    MinThres=0.2
     Min2=0.
-    Max2=3.1
+    Max2=2.1
 
 
 
@@ -149,14 +149,20 @@ def main():
             print "Could not open yield_%s_all.pickl" % channel
             continue
 
+        print channel
+
         theMap = pickle.load(fYield)
 
-        #print theMap["names"]
+        print theMap["names"]
 
         #ATT: Assume that SR is the last one!!!
 
+        try:
+            index=theMap["names"].index(REGIONNAME+"_cuts")
+        except:
+            continue
 
-        index=theMap["names"].index(REGIONNAME+"_cuts")
+
         nobs=float(theMap["nobs"][index])
         print nobs
         nsumbkgEr=theMap["TOTAL_FITTED_bkg_events_err"][index]
@@ -201,7 +207,12 @@ def main():
 
 
 
+    nonzeroBins = []
+    for ibin in xrange(hist_data.GetNbinsX() ):
+        if hist_data.GetBinContent(ibin) != 0.:
+            nonzeroBins.append( ibin )
 
+    hist_data.GetXaxis().SetRange(nonzeroBins[0],nonzeroBins[-1])
 
     stack=THStack("stack","stack")
     for sam in samples:
@@ -240,7 +251,7 @@ def main():
         line.Draw("same")
         all.append(line)
 
-    leg1= TLegend(0.6,0.52,0.93,0.9);
+    leg1= TLegend(0.6,0.52,0.85,0.9);
     leg1.SetTextSize( 0.05 );
     leg1.SetTextFont( 42 );
     leg1.SetFillColor( 10 );
@@ -321,6 +332,7 @@ def main():
     
     canvas = TCanvas("canvas","canvas",1000,800)
     canvas.SetLeftMargin(0.1)
+    canvas.SetRightMargin(0.1)
     upperPad = ROOT.TPad("upperPad","upperPad",0.001,0.35,0.995,0.995)
     lowerPad = ROOT.TPad("lowerPad","lowerPad",0.001,0.001,0.995,0.35)
 
@@ -330,7 +342,7 @@ def main():
     upperPad.SetBorderSize(2);
     #upperPad.SetTicks() 
     upperPad.SetTopMargin   ( 0.05 );
-    upperPad.SetRightMargin ( 0.05 );
+    upperPad.SetRightMargin ( 0.1 );
     upperPad.SetBottomMargin( 0.00 );
     upperPad.SetLeftMargin( 0.10 );
     upperPad.SetFrameBorderMode(0);
@@ -345,7 +357,7 @@ def main():
     #lowerPad.SetTickx(1);
     #lowerPad.SetTicky(1);
     lowerPad.SetTopMargin   ( 0.00 );
-    lowerPad.SetRightMargin ( 0.05 );
+    lowerPad.SetRightMargin ( 0.1 );
     lowerPad.SetBottomMargin( 0.4 );
     lowerPad.SetLeftMargin( 0.10 );
     lowerPad.Draw()
@@ -396,6 +408,9 @@ def main():
 
 
     lowerPad.cd()
+    highestBinContent = hist_ratio.GetBinContent(hist_ratio.GetMaximumBin() )
+    if highestBinContent > Max2:
+        Max2 = highestBinContent+0.5
     hist_ratio.SetMaximum(Max2)
     hist_ratio.SetMinimum(Min2)
     hist_ratio.GetYaxis().SetTitle("Data/SM Total")
@@ -420,7 +435,7 @@ def main():
         line.Draw("same")
         all.append(line)
 
-    line=TLine(0,1,nSR,1)
+    line=TLine(0,1,hist_ratio.GetXaxis().GetBinUpEdge(nonzeroBins[-1]),1)
     line.SetLineWidth(2)
     line.SetLineColor(18)
     line.Draw("same")

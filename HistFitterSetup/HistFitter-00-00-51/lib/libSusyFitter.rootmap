@@ -1,0 +1,38 @@
+{ decls }
+namespace std {  }
+namespace __gnu_cxx {  }
+class ChannelStyle;
+namespace RooStats {  }
+
+[ libSusyFitter.so ]
+# List of selected classes
+class ChannelStyle
+class ConfigMgr
+class FitConfig
+class JSON
+class JSONException
+class LimitResult
+class RooExpandedFitResult
+class RooStats::HypoTestTool
+class TEasyFormula
+class TMsgLogger
+class XtraValues
+class __gnu_cxx::__normal_iterator<ChannelStyle*,vector<ChannelStyle> >
+class vector<ChannelStyle>
+class vector<ChannelStyle>::iterator
+header ChannelStyle.h
+header ConfigMgr.h
+header FitConfig.h
+header json.h
+header LimitResult.h
+header RooExpandedFitResult.h
+header HypoTestTool.h
+header TEasyFormula.h
+header TMsgLogger.h
+header XtraValues.h
+# List of selected namespaces
+namespace Util
+namespace RooStats
+namespace DrawUtil
+namespace StatTools
+namespace ValidationUtils

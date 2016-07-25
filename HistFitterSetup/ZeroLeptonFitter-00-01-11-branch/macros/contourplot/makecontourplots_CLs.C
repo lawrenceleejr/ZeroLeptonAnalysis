@@ -24,6 +24,7 @@ void makecontourplots_CLs(const TString Grid="GG_direct",TString dirname = "Outp
   }
   
   for(int i=0; i<3; i++){
+     // infilelist.push_back(dirname+"/"+Grid+"_"+combined[i]+listSuffix+".root");
      infilelist.push_back(dirname+"/"+Grid+"_"+combined[i]+listSuffix+".root");
      cout<< infilelist[i]<<" ";
   }
@@ -41,7 +42,8 @@ void makecontourplots_CLs(const TString Grid="GG_direct",TString dirname = "Outp
   cout<<"lumi="<<lumi<<" fb-1"<<endl;
 
   TFile * customContourFile = TFile::Open(  "output.root", "READ" );
-  customContourFile->ls();
+  // TFile * customContourFile = 0;
+  // customContourFile->ls();
 
   (void) SUSY_contourplots(
       infilelist.at(0), infilelist.at(1), infilelist.at(2),
