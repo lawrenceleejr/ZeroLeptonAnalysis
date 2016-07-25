@@ -452,9 +452,9 @@ mc_alternative = [
 
 mc_truth = [
             {'key':'Yjets_TRUTH','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
-            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB_TRUTH_filtered.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'_TRUTH','syst':commonsyst},
+            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'','syst':commonsyst},
             {'key':'Yjets_TRUTH_alternative','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
-            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB_TRUTH_filtered.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'_TRUTH_MadGraph','syst':commonsyst}
+            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMadgraph_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'_Madgraph','syst':commonsyst}
             ]
 
 signalPoint=[
@@ -1174,7 +1174,7 @@ def main(configMain):
                                 mcTruthAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
                                 mcTruthAltTotal = mcTotal.Clone()
                                 for h in mcTruthAltHisto:
-                                    if "MadGraph" in h.GetName():
+                                    if "Madgraph" in h.GetName():
                                         mcTruthAltTotal.Add(h,1)
                                     else:
                                         mcTruthAltTotal.Add(h,-1)
