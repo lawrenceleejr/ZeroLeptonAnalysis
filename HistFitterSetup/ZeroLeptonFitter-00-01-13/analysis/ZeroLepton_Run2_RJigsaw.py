@@ -470,13 +470,13 @@ if zlFitterConfig.doSetNormRegion:
     if "CRY" in zlFitterConfig.constrainingRegionsList:
         gammaSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
 
-gammaSyst = Systematic("generatorZ", "", "", "", "tree", "overallNormHistoSysOneSide")
-truthGammaList = [INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root",
-                        INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"]
-gammaSyst.setFileList(gammaSample,
-                      truthGammaList
-                      )
-gammaSample.addSystematic(gammaSyst)
+# gammaSyst = Systematic("generatorZ", "", "", "", "tree", "overallNormHistoSysOneSide")
+# truthGammaList = [INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root",
+#                         INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"]
+# gammaSyst.setFileList(gammaSample,
+#                       truthGammaList
+#                       )
+# gammaSample.addSystematic(gammaSyst)
 
 #--------------------------
 # Z
