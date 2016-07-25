@@ -59,6 +59,28 @@ def PoissonError(obs):
 def VRNameFct(VR):
     return VR
 
+def checkInvalidRegions(ana, VR) :
+    if VR == "VRQ" : return True
+    if "SRC" in ana :
+        if VR == "VRQa" : return True
+        if VR == "VRQb" : return True
+
+        if VR == "VRZ"  : return True
+        if VR == "VRZa" : return True
+        if VR == "VRZb" : return True
+
+        if VR == "VRWa" : return True
+        if VR == "VRWb" : return True
+
+        if VR == "VRTa" : return True
+        if VR == "VRTb" : return True
+
+    if ("SRG" in ana) or ("SRS" in ana) :
+        if VR == "VRQc"  : return True
+        if VR == "VRZc"  : return True
+        if VR == "VRZca" : return True
+    return False
+
 #.replace("VRttbarTau","VRT$\\tau$").replace("VRWTau","VRW$\\tau$")
 
 def main():
@@ -105,7 +127,7 @@ def main():
     counterAna=0
     for channel in reversed(allAna):
         counterAna+=1
-        channelName=channel.replace("SR","")
+        channelName=channel.replace("Jigsaw","").replace("SRSR", "SR")
 
         if not os.path.exists("pull_%s.pkl" % channel):
             continue
@@ -134,14 +156,22 @@ def main():
                     nExpEr="%.1f"%theMap[VR][3]
                 except KeyError :
                     print "missing this VR in the map, setting pull value to - "
-                    pull  = "-99"
-                    nObs  = "-99"
-                    nExp  = "-99"
-                    nExpEr= "-99"
+                    pull  = "999"
+                    nObs  = "999"
+                    nExp  = "999"
+                    nExpEr= "999"
+
+                if checkInvalidRegions(channelName, VR) :
+                    print "invalid, setting pulls to 999" , channelName , VR
+                    pull  = "999"
+                    nObs  = "999"
+                    nExp  = "999"
+                    nExpEr= "999"
 
                 print channel, VR, pull
 
-                lineForTable+=str(pull)+"  "
+                pullstring = str(pull) if float(pull) < 500 else "N/A"
+                lineForTable+= pullstring+"  "
                 if VR!=allVRs[-1]:
                     lineForTable+=" & "
                 else:
@@ -166,7 +196,7 @@ def main():
         linesForTable.append("\\hline")
         bidim.GetYaxis().SetBinLabel(counterAna,channelName)
 
-    canvas = TCanvas("canvas","canvas",900,800)
+    canvas = TCanvas("canvas","canvas",1000,800)
     canvas.SetLeftMargin(0.1)
     canvas.SetRightMargin(0.2)
     canvas.SetBottomMargin(0.1)

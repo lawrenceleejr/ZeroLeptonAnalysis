@@ -303,8 +303,8 @@ def main(zlFitterConfig):
 
     for anaName in myAnaList:
         regionList = zlFitterConfig.allRegionsList()
-        # try :
-        #     regionList.remove("VRQ")#don't plot VRQ for now
+        #try :
+        regionList.remove("VRQ")#don't plot VRQ for now
         # except ValueError  :
         #     pass
 
