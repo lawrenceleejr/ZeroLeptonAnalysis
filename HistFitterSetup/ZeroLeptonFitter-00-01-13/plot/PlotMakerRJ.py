@@ -1298,7 +1298,7 @@ def main(configMain):
                                 anaName = ana
                                 anaName = anaName.replace("Pres"," Preselection")
                             else:
-                                anaName = ana
+                                anaName = ana.replace("SRJigsaw","RJR-")
                             tobewritten=(whichKind['name']+" for " if (whichKind['type'].find("CR")>=0 or whichKind['type'].find("VR")>=0) else "") +anaName
                             if (runSignal):
                                 analabel=ROOT.TLatex(0.5, 0.91, (tobewritten))
