@@ -8,7 +8,7 @@ python ToolKit/PlotSRs.py
 """
 
 from ZLFitterConfig import *
-zlFitterConfig = ZLFitterConfig() 
+zlFitterConfig = ZLFitterConfig()
 
 
 import sys
@@ -57,30 +57,65 @@ def PoissonError(obs):
     return symError
 
 def VRNameFct(VR):
-    return VR.replace("VRttbarTau","VRTTau").replace("f","").replace("M","$\\nu$").replace("Tau","$\\tau$").replace("VRQ1","VRQa").replace("VRQ4","VRQb")#.replace("VRW","VRW_").replace("VRT","VRT_")
+    return VR
+
+def checkInvalidRegions(ana, VR) :
+    if VR == "VRQ" : return True
+    if "SRC" in ana :
+        if VR == "VRQa" : return True
+        if VR == "VRQb" : return True
+
+        if VR == "VRZ"  : return True
+        if VR == "VRZa" : return True
+        if VR == "VRZb" : return True
+
+        if VR == "VRWa" : return True
+        if VR == "VRWb" : return True
+
+        if VR == "VRTa" : return True
+        if VR == "VRTb" : return True
+
+    if ("SRG" in ana) or ("SRS" in ana) :
+        if VR == "VRQc"  : return True
+        if VR == "VRZc"  : return True
+        if VR == "VRZca" : return True
+    return False
 
 #.replace("VRttbarTau","VRT$\\tau$").replace("VRWTau","VRW$\\tau$")
 
 def main():
 
 
-    allAna=sorted(finalChannelsDict.keys())
+    allAna = sorted(finalChannelsDict.keys())
     #order per number of events per jet multiplicity
-    allAna=["SR2jl","SR2jm","SR2jt","SR4jt","SR5j","SR6jm","SR6jt"]
-    nSR=len(allAna)
-    
+#    allAna=["SR2jl","SR2jm","SR2jt","SR4jt","SR5j","SR6jm","SR6jt"]
+    nSR = len(allAna)
+    print allAna
+
+    # allVRs = ['VRW',
+    #           'VRT',#:
+    #               'VRQa',#:
+    #               'SR',#:
+    #               'VRTb',#:
+    #               'VRWa',#:
+    #               'VRZca',#:
+    #               'VRTa',#:
+    #               'VRZ',#:
+    #               'VRZb',#:
+    #               'VRWb',#:
+    #               'VRQb',#:
+    #               ]
+
+    allVRs = zlFitterConfig.validationRegionsList
     linesForTable=[]
-
-    allVRs=["VRZf","VRWf","VRWMf","VRTf","VRTMf","VRQ1","VRQ4"]
-
-    allVRsForChi2=["VRZf","VRWMf","VRWTau","VRTMf","VRttbarTau","VRQ1","VRQ4"]
+    allVRsForChi2=allVRs #["VRZf","VRWMf","VRWTau","VRTMf","VRttbarTau","VRQ1","VRQ4"]
 
     lineVR=" Region & "
     for VR in allVRs:
         lineVR+=VRNameFct(VR)
         if VR!=allVRs[-1]:
             lineVR+="   &   "
-    else:        
+    else:
         lineVR+="\\\\"
     linesForTable.append(lineVR)
     linesForTable.append("\\hline")
@@ -92,10 +127,10 @@ def main():
     counterAna=0
     for channel in reversed(allAna):
         counterAna+=1
-        channelName=channel.replace("SR","")
+        channelName=channel.replace("Jigsaw","").replace("SRSR", "SR")
 
         if not os.path.exists("pull_%s.pkl" % channel):
-            continue    
+            continue
 
         try:
             fPull = open('pull_%s.pkl' % channel,'r')
@@ -105,41 +140,63 @@ def main():
 
         theMap = pickle.load(fPull)
 
+#        print theMap
 
         lineForTable="{\\bf "+channelName+"} & "
         counterVR=0
         chi2=0
         chi2bis=0
         for VR in allVRs:
-            counterVR+=1
+                counterVR+=1
             #pull="%.1f"%theMap[VR]
-            pull="%.2f"%theMap[VR][0]
-            nObs="%.1f"%theMap[VR][1]
-            nExp="%.1f"%theMap[VR][2]
-            nExpEr="%.1f"%theMap[VR][3]
-            lineForTable+=str(pull)+"  "
-            if VR!=allVRs[-1]:
-                lineForTable+=" & "
-            else:        
-                lineForTable+="\\\\"
-            bidim.SetBinContent(counterVR,counterAna,float(pull))
-            labelX=VRNameFct(VR).replace("$","").replace("\\","#")
-#            print channel,labelX, nObs,nExp,nExpEr,"============= ",float(nExpEr)/sqrt(float(nExp)+0.0001)
-            bidim.GetXaxis().SetBinLabel(counterVR,labelX)
-            if VR in allVRsForChi2:
-                #chi2+=theMap[VR]*theMap[VR]
-                pull2=(float(nObs)-float(nExp))/PoissonError(float(nExp))
-                print nObs,nExp,PoissonError(float(nExp)),pull2
-                chi2bis+=pull2
-                chi2+=theMap[VR][0]*theMap[VR][0]
+                try :
+                    pull="%.2f"%theMap[VR][0]
+                    nObs="%.1f"%theMap[VR][1]
+                    nExp="%.1f"%theMap[VR][2]
+                    nExpEr="%.1f"%theMap[VR][3]
+                except KeyError :
+                    print "missing this VR in the map, setting pull value to - "
+                    pull  = "999"
+                    nObs  = "999"
+                    nExp  = "999"
+                    nExpEr= "999"
 
-        print "chi2 ",channel,chi2/len(allVRsForChi2),chi2bis/len(allVRsForChi2)
+                if checkInvalidRegions(channelName, VR) :
+                    print "invalid, setting pulls to 999" , channelName , VR
+                    pull  = "999"
+                    nObs  = "999"
+                    nExp  = "999"
+                    nExpEr= "999"
+
+                print channel, VR, pull
+
+                pullstring = str(pull) if float(pull) < 500 else "N/A"
+                lineForTable+= pullstring+"  "
+                if VR!=allVRs[-1]:
+                    lineForTable+=" & "
+                else:
+                    lineForTable+="\\\\"
+                bidim.SetBinContent(counterVR,counterAna,float(pull))
+                labelX=VRNameFct(VR).replace("$","").replace("\\","#")
+#   #            print channel,labelX, nObs,nExp,nExpEr,"============= ",float(nExpEr)/sqrt(float(nExp)+0.0001)
+                bidim.GetXaxis().SetBinLabel(counterVR,labelX)
+                if VR in allVRsForChi2:
+                    #chi2+=theMap[VR]*theMap[VR]
+                    pull2=(float(nObs)-float(nExp))/PoissonError(float(nExp))
+                    print nObs,nExp,PoissonError(float(nExp)),pull2
+                    chi2bis+=pull2
+#                    chi2+=theMap[VR][0]*theMap[VR][0]
+            # except KeyError:
+            #     print "missing" + VR
+            #     pass
+
+#        print "chi2 ",channel,chi2/len(allVRsForChi2),chi2bis/len(allVRsForChi2)
         linesForTable.append(lineForTable)
         #print lineForTable
         linesForTable.append("\\hline")
         bidim.GetYaxis().SetBinLabel(counterAna,channelName)
-        
-    canvas = TCanvas("canvas","canvas",900,800)
+
+    canvas = TCanvas("canvas","canvas",1000,800)
     canvas.SetLeftMargin(0.1)
     canvas.SetRightMargin(0.2)
     canvas.SetBottomMargin(0.1)
@@ -196,7 +253,7 @@ def main():
 
 \\end{table}
 """
-    
+
     milieu=""
     for l in    linesForTable:
         milieu+=l+"\n"
