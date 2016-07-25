@@ -961,9 +961,9 @@ for point in allpoints:
                 elif sam.name==zlFitterConfig.zSampleName:
                     #generator
                     if zlFitterConfig.usePreComputedZGeneratorSys:
+                        print "adding Z THEO UNCERTAINTIES"
                         errorGenerator=getError(channel.name,REGION.name.replace("cuts_",""),zTheoSysGeneratorDict)
                         sam.addSystematic(Systematic("GeneratorZ", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
-
                     #Kappa
                     if zlFitterConfig.applyKappaCorrection:
 #                        kappaError=0.066 if anaNameEnum(anaName)==3 else 0.080

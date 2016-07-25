@@ -1,9 +1,9 @@
 #######################################
-# The uncertainties in this file are the 
+# The uncertainties in this file are the
 # uncertainties on the transfer factor
 #######################################
 
-def getError(channelName, regionName, sysDict):    
+def getError(channelName, regionName, sysDict):
     error = 0
     #print "toto"
     #print sysDict
@@ -25,14 +25,14 @@ dibosonFlatSysDict[("default","default")] = 0.50
 #######################################
 # Sherpa vs MadGraph
 zTheoSysGeneratorDict = {}
-zTheoSysGeneratorDict[("default","default")] = 0.20
-zTheoSysGeneratorDict[("SR2jl","SR")]= -0.0492965028609
-zTheoSysGeneratorDict[("SR2jm","SR")]= -0.0370988518057
-zTheoSysGeneratorDict[("SR2jt","SR")] = -0.155169680736
-zTheoSysGeneratorDict[("SR4jt","SR")]= -0.21787914673
-zTheoSysGeneratorDict[("SR5j","SR")]= 0.0923664820396
-zTheoSysGeneratorDict[("SR6jm","SR")]= -0.160137123349
-zTheoSysGeneratorDict[("SR6jt","SR")]= 0.276153830015
+zTheoSysGeneratorDict[("default","default")] = 0.11
+# zTheoSysGeneratorDict[("SR2jl","SR")]= -0.0492965028609
+# zTheoSysGeneratorDict[("SR2jm","SR")]= -0.0370988518057
+# zTheoSysGeneratorDict[("SR2jt","SR")] = -0.155169680736
+# zTheoSysGeneratorDict[("SR4jt","SR")]= -0.21787914673
+# zTheoSysGeneratorDict[("SR5j","SR")]= 0.0923664820396
+# zTheoSysGeneratorDict[("SR6jm","SR")]= -0.160137123349
+# zTheoSysGeneratorDict[("SR6jt","SR")]= 0.276153830015
 
 
 #######################################
