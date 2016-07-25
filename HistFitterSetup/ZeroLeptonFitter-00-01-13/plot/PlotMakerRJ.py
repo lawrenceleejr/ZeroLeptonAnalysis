@@ -28,7 +28,7 @@ def parseCmdLine(args):
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
-    parser.add_option("--lumi", dest="lumi", help="lumi", default=11.3)
+    parser.add_option("--lumi", dest="lumi", help="lumi", default=11.3, type=float)
     parser.add_option("--integral", dest="int", help="integrals", default=False, action = "store_true")
     parser.add_option("--vrebin", dest="vbins", help="variable binning", default=False, action = "store_true")
     (config, args) = parser.parse_args(args)
@@ -707,6 +707,7 @@ class NtHandler:
         #print
         self.tree.Draw('>>entryList'+name,basecuts,'entrylist')
         elist = ROOT.gDirectory.Get('entryList'+name)
+        print elist, name
         self.tree.SetEntryList(elist)
         #print 'done,',name," ",elist.GetN(),' entries'
         return
