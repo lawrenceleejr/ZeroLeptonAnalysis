@@ -470,13 +470,13 @@ if zlFitterConfig.doSetNormRegion:
     if "CRY" in zlFitterConfig.constrainingRegionsList:
         gammaSample.setNormRegions([("CRY", zlFitterConfig.binVar)])
 
-gammaSyst = Systematic("generatorZ", "", "", "", "tree", "overallNormHistoSysOneSide")
-truthGammaList = [INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root",
-                        INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"]
-gammaSyst.setFileList(gammaSample,
-                      truthGammaList
-                      )
-gammaSample.addSystematic(gammaSyst)
+# gammaSyst = Systematic("generatorZ", "", "", "", "tree", "overallNormHistoSysOneSide")
+# truthGammaList = [INPUTDIR+ "/GAMMAMassiveCB_TRUTH_filtered.root",
+#                         INPUTDIR+ "/GAMMAMadgraph_TRUTH.root"]
+# gammaSyst.setFileList(gammaSample,
+#                       truthGammaList
+#                       )
+# gammaSample.addSystematic(gammaSyst)
 
 #--------------------------
 # Z
@@ -658,8 +658,8 @@ for point in allpoints:
             REGION.useOverflowBin = True
             REGION.useUnderflowBin = False
 
-        if regionName=="CRY":
-            qcdGammaFakeSample.addSystematic(Systematic("PhFakeRateUncertainty", configMgr.weights, 1.+.6, 1-.6, "user", "userOverallSys"))
+        # if regionName=="CRY":
+        #     qcdGammaFakeSample.addSystematic(Systematic("PhFakeRateUncertainty", configMgr.weights, 1.+.6, 1-.6, "user", "userOverallSys"))
 
         # REGION.addSample(qcdGammaFakeSample )
         REGION.addSample(gammaSample, 0) ##order is important!!!!
@@ -961,13 +961,13 @@ for point in allpoints:
                 elif sam.name==zlFitterConfig.zSampleName:
                     #generator
                     if zlFitterConfig.usePreComputedZGeneratorSys:
+                        print "adding Z THEO UNCERTAINTIES"
                         errorGenerator=getError(channel.name,REGION.name.replace("cuts_",""),zTheoSysGeneratorDict)
                         sam.addSystematic(Systematic("GeneratorZ", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
-
                     #Kappa
                     if zlFitterConfig.applyKappaCorrection:
 #                        kappaError=0.066 if anaNameEnum(anaName)==3 else 0.080
-                        kappaError = 0.059 #.25 if anaNameEnum(anaName)==2 else 0.07
+                        kappaError = 0.058 #.25 if anaNameEnum(anaName)==2 else 0.07
                         sam.addSystematic(Systematic("Kappa", configMgr.weights, 1+kappaError, 1-kappaError, "user", "userOverallSys"))
 
 
