@@ -82,12 +82,17 @@ class RootOption:
         lowerPad.SetFrameBorderMode(0);
         lowerPad.Draw();
          
-def setAsymmErrors(hist,graph):
+def setAsymmErrors(hist,graph,varbins=None):
     for iBin in range(1,hist.GetNbinsX()+1):
         obs=hist.GetBinContent(iBin);
+        if varbins: obs *= varbins[iBin-1]
         posError = ROOT.TMath.ChisquareQuantile(1. - (1. - 0.68)/2. , 2.* (obs + 1.)) / 2. - obs - 1;
         negError = obs - ROOT.TMath.ChisquareQuantile((1. - 0.68)/2., 2.*obs) / 2.;
+        if varbins: obs /= varbins[iBin-1]
         if obs > 0.:
+            if varbins:
+                posError *= varbins[iBin-1]
+                negError *= varbins[iBin-1]
             graph.SetPoint(iBin-1,hist.GetBinCenter(iBin),obs);
             graph.SetPointEXhigh(iBin-1,hist.GetBinWidth(iBin)/2.);
             graph.SetPointEXlow(iBin-1,hist.GetBinWidth(iBin)/2.);
@@ -215,8 +220,7 @@ def makeCombinedErrorBand(ErrorBand,centralHisto,varUpDown):
             ErrorBand.SetPointEYlow(iBin,0.999);
         else:
             ErrorBand.SetPointEYlow(iBin,math.sqrt(errDown2));
-#	print 
-#        'errorlow/high',math.sqrt(errDown2),errDown2,math.sqrt(errUp2),errUp2
+#	print 'errorlow/high',math.sqrt(errDown2),errDown2,math.sqrt(errUp2),errUp2
 
     
        
