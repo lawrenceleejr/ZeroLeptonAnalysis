@@ -127,7 +127,7 @@ def main():
     counterAna=0
     for channel in reversed(allAna):
         counterAna+=1
-        channelName=channel.replace("Jigsaw","").replace("SRSR", "SR")
+        channelName=channel.replace("Jigsaw","").replace("SRSR", "SR").replace("SR", "RJR-")
 
         if not os.path.exists("pull_%s.pkl" % channel):
             continue
