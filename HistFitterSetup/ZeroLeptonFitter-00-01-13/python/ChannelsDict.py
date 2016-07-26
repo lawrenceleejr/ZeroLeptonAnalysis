@@ -10,10 +10,10 @@ regionDict={}
 regionDict["SR"] = Region("SR", "SRAll", [cleaningCut], [])
 
 regionDict["CRW"] = Region("CRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["CRT"] = Region("CRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
+regionDict["CRT"] = Region("CRT", "CRWT", ["nBJet>0 && ((lep1Triggered & 0x03)!=0) "], ["bTagWeight"])
 # regionDict["CRT"] = Region("CRT", "SRAll", ["nBJet>0"], ["bTagWeight"])
 #regionDict["CRTZL"] = Region("CRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWeight"])
-regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
+regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0 && ((lep1Triggered & 0x03)!=0) "], ["bTagWeight"])
 
 
 # regionDict["VRWf"] = Region("VRWf", "CRWT", ["nBJet==0"], ["bTagWeight"]) #ATT: systWeights[0] is a proxy for the lepton weight
@@ -32,7 +32,7 @@ regionDict["CRWT"] = Region("CRWT", "CRWT", ["nBJet>=0"], ["bTagWeight"])
 # regionDict["VRWTfminus"] = Region("VRWTfminus", "CRWT", ["lep1sign<0"], ["bTagWeight"])
 
 # regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1)"], [" 1.6 "])#extra weights should be applied only to gamma+jets
-regionDict["CRY"] = Region("CRY", "CRY", ["(phPt[0]>130. && (phSignal&0x01 == 0x01) )"], [])#extra weights should be applied only to gamma+jets
+regionDict["CRY"] = Region("CRY", "CRY", ["(phPt[0]>130. && (phSignal&0x01 == 0x01) && (lep1Pt>27) )"], [])#extra weights should be applied only to gamma+jets
 regionDict["CRYQ"] = Region("CRYQ", "CRY", ["(phPt[0]>130. && ((phSignal&0x01)==0) )"], [])#extra weights should be applied only to gamma+jets
 # regionDict["VRYf"] = Region("VRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 
@@ -58,14 +58,14 @@ regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["bTagWe
 
 
 # ##for data-driven BG estimation##
-regionDict["VRW"] = Region("VRW", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["VRWa"] = Region("VRWa", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["VRWb"] = Region("VRWb", "CRWT", ["nBJet==0"], ["bTagWeight"])
+regionDict["VRW"] = Region("VRW", "CRWT", ["(nBJet==0) && ((lep1Triggered & 0x03)!=0)"], ["bTagWeight"])
+regionDict["VRWa"] = Region("VRWa", "CRWT", ["(nBJet==0) && ((lep1Triggered & 0x03)!=0)"], ["bTagWeight"])
+regionDict["VRWb"] = Region("VRWb", "CRWT", ["(nBJet==0) && ((lep1Triggered & 0x03)!=0)"], ["bTagWeight"])
 #regionDict["CRWL"] = Region("VRWL", "CRWT", ["nBJet==0"], ["bTagWeight"])
 #regionDict["CRWVL"] = Region("VRWVL", "CRWT", ["nBJet==0"], ["bTagWeight"])
-regionDict["VRT"] = Region("VRT", "CRWT", ["nBJet>0"], ["bTagWeight"])
-regionDict["VRTa"] = Region("VRTa", "CRWT", ["nBJet>0"], ["bTagWeight"])
-regionDict["VRTb"] = Region("VRTb", "CRWT", ["nBJet>0"], ["bTagWeight"])
+regionDict["VRT"] = Region("VRT", "CRWT", ["nBJet>0 && ((lep1Triggered & 0x03)!=0) "], ["bTagWeight"])
+regionDict["VRTa"] = Region("VRTa", "CRWT", ["nBJet>0 && ((lep1Triggered & 0x03)!=0) "], ["bTagWeight"])
+regionDict["VRTb"] = Region("VRTb", "CRWT", ["nBJet>0 && ((lep1Triggered & 0x03)!=0) "], ["bTagWeight"])
 # regionDict["CRTL"] = Region("VRTL", "CRWT", ["nBJet>0"], ["bTagWeight"])
 # regionDict["CRTVL"] = Region("VRTVL", "CRWT", ["nBJet>0"], ["bTagWeight" ])
 # regionDict["CRYL"] = Region("CRYL", "CRY", ["(phSignal==1 && phPt>130."], [])#extra weights should be applied only to gamma+jets
@@ -325,7 +325,7 @@ finalChannelsDict = {}
 anaSRJigsawBasic=ChannelConfig(name="SRJigsawBasic",regionDict=regionDict)
 
 # trigger
-anaSRJigsawBasic.met=200
+anaSRJigsawBasic.met=250
 #anaSRJigsawBasic.MDR=300
 
 #----------------------------------------------------------
