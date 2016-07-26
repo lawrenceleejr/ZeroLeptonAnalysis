@@ -522,9 +522,9 @@ if zlFitterConfig.useShapeFit and zlFitterConfig.useShapeFactor:
 #######################################################################
 
 # Here be systematics. Sometime in future.
-#sysWeight_theoSysSigUp = myreplace(configMgr.weights, ["normWeightUp"], "normWeight")
-#sysWeight_theoSysSigDown = myreplace(configMgr.weights, ["normWeightDown"], "normWeight")
-#theoSysSig = Systematic("SigXSec", configMgr.weights, sysWeight_theoSysSigUp, sysWeight_theoSysSigDown, "weight", "overallSys")
+sysWeight_theoSysSigUp = myreplace(configMgr.weights, ["normWeightUp"], "normWeight")
+sysWeight_theoSysSigDown = myreplace(configMgr.weights, ["normWeightDown"], "normWeight")
+theoSysSig = Systematic("SigXSec", configMgr.weights, sysWeight_theoSysSigUp, sysWeight_theoSysSigDown, "weight", "overallSys")
 
 
 
@@ -627,7 +627,7 @@ for point in allpoints:
         sigSample.setTreeName("%s_%s_SRAll" % (gridTreeName, point) )
         sigSample.setNormByTheory()
         sigSample.setNormFactor("mu_SIG", 1, 0., 100.)
-#        sigSample.addSystematic(theoSysSig)
+        sigSample.addSystematic(theoSysSig)
         sigSample.setStatConfig(zlFitterConfig.useStat)
         myFitConfig.addSamples(sigSample)
         myFitConfig.setSignalSample(sigSample)
