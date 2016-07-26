@@ -9,7 +9,7 @@ for i in SR CRY CRWT CRQ VRZ VRZc VRY VRWT; do
 #	    echo '#PBS -l nodes=1:SA' >> $BATCHSCRIPT;
 	    echo 'echo $PBS_O_WORKDIR' >> $BATCHSCRIPT;
 	    echo 'cd $PBS_O_WORKDIR' >> $BATCHSCRIPT;
-	    echo "python plot/PlotMakerRJ.py --inputSampleDir samples/ --lumi 11.78 --region $i --regionsToRun \"${j}${k}\" --inputDataFile=\"samples/DataMain_303304.root\" --baseDir=$PWD --version 111 --doSyst" >> $BATCHSCRIPT;
+	    echo "python plot/PlotMakerRJ.py --inputSampleDir samples_v107/ --lumi 11.3 --region $i --regionsToRun \"${j}${k}\" --baseDir=$PWD --version 107 --doSyst" >> $BATCHSCRIPT;
 	    echo "exit 0" >> $BATCHSCRIPT;
 	    chmod +x $BATCHSCRIPT;
 	    qsub $BATCHSCRIPT;
@@ -24,7 +24,7 @@ for i in SR CRY CRWT CRQ VRZ VRZc VRY VRWT; do
 #	echo '#PBS -l nodes=1:SA' >> $BATCHSCRIPT;
 	echo 'echo $PBS_O_WORKDIR' >> $BATCHSCRIPT;
 	echo 'cd $PBS_O_WORKDIR' >> $BATCHSCRIPT;
-	echo "python plot/PlotMakerRJ.py --inputSampleDir samples/ --lumi 11.78 --region $i --regionsToRun \"${j}\" --inputDataFile=\"samples/DataMain_303304.root\" --doCompressed --baseDir=$PWD --version 111 --doSyst" >> $BATCHSCRIPT;
+	echo "python plot/PlotMakerRJ.py --inputSampleDir samples_v107/ --lumi 11.3 --region $i --regionsToRun \"${j}\" --doCompressed --baseDir=$PWD --version 107 --doSyst" >> $BATCHSCRIPT;
 	echo "exit 0" >> $BATCHSCRIPT;
 	chmod +x $BATCHSCRIPT;
 	qsub $BATCHSCRIPT;

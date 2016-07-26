@@ -703,7 +703,7 @@ class NtHandler:
             if not self.tree:
                 print "no tree:",treename
                 sys.exit(1)
-        #print basecuts, self.tree.GetEntries()
+        print name, treename, basecuts, self.tree.GetEntries()
         #print
         self.tree.Draw('>>entryList'+name,basecuts,'entrylist')
         elist = ROOT.gDirectory.Get('entryList'+name)
