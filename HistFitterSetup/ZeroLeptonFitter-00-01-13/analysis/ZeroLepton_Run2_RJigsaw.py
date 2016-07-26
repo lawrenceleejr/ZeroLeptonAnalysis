@@ -253,7 +253,7 @@ if configMgr.readFromTree:
 
         if zlFitterConfig.useDDQCDsample:
             qcdFiles.append(os.path.join(INPUTDIR, "JetSmearing_2015.root"))
-#            qcdFiles.append(os.path.join(INPUTDIR, "JetSmearing_2016.root"))
+            qcdFiles.append(os.path.join(INPUTDIR, "JetSmearing_2016.root"))
         else :
             qcdFiles.append( INPUTDIR+"/QCD.root")
 
@@ -263,10 +263,11 @@ if configMgr.readFromTree:
         # Topa
         topFiles.append(INPUTDIR+ "/Top.root")
         if not zlFitterConfig.usePreComputedTopGeneratorSys:
-            topFiles.append(INPUTDIR + "TopMCatNLO.root")
+            pass
+#            topFiles.append(INPUTDIR + "TopMCatNLO.root")
         if not zlFitterConfig.usePreComputedTopFragmentationSys:
             topFiles.append(INPUTDIR + "TopPowhegPythia8.root")
-#            topFiles.append(INPUTDIR + "TopPowhegHerwig.root")
+            topFiles.append(INPUTDIR + "TopPowhegHerwig.root")
         if not zlFitterConfig.usePreComputedTopRadiationSys:
             topFiles.append(INPUTDIR + "TopRadLo.root")
             topFiles.append(INPUTDIR + "TopRadHi.root")
@@ -293,7 +294,7 @@ if configMgr.readFromTree:
     # dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data15_13TeV.root")
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data16_13TeV.root")
-    dataFiles.append(INPUTDIR_DATA+ "/DataMain_303291_RJ_17072016.root")
+    dataFiles.append(INPUTDIR_DATA+ "/DataMain_303560.root")
 
     log.info("Using the following inputs:")
     log.info("topFiles = %s" % topFiles)
