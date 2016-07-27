@@ -596,8 +596,8 @@ for point in allpoints:
     if configMgr.fixSigXSec:
         meas.addParamSetting("alpha_SigXSec", True, 1)
 
-    if "CRYQ" not in zlFitterConfig.constrainingRegionsList:
-        meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", True, 1) # fix QCD
+    # if "CRYQ" not in zlFitterConfig.constrainingRegionsList:
+    #     meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", True, 1) # fix QCD
     if "CRQ" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName, True, 1) # fix QCD
     if "CRY" not in zlFitterConfig.constrainingRegionsList and "CRZ" not in zlFitterConfig.constrainingRegionsList:
