@@ -315,7 +315,7 @@ class ChannelConfig:
 
 
 
-        self.CRList = ["CRT","CRW","CRY","CRQ","CRYQ"]
+        self.CRList = ["CRT","CRW","CRY","CRQ"]
         VRList      = ["VRWa", "VRWb","VRTa","VRTb","VRZa","VRZb" ] #, "VRTZL"
         VRList      += [ "VRQ", "VRQa" , "VRQb" , "VRQc", "VRZ", "VRW", "VRT", "VRZc", "VRZca"]
         self.regionListDict =  dict([ (l, {} ) for l in self.CRList + VRList + ["SR"] ])
