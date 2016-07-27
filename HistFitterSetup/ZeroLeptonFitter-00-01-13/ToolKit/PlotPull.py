@@ -107,6 +107,8 @@ def main():
     #               ]
 
     allVRs = zlFitterConfig.validationRegionsList
+    allVRs.remove("VRQ")
+
     linesForTable=[]
     allVRsForChi2=allVRs #["VRZf","VRWMf","VRWTau","VRTMf","VRttbarTau","VRQ1","VRQ4"]
 

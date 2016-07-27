@@ -257,7 +257,7 @@ def main():
     leg1.SetFillColor( 10 );
     leg1.SetBorderSize( 0 );
 #    leg1.AddEntry(hist_data,"Data 2012 (#sqrt{s}=8TeV)","P")
-    leg1.AddEntry(hist_data,"Data 2015","PE")
+    leg1.AddEntry(hist_data,"Data 2015 and 2016","PE")
     leg1.AddEntry(hist_sumbkg2,"SM Total","LF")
     for sam in reversed(samples):
         leg1.AddEntry(hist_bkgMap[sam],sam.replace("Multijets","Multi-jet").replace("Wjets","W+jets").replace("Zjets","Z+jets").replace("Top","t#bar{t}(+EW) & single top"),"F")
