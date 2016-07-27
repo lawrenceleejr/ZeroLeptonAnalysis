@@ -454,9 +454,9 @@ if not doVRZ and config.region=='SR' or config.region=='CRQ' or config.region=='
     mc_alternative.append({'key':'QCDJS_systup','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
               'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
               'syst':commonsyst})
-    mc_alternative.append({'key':'QCDJS_systdn','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
-              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
-              'syst':commonsyst})
+#    mc_alternative.append({'key':'QCDJS_systdn','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+#              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+#              'syst':commonsyst})
 
 mc_truth = [
             {'key':'Yjets_TRUTH','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
@@ -1260,31 +1260,31 @@ def main(configMain):
                             upperPad.RedrawAxis("same")
 
                             if arrow>0:
-
-                                ar=TArrow(varcut,min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                ar.SetLineWidth(5)
-                                ar.SetLineColor(kBlack)
-                                ar.SetFillColor(kBlack)
+                                armax = 5.0 if not whichKind['type'].find("baseline")>=0 else 100
+                                ar=TArrow(varcut,1.05*min,varcut,armax,0.05,"-")
+                                ar.SetLineWidth(3)
+                                ar.SetLineColor(kRed+2)
+                                ar.SetFillColor(kRed+2)
                                 ar.Draw("")
 
-                                ar1=TArrow(varcut,min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                ar1=TArrow(varcut,armax,varcut+binWidth,armax,0.01,"|>")
                                 ar1.SetLineWidth(3)
-                                ar1.SetLineColor(kWhite)
-                                ar1.SetFillColor(kWhite)
+                                ar1.SetLineColor(kRed+2)
+                                ar1.SetFillColor(kRed+2)
                                 ar1.Draw("")
 
                             if arrowupper>0:
-
-                                aru=TArrow(varcutupper,min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                aru.SetLineWidth(5)
-                                aru.SetLineColor(kBlack)
-                                aru.SetFillColor(kBlack)
+                                arumax = 5.0 if not whichKind['type'].find("baseline")>=0 else 100
+                                aru=TArrow(varcutupper,1.05*min,varcutupper,arumax,0.05,"-")
+                                aru.SetLineWidth(3)
+                                aru.SetLineColor(kRed+2)
+                                aru.SetFillColor(kRed+2)
                                 aru.Draw("")
 
-                                aru1=TArrow(varcutupper,min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                aru1=TArrow(varcutupper,arumax,varcutupper+binWidth,arumax,0.01,"|>")
                                 aru1.SetLineWidth(3)
-                                aru1.SetLineColor(kWhite)
-                                aru1.SetFillColor(kWhite)
+                                aru1.SetLineColor(kRed+2)
+                                aru1.SetFillColor(kRed+2)
                                 aru1.Draw("")
 
                             forPlotMcHisto=mcHisto[0]
