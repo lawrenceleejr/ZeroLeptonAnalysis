@@ -32,7 +32,7 @@ regionDict["CRWT"] = Region("CRWT", "CRWT", ["lep1Triggered & 0x03)!=0 &&  nBJet
 # regionDict["VRWTfminus"] = Region("VRWTfminus", "CRWT", ["lep1sign<0"], ["btagSystWeights[0]"])
 
 # regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1)"], [" 1.6 "])#extra weights should be applied only to gamma+jets
-regionDict["CRY"] = Region("CRY", "CRY", ["(phPt[0]>130. && (phSignal&0x01 == 0x01))"], [])#extra weights should be applied only to gamma+jets
+regionDict["CRY"] = Region("CRY", "CRY", ["(phPt>150. && (phTopoetcone40==0||phSignal&0x01) && !(phPt>800 && weight>1 && RunNumber==361040)"], [])#extra weights should be applied only to gamma+jets
 #regionDict["CRYQ"] = Region("CRYQ", "CRY", ["(phPt[0]>130. && ((phSignal&0x01)==0))"], [])#extra weights should be applied only to gamma+jets
 # regionDict["VRYf"] = Region("VRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 
