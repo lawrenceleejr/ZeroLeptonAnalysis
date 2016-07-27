@@ -424,7 +424,7 @@ if doCRY:
               'syst':commonsyst},
               )
 elif not doVRZ:
-    if config.region=='SR':
+    if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
         mc.append({'key':'QCDJS','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
                   'syst':commonsyst})
@@ -449,6 +449,14 @@ mc_alternative = [
                   'color':ROOT.kAzure-4,'inputdir':mcaltdir+'WMadgraphPythia8.root','veto':1,'treePrefix':'W_','treeSuffix':'_Madgraph',
                   'syst':commonsyst},
                   ]
+
+if not doVRZ and config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
+    mc_alternative.append({'key':'QCDJS_systup','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+              'syst':commonsyst})
+    mc_alternative.append({'key':'QCDJS_systdn','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+              'syst':commonsyst})
 
 mc_truth = [
             {'key':'Yjets_TRUTH','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
@@ -861,17 +869,17 @@ def main(configMain):
                             else:
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key']]
                                 ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
-
                         fullPlotMC.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntmchandle":ntmc})
 
                         if doSyst:
                             for syst in systDict:
-                                if process['key'] == "QCDMC": continue
-                                if process['key'] == "QCDJS": continue
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)+syst
-
                                 treename = ana+region+process['treePrefix']+"_baseline"
-                                if process['key'] == "Yjets":
+                                if process['key'] == "QCDMC":
+                                    ntmc=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
+                                elif process['key'] == "QCDJS":
+                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"])
+                                elif process['key'] == "Yjets":
                                     print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," weight type: ", type(weights)
                                     ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
                                 else:
@@ -881,21 +889,27 @@ def main(configMain):
 
                     if doSyst:
                         for process in mc_alternative:
-                            mcname=process['treePrefix']+ch.getSuffixTreeName(region)+process['treeSuffix']
                             print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
-                            ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]])
+                            if "QCDJS" in process['key']:
+                                mcname=process['treePrefix']+ch.getSuffixTreeName(region)
+                                if "systup" in process['key']: systfact = 1.99
+                                else: systfact = 0.01
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
+                                fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":"","ntmcalthandle":ntsyst})
+                            else:
+                                print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
+                                mcname=process['treePrefix']+ch.getSuffixTreeName(region)+process['treeSuffix']
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]])
+                                fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmcalthandle":ntsyst})
+                        if doCRY:
+                            for process in mc_truth:
+                                mcname=process['treePrefix']+ch.getSuffixTreeName(region)+process['treeSuffix']
+                                print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
+                                print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
 
-                            print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
-                            fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmcalthandle":ntsyst})
-                    if doCRY and doSyst:
-                        for process in mc_truth:
-                            mcname=process['treePrefix']+ch.getSuffixTreeName(region)+process['treeSuffix']
-                            print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
-                            print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+process['treeSuffix'],process['inputdir'],mcname,truthcuts,process['color'],truthweights,"mc",configMain.lumi*kappaYjets)
 
-                            ntsyst=NtHandler(ana+region+process['treePrefix']+process['treeSuffix'],process['inputdir'],mcname,truthcuts,process['color'],truthweights,"mc",configMain.lumi*kappaYjets)
-
-                            fullPlotMCTruth.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmctruthalthandle":ntsyst})
+                                fullPlotMCTruth.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmctruthalthandle":ntsyst})
 
                     for varinList in varList:
                         varname=varinList['varName']
