@@ -393,18 +393,18 @@ if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
 #--------------------------
 # QCD Gamma Fakes - for CRY
 #--------------------------
-qcdGammaFakeSample = Sample(zlFitterConfig.qcdSampleName+"GammaFakes", kOrange+2)
-qcdGammaFakeSample.setTreeName("QCD_SRAll")
-qcdGammaFakeSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", 1., 0., 500.)
-qcdGammaFakeSample.setFileList(qcdGammaFakeFiles)
-qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
-# qcdGammaFakeSample.setStatConfig(False)
-qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
+# qcdGammaFakeSample = Sample(zlFitterConfig.qcdSampleName+"GammaFakes", kOrange+2)
+# qcdGammaFakeSample.setTreeName("QCD_SRAll")
+# qcdGammaFakeSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", 1., 0., 500.)
+# qcdGammaFakeSample.setFileList(qcdGammaFakeFiles)
+# qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
+# # qcdGammaFakeSample.setStatConfig(False)
+# qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
 
 
-if zlFitterConfig.doSetNormRegion:
-    if "CRYQ" in zlFitterConfig.constrainingRegionsList:
-        qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
+# if zlFitterConfig.doSetNormRegion:
+#     if "CRYQ" in zlFitterConfig.constrainingRegionsList:
+#         qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
 
 
 # Define samples
@@ -663,7 +663,7 @@ for point in allpoints:
 
         # REGION.addSample(qcdGammaFakeSample )
         REGION.addSample(gammaSample, 0) ##order is important!!!!
-        REGION.addSample(qcdGammaFakeSample ,1)
+#        REGION.addSample(qcdGammaFakeSample ,1)
 
         # print REGION.sampleList
         for sam in REGION.sampleList:
