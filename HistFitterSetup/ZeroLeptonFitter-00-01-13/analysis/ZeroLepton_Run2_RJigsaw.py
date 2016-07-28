@@ -263,8 +263,7 @@ if configMgr.readFromTree:
         # Topa
         topFiles.append(INPUTDIR+ "/Top.root")
         if not zlFitterConfig.usePreComputedTopGeneratorSys:
-            pass
-#            topFiles.append(INPUTDIR + "TopMCatNLO.root")
+            topFiles.append(INPUTDIR + "TopMCatNLO.root")
         if not zlFitterConfig.usePreComputedTopFragmentationSys:
             topFiles.append(INPUTDIR + "TopPowhegPythia8.root")
             topFiles.append(INPUTDIR + "TopPowhegHerwig.root")
@@ -294,7 +293,7 @@ if configMgr.readFromTree:
     # dataFiles.append(INPUTDIR_DATA+ "/Data_Nov07.root")
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data15_13TeV.root")
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data16_13TeV.root")
-    dataFiles.append(INPUTDIR_DATA+ "/DataMain_303560.root")
+    dataFiles.append(INPUTDIR_DATA+ "/DataMain.root")
 
     log.info("Using the following inputs:")
     log.info("topFiles = %s" % topFiles)
@@ -394,18 +393,18 @@ if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
 #--------------------------
 # QCD Gamma Fakes - for CRY
 #--------------------------
-qcdGammaFakeSample = Sample(zlFitterConfig.qcdSampleName+"GammaFakes", kOrange+2)
-qcdGammaFakeSample.setTreeName("QCD_SRAll")
-qcdGammaFakeSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", 1., 0., 500.)
-qcdGammaFakeSample.setFileList(qcdGammaFakeFiles)
-qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
-# qcdGammaFakeSample.setStatConfig(False)
-qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
+# qcdGammaFakeSample = Sample(zlFitterConfig.qcdSampleName+"GammaFakes", kOrange+2)
+# qcdGammaFakeSample.setTreeName("QCD_SRAll")
+# qcdGammaFakeSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", 1., 0., 500.)
+# qcdGammaFakeSample.setFileList(qcdGammaFakeFiles)
+# qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
+# # qcdGammaFakeSample.setStatConfig(False)
+# qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
 
 
-if zlFitterConfig.doSetNormRegion:
-    if "CRYQ" in zlFitterConfig.constrainingRegionsList:
-        qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
+# if zlFitterConfig.doSetNormRegion:
+#     if "CRYQ" in zlFitterConfig.constrainingRegionsList:
+#         qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
 
 
 # Define samples
@@ -523,9 +522,9 @@ if zlFitterConfig.useShapeFit and zlFitterConfig.useShapeFactor:
 #######################################################################
 
 # Here be systematics. Sometime in future.
-sysWeight_theoSysSigUp = myreplace(configMgr.weights, ["normWeightUp"], "normWeight")
-sysWeight_theoSysSigDown = myreplace(configMgr.weights, ["normWeightDown"], "normWeight")
-theoSysSig = Systematic("SigXSec", configMgr.weights, sysWeight_theoSysSigUp, sysWeight_theoSysSigDown, "weight", "overallSys")
+# sysWeight_theoSysSigUp = myreplace(configMgr.weights, ["normWeightUp"], "normWeight")
+# sysWeight_theoSysSigDown = myreplace(configMgr.weights, ["normWeightDown"], "normWeight")
+# theoSysSig = Systematic("SigXSec", configMgr.weights, sysWeight_theoSysSigUp, sysWeight_theoSysSigDown, "weight", "overallSys")
 
 
 
@@ -597,8 +596,8 @@ for point in allpoints:
     if configMgr.fixSigXSec:
         meas.addParamSetting("alpha_SigXSec", True, 1)
 
-    if "CRYQ" not in zlFitterConfig.constrainingRegionsList:
-        meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", True, 1) # fix QCD
+    # if "CRYQ" not in zlFitterConfig.constrainingRegionsList:
+    #     meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", True, 1) # fix QCD
     if "CRQ" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName, True, 1) # fix QCD
     if "CRY" not in zlFitterConfig.constrainingRegionsList and "CRZ" not in zlFitterConfig.constrainingRegionsList:
@@ -628,7 +627,7 @@ for point in allpoints:
         sigSample.setTreeName("%s_%s_SRAll" % (gridTreeName, point) )
         sigSample.setNormByTheory()
         sigSample.setNormFactor("mu_SIG", 1, 0., 100.)
-        sigSample.addSystematic(theoSysSig)
+#        sigSample.addSystematic(theoSysSig)
         sigSample.setStatConfig(zlFitterConfig.useStat)
         myFitConfig.addSamples(sigSample)
         myFitConfig.setSignalSample(sigSample)
@@ -664,7 +663,7 @@ for point in allpoints:
 
         # REGION.addSample(qcdGammaFakeSample )
         REGION.addSample(gammaSample, 0) ##order is important!!!!
-        REGION.addSample(qcdGammaFakeSample ,1)
+#        REGION.addSample(qcdGammaFakeSample ,1)
 
         # print REGION.sampleList
         for sam in REGION.sampleList:
