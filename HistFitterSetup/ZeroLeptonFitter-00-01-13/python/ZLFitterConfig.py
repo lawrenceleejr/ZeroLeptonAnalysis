@@ -34,7 +34,7 @@ class ZLFitterConfig:
         self.fixSigXSec = True
 
         # only run nominal fit if fixSigXSec=True ?
-        self.runOnlyNominalXSec = True
+        self.runOnlyNominalXSec = False
 
         # Use files split by nJet ?
         self.useFilteredNtuples = False
