@@ -176,13 +176,13 @@ def estimSystwTheory(mcSumHistos,mcSystHisto,Allsys_band,Allsys_plusTheory_band)
     varUpDownTheory=[]
     varUpDownNoTheory=[]
     for sh in mcSystHisto:
-        print sh.GetName()
+        #print sh.GetName()
         temp_hist=sh.Clone(sh.GetName()+"_tmp")
         varUpDownTheory.append(temp_hist)
         if 'Total' not in sh.GetName():
             varUpDownNoTheory.append(temp_hist)
         #print 'check',sh.GetBinContent(8)
-    print 'in estimSyst',len(mcSystHisto), len(varUpDownNoTheory)
+    #print 'in estimSyst',len(mcSystHisto), len(varUpDownNoTheory)
     #print "SYSTTHEORY"
     makeCombinedErrorBand(Allsys_plusTheory_band,mcSumHistos,varUpDownTheory)
     #print "SYSTNOTHEORY"
@@ -199,7 +199,8 @@ def makeCombinedErrorBand(ErrorBand,centralHisto,varUpDown):
             errDown2 +=math.pow(centralHisto.GetBinErrorLow(iBin)/centralHisto.GetBinContent(iBin),2)
             for iUDvar in range(0,len(varUpDown)):
                 #print "VARUPDOWN:", varUpDown[iUDvar].GetBinContent(iBin), centralHisto.GetBinContent(iBin), varUpDown[iUDvar].GetName()
-                if "temp" not in varUpDown[iUDvar].GetName():
+                #if "temp" not in varUpDown[iUDvar].GetName():
+                if False:
                     errUp2   += math.pow((varUpDown[iUDvar].GetBinContent(iBin)-centralHisto.GetBinContent(iBin))/centralHisto.GetBinContent(iBin),2)
                     errDown2 += math.pow((varUpDown[iUDvar].GetBinContent(iBin)-centralHisto.GetBinContent(iBin))/centralHisto.GetBinContent(iBin),2)
                 else:
@@ -212,12 +213,12 @@ def makeCombinedErrorBand(ErrorBand,centralHisto,varUpDown):
 #            for iUDvar in range(0,len(varSimm)):
 #                errUp2   += math.pow((varSimm[iUDvar].GetBinContent(iBin)-centralHisto.GetBinContent(iBin))/centralHisto.GetBinContent(iBin),2);
 #                errDown2 += math.pow((varSimm[iUDvar].GetBinContent(iBin)-centralHisto.GetBinContent(iBin))/centralHisto.GetBinContent(iBin),2);
-                
+
         ErrorBand.SetPoint(iBin,centralHisto.GetBinCenter(iBin),1);
         ErrorBand.SetPointEXhigh(iBin,centralHisto.GetBinWidth(iBin)/2.); 
         ErrorBand.SetPointEXlow(iBin,centralHisto.GetBinWidth(iBin)/2.); 
         ErrorBand.SetPointEYhigh(iBin,math.sqrt(errUp2));
-        print iBin,errUp2,errDown2
+        #print iBin,errUp2,errDown2
         if errDown2 >= 1.:
             ErrorBand.SetPointEYlow(iBin,0.999);
         else:

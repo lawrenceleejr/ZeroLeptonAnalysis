@@ -23,7 +23,7 @@ def parseCmdLine(args):
     parser.add_option("--doCompressed", default=False, action = "store_true")
     parser.add_option("--baseDir", default =  os.getcwd() , help="location of samples to run")
     parser.add_option("--inputSampleDir", default =  "/Users/khoo/Work/ATLAS/", help="location of samples to run")
-    parser.add_option("--version", default = 107, help="ntuple version")
+    parser.add_option("--version", default = 107, help="ntuple version", type = int)
     parser.add_option("--SignalOnTop", action = "store_true", dest="SignalOnTop", help=" Add signal to SM background in SR plots", default=False)
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
@@ -45,8 +45,7 @@ else:
     allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
 
 
-version = config.version
-versionname = '{0}_baseline'.format(version)
+versionname = '{0}_baseline'.format(config.version)
 
 basedir = config.baseDir + "/"
 outplotdir = basedir+"Outplots/v"+str(versionname)+"/"
@@ -443,19 +442,37 @@ mc_alternative = [
 #                  {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
 #                  'color':ROOT.kBlue+3,'inputdir':mcaltdir+'ZMadgraphPythia8.root','veto':1,'treePrefix':'Z_','treeSuffix':'_Madgraph',
 #                  'syst':commonsyst},
-                  {'key':'Diboson_alternative','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
-                  'syst':commonsyst},
+                  # Hack to implement flat systematic
                   {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
                   'syst':commonsyst},
-                  {'key':'Top_alternative','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  # Hack to implement flat systematic
+                  {'key':'Diboson_alternative','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
+                  'syst':commonsyst},
+                  # Cover all top systs
+                  {'key':'Top_alternativeMCatNLO','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopMCatNLO.root',
                   'treePrefix':'Top_','treeSuffix':'_aMcAtNloHerwigpp','syst':commonsyst},
-                  {'key':'Wjets_alternative','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
+                 {'key':'Wjets_alternative','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kAzure-4,'inputdir':mcaltdir+'WMadgraphPythia8.root','veto':1,'treePrefix':'W_','treeSuffix':'_Madgraph',
                   'syst':commonsyst},
                   ]
+if config.version>107:
+mc_alternative += [
+                  {'key':'Top_alternativePy8','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegPythia8.root',
+                  'treePrefix':'TopPythia8_','treeSuffix':'_Powheg','syst':commonsyst},
+                  {'key':'Top_alternativeHpp','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegHerwig.root',
+                  'treePrefix':'Top_','treeSuffix':'_PowhegHerwigpp','syst':commonsyst},
+                  {'key':'Top_alternativeRadHi','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadHi.root',
+                  'treePrefix':'Top_','treeSuffix':'_RadHi','syst':commonsyst},
+                  {'key':'Top_alternativeRadLo','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadLo.root',
+                  'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
+                   ]
 
 if not doVRZ and config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
     mc_alternative.append({'key':'QCDJS_alternative','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
@@ -575,7 +592,7 @@ signalPoint=[
 start_time = time.time()
 
 if doSyst:
-    if doRun2 and version>30:
+    if doRun2 and config.version>30:
         systDict=[
                   "_JET_GroupedNP_1_1down",
                   "_JET_GroupedNP_2_1down",
@@ -665,33 +682,42 @@ def projAll(l,var,varname,title,cuts,syst,myNtHandler,nbinvar,minvar,maxvar,outp
 
 def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlername,nbinvar,minvar,maxvar):
     if len(processList)==0: return []
-    hists = []
-    jobs = []
-    output=Queue()
 
-    label = syst
-    for process in processList:
-        suffix = syst
-        if "mcTreeSuffix" in process.keys(): suffix = process["mcTreeSuffix"]
-        if syst=="Syst":
-            suffix = process["ntsyst"]
-            label = process["ntsyst"]
-        title = varname+process['mctreePrefix']+ana+region+suffix
-        pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
-        p=Process(target=projAll,args=pargs)
-        jobs.append(p)
-        print 'START',p, title
-        p.result_queue = output
-        p.start()
-    working=True
-    while working:
-        hists.append(output.get())
-        if len(hists)==len(jobs): working=False
-    for j in jobs:
-        j.terminate()
-    DeleteList(jobs)
-    output.close()
-    output.join_thread()
+    hists = []
+    # avoid hitting limits on number of open files
+    chunksize=1
+    chunks = [processList[x:x+chunksize] for x in xrange(0, len(processList), chunksize)]
+    for chunk in chunks:
+        print "CHUNK", len(chunk)
+        thesehists = []
+        jobs = []
+        output=Queue()
+
+        label = syst
+        for ip,process in enumerate(chunk):
+            suffix = syst
+            if "mcTreeSuffix" in process.keys(): suffix = process["mcTreeSuffix"]
+            if syst=="Syst":
+                suffix = process["ntsyst"]
+                label = process["ntsyst"]
+            title = varname+process['mctreePrefix']+ana+region+suffix
+            pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
+            p=Process(target=projAll,args=pargs)
+            jobs.append(p)
+            print 'START',p, title
+            p.result_queue = output
+            p.start()
+            #time.sleep(0.2)
+        working=True
+        while working:
+            thesehists.append(output.get())
+            if len(thesehists)==len(jobs): working=False
+        for j in jobs:
+            j.terminate()
+        DeleteList(jobs)
+        output.close()
+        output.join_thread()
+        hists += thesehists
     return hists
 
 class NtHandler:
@@ -820,7 +846,8 @@ def main(configMain):
                     truthweights = truthweights.replace("pileupWeight *","")
 
                     weights = truthweights
-                    print ana, region, cuts,weights,"remove pileupweights"
+                    weights += " * WZweight"
+                    print ana, region, cuts,weights
                     blindcut = ""
                     if hasattr(ch,minusvar) and not getattr(ch,minusvar)==None:
                         blindcutlow = getattr(ch,minusvar)
@@ -891,7 +918,7 @@ def main(configMain):
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)+syst
                                 treename = ana+region+process['treePrefix']+"_baseline"
                                 if process['key'] == "QCDMC":
-                                    ntmc=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
+                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                                 elif process['key'] == "QCDJS":
                                     ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"])
                                 elif process['key'] == "Yjets":
@@ -905,7 +932,7 @@ def main(configMain):
                     if doSyst:
                         for process in mc_alternative:
                             print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
-                            if "QCDJS" in process['key']:
+                            if "QCD" in process['key']:
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
                                 systfact = 1.99
                                 ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
@@ -1165,7 +1192,7 @@ def main(configMain):
                             for whichmc in mc:
                                 for h in mcHisto:
                                     if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
-                                        print "MCSTACK:", h.GetName()
+                                        print "MCSTACK:", h.GetName(), h.Integral()
                                         clone=h.Clone()
                                         Clone_mcHisto.append(clone)
                                         mcStack.Add(clone)
@@ -1177,11 +1204,12 @@ def main(configMain):
                             sumSystHist=[]
                             for isyst in systDict:
                                 tempHist=ROOT.TH1D("tempHist_"+isyst,"tempHist",mcSystHisto[0].GetNbinsX(),mcSystHisto[0].GetXaxis().GetXmin(),mcSystHisto[0].GetXaxis().GetXmax())
-                                #tempHist.Print()
-                                print 'init',tempHist.GetBinContent(8)
+                                #print 'init',tempHist.GetBinContent(8)
                                 for h in mcSystHisto:
                                     if isyst in h.GetName():
+                                        #print h.GetName(), h.Integral()
                                         tempHist.Add(h)
+                            #tempHist.Print()
                                 sumSystHist.append(tempHist)
                             for hAlt in mcAltHisto:
                                 mcAltTotal = mcTotal.Clone("mcAltTotal_"+hAlt.GetName())
