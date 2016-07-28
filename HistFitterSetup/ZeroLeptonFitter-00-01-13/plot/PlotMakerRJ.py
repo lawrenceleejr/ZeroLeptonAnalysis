@@ -462,7 +462,7 @@ mc_truth = [
             {'key':'Yjets_TRUTH','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
             'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'','syst':commonsyst},
             {'key':'Yjets_TRUTH_alternative','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
-            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMadgraph_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'_Madgraph','syst':commonsyst}
+            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMadgraph_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'_TRUTH_Madgraph','syst':commonsyst}
             ]
 
 signalPoint=[
