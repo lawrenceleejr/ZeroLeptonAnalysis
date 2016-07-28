@@ -23,7 +23,7 @@ def parseCmdLine(args):
     parser.add_option("--doCompressed", default=False, action = "store_true")
     parser.add_option("--baseDir", default =  os.getcwd() , help="location of samples to run")
     parser.add_option("--inputSampleDir", default =  "/Users/khoo/Work/ATLAS/", help="location of samples to run")
-    parser.add_option("--version", default = 107, help="ntuple version")
+    parser.add_option("--version", default = 107, help="ntuple version", type = int)
     parser.add_option("--SignalOnTop", action = "store_true", dest="SignalOnTop", help=" Add signal to SM background in SR plots", default=False)
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
@@ -45,8 +45,7 @@ else:
     allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
 
 
-version = config.version
-versionname = '{0}_baseline'.format(version)
+versionname = '{0}_baseline'.format(config.version)
 
 basedir = config.baseDir + "/"
 outplotdir = basedir+"Outplots/v"+str(versionname)+"/"
@@ -195,7 +194,7 @@ ratiocutsfull = {
 }
 
 varList = [
-           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
+           {'varName':'LastCut','varNtuple':'LastCut','plotName':'LastCut [GeV]','nbinvar':'27','minvar':'800','maxvar':'3500.','unit':'GeV'},
            {'varName':'Ratio','varNtuple':'Ratio','plotName':'Ratio','nbinvar':'30','minvar':'0','maxvar':'1.2','unit':''},
            {'varName':'deltaQCD','varNtuple':'deltaQCD','plotName':'#Delta_{QCD}','nbinvar':'60','minvar':'-1.2','maxvar':'1.2','unit':''},
            {'varName':'H2PP','varNtuple':'H2PP','plotName':'H_{1,1}^{PP} [GeV]','nbinvar':'50','minvar':'0','maxvar':'5000.','unit':'GeV'},
@@ -264,8 +263,9 @@ varbin_rescale = [1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,.5,.5,.5,.5,.5,.2,.2,.2,.2
 Nvarbin_lastcut = len(varbin_lastcut)-1
 
 if config.doCompressed:
-    varList[0]['nbinvar'] = '25'
-    varList[0]['maxvar'] = '2500.'
+    varList[0]['nbinvar'] = '9'
+    varList[0]['minvar'] = '200.'
+    varList[0]['maxvar'] = '2000.'
     varbin_lastcut = varbin_lastcut[:-5]
     varbin_rescale = varbin_rescale[:-5]
     Nvarbin_lastcut = len(varbin_lastcut)-1
@@ -312,7 +312,7 @@ plotlists = {
                  ["RPZ_HT5PP"],
                  ["H2PP"],
                  ["R_HT5PP_H5PP"],
-                 ["minR_pTj2i_HT3PPi"],
+                 ["= R_pTj2i_HT3PPi"],
                  ["maxR_H1PPi_H2PPi"],
                  ["dangle"],
                  #                 ["sangle"]
@@ -425,11 +425,11 @@ if doCRY:
               )
 elif not doVRZ:
     if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
-        mc.append({'key':'QCDJS','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+        mc.append({'key':'QCDJS','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
                   'syst':commonsyst})
     else:
-        mc.append({'key':'QCDMC','name':'Multijet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
+        mc.append({'key':'QCDMC','name':'Multi-jet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
                   'syst':commonsyst})
 
@@ -439,24 +439,48 @@ mc = sorted(mc, cmp=comparator, key=lambda k: k['key'], reverse=True)
 print mc
 
 mc_alternative = [
+#                  {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
+#                  'color':ROOT.kBlue+3,'inputdir':mcaltdir+'ZMadgraphPythia8.root','veto':1,'treePrefix':'Z_','treeSuffix':'_Madgraph',
+#                  'syst':commonsyst},
+                  # Hack to implement flat systematic
                   {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kBlue+3,'inputdir':mcaltdir+'ZMadgraphPythia8.root','veto':1,'treePrefix':'Z_','treeSuffix':'_Madgraph',
+                  'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
                   'syst':commonsyst},
-                  {'key':'Top_alternative','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  # Hack to implement flat systematic
+                  {'key':'Diboson_alternative','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
+                  'syst':commonsyst},
+                  # Cover all top systs
+                  {'key':'Top_alternativeMCatNLO','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopMCatNLO.root',
                   'treePrefix':'Top_','treeSuffix':'_aMcAtNloHerwigpp','syst':commonsyst},
-                  {'key':'Wjets_alternative','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
+                 {'key':'Wjets_alternative','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kAzure-4,'inputdir':mcaltdir+'WMadgraphPythia8.root','veto':1,'treePrefix':'W_','treeSuffix':'_Madgraph',
                   'syst':commonsyst},
                   ]
+if config.version>107:
+mc_alternative += [
+                  {'key':'Top_alternativePy8','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegPythia8.root',
+                  'treePrefix':'TopPythia8_','treeSuffix':'_Powheg','syst':commonsyst},
+                  {'key':'Top_alternativeHpp','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegHerwig.root',
+                  'treePrefix':'Top_','treeSuffix':'_PowhegHerwigpp','syst':commonsyst},
+                  {'key':'Top_alternativeRadHi','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadHi.root',
+                  'treePrefix':'Top_','treeSuffix':'_RadHi','syst':commonsyst},
+                  {'key':'Top_alternativeRadLo','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadLo.root',
+                  'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
+                   ]
 
 if not doVRZ and config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
-    mc_alternative.append({'key':'QCDJS_systup','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+    mc_alternative.append({'key':'QCDJS_alternative','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
               'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
               'syst':commonsyst})
-    mc_alternative.append({'key':'QCDJS_systdn','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
-              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
-              'syst':commonsyst})
+#    mc_alternative.append({'key':'QCDJS_systdn','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+#              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+#              'syst':commonsyst})
 
 mc_truth = [
             {'key':'Yjets_TRUTH','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
@@ -466,67 +490,63 @@ mc_truth = [
             ]
 
 signalPoint=[
-             {'name':'SS_direct_1200_0','filename':mcsignaldir+'SS_direct.root',
+             {'name':'SS_direct_1300_0','filename':mcsignaldir+'SS_direct.root',
              'color':ROOT.kBlue,
              'linestyle': ROOT.kDashed,
              'sigplotname':'#tilde{q}#tilde{q} direct,',
-             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(1200, 0)',
+             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(1300, 0)',
              'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
                       'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b'],
              },
-             {'name':'SS_direct_1100_300','filename':mcsignaldir+'SS_direct.root',
-             'color':ROOT.kGray+2,
-             'linestyle': ROOT.kDashDotted,
-             'sigplotname':'#tilde{q}#tilde{q} direct,',
-             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(1100, 300)',
-             'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
-                      'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b'],
-             },
-             {'name':'SS_direct_800_400','filename':mcsignaldir+'SS_direct.root',
+             {'name':'SS_direct_1100_500','filename':mcsignaldir+'SS_direct.root',
              'color':ROOT.kViolet-1,
              'linestyle': ROOT.kDashDotted,
              'sigplotname':'#tilde{q}#tilde{q} direct,',
-             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(800, 400)',
+             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(1100, 500)',
              'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
                       'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b'],
              },
-             {'name':'GG_direct_1600_0','filename':mcsignaldir+'GG_direct.root',
+#             {'name':'SS_direct_800_500','filename':mcsignaldir+'SS_direct.root',
+#             'color':ROOT.kViolet-1,
+#             'linestyle': ROOT.kDotted,
+#             'sigplotname':'#tilde{q}#tilde{q} direct,',
+#             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(800, 500)',
+#             'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
+#                      'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b'],
+#             },
+             {'name':'GG_direct_1800_0','filename':mcsignaldir+'GG_direct.root',
              'color':ROOT.kBlue,
-             'linestyle': ROOT.kDashDotted,
+             'linestyle': ROOT.kDotted,
              'sigplotname':'#tilde{g}#tilde{g} direct,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(1600, 0)',
+             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(1800, 0)',
              'sigSR':['SRJigsawSRG1a','SRJigsawSRG2a','SRJigsawSRG3a',
                       'SRJigsawSRG1b','SRJigsawSRG2b','SRJigsawSRG3b'],
              },
              {'name':'GG_direct_1500_700','filename':mcsignaldir+'GG_direct.root',
-             'color':ROOT.kGray+2,
-             'linestyle': ROOT.kDashed,
+             'color':ROOT.kViolet-1,
+             'linestyle': ROOT.kDashDotted,
              'sigplotname':'#tilde{g}#tilde{g} direct,',
              'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(1500, 700)',
              'sigSR':['SRJigsawSRG1a','SRJigsawSRG2a','SRJigsawSRG3a',
                       'SRJigsawSRG1b','SRJigsawSRG2b','SRJigsawSRG3b'],
              },
-             {'name':'GG_direct_950_650','filename':mcsignaldir+'GG_direct.root',
-             'color':ROOT.kViolet-1,
-             'linestyle': ROOT.kDashed,
-             'sigplotname':'#tilde{g}#tilde{g} direct,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(950, 650)',
-             'sigSR':['SRJigsawSRG1a','SRJigsawSRG2a','SRJigsawSRG3a',
-                      'SRJigsawSRG1b','SRJigsawSRG2b','SRJigsawSRG3b'],
-             },
-             {'name':'GG_direct_850_750','filename':mcsignaldir+'GG_direct.root',
-             'color':ROOT.kBlue,
-             'linestyle': ROOT.kDashDotted,
-             'sigplotname':'#tilde{g}#tilde{g} direct,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(850, 750)',
-             'sigSR':['SRJigsawSRC1','SRJigsawSRC2','SRJigsawSRC3','SRJigsawSRC4','SRJigsawSRC5'],
-             },
-             {'name':'GG_direct_712_687','filename':mcsignaldir+'GG_direct.root',
+             {'name':'GG_direct_825_775','filename':mcsignaldir+'GG_direct.root',
              'color':ROOT.kGray+2,
              'linestyle': ROOT.kDashed,
              'sigplotname':'#tilde{g}#tilde{g} direct,',
-             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(712, 687)',
-             'sigSR':['SRJigsawSRC1','SRJigsawSRC2','SRJigsawSRC3','SRJigsawSRC4','SRJigsawSRC5'],
+             'masspoint':'m(#tilde{g}, #tilde{#chi_{1}^{0}})=(825, 775)',
+             'sigSR':['SRJigsawSRG1a','SRJigsawSRG2a','SRJigsawSRG3a',
+                      'SRJigsawSRG1b','SRJigsawSRG2b','SRJigsawSRG3b',
+                      'SRJigsawSRC1','SRJigsawSRC2','SRJigsawSRC3','SRJigsawSRC4','SRJigsawSRC5'],
+             },
+             {'name':'SS_direct_700_600','filename':mcsignaldir+'SS_direct.root',
+             'color':ROOT.kGreen+2,
+             'linestyle': ROOT.kDotted,
+             'sigplotname':'#tilde{q}#tilde{q} direct,',
+             'masspoint':'m(#tilde{q}, #tilde{#chi_{1}^{0}})=(700, 600)',
+             'sigSR':['SRJigsawSRS1a','SRJigsawSRS2a','SRJigsawSRS3a',
+                      'SRJigsawSRS1b','SRJigsawSRS2b','SRJigsawSRS3b',
+                      'SRJigsawSRC1','SRJigsawSRC2','SRJigsawSRC3','SRJigsawSRC4','SRJigsawSRC5'],
              },
 #             {'name':'GG_onestepCC_1265_945_625','filename':mcsignaldir+'GG_onestepCC.root',
 #             'color':ROOT.kViolet,
@@ -572,7 +592,7 @@ signalPoint=[
 start_time = time.time()
 
 if doSyst:
-    if doRun2 and version>30:
+    if doRun2 and config.version>30:
         systDict=[
                   "_JET_GroupedNP_1_1down",
                   "_JET_GroupedNP_2_1down",
@@ -662,33 +682,42 @@ def projAll(l,var,varname,title,cuts,syst,myNtHandler,nbinvar,minvar,maxvar,outp
 
 def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlername,nbinvar,minvar,maxvar):
     if len(processList)==0: return []
-    hists = []
-    jobs = []
-    output=Queue()
 
-    label = syst
-    for process in processList:
-        suffix = syst
-        if "mcTreeSuffix" in process.keys(): suffix = process["mcTreeSuffix"]
-        if syst=="Syst":
-            suffix = process["ntsyst"]
-            label = process["ntsyst"]
-        title = varname+process['mctreePrefix']+ana+region+suffix
-        pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
-        p=Process(target=projAll,args=pargs)
-        jobs.append(p)
-        print 'START',p, title
-        p.result_queue = output
-        p.start()
-    working=True
-    while working:
-        hists.append(output.get())
-        if len(hists)==len(jobs): working=False
-    for j in jobs:
-        j.terminate()
-    DeleteList(jobs)
-    output.close()
-    output.join_thread()
+    hists = []
+    # avoid hitting limits on number of open files
+    chunksize=1
+    chunks = [processList[x:x+chunksize] for x in xrange(0, len(processList), chunksize)]
+    for chunk in chunks:
+        print "CHUNK", len(chunk)
+        thesehists = []
+        jobs = []
+        output=Queue()
+
+        label = syst
+        for ip,process in enumerate(chunk):
+            suffix = syst
+            if "mcTreeSuffix" in process.keys(): suffix = process["mcTreeSuffix"]
+            if syst=="Syst":
+                suffix = process["ntsyst"]
+                label = process["ntsyst"]
+            title = varname+process['mctreePrefix']+ana+region+suffix
+            pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
+            p=Process(target=projAll,args=pargs)
+            jobs.append(p)
+            print 'START',p, title
+            p.result_queue = output
+            p.start()
+            #time.sleep(0.2)
+        working=True
+        while working:
+            thesehists.append(output.get())
+            if len(thesehists)==len(jobs): working=False
+        for j in jobs:
+            j.terminate()
+        DeleteList(jobs)
+        output.close()
+        output.join_thread()
+        hists += thesehists
     return hists
 
 class NtHandler:
@@ -786,13 +815,25 @@ def main(configMain):
                         if minusvar == "LastCut": minusvar = minusvarname = lastcuts[chnameshort]
                         elif minusvar == "Ratio": minusvar = minusvarname = ratiocuts[chnameshort]
                         if hasattr(ch,minusvar):
-                            ch.regionListDict[region][minusvar] = "minusone"
+                            if minusvar in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar]:
+                                ch.regionListDict[region][minusvar] = "minusone_invert"
+                            else:
+                                ch.regionListDict[region][minusvar] = "minusone"
                         if hasattr(ch,minusvar+"_upper"):
-                            ch.regionListDict[region][minusvar+"_upper"] = "minusone"
-                        if hasattr(ch,minusvar+"_loose"):
-                            ch.regionListDict[region][minusvar+"_loose"] = "minusone"
+                            if minusvar+"_upper" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_upper"]:
+                                ch.regionListDict[region][minusvar+"_upper"] = "minusone_invert"
+                            else:
+                                ch.regionListDict[region][minusvar+"_upper"] = "minusone"
+                        if minusvar+"_loose" in ch.regionListDict[region].keys() and hasattr(ch,minusvar+"_loose"):
+                            if minusvar+"_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_loose"]:
+                                ch.regionListDict[region][minusvar+"_loose"] = "minusone_invert"
+                            else:
+                                ch.regionListDict[region][minusvar+"_loose"] = "minusone"
                         if hasattr(ch,minusvar+"_upper_loose"):
-                            ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
+                            if minusvar+"_upper_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_upper_loose"]:
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_invert"
+                            else:
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
                     print "MINUS", minusvar, minusvarname
 
                     cuts=ch.getCuts(region)
@@ -806,7 +847,8 @@ def main(configMain):
                     truthweights = truthweights.replace("pileupWeight *","")
 
                     weights = truthweights
-                    print ana, region, cuts,weights,"remove pileupweights"
+                    weights += " * WZweight"
+                    print ana, region, cuts,weights
                     blindcut = ""
                     if hasattr(ch,minusvar) and not getattr(ch,minusvar)==None:
                         blindcutlow = getattr(ch,minusvar)
@@ -877,7 +919,7 @@ def main(configMain):
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)+syst
                                 treename = ana+region+process['treePrefix']+"_baseline"
                                 if process['key'] == "QCDMC":
-                                    ntmc=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
+                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                                 elif process['key'] == "QCDJS":
                                     ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"])
                                 elif process['key'] == "Yjets":
@@ -891,11 +933,16 @@ def main(configMain):
                     if doSyst:
                         for process in mc_alternative:
                             print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
-                            if "QCDJS" in process['key']:
+                            if "QCD" in process['key']:
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
-                                if "systup" in process['key']: systfact = 1.99
-                                else: systfact = 0.01
+                                systfact = 1.99
                                 ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
+                                fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":"","ntmcalthandle":ntsyst})
+                            elif "Zjets" in process['key'] or "Diboson" in process['key']:
+                                systfact = 1.5 if "Diboson" in process['key'] else 1.11
+                                print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
+                                mcname=process['treePrefix']+ch.getSuffixTreeName(region)
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]]*systfact)
                                 fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":"","ntmcalthandle":ntsyst})
                             else:
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
@@ -990,6 +1037,7 @@ def main(configMain):
                                 if varcutupper != None: lastbin = histo.GetXaxis().FindBin(varcutupper)
                                 mcInt[clone.GetName()] = histo.Integral(firstbin,lastbin)
                                 smTotal += mcInt[clone.GetName()]
+                                print "CLONE", clone.GetName(), "INT", clone.Integral()
 
                                 if config.vbins and (varname=="LastCut" or varname=="H2PP"):
                                     clone = clone.Rebin(Nvarbin_lastcut,clone.GetName()+"_rebin",array('d',varbin_lastcut))
@@ -1107,25 +1155,17 @@ def main(configMain):
                                     setAsymmErrors(dataHisto,dataClone,varbin_rescale)
                                 else:
                                     setAsymmErrors(dataHisto,dataClone)
-                                min = 0.25
-                                max = dataHisto.GetMaximum()
-                                if dataHisto.Integral()==0:
-                                    max = 1e5
-                                    min = 0.03
-                                if (max <= 2.) :  min = 0.02
-                                if max < 20:
-                                    yfactor=6
-                                else:
-                                    if doCRQ:
-                                        yfactor=60
-                                    elif doCRW:
-                                        yfactor = 15
-                                    else:
-                                        yfactor=10
-                                min /= 10
-                                max *= 100
-                                dataHisto.GetYaxis().SetRangeUser(min,max*yfactor)
-                                datah_Poiss.GetYaxis().SetRangeUser(min,max*yfactor)
+                                max = 5e5
+                                min = 0.03
+                                if config.doCompressed or not unit=='GeV':
+                                    if dataHisto.GetMaximum()>1000:
+                                        max *= 1000
+                                        min *= 10
+                                    elif dataHisto.GetMaximum()>100:
+                                        max *= 100
+                                        min *= 10
+                                dataHisto.GetYaxis().SetRangeUser(min,max)
+                                datah_Poiss.GetYaxis().SetRangeUser(min,max)
 
                                 binWidth=dataHisto.GetBinWidth(1)
                                 XUnit="Events / {0:.2f}".format(binWidth)
@@ -1153,26 +1193,27 @@ def main(configMain):
                             for whichmc in mc:
                                 for h in mcHisto:
                                     if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
-                                        print "MCSTACK:", h.GetName()
+                                        print "MCSTACK:", h.GetName(), h.Integral()
                                         clone=h.Clone()
                                         Clone_mcHisto.append(clone)
                                         mcStack.Add(clone)
                                         mcTotal.Add(clone)
                                         binWidth=clone.GetBinWidth(1) if varname.find("Jets")<0 else int(clone.GetBinWidth(1))
                                         XUnitStack="Events / "+str(binWidth)+" "+unit
+                            print "MCTOTAL int:", mcTotal.Integral()
 
                             sumSystHist=[]
                             for isyst in systDict:
-                                tempHist=ROOT.TH1D("tempHist","tempHist",mcSystHisto[0].GetNbinsX(),mcSystHisto[0].GetXaxis().GetXmin(),mcSystHisto[0].GetXaxis().GetXmax())
-                                #tempHist.Print()
-                                print 'init',tempHist.GetBinContent(8)
+                                tempHist=ROOT.TH1D("tempHist_"+isyst,"tempHist",mcSystHisto[0].GetNbinsX(),mcSystHisto[0].GetXaxis().GetXmin(),mcSystHisto[0].GetXaxis().GetXmax())
+                                #print 'init',tempHist.GetBinContent(8)
                                 for h in mcSystHisto:
                                     if isyst in h.GetName():
+                                        #print h.GetName(), h.Integral()
                                         tempHist.Add(h)
+                            #tempHist.Print()
                                 sumSystHist.append(tempHist)
                             for hAlt in mcAltHisto:
-                                mcAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
-                                mcAltTotal = mcTotal.Clone()
+                                mcAltTotal = mcTotal.Clone("mcAltTotal_"+hAlt.GetName())
                                 clonealt=None
                                 for h in mcHisto:
                                     print "MCALT:", h.GetName(), hAlt.GetName()
@@ -1182,6 +1223,7 @@ def main(configMain):
                                         clonealt=hAlt.Clone()
                                         clonealt.Add(h,-1.)
                                 if clonealt: mcAltTotal.Add(clonealt)
+                                print "MCALTTOTAL int:", mcAltTotal.Integral()
                                 sumSystHist.append(mcAltTotal)
 
                             if doCRY and len(mcTruthAltHisto)>0:
@@ -1195,6 +1237,7 @@ def main(configMain):
                                         mcTruthAltTotal.Add(h,-1)
                                 sumSystHist.append(mcTruthAltTotal)
 
+                            maxdata = -1
                             if(runData):
                                 mcStack.Draw("same:hist")
                                 mcTotal.Draw("hist:same")
@@ -1237,9 +1280,9 @@ def main(configMain):
                                         maxsig = TMath.Max(maxsig, hsig.GetMaximum())
                                 min = 0.07
                                 maxbkg = mcStack.GetMaximum()
-                                max = TMath.Max(maxbkg, maxsig)
+                                max = max([maxbkg, maxsig])
                                 if (max <= 2.) :  min = 0.007
-                                yfactor=4
+                                yfactor = 400 if config.doCompressed else 4
                                 mcStack.SetMinimum(min)
                                 mcStack.SetMaximum(max*yfactor)
                                 mcStack.GetYaxis().SetRangeUser(min,max*yfactor)
@@ -1260,32 +1303,39 @@ def main(configMain):
 
                             upperPad.RedrawAxis("same")
 
+                            invertArrows = (varname in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][varname])
+                            print arrowvar, ch.regionListDict[region]
+                            if arrowvar in ch.regionListDict[region].keys():
+                                print arrowvar, ch.regionListDict[region][arrowvar]
+                                print invertArrows
                             if arrow>0:
-
-                                ar=TArrow(varcut,min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                ar.SetLineWidth(5)
-                                ar.SetLineColor(kBlack)
-                                ar.SetFillColor(kBlack)
+                                armax = 5.0 if not whichKind['type'].find("baseline")>=0 else 100
+                                ar=TArrow(varcut,1.05*min,varcut,armax,0.05,"-")
+                                ar.SetLineWidth(3)
+                                ar.SetLineColor(kRed+2)
+                                ar.SetFillColor(kRed+2)
                                 ar.Draw("")
 
-                                ar1=TArrow(varcut,min,varcut,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                direction = -1 if invertArrows else 1
+                                ar1=TArrow(varcut,armax,varcut+binWidth*direction,armax,0.01,"|>")
                                 ar1.SetLineWidth(3)
-                                ar1.SetLineColor(kWhite)
-                                ar1.SetFillColor(kWhite)
+                                ar1.SetLineColor(kRed+2)
+                                ar1.SetFillColor(kRed+2)
                                 ar1.Draw("")
 
                             if arrowupper>0:
-
-                                aru=TArrow(varcutupper,min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
-                                aru.SetLineWidth(5)
-                                aru.SetLineColor(kBlack)
-                                aru.SetFillColor(kBlack)
+                                arumax = 5.0 if not whichKind['type'].find("baseline")>=0 else 100
+                                aru=TArrow(varcutupper,1.05*min,varcutupper,arumax,0.05,"-")
+                                aru.SetLineWidth(3)
+                                aru.SetLineColor(kRed+2)
+                                aru.SetFillColor(kRed+2)
                                 aru.Draw("")
 
-                                aru1=TArrow(varcutupper,min,varcutupper,5.0 if not whichKind['type'].find("baseline")>=0 else 100,0.05,"<")
+                                direction = -1 if invertArrows else 1
+                                aru1=TArrow(varcutupper,arumax,varcutupper-binWidth*direction,arumax,0.01,"|>")
                                 aru1.SetLineWidth(3)
-                                aru1.SetLineColor(kWhite)
-                                aru1.SetFillColor(kWhite)
+                                aru1.SetLineColor(kRed+2)
+                                aru1.SetFillColor(kRed+2)
                                 aru1.Draw("")
 
                             forPlotMcHisto=mcHisto[0]
@@ -1315,22 +1365,20 @@ def main(configMain):
                             else:
                                 anaName = ana.replace("SRJigsaw","RJR-")
                             tobewritten=(whichKind['name']+" for " if (whichKind['type'].find("CR")>=0 or whichKind['type'].find("VR")>=0) else "") +anaName
-                            if (runSignal):
-                                analabel=ROOT.TLatex(0.5, 0.91, (tobewritten))
-                            else:
-                                analabel=ROOT.TLatex(0.6, 0.91, (tobewritten))
+                            analabel=ROOT.TLatex(0.2, 0.75, (tobewritten))
                             analabel.SetNDC()
                             analabel.SetTextSize(0.035)
                             analabel.SetTextFont(42)
                             analabel.Draw("same")
-                            if (runSignal) and SignalOnTop:
-                                legend=ROOT.TLegend(0.6,0.45,0.85,0.90)
-                            elif (runSignal):
-                                legend=ROOT.TLegend(0.6,0.45,0.85,0.90)
+                            if (runSignal):
+                                if config.doCompressed:
+                                    legend=ROOT.TLegend(0.6,0.45,0.85,0.95)
+                                else:
+                                    legend=ROOT.TLegend(0.6,0.42,0.85,0.95)
                             else:
-                                legend=ROOT.TLegend(0.6,0.53,0.89,0.90)
+                                legend=ROOT.TLegend(0.6,0.53,0.89,0.95)
                             if(runData):
-                                legend.AddEntry(dataHisto,"Data" + (" ({0})".format(dataInt) if varname=="LastCut" and config.int else ""),"p")
+                                legend.AddEntry(dataHisto,"Data 2015 and 2016" + (" ({0})".format(dataInt) if varname=="LastCut" and config.int else ""),"p")
                             legend.AddEntry(mcTotal,"SM Total" + (" ({0:.2f})".format(smTotal) if varname=="LastCut" and config.int else ""),"l")
                             if SignalOnTop:
                                 legend.SetTextSize(0.03)
@@ -1340,7 +1388,7 @@ def main(configMain):
                             legend.SetFillStyle(0)
                             legend.SetBorderSize(0)
 
-                            for whichmc in mc:
+                            for whichmc in reversed(mc):
                                 for h in mcHisto:
 #                                            print h.GetName()
                                     if whichmc['treePrefix'] in h.GetName().split(varname)[1]:
@@ -1438,6 +1486,7 @@ def main(configMain):
 
                                 skeletonRatio.Draw()
                                 if doSyst:
+                                    #Allsys_band.Draw("2 same")
                                     Allsys_plusTheory_band.Draw("2 same")
                                 elif doSignificance:
                                     for s in sigRatios:
