@@ -853,7 +853,8 @@ def main(configMain):
 
                     cuts=ch.getCuts(region)
                     truthcuts = cuts
-                    truthcuts = truthcuts.replace("&& (abs(timing)<4)", " ")
+                    truthcuts = truthcuts.replace("((cleaning&0x30F)==0) && ", " ")
+                    truthcuts = truthcuts.replace(" && (phTopoetcone40==0||phSignal&0x01) && (phTopoetcone40-(phPt*0.022)<2.45)", " ")
                     #print "channel",cuts, truthcuts
                     print "channel",cuts
 
