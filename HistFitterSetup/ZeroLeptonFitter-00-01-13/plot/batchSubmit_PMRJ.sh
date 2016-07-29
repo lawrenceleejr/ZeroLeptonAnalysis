@@ -26,7 +26,7 @@ for i in SR CRY CRWT CRQ VRZ VRZc VRWT; do
 #	echo '#PBS -l nodes=1:SA' >> $BATCHSCRIPT;
 	echo 'echo $PBS_O_WORKDIR' >> $BATCHSCRIPT;
 	echo 'cd $PBS_O_WORKDIR' >> $BATCHSCRIPT;
-	echo "python plot/PlotMakerRJ.py --inputSampleDir samples/ --lumi 13.28 --region $i --regionsToRun \"${j}\" --inputDataFile=\"samples/DataMain_DataMain_303560.root\" --doCompressed --baseDir=$PWD --version 111 --doSyst" >> $BATCHSCRIPT;
+	echo "python plot/PlotMakerRJ.py --inputSampleDir samples/ --lumi 13.28 --region $i --regionsToRun \"${j}\" --inputDataFile=\"samples/DataMain_303560.root\" --doCompressed --baseDir=$PWD --version 111 --doSyst" >> $BATCHSCRIPT;
 	echo "exit 0" >> $BATCHSCRIPT;
 	chmod +x $BATCHSCRIPT;
 	qsub $BATCHSCRIPT;

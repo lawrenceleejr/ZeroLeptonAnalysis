@@ -459,23 +459,23 @@ mc_alternative = [
                   'syst':commonsyst},
                   ]
 if config.version>107:
-mc_alternative += [
-                  {'key':'Top_alternativePy8','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegPythia8.root',
-                  'treePrefix':'TopPythia8_','treeSuffix':'_Powheg','syst':commonsyst},
-                  {'key':'Top_alternativeHpp','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegHerwig.root',
-                  'treePrefix':'Top_','treeSuffix':'_PowhegHerwigpp','syst':commonsyst},
-                  {'key':'Top_alternativeRadHi','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadHi.root',
-                  'treePrefix':'Top_','treeSuffix':'_RadHi','syst':commonsyst},
-                  {'key':'Top_alternativeRadLo','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadLo.root',
-                  'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
-                   ]
+	mc_alternative += [
+	                  {'key':'Top_alternativePy8','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegPythia8.root',
+	                  'treePrefix':'Top_','treeSuffix':'_PowhegPythia8','syst':commonsyst},
+	                  {'key':'Top_alternativeHpp','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegHerwig.root',
+	                  'treePrefix':'Top_','treeSuffix':'_PowhegHerwigpp','syst':commonsyst},
+	                  {'key':'Top_alternativeRadHi','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadHi.root',
+	                  'treePrefix':'Top_','treeSuffix':'_RadHi','syst':commonsyst},
+#	                  {'key':'Top_alternativeRadLo','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+#	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadLo.root',
+#	                  'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
+	                   ]
 
 if not doVRZ and config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
-    mc_alternative.append({'key':'QCDJS_alternative','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+    mc_alternative.append({'key':'QCDJS_systup','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
               'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
               'syst':commonsyst})
 #    mc_alternative.append({'key':'QCDJS_systdn','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
