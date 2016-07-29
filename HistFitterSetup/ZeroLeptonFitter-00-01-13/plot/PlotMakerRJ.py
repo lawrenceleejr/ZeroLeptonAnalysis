@@ -312,7 +312,7 @@ plotlists = {
                  ["RPZ_HT5PP"],
                  ["H2PP"],
                  ["R_HT5PP_H5PP"],
-                 ["= R_pTj2i_HT3PPi"],
+                 ["minR_pTj2i_HT3PPi"],
                  ["maxR_H1PPi_H2PPi"],
                  ["dangle"],
                  #                 ["sangle"]
@@ -475,9 +475,9 @@ if config.version>107:
 	                  {'key':'Top_alternativeRadHi','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
 	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadHi.root',
 	                  'treePrefix':'Top_','treeSuffix':'_RadHi','syst':commonsyst},
-#	                  {'key':'Top_alternativeRadLo','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-#	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadLo.root',
-#	                  'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
+	                  {'key':'Top_alternativeRadLo','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
+	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadLo.root',
+	                  'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
 	                   ]
 
 if not doVRZ:
