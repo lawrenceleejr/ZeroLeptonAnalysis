@@ -314,8 +314,8 @@ def anaNameEnum (anaName) :
     if "SRS" in anaName : return 3
     else : return 0
 
-weights = ["weight", "WZweight"]
-# weights = ["normWeight", "eventWeight", "WZweight"]
+# weights = ["weight", "WZweight"]
+weights = channel.commonWeightList
 if zlFitterConfig.applyKappaCorrection:
     weights.append("gammaCorWeight(RunNumber, "+str(anaNameEnum(anaName))+")")
     # weights.append("1./1.6")
@@ -387,8 +387,8 @@ if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
     for w in configMgr.weights: #add all other weights but not normWeight
         qcdSample.addWeight(w)
     if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
-        # qcdSample.removeWeight("normWeight")
-        qcdSample.removeWeight("weight")
+        qcdSample.removeWeight("normWeight")
+        # qcdSample.removeWeight("weight")
         qcdSample.addWeight("0.01")
 
 
@@ -436,11 +436,11 @@ if not zlFitterConfig.usePreComputedTopGeneratorSys:
     topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 if not zlFitterConfig.usePreComputedTopFragmentationSys:
     topSample.addSystematic(Systematic("Pythia8Top", "" , "_PowhegPythia8", "" , "tree", "overallNormHistoSysOneSide"))
-    topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+    # topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 if not zlFitterConfig.usePreComputedTopRadiationSys:
-    # topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
-    topSample.addSystematic(Systematic("radiationTop", "", "_RadHi", "", "tree", "overallNormHistoSysOneSideSym"))
+    topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
+    # topSample.addSystematic(Systematic("radiationTop", "", "_RadHi", "", "tree", "overallNormHistoSysOneSideSym"))
 
 
 
