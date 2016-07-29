@@ -28,6 +28,7 @@ def parseCmdLine(args):
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
+    parser.add_option("--varToRun", default = "" , help =  "Which var to run.")
     parser.add_option("--lumi", dest="lumi", help="lumi", default=13.28, type=float)
     parser.add_option("--integral", dest="int", help="integrals", default=False, action = "store_true")
     parser.add_option("--vrebin", dest="vbins", help="variable binning", default=False, action = "store_true")
@@ -699,7 +700,7 @@ def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlerna
 
     hists = []
     # avoid hitting limits on number of open files
-    chunksize=1
+    chunksize=5
     chunks = [processList[x:x+chunksize] for x in xrange(0, len(processList), chunksize)]
     for chunk in chunks:
         print "CHUNK", len(chunk)
@@ -852,13 +853,15 @@ def main(configMain):
 
                     cuts=ch.getCuts(region)
                     truthcuts = cuts
-                    truthcuts = truthcuts.replace("((cleaning&0x30F)==0) && ", " ")
-                    truthcuts = truthcuts.replace(" && (phTopoetcone40==0||phSignal&0x01) && (phTopoetcone40-(phPt*0.022)<2.45)", " ")
-                    print "channel",cuts, truthcuts
-                    #print "channel",cuts
+
+#                    truthcuts = truthcuts.replace("((cleaning&0x30F)==0) && ", " ")
+#                    truthcuts = truthcuts.replace(" && (phTopoetcone40==0||phSignal&0x01) && (phTopoetcone40-(phPt*0.022)<2.45)", " ")
+#                    truthcuts = truthcuts.replace("&& !(phPt>800 && weight>1 && RunNumber==361040)", "")
+                    #print "channel",cuts, truthcuts
+                    print "channel",cuts
 
                     weights=allChannel[ana].getWeights(region,onlyExtraWeights)
-                    truthweights = weights
+                    truthweights = weights.replace("WZweight","1.")
 
                     print ana, region, cuts,weights
                     blindcut = ""
@@ -948,11 +951,13 @@ def main(configMain):
                             if "QCD" in process['key']:
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
                                 systfact = 1.99 if 'systup' in process['key'] else 0.01
-                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
+                                print "QCD SYST", systfact
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
                                 fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":"","ntmcalthandle":ntsyst})
                             elif "Zjets" in process['key'] or "Diboson" in process['key']:
                                 systfact = 1.5 if "Diboson" in process['key'] else 1.11
                                 if 'systdn' in process['key']: systfact = 0.5 if "Diboson" in process['key'] else 0.89
+                                print process['key'], " SYST", systfact
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
                                 ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]]*systfact)
@@ -974,6 +979,7 @@ def main(configMain):
 
                     for varinList in varList:
                         varname=varinList['varName']
+                        if not config.varToRun=="" and not varname==config.varToRun: continue
                         if varname in varset or 'all' in varset:
                             var=varinList['varNtuple']
                             if 'extracuts' in varinList:
@@ -1229,9 +1235,10 @@ def main(configMain):
                                 mcAltTotal = mcTotal.Clone("mcAltTotal_"+hAlt.GetName())
                                 clonealt=None
                                 for h in mcHisto:
+                                    if "GAMMA" in h.GetName(): continue
                                     print "MCALT:", h.GetName(), hAlt.GetName()
                                     if h.GetName() in hAlt.GetName():
-                                        print "MCALTTOTAL: rm", h.GetName(), h.Integral()
+                                        print "MCALTTOTAL: rm", h.GetName(), h.Integral(), "add", hAlt.GetName(), hAlt.Integral()
                                         clonealt=hAlt.Clone()
                                         clonealt.Add(h,-1.)
                                 if clonealt: mcAltTotal.Add(clonealt)
@@ -1241,7 +1248,7 @@ def main(configMain):
                             if doCRY and len(mcTruthAltHisto)>0:
                                 #print mcTruthAltHisto
                                 mcTruthAltTotal = ROOT.TH1F("mcTruthAltTotal",varname,nbinvar,minvar,maxvar)
-                                mcTruthAltTotal = mcTotal.Clone()
+                                mcTruthAltTotal = mcTotal.Clone(mcTotal.GetName()+"TruthAlt")
                                 for h in mcTruthAltHisto:
                                     if "Madgraph" in h.GetName():
                                         mcTruthAltTotal.Add(h,1)
@@ -1249,7 +1256,7 @@ def main(configMain):
                                     else:
                                         mcTruthAltTotal.Add(h,-1)
                                         print "MCTRUTHALTTOTAL: rm", h.GetName(), h.Integral()
-                                print "MCTRUTHALTTOTAL int:", mcAltTotal.Integral()
+                                print "MCTRUTHALTTOTAL int:", mcTruthAltTotal.Integral()
                                 sumSystHist.append(mcTruthAltTotal)
 
                             maxdata = -1
@@ -1362,7 +1369,7 @@ def main(configMain):
                             if(runData):
                                 PrintText(dataHisto.GetName(),text)
 
-                            atlaslabel=ROOT.TLatex(0.2,0.89,"#bf{#it{ATLAS}} Internal")
+                            atlaslabel=ROOT.TLatex(0.2,0.89,"#bf{#it{ATLAS}} Preliminary")
                             atlaslabel.SetNDC()
                             atlaslabel.SetTextSize(0.055)
                             atlaslabel.SetTextFont(42)

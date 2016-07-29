@@ -199,7 +199,7 @@ def makeCombinedErrorBand(ErrorBand,centralHisto,varUpDown):
             errDown2 +=math.pow(centralHisto.GetBinErrorLow(iBin)/centralHisto.GetBinContent(iBin),2)
             for iUDvar in range(0,len(varUpDown)):
                 #print "VARUPDOWN:", varUpDown[iUDvar].GetBinContent(iBin), centralHisto.GetBinContent(iBin), varUpDown[iUDvar].GetName()
-                if "temp" not in varUpDown[iUDvar].GetName() and ("GAMMA_" in varUpDown[iUDvar].GetName() or "W_" in varUpDown[iUDvar].GetName() ):
+                if not "temp" in varUpDown[iUDvar].GetName() and ("TruthAlt" in varUpDown[iUDvar].GetName() or "W_" in varUpDown[iUDvar].GetName()):
                     errUp2   += math.pow((varUpDown[iUDvar].GetBinContent(iBin)-centralHisto.GetBinContent(iBin))/centralHisto.GetBinContent(iBin),2)
                     errDown2 += math.pow((varUpDown[iUDvar].GetBinContent(iBin)-centralHisto.GetBinContent(iBin))/centralHisto.GetBinContent(iBin),2)
                 else:

@@ -150,7 +150,7 @@ class ZLFitterConfig:
         # self.constrainingRegionsList += ["CRZ"]
         self.constrainingRegionsList += ["CRY"]
         self.constrainingRegionsList += ["CRQ"]
-        self.constrainingRegionsList += ["CRYQ"]
+        # self.constrainingRegionsList += ["CRYQ"]
 
 
         # list of validation regions
