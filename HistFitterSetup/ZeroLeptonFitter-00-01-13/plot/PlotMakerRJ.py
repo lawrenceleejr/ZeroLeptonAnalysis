@@ -699,7 +699,7 @@ def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlerna
 
     hists = []
     # avoid hitting limits on number of open files
-    chunksize=1
+    chunksize=5
     chunks = [processList[x:x+chunksize] for x in xrange(0, len(processList), chunksize)]
     for chunk in chunks:
         print "CHUNK", len(chunk)
