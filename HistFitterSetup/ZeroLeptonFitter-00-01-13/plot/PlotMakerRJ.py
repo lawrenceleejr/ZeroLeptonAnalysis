@@ -28,6 +28,7 @@ def parseCmdLine(args):
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
+    parser.add_option("--varToRun", default = "" , help =  "Which var to run.")
     parser.add_option("--lumi", dest="lumi", help="lumi", default=13.28, type=float)
     parser.add_option("--integral", dest="int", help="integrals", default=False, action = "store_true")
     parser.add_option("--vrebin", dest="vbins", help="variable binning", default=False, action = "store_true")
@@ -858,10 +859,7 @@ def main(configMain):
 
                     weights=allChannel[ana].getWeights(region,onlyExtraWeights)
                     truthweights = weights
-                    truthweights = truthweights.replace("pileupWeight *","")
 
-                    weights = truthweights
-                    weights += " * WZweight"
                     print ana, region, cuts,weights
                     blindcut = ""
                     if hasattr(ch,minusvar) and not getattr(ch,minusvar)==None:
@@ -976,6 +974,7 @@ def main(configMain):
 
                     for varinList in varList:
                         varname=varinList['varName']
+                        if not config.varToRun=="" and not varname==config.varToRun: continue
                         if varname in varset or 'all' in varset:
                             var=varinList['varNtuple']
                             if 'extracuts' in varinList:
