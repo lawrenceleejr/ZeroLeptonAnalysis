@@ -443,11 +443,17 @@ mc_alternative = [
 #                  'color':ROOT.kBlue+3,'inputdir':mcaltdir+'ZMadgraphPythia8.root','veto':1,'treePrefix':'Z_','treeSuffix':'_Madgraph',
 #                  'syst':commonsyst},
                   # Hack to implement flat systematic
-                  {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
+                  {'key':'Zjets_alternative_systup','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
+                  'syst':commonsyst},
+                  {'key':'Zjets_alternative_systdn','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
                   'syst':commonsyst},
                   # Hack to implement flat systematic
-                  {'key':'Diboson_alternative','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
+                  {'key':'Diboson_alternative_systup','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
+                  'syst':commonsyst},
+                  {'key':'Diboson_alternative_systdn','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
                   'syst':commonsyst},
                   # Cover all top systs
@@ -474,13 +480,22 @@ mc_alternative += [
                   'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
                    ]
 
-if not doVRZ and config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
-    mc_alternative.append({'key':'QCDJS_alternative','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
-              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
-              'syst':commonsyst})
-#    mc_alternative.append({'key':'QCDJS_systdn','name':'Multijet (jet smearing)','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
-#              'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
-#              'syst':commonsyst})
+if not doVRZ:
+    if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
+        mc_alternative.append({'key':'QCDJS_alternative_systup','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+                  'syst':commonsyst})
+        mc_alternative.append({'key':'QCDJS_alternative_systdn','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
+                  'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+                  'syst':commonsyst})
+    else:
+        mc_alternative.append({'key':'QCDMC_alternative_systup','name':'Multi-jet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
+                              'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
+                              'syst':commonsyst})
+        mc_alternative.append({'key':'QCDMC_alternative_systdn','name':'Multi-jet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
+                              'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
+                              'syst':commonsyst})
+
 
 mc_truth = [
             {'key':'Yjets_TRUTH','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
@@ -934,11 +949,12 @@ def main(configMain):
                             print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
                             if "QCD" in process['key']:
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
-                                systfact = 1.99
+                                systfact = 1.99 if 'systup' in process['key'] else 0.01
                                 ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
                                 fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":"","ntmcalthandle":ntsyst})
                             elif "Zjets" in process['key'] or "Diboson" in process['key']:
                                 systfact = 1.5 if "Diboson" in process['key'] else 1.11
+                                if 'systdn' in process['key']: systfact = 0.5 if "Diboson" in process['key'] else 0.89
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
                                 ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]]*systfact)
