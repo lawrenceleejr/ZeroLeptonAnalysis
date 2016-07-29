@@ -315,6 +315,7 @@ def anaNameEnum (anaName) :
     else : return 0
 
 weights = ["weight", "WZweight"]
+# weights = ["normWeight", "eventWeight", "WZweight"]
 if zlFitterConfig.applyKappaCorrection:
     weights.append("gammaCorWeight(RunNumber, "+str(anaNameEnum(anaName))+")")
     # weights.append("1./1.6")
@@ -386,6 +387,7 @@ if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
     for w in configMgr.weights: #add all other weights but not normWeight
         qcdSample.addWeight(w)
     if zlFitterConfig.useDDQCDsample:#normWeight is 0 => remove it
+        # qcdSample.removeWeight("normWeight")
         qcdSample.removeWeight("weight")
         qcdSample.addWeight("0.01")
 
@@ -393,18 +395,18 @@ if nJets > 0 and nJets < len(zlFitterConfig.qcdWeightList)+1:
 #--------------------------
 # QCD Gamma Fakes - for CRY
 #--------------------------
-# qcdGammaFakeSample = Sample(zlFitterConfig.qcdSampleName+"GammaFakes", kOrange+2)
-# qcdGammaFakeSample.setTreeName("QCD_SRAll")
-# qcdGammaFakeSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", 1., 0., 500.)
-# qcdGammaFakeSample.setFileList(qcdGammaFakeFiles)
-# qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
-# # qcdGammaFakeSample.setStatConfig(False)
-# qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
+qcdGammaFakeSample = Sample(zlFitterConfig.qcdSampleName+"GammaFakes", kOrange+2)
+qcdGammaFakeSample.setTreeName("QCD_SRAll")
+qcdGammaFakeSample.setNormFactor("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", 1., 0., 500.)
+qcdGammaFakeSample.setFileList(qcdGammaFakeFiles)
+qcdGammaFakeSample.setStatConfig(zlFitterConfig.useStat)
+# qcdGammaFakeSample.setStatConfig(False)
+qcdGammaFakeSample.addSampleSpecificWeight("(phTruthOrigin!=38)")
 
 
-# if zlFitterConfig.doSetNormRegion:
-#     if "CRYQ" in zlFitterConfig.constrainingRegionsList:
-#         qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
+if zlFitterConfig.doSetNormRegion:
+    if "CRYQ" in zlFitterConfig.constrainingRegionsList:
+        qcdGammaFakeSample.setNormRegions([("CRYQ", zlFitterConfig.binVar)])
 
 
 # Define samples
@@ -434,10 +436,11 @@ if not zlFitterConfig.usePreComputedTopGeneratorSys:
     topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 if not zlFitterConfig.usePreComputedTopFragmentationSys:
     topSample.addSystematic(Systematic("Pythia8Top", "" , "_PowhegPythia8", "" , "tree", "overallNormHistoSysOneSide"))
-#    topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+    topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 if not zlFitterConfig.usePreComputedTopRadiationSys:
-    topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
+    # topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
+    topSample.addSystematic(Systematic("radiationTop", "", "_RadHi", "", "tree", "overallNormHistoSysOneSideSym"))
 
 
 
@@ -596,8 +599,8 @@ for point in allpoints:
     if configMgr.fixSigXSec:
         meas.addParamSetting("alpha_SigXSec", True, 1)
 
-    # if "CRYQ" not in zlFitterConfig.constrainingRegionsList:
-    #     meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", True, 1) # fix QCD
+    if "CRYQ" not in zlFitterConfig.constrainingRegionsList:
+        meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName+"GammaFakes", True, 1) # fix QCD
     if "CRQ" not in zlFitterConfig.constrainingRegionsList:
         meas.addParamSetting("mu_"+zlFitterConfig.qcdSampleName, True, 1) # fix QCD
     if "CRY" not in zlFitterConfig.constrainingRegionsList and "CRZ" not in zlFitterConfig.constrainingRegionsList:
@@ -661,9 +664,10 @@ for point in allpoints:
         # if regionName=="CRY":
         #     qcdGammaFakeSample.addSystematic(Systematic("PhFakeRateUncertainty", configMgr.weights, 1.+.6, 1-.6, "user", "userOverallSys"))
 
-        # REGION.addSample(qcdGammaFakeSample )
+
+
         REGION.addSample(gammaSample, 0) ##order is important!!!!
-#        REGION.addSample(qcdGammaFakeSample ,1)
+        REGION.addSample(qcdGammaFakeSample ,1)
 
         # print REGION.sampleList
         for sam in REGION.sampleList:

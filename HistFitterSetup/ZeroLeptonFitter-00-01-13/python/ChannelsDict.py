@@ -9,31 +9,31 @@ cleaningCut="( abs(m_jet1_eta)>2.4 || m_jet1_chf/m_jet1_FracSamplingMax>0.1)"
 regionDict={}
 regionDict["SR"] = Region("SR", "SRAll", [cleaningCut], [])
 
-regionDict["CRW"] = Region("CRW", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet==0 && lep1Pt>27"], ["btagSystWeight[0]"])
-regionDict["CRT"] = Region("CRT", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>0  && lep1Pt>27"], ["btagSystWeight[0]"])
-# regionDict["CRT"] = Region("CRT", "SRAll", ["nBJet>0"], ["btagSystWeight[0]"])
-#regionDict["CRTZL"] = Region("CRTZL", "SRAll", ["nBJet>0",cleaningCut], ["btagSystWeight[0]"])
-regionDict["CRWT"] = Region("CRWT", "CRWT", ["lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>=0 && lep1Pt>27"], ["btagSystWeight[0]"])
+regionDict["CRW"] = Region("CRW", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1  &&  nBJet==0 && lep1Pt>27"], ["btagSystWeights[0]"])
+regionDict["CRT"] = Region("CRT", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1  &&  nBJet>0  && lep1Pt>27"], ["btagSystWeights[0]"])
+# regionDict["CRT"] = Region("CRT", "SRAll", ["nBJet>0"], ["btagSystWeights
+#regionDict["CRTZL"] = Region("CRTZL", "SRAll", ["nBJet>0",cleaningCut], [0]"])
+regionDict["CRWT"] = Region("CRWT", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 &&  nBJet>=0 && lep1Pt>27"], ["btagSystWeights[0]"])
 
 
-# regionDict["VRWf"] = Region("VRWf", "CRWT", ["nBJet==0"], ["btagSystWeight[0]"]) #ATT: systWeights[0] is a proxy for the lepton weight
-# regionDict["VRTf"] = Region("VRTf", "CRWT", ["nBJet>0"], ["btagSystWeight[0]"])
+# regionDict["VRWf"] = Region("VRWf", "CRWT", ["nBJet==0"], ["btagSystWeights[0]"]) #ATT: systWeights[0] is a proxy for the lepton weight
+# regionDict["VRTf"] = Region("VRTf", "CRWT", ["nBJet>0"], ["btagSystWeights[0]"])
 
-# regionDict["VRWMf"] = Region("VRWMf", "VRWT", ["nBJet==0"], ["btagSystWeight[0]"])
-# regionDict["VRTMf"] = Region("VRTMf", "VRWT", ["nBJet>0"], ["btagSystWeight[0]"])
-# regionDict["VRWM"] = Region("VRWM", "VRWT", ["nBJet==0"], ["btagSystWeight[0]"])
-# regionDict["VRTM"] = Region("VRTM", "VRWT", ["nBJet>0"], ["btagSystWeight[0]"])
+# regionDict["VRWMf"] = Region("VRWMf", "VRWT", ["nBJet==0"], ["btagSystWeights[0]"])
+# regionDict["VRTMf"] = Region("VRTMf", "VRWT", ["nBJet>0"], ["btagSystWeights[0]"])
+# regionDict["VRWM"] = Region("VRWM", "VRWT", ["nBJet==0"], ["btagSystWeights[0]"])
+# regionDict["VRTM"] = Region("VRTM", "VRWT", ["nBJet>0"], ["btagSystWeights[0]"])
 
 # regionDict["CRZ"] = Region("CRZ", "CRZ", [], [])
 
-# regionDict["VRWTplus"] = Region("VRWTplus", "CRWT", ["lep1sign>0"], ["btagSystWeight[0]"])
-# regionDict["VRWTminus"] = Region("VRWTminus", "CRWT", ["lep1sign<0"], ["btagSystWeight[0]"])
-# regionDict["VRWTfplus"] = Region("VRWTfplus", "CRWT", ["lep1sign>0"], ["btagSystWeight[0]"])
-# regionDict["VRWTfminus"] = Region("VRWTfminus", "CRWT", ["lep1sign<0"], ["btagSystWeight[0]"])
+# regionDict["VRWTplus"] = Region("VRWTplus", "CRWT", ["lep1sign>0"], ["btagSystWeights[0]"])
+# regionDict["VRWTminus"] = Region("VRWTminus", "CRWT", ["lep1sign<0"], ["btagSystWeights[0]"])
+# regionDict["VRWTfplus"] = Region("VRWTfplus", "CRWT", ["lep1sign>0"], ["btagSystWeights[0]"])
+# regionDict["VRWTfminus"] = Region("VRWTfminus", "CRWT", ["lep1sign<0"], ["btagSystWeights[0]"])
 
 # regionDict["CRY"] = Region("CRY", "CRY", ["(phSignal[0]==1)"], [" 1.6 "])#extra weights should be applied only to gamma+jets
-regionDict["CRY"] = Region("CRY", "CRY", ["(phPt[0]>130. && (phSignal&0x01 == 0x01))"], [])#extra weights should be applied only to gamma+jets
-#regionDict["CRYQ"] = Region("CRYQ", "CRY", ["(phPt[0]>130. && ((phSignal&0x01)==0))"], [])#extra weights should be applied only to gamma+jets
+regionDict["CRY"] = Region("CRY", "CRY", ["(phPt>150.) && (phTopoetcone40==0||phSignal&0x01) && (phTopoetcone40-(phPt*0.022)<2.45) && !(phPt>800 && weight>1 && RunNumber==361040)"], [])#extra weights should be applied only to gamma+jets
+regionDict["CRYQ"] = Region("CRYQ", "CRY", ["(phPt>150. && (phTopoetcone40==0||phSignal&0x01) && (phTopoetcone40-(phPt*0.022)<2.45)"], [])#extra weights should be applied only to gamma+jets
 # regionDict["VRYf"] = Region("VRY", "CRY", ["(phSignal[0]==1 && phPt[0]>130.)"], ["1.6"])#extra weights should be applied only to gamma+jets
 
 regionDict["CRQ"] = Region("CRQ",   "SRAll", [cleaningCut])#ATT: qcd weight
@@ -50,7 +50,7 @@ regionDict["VRZa"] = Region("VRZa", "CRZ", [], [])
 regionDict["VRZb"] = Region("VRZb", "CRZ", [], [])
 regionDict["VRZc"]  = Region("VRZc", "SRAll", [cleaningCut], [])
 regionDict["VRZca"] = Region("VRZca", "SRAll", [cleaningCut], [])
-regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["btagSystWeight[0]"])
+regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["btagSystWeights[0]"])
 
 # regionDict["VRZf"] = Region("VRZf", "CRZ", [], [])
 
@@ -58,16 +58,16 @@ regionDict["VRTZL"] = Region("VRTZL", "SRAll", ["nBJet>0",cleaningCut], ["btagSy
 
 
 # ##for data-driven BG estimation##
-regionDict["VRW"] = Region ("VRW",  "CRWT", ["lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet==0 && lep1Pt>27"], ["btagSystWeight[0]"])
-regionDict["VRWa"] = Region("VRWa", "CRWT", ["lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet==0 && lep1Pt>27"], ["btagSystWeight[0]"])
-regionDict["VRWb"] = Region("VRWb", "CRWT", ["lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet==0 && lep1Pt>27"], ["btagSystWeight[0]"])
-#regionDict["CRWL"] = Region("VRWL", "CRWT", ["nBJet==0"], ["btagSystWeight[0]"])
-#regionDict["CRWVL"] = Region("VRWVL", "CRWT", ["nBJet==0"], ["btagSystWeight[0]"])
-regionDict["VRT"] = Region("VRT", "CRWT",   ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>0  && lep1Pt>27"], ["btagSystWeight[0]"])
-regionDict["VRTa"] = Region("VRTa", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>0  && lep1Pt>27"], ["btagSystWeight[0]"])
-regionDict["VRTb"] = Region("VRTb", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>0  && lep1Pt>27"], ["btagSystWeight[0]"])
-# regionDict["CRTL"] = Region("VRTL", "CRWT", ["nBJet>0"], ["btagSystWeight[0]"])
-# regionDict["CRTVL"] = Region("VRTVL", "CRWT", ["nBJet>0"], ["btagSystWeight[0]" ])
+regionDict["VRW"] = Region ("VRW",  "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 &&  nBJet==0 && lep1Pt>27"], ["btagSystWeights[0]"])
+regionDict["VRWa"] = Region("VRWa", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 &&  nBJet==0 && lep1Pt>27"], ["btagSystWeights[0]"])
+regionDict["VRWb"] = Region("VRWb", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 &&  nBJet==0 && lep1Pt>27"], ["btagSystWeights[0]"])
+#regionDict["CRWL"] = Region("VRWL", "CRWT", ["nBJet==0"], ["btagSystWeigh
+#regionDict["CRWVL"] = Region("VRWVL", "CRWT", ["nBJet==0"], ["btagSystWei
+regionDict["VRT"] = Region("VRT", "CRWT",   ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>0  && lep1Pt>27"], ["btagSystWeights[0]"])
+regionDict["VRTa"] = Region("VRTa", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>0  && lep1Pt>27"], ["btagSystWeights[0]"])
+regionDict["VRTb"] = Region("VRTb", "CRWT", ["(lep1Triggered & 0x03)!=0 && lep1Signal==1 && nBJet>0  && lep1Pt>27"], ["btagSystWeights[0]"])
+# regionDict["CRTL"] = Region("VRTL", "CRWT", ["nBJet>0"], ["btagSystWeights[0]"])
+# regionDict["CRTVL"] = Region("VRTVL", "CRWT", ["nBJet>0"], ["btagSystWeights[0]" ])
 # regionDict["CRYL"] = Region("CRYL", "CRY", ["(phSignal==1 && phPt>130."], [])#extra weights should be applied only to gamma+jets
 # regionDict["CRZL"] = Region("CRZL", "CRZ", [], [])
 regionDict["CRZVL"] = Region("CRZVL", "CRZ", [], [])

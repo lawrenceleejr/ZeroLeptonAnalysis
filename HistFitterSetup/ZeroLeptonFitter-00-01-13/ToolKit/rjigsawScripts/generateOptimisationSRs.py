@@ -224,7 +224,7 @@ for SignalRegion in SignalRegions:
 
     myCmds = []
 
-    cmd = "HistFitter.py -t -w -f  -D allPlots  -F bkg  -V  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( 0,0, SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
+    cmd = "HistFitter.py -t -w -d -f  -F bkg  -V  -r {2} {3}/analysis/ZeroLepton_Run2_RJigsaw.py".format( 0,0, SignalRegion, os.getenv('ZEROLEPTONFITTER')   )
 
     commands.append( (SignalRegion, SignalRegion, cmd) )
 
