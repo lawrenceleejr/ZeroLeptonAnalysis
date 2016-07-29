@@ -858,10 +858,7 @@ def main(configMain):
 
                     weights=allChannel[ana].getWeights(region,onlyExtraWeights)
                     truthweights = weights
-                    truthweights = truthweights.replace("pileupWeight *","")
 
-                    weights = truthweights
-                    weights += " * WZweight"
                     print ana, region, cuts,weights
                     blindcut = ""
                     if hasattr(ch,minusvar) and not getattr(ch,minusvar)==None:
