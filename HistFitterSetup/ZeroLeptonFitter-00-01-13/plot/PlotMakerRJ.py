@@ -23,12 +23,12 @@ def parseCmdLine(args):
     parser.add_option("--doCompressed", default=False, action = "store_true")
     parser.add_option("--baseDir", default =  os.getcwd() , help="location of samples to run")
     parser.add_option("--inputSampleDir", default =  "/Users/khoo/Work/ATLAS/", help="location of samples to run")
-    parser.add_option("--version", default = 107, help="ntuple version", type = int)
+    parser.add_option("--version", default = 111, help="ntuple version", type = int)
     parser.add_option("--SignalOnTop", action = "store_true", dest="SignalOnTop", help=" Add signal to SM background in SR plots", default=False)
     parser.add_option("--doSyst", action = "store_true", dest="doSyst", help="Run without systematics",default=False)
     parser.add_option("--inputDataFile", default = None , help = "Use an alternative data file (full path).  Will look in --inputSampleDir if not specified")
     parser.add_option("--regionsToRun", default = "" , help =  "Which regions to run.  Uses check if option is a substring of each item in the list.  For example, passing --regionsToRun SRS, while --regionsToRun SRC1 will only run SRC1")
-    parser.add_option("--lumi", dest="lumi", help="lumi", default=11.3, type=float)
+    parser.add_option("--lumi", dest="lumi", help="lumi", default=13.28, type=float)
     parser.add_option("--integral", dest="int", help="integrals", default=False, action = "store_true")
     parser.add_option("--vrebin", dest="vbins", help="variable binning", default=False, action = "store_true")
     (config, args) = parser.parse_args(args)
@@ -270,7 +270,7 @@ if config.doCompressed:
     varbin_rescale = varbin_rescale[:-5]
     Nvarbin_lastcut = len(varbin_lastcut)-1
 
-datafile = 'DataMain_303291_RJ_17072016.root'
+datafile = 'DataMain.root'
 fullDataPath = config.inputDataFile if config.inputDataFile else (datadir + datafile)
 
 datafile =[
