@@ -86,7 +86,7 @@ doAlternativeTopPythia=False
 doAlternativeTopMcAtNlo=False
 
 #scale for Yjets
-kappaYjets = 1.5
+kappaYjets = 1.334
 
 def comparator(x, y):
     if doCRT:
@@ -854,8 +854,8 @@ def main(configMain):
                     truthcuts = cuts
                     truthcuts = truthcuts.replace("((cleaning&0x30F)==0) && ", " ")
                     truthcuts = truthcuts.replace(" && (phTopoetcone40==0||phSignal&0x01) && (phTopoetcone40-(phPt*0.022)<2.45)", " ")
-                    #print "channel",cuts, truthcuts
-                    print "channel",cuts
+                    print "channel",cuts, truthcuts
+                    #print "channel",cuts
 
                     weights=allChannel[ana].getWeights(region,onlyExtraWeights)
                     truthweights = weights
