@@ -1233,8 +1233,7 @@ def main(configMain):
                                 for h in mcHisto:
                                     print "MCALT:", h.GetName(), hAlt.GetName()
                                     if h.GetName() in hAlt.GetName():
-                                        print "MCALTTOTAL: rm", h.GetName()
-                                        print h.GetName(), hAlt.GetName()
+                                        print "MCALTTOTAL: rm", h.GetName(), h.Integral()
                                         clonealt=hAlt.Clone()
                                         clonealt.Add(h,-1.)
                                 if clonealt: mcAltTotal.Add(clonealt)
@@ -1243,13 +1242,16 @@ def main(configMain):
 
                             if doCRY and len(mcTruthAltHisto)>0:
                                 #print mcTruthAltHisto
-                                mcTruthAltTotal = ROOT.TH1F("mcAltTotal",varname,nbinvar,minvar,maxvar)
+                                mcTruthAltTotal = ROOT.TH1F("mcTruthAltTotal",varname,nbinvar,minvar,maxvar)
                                 mcTruthAltTotal = mcTotal.Clone()
                                 for h in mcTruthAltHisto:
                                     if "Madgraph" in h.GetName():
                                         mcTruthAltTotal.Add(h,1)
+                                        print "MCTRUTHALTTOTAL: add", h.GetName(), h.Integral()
                                     else:
                                         mcTruthAltTotal.Add(h,-1)
+                                        print "MCTRUTHALTTOTAL: rm", h.GetName(), h.Integral()
+                                print "MCTRUTHALTTOTAL int:", mcAltTotal.Integral()
                                 sumSystHist.append(mcTruthAltTotal)
 
                             maxdata = -1
