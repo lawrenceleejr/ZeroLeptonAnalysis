@@ -7,13 +7,13 @@ from summary_harvest_tree_description import treedescription
 dummy, myvars = treedescription()
 myvars = myvars.split(":")
 
-MEffInput = "MEff/GG_direct/GG_direct_combined_fixSigXSecNominal__1_harvest_list"
-RJRInput = "RJR/GG/GG_direct_combined_fixSigXSecNominal__1_harvest_list"
+# MEffInput = "MEff/GG_direct_combined_fixSigXSecNominal__1_harvest_list"
+# RJRInput = "RJR/GG_direct_combined_fixSigXSecNominal__1_harvest_list"
 
-# MEffInput = "MEff/SS_direct/SS_direct_combined_fixSigXSecNominal__1_harvest_list"
-# RJRInput = "RJR/SS/SS_direct_combined_fixSigXSecNominal__1_harvest_list"
+MEffInput = "MEff/SS_direct_combined_fixSigXSecNominal__1_harvest_list"
+RJRInput = "RJR/SS_direct_combined_fixSigXSecNominal__1_harvest_list"
 
-print myvars.index("m0/F")
+# print myvars.index("m0/F")
 
 m0index = myvars.index("m0/F")
 m12index = myvars.index("m12/F")
