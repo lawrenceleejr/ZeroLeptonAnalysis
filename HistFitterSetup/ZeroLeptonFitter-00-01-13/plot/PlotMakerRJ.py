@@ -42,8 +42,10 @@ allRegionsList = []
 if config.doCompressed:
     allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
 else:
-    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
-    allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
+    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG2a","SRJigsawSRG3a"]
+                       "SRJigsawSRG1b","SRJigsawSRG2b","SRJigsawSRG3b"]
+    allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS2a","SRJigsawSRS3a",
+                       "SRJigsawSRS1b","SRJigsawSRS2b","SRJigsawSRS3b"]
 
 
 versionname = '{0}_baseline'.format(config.version)
@@ -424,7 +426,7 @@ if doCRY:
               'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_',
               'syst':commonsyst},
               )
-elif not doVRZ:
+if not doVRZ:
     if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
         mc.append({'key':'QCDJS','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
@@ -843,12 +845,12 @@ def main(configMain):
                             if minusvar+"_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_loose"]:
                                 ch.regionListDict[region][minusvar+"_loose"] = "minusone_invert"
                             else:
-                                ch.regionListDict[region][minusvar+"_loose"] = "minusone"
+                                ch.regionListDict[region][minusvar+"_loose"] = "minusone_loose"
                         if hasattr(ch,minusvar+"_upper_loose"):
                             if minusvar+"_upper_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_upper_loose"]:
-                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_invert"
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_invert_loose"
                             else:
-                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_loose"
                     print "MINUS", minusvar, minusvarname
 
                     cuts=ch.getCuts(region)
@@ -921,9 +923,12 @@ def main(configMain):
                                 print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," lumi type: ", type(configMain.lumi), configMain.lumi
                                 ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
                             elif process['key'] == "QCDJS":
-                                print "Process is: ", process['key'], ", applying flat weight of ", 0.01," lumi type: ", type(configMain.lumi), configMain.lumi
+                                print "Process is: ", process['key'], ", applying weight of 0.01 * eventWeight, lumi type: ", type(configMain.lumi), configMain.lumi
                                 print "MUFACT:", ana, process['key'], mufacts[ana]["Multijets"]
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"])
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
+                            elif process['key'] == "QCDMC" and config.region=="CRY":
+                                print "Process is: ", process['key'], ", removing photon overlaps, lumi type: ", type(configMain.lumi), configMain.lumi
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+"&&(phTruthOrigin!=38)",process['color'],weights,"mc",configMain.lumi)
                             else:
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key']]
                                 ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
@@ -936,7 +941,7 @@ def main(configMain):
                                 if process['key'] == "QCDMC":
                                     ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                                 elif process['key'] == "QCDJS":
-                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"])
+                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
                                 elif process['key'] == "Yjets":
                                     print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," weight type: ", type(weights)
                                     ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
@@ -1019,27 +1024,38 @@ def main(configMain):
 
                             arrow=-1
                             arrowupper=-1
-                            SpecialArrow=""
-                            SpecialArrowUpper=""
                             varcut = None
                             varcutupper = None
                             arrowvar = var
                             if varname in ["met","meffIncl"]: arrowvar = varname
                             print "ARROW", varname, arrowvar
                             if hasattr(ch,arrowvar) and not getattr(ch,arrowvar)==None:
-                                varcut=getattr(ch,arrowvar)
+                                if "loosen" in ch.regionListDict[region][arrowvar].lower():
+                                    varcut=getattr(ch,arrowvar+"_loose")
+                                else:
+                                    varcut=getattr(ch,arrowvar)
                             if hasattr(ch,arrowvar+"_upper") and not getattr(ch,arrowvar+"_upper")==None:
-                                varcutupper=getattr(ch,arrowvar+"_upper")
+                                if "loosen" in ch.regionListDict[region][arrowvar].lower():
+                                    varcutupper=getattr(ch,arrowvar+"_upper_loose")
+                                else:
+                                    varcutupper=getattr(ch,arrowvar+"_upper")
                             if not varcut==None:
                                 print "Place arrow at", arrowvar, " = ", varcut
                                 arrow=1
-                                SpecialArrow=plotname+">"+str(int(varcut))
                             if not varcutupper==None:
                                 print "Place uppercut arrow at", arrowvar, " = ", varcutupper
                                 arrowupper=1
-                                SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
                             if ana.find("Pres")>=0:
                                 arrow=0
+
+                            extraarrow = -1
+                            extravarcut = None
+                            if region=="SR" and varname=="LastCut" and ("SRS" in ana or "SRG" in ana):
+                                extraarrow=1
+                                if "a" in ana:
+                                    extravarcut=allChannel[ana.replace('a','b')]
+                                elif "b" in ana:
+                                    extravarcut=allChannel[ana.replace('b','a')]
 
                             mcInt = {}
                             firstbin = 0
@@ -1359,6 +1375,20 @@ def main(configMain):
                                 aru1.SetLineColor(kRed+2)
                                 aru1.SetFillColor(kRed+2)
                                 aru1.Draw("")
+
+                            if extraarrow>0:
+                                earmax = 5.0 if not whichKind['type'].find("baseline")>=0 else 100
+                                ear=TArrow(varcut,1.05*min,extravarcut,earmax,0.05,"-")
+                                ear.SetLineWidth(3)
+                                ear.SetLineColor(kRed+2)
+                                ear.SetFillColor(kRed+2)
+                                ear.Draw("")
+
+                                ear1=TArrow(varcut,earmax,extravarcut+binWidth,earmax,0.01,"|>")
+                                ear1.SetLineWidth(3)
+                                ear1.SetLineColor(kRed+2)
+                                ear1.SetFillColor(kRed+2)
+                                ear1.Draw("")
 
                             forPlotMcHisto=mcHisto[0]
                             cHisto=0

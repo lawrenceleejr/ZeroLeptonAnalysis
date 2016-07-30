@@ -2078,6 +2078,13 @@ def Oring(config):
                     print "INFO: %s removing negative selectpar (%s = %.2e) for %s" % (ana, selectpar, pval, key)
                     continue
                 # ignore expectedUpperLimit < 0.00001
+
+                print "exp vs obs ratio: %f"%pval / float(vals["CLs/F"])
+                if pval / float(vals["CLs/F"]) > 1e4:
+                    continue
+                if pval / float(vals["CLs/F"]) < 1e-4:
+                    continue
+
                 if selectpar == "expectedUpperLimit" and pval < 0.00001:
                     print "INFO: %s removing %s < 0.00001 for %s" % (ana, selectpar, key)
                     continue
