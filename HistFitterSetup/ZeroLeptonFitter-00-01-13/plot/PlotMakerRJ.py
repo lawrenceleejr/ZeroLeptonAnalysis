@@ -1055,9 +1055,9 @@ def main(configMain):
                             if region=="SR" and varname=="LastCut" and ("SRS" in ana or "SRG" in ana):
                                 extraarrow=1
                                 if "a" in ana:
-                                    extravarcut=allChannel[ana.replace('a','b')]
+                                    extravarcut=allChannel[ana.replace('1a','1b').replace('2a','2b').replace('3a','3b')]
                                 elif "b" in ana:
-                                    extravarcut=allChannel[ana.replace('b','a')]
+                                    extravarcut=allChannel[ana.replace('1b','1a').replace('2b','2a').replace('3b','3a')]
 
                             mcInt = {}
                             firstbin = 0
