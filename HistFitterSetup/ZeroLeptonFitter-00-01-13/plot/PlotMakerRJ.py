@@ -843,12 +843,12 @@ def main(configMain):
                             if minusvar+"_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_loose"]:
                                 ch.regionListDict[region][minusvar+"_loose"] = "minusone_invert"
                             else:
-                                ch.regionListDict[region][minusvar+"_loose"] = "minusone"
+                                ch.regionListDict[region][minusvar+"_loose"] = "minusone_loose"
                         if hasattr(ch,minusvar+"_upper_loose"):
                             if minusvar+"_upper_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_upper_loose"]:
-                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_invert"
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_invert_loose"
                             else:
-                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_loose"
                     print "MINUS", minusvar, minusvarname
 
                     cuts=ch.getCuts(region)
@@ -1030,9 +1030,15 @@ def main(configMain):
                             if varname in ["met","meffIncl"]: arrowvar = varname
                             print "ARROW", varname, arrowvar
                             if hasattr(ch,arrowvar) and not getattr(ch,arrowvar)==None:
-                                varcut=getattr(ch,arrowvar)
+                                if "loosen" in ch.regionListDict[region][arrowvar].lower():
+                                    varcut=getattr(ch,arrowvar+"_loose")
+                                else:
+                                    varcut=getattr(ch,arrowvar)
                             if hasattr(ch,arrowvar+"_upper") and not getattr(ch,arrowvar+"_upper")==None:
-                                varcutupper=getattr(ch,arrowvar+"_upper")
+                                if "loosen" in ch.regionListDict[region][arrowvar].lower():
+                                    varcutupper=getattr(ch,arrowvar+"_upper_loose")
+                                else:
+                                    varcutupper=getattr(ch,arrowvar+"_upper")
                             if not varcut==None:
                                 print "Place arrow at", arrowvar, " = ", varcut
                                 arrow=1
