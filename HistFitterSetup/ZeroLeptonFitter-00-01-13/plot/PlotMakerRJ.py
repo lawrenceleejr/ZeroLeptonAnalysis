@@ -42,7 +42,7 @@ allRegionsList = []
 if config.doCompressed:
     allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
 else:
-    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG2a","SRJigsawSRG3a"]
+    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG2a","SRJigsawSRG3a",
                        "SRJigsawSRG1b","SRJigsawSRG2b","SRJigsawSRG3b"]
     allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS2a","SRJigsawSRS3a",
                        "SRJigsawSRS1b","SRJigsawSRS2b","SRJigsawSRS3b"]
