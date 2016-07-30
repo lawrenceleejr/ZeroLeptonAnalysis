@@ -424,7 +424,7 @@ if doCRY:
               'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_',
               'syst':commonsyst},
               )
-elif not doVRZ:
+if not doVRZ:
     if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
         mc.append({'key':'QCDJS','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
@@ -921,9 +921,12 @@ def main(configMain):
                                 print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," lumi type: ", type(configMain.lumi), configMain.lumi
                                 ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
                             elif process['key'] == "QCDJS":
-                                print "Process is: ", process['key'], ", applying flat weight of ", 0.01," lumi type: ", type(configMain.lumi), configMain.lumi
+                                print "Process is: ", process['key'], ", applying weight of 0.01 * eventWeight, lumi type: ", type(configMain.lumi), configMain.lumi
                                 print "MUFACT:", ana, process['key'], mufacts[ana]["Multijets"]
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"])
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
+                            elif process['key'] == "QCDMC" and config.region=="CRY":
+                                print "Process is: ", process['key'], ", removing photon overlaps, lumi type: ", type(configMain.lumi), configMain.lumi
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+"&&(phTruthOrigin!=38)",process['color'],weights,"mc",configMain.lumi)
                             else:
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key']]
                                 ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
@@ -936,7 +939,7 @@ def main(configMain):
                                 if process['key'] == "QCDMC":
                                     ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                                 elif process['key'] == "QCDJS":
-                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"])
+                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
                                 elif process['key'] == "Yjets":
                                     print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," weight type: ", type(weights)
                                     ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
