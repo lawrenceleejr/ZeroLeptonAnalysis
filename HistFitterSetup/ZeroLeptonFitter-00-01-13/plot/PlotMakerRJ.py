@@ -42,8 +42,10 @@ allRegionsList = []
 if config.doCompressed:
     allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
 else:
-    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
-    allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
+    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG2a","SRJigsawSRG3a"]
+                       "SRJigsawSRG1b","SRJigsawSRG2b","SRJigsawSRG3b"]
+    allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS2a","SRJigsawSRS3a",
+                       "SRJigsawSRS1b","SRJigsawSRS2b","SRJigsawSRS3b"]
 
 
 versionname = '{0}_baseline'.format(config.version)
@@ -1022,8 +1024,6 @@ def main(configMain):
 
                             arrow=-1
                             arrowupper=-1
-                            SpecialArrow=""
-                            SpecialArrowUpper=""
                             varcut = None
                             varcutupper = None
                             arrowvar = var
@@ -1042,13 +1042,20 @@ def main(configMain):
                             if not varcut==None:
                                 print "Place arrow at", arrowvar, " = ", varcut
                                 arrow=1
-                                SpecialArrow=plotname+">"+str(int(varcut))
                             if not varcutupper==None:
                                 print "Place uppercut arrow at", arrowvar, " = ", varcutupper
                                 arrowupper=1
-                                SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
                             if ana.find("Pres")>=0:
                                 arrow=0
+
+                            extraarrow = -1
+                            extravarcut = None
+                            if region=="SR" and varname=="LastCut" and ("SRS" in ana or "SRG" in ana):
+                                extraarrow=1
+                                if "a" in ana:
+                                    extravarcut=allChannel[ana.replace('a','b')]
+                                elif "b" in ana:
+                                    extravarcut=allChannel[ana.replace('b','a')]
 
                             mcInt = {}
                             firstbin = 0
@@ -1368,6 +1375,20 @@ def main(configMain):
                                 aru1.SetLineColor(kRed+2)
                                 aru1.SetFillColor(kRed+2)
                                 aru1.Draw("")
+
+                            if extraarrow>0:
+                                earmax = 5.0 if not whichKind['type'].find("baseline")>=0 else 100
+                                ear=TArrow(varcut,1.05*min,extravarcut,earmax,0.05,"-")
+                                ear.SetLineWidth(3)
+                                ear.SetLineColor(kRed+2)
+                                ear.SetFillColor(kRed+2)
+                                ear.Draw("")
+
+                                ear1=TArrow(varcut,earmax,extravarcut+binWidth,earmax,0.01,"|>")
+                                ear1.SetLineWidth(3)
+                                ear1.SetLineColor(kRed+2)
+                                ear1.SetFillColor(kRed+2)
+                                ear1.Draw("")
 
                             forPlotMcHisto=mcHisto[0]
                             cHisto=0
