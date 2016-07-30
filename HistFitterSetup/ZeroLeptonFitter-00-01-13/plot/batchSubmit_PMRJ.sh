@@ -1,7 +1,7 @@
 for i in SR CRY CRWT CRQ VRZ VRZc VRWT; do
     for j in SRG SRS; do
-	for k in 1a; do
-#       for k in 1a 1b 2a 2b 3a 3b; do
+#	for k in 1a; do
+       for k in 1a 1b 2a 2b 3a 3b; do
 	    BATCHSCRIPT="batchscripts/batchtest_${i}_${j}${k}.sh";
 	    echo '#!/bin/bash' > $BATCHSCRIPT;
 	    echo '# Inherit current user environment' >> $BATCHSCRIPT;
@@ -14,8 +14,8 @@ for i in SR CRY CRWT CRQ VRZ VRZc VRWT; do
 	    qsub $BATCHSCRIPT;
 	done;
     done;
-    for j in SRC3; do
-#    for j in SRC1 SRC2 SRC3 SRC4 SRC5; do
+#    for j in SRC3; do
+    for j in SRC1 SRC2 SRC3 SRC4 SRC5; do
 	BATCHSCRIPT="batchscripts/batchtest_${i}_${j}.sh";
 	echo '#!/bin/bash' > $BATCHSCRIPT;
 	echo '# Inherit current user environment' >> $BATCHSCRIPT;
