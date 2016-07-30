@@ -424,7 +424,7 @@ if doCRY:
               'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_',
               'syst':commonsyst},
               )
-if not doVRZ:
+elif not doVRZ:
     if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
         mc.append({'key':'QCDJS','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
                   'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
@@ -700,7 +700,7 @@ def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlerna
 
     hists = []
     # avoid hitting limits on number of open files
-    chunksize=5
+    chunksize=1
     chunks = [processList[x:x+chunksize] for x in xrange(0, len(processList), chunksize)]
     for chunk in chunks:
         print "CHUNK", len(chunk)
@@ -716,20 +716,22 @@ def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlerna
                 suffix = process["ntsyst"]
                 label = process["ntsyst"]
             title = varname+process['mctreePrefix']+ana+region+suffix
-            pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
-            p=Process(target=projAll,args=pargs)
-            jobs.append(p)
-            print 'START',p, title
-            p.result_queue = output
-            p.start()
-            #time.sleep(0.2)
-        working=True
-        while working:
+#            pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
+            projAll(l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
             thesehists.append(output.get())
-            if len(thesehists)==len(jobs): working=False
-        for j in jobs:
-            j.terminate()
-        DeleteList(jobs)
+#            p=Process(target=projAll,args=pargs)
+#            jobs.append(p)
+#            print 'START',p, title
+#            p.result_queue = output
+#            p.start()
+#            #time.sleep(0.2)
+#        working=True
+#        while working:
+#            thesehists.append(output.get())
+#            if len(thesehists)==len(jobs): working=False
+#        for j in jobs:
+#            j.terminate()
+#        DeleteList(jobs)
         output.close()
         output.join_thread()
         hists += thesehists
