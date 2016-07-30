@@ -893,8 +893,8 @@ def MakeContours(config):
         # if not not("G1a" in ana):
         #     continue
 
-        if not("SRG3b" in ana) and not("SRG1b" in ana):
-            continue
+        # if not("SRG3b" in ana) and not("SRG1b" in ana):
+        #     continue
 
         # loop over cross-section nominal or up or down
         for xs in allXS:
@@ -959,7 +959,7 @@ def MakeContours(config):
             # # and merge the files
             # if config.makeUL and xs == "Nominal":
             inputfile = basenameUL+".root"
-            if os.path.isfile(inputfile) or 1:
+            if os.path.isfile(inputfile) and 0:
                 # by defition, ULs are not discovery -> don't care about passing -d
                 # CollectAndWriteHypoTestResults( inputfile, format, interpretation, cutStr, int(automaticRejection), config.outputDir  ) ;
 
@@ -2023,8 +2023,8 @@ def Oring(config):
             # if not "SRG1a" in ana:
             #     continue
 
-            if "SRS" in ana:
-                continue
+            # if "SRS" in ana:
+            #     continue
 
             filename = config.outputDir+config.outputName+"_"+ana+"_fixSigXSec"+xsecStr+listSuffix
             print filename
