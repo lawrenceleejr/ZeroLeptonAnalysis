@@ -991,9 +991,9 @@ for point in allpoints:
                 #Top background
                 elif sam.name==zlFitterConfig.topSampleName:
                     #generator
-                    if zlFitterConfig.usePreComputedTopGeneratorSys:
-                        errorGenerator=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysGeneratorDict)
-                        sam.addSystematic(Systematic("GeneratorTop", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
+                    # if zlFitterConfig.usePreComputedTopGeneratorSys:
+                    #     errorGenerator=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysGeneratorDict)
+                    #     sam.addSystematic(Systematic("GeneratorTop", configMgr.weights, 1.+errorGenerator, 1-errorGenerator, "user", "userOverallSys"))
 
                     #A14
 #                    errorA14=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysA14Dict)
