@@ -42,8 +42,10 @@ allRegionsList = []
 if config.doCompressed:
     allRegionsList += ["SRJigsawSRC1","SRJigsawSRC2","SRJigsawSRC3","SRJigsawSRC4","SRJigsawSRC5"]
 else:
-    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG1b","SRJigsawSRG2a","SRJigsawSRG2b","SRJigsawSRG3a","SRJigsawSRG3b"]
-    allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS1b","SRJigsawSRS2a","SRJigsawSRS2b","SRJigsawSRS3a","SRJigsawSRS3b"]
+    allRegionsList += ["SRJigsawSRG1a","SRJigsawSRG2a","SRJigsawSRG3a",
+                       "SRJigsawSRG1b","SRJigsawSRG2b","SRJigsawSRG3b"]
+    allRegionsList += ["SRJigsawSRS1a","SRJigsawSRS2a","SRJigsawSRS3a",
+                       "SRJigsawSRS1b","SRJigsawSRS2b","SRJigsawSRS3b"]
 
 
 versionname = '{0}_baseline'.format(config.version)
@@ -406,32 +408,34 @@ for sr in allRegionsList:
 
 mc = [
       {'key':'Diboson','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
-      'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
+      'color':ROOT.kPink-4,'inputfiles':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
       'syst':commonsyst},
       {'key':'Zjets','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
-      'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
+      'color':ROOT.kOrange-4,'inputfiles':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
       'syst':commonsyst},
       {'key':'Top','name':'t#bar{t}(+EW) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-      'color':ROOT.kGreen-9,'inputdir':mcdir+TopName+'.root',
+      'color':ROOT.kGreen-9,'inputfiles':mcdir+TopName+'.root',
       'treePrefix':'Top_','syst':commonsyst},
       {'key':'Wjets','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
-      'color':ROOT.kAzure-4,'inputdir':mcdir+WName+'.root','veto':1,'treePrefix':'W_',
+      'color':ROOT.kAzure-4,'inputfiles':mcdir+WName+'.root','veto':1,'treePrefix':'W_',
       'syst':commonsyst},
       ]
 
+qcdjsfiles = [mcdir+'JetSmearing_2015.root',mcdir+'JetSmearing_2016.root']
+
 if doCRY:
     mc.append({'key':'Yjets','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
-              'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_',
+              'color':ROOT.kYellow,'inputfiles':mcdir+'GAMMAMassiveCB.root','veto':1,'treePrefix':'GAMMA_',
               'syst':commonsyst},
               )
-if not doVRZ:
+elif not doVRZ:
     if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
         mc.append({'key':'QCDJS','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+                  'color':ROOT.kBlue+3,'inputfiles':qcdjsfiles,'treePrefix':'Data_',
                   'syst':commonsyst})
     else:
         mc.append({'key':'QCDMC','name':'Multi-jet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
+                  'color':ROOT.kBlue+3,'inputfiles':mcdir+'QCD.root','treePrefix':'QCD_',
                   'syst':commonsyst})
 
 #To make sure that the dominant background is on top
@@ -441,67 +445,67 @@ print mc
 
 mc_alternative = [
 #                  {'key':'Zjets_alternative','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
-#                  'color':ROOT.kBlue+3,'inputdir':mcaltdir+'ZMadgraphPythia8.root','veto':1,'treePrefix':'Z_','treeSuffix':'_Madgraph',
+#                  'color':ROOT.kBlue+3,'inputfiles':mcaltdir+'ZMadgraphPythia8.root','veto':1,'treePrefix':'Z_','treeSuffix':'_Madgraph',
 #                  'syst':commonsyst},
                   # Hack to implement flat systematic
                   {'key':'Zjets_alternative_systup','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
+                  'color':ROOT.kOrange-4,'inputfiles':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
                   'syst':commonsyst},
                   {'key':'Zjets_alternative_systdn','name':'Z+jets','ds':'lZjets','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kOrange-4,'inputdir':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
+                  'color':ROOT.kOrange-4,'inputfiles':mcdir+ZName+'.root','veto':1,'treePrefix':'Z_',
                   'syst':commonsyst},
                   # Hack to implement flat systematic
                   {'key':'Diboson_alternative_systup','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
+                  'color':ROOT.kPink-4,'inputfiles':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
                   'syst':commonsyst},
                   {'key':'Diboson_alternative_systdn','name':'Diboson','ds':'lDiboson','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kPink-4,'inputdir':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
+                  'color':ROOT.kPink-4,'inputfiles':mcdir+'DibosonMassiveCB.root','treePrefix':'Diboson_',
                   'syst':commonsyst},
                   # Cover all top systs
                   {'key':'Top_alternativeMCatNLO','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopMCatNLO.root',
+                  'color':ROOT.kGreen-9,'inputfiles':mcaltdir+'TopMCatNLO.root',
                   'treePrefix':'Top_','treeSuffix':'_aMcAtNloHerwigpp','syst':commonsyst},
                  {'key':'Wjets_alternative','name':'W+jets','ds':'lWjets','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kAzure-4,'inputdir':mcaltdir+'WMadgraphPythia8.root','veto':1,'treePrefix':'W_','treeSuffix':'_Madgraph',
+                  'color':ROOT.kAzure-4,'inputfiles':mcaltdir+'WMadgraphPythia8.root','veto':1,'treePrefix':'W_','treeSuffix':'_Madgraph',
                   'syst':commonsyst},
                   ]
 if config.version>107:
 	mc_alternative += [
 	                  {'key':'Top_alternativePy8','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegPythia8.root',
+	                  'color':ROOT.kGreen-9,'inputfiles':mcaltdir+'TopPowhegPythia8.root',
 	                  'treePrefix':'Top_','treeSuffix':'_PowhegPythia8','syst':commonsyst},
 	                  {'key':'Top_alternativeHpp','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopPowhegHerwig.root',
+	                  'color':ROOT.kGreen-9,'inputfiles':mcaltdir+'TopPowhegHerwig.root',
 	                  'treePrefix':'Top_','treeSuffix':'_PowhegHerwigpp','syst':commonsyst},
 	                  {'key':'Top_alternativeRadHi','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadHi.root',
+	                  'color':ROOT.kGreen-9,'inputfiles':mcaltdir+'TopRadHi.root',
 	                  'treePrefix':'Top_','treeSuffix':'_RadHi','syst':commonsyst},
 	                  {'key':'Top_alternativeRadLo','name':'t#bar{t}(+X) & single top','ds':'lTop','redoNormWeight':'redoNormWeight',
-	                  'color':ROOT.kGreen-9,'inputdir':mcaltdir+'TopRadLo.root',
+	                  'color':ROOT.kGreen-9,'inputfiles':mcaltdir+'TopRadLo.root',
 	                  'treePrefix':'Top_','treeSuffix':'_RadLo','syst':commonsyst},
 	                   ]
 
 if not doVRZ:
     if config.region=='SR' or config.region=='CRQ' or config.region=='VRZc':
         mc_alternative.append({'key':'QCDJS_alternative_systup','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+                  'color':ROOT.kBlue+3,'inputfiles':qcdjsfiles,'treePrefix':'Data_',
                   'syst':commonsyst})
         mc_alternative.append({'key':'QCDJS_alternative_systdn','name':'Multi-jet','ds':'lQCDJS','redoNormWeight':'redoNormWeight',
-                  'color':ROOT.kBlue+3,'inputdir':mcdir+'JetSmearing_2015.root','treePrefix':'Data_',
+                  'color':ROOT.kBlue+3,'inputfiles':qcdjsfiles,'treePrefix':'Data_',
                   'syst':commonsyst})
     else:
         mc_alternative.append({'key':'QCDMC_alternative_systup','name':'Multi-jet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
-                              'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
+                              'color':ROOT.kBlue+3,'inputfiles':mcdir+'QCD.root','treePrefix':'QCD_',
                               'syst':commonsyst})
         mc_alternative.append({'key':'QCDMC_alternative_systdn','name':'Multi-jet','ds':'lQCDMC','redoNormWeight':'redoNormWeight',
-                              'color':ROOT.kBlue+3,'inputdir':mcdir+'QCD.root','treePrefix':'QCD_',
+                              'color':ROOT.kBlue+3,'inputfiles':mcdir+'QCD.root','treePrefix':'QCD_',
                               'syst':commonsyst})
 
 mc_truth = [
             {'key':'Yjets_TRUTH','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
-            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMassiveCB_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'','syst':commonsyst},
+            'color':ROOT.kYellow,'inputfiles':mcdir+'GAMMAMassiveCB_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'','syst':commonsyst},
             {'key':'Yjets_TRUTH_alternative','name':'#gamma+jets','ds':'lYjets','redoNormWeight':'redoNormWeight',
-            'color':ROOT.kYellow,'inputdir':mcdir+'GAMMAMadgraph_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'_TRUTH_Madgraph','syst':commonsyst}
+            'color':ROOT.kYellow,'inputfiles':mcdir+'GAMMAMadgraph_TRUTH.root','veto':1,'treePrefix':'GAMMA_','treeSuffix':'_TRUTH_Madgraph','syst':commonsyst}
             ]
 
 signalPoint=[
@@ -700,7 +704,7 @@ def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlerna
 
     hists = []
     # avoid hitting limits on number of open files
-    chunksize=5
+    chunksize=1
     chunks = [processList[x:x+chunksize] for x in xrange(0, len(processList), chunksize)]
     for chunk in chunks:
         print "CHUNK", len(chunk)
@@ -716,20 +720,22 @@ def parallelProcessProj(processList,l,var,varname,ana,region,cuts,syst,handlerna
                 suffix = process["ntsyst"]
                 label = process["ntsyst"]
             title = varname+process['mctreePrefix']+ana+region+suffix
-            pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
-            p=Process(target=projAll,args=pargs)
-            jobs.append(p)
-            print 'START',p, title
-            p.result_queue = output
-            p.start()
-            #time.sleep(0.2)
-        working=True
-        while working:
+#            pargs = (l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
+            projAll(l,var,varname,title,cuts,label,process[handlername],nbinvar,minvar,maxvar,output)
             thesehists.append(output.get())
-            if len(thesehists)==len(jobs): working=False
-        for j in jobs:
-            j.terminate()
-        DeleteList(jobs)
+#            p=Process(target=projAll,args=pargs)
+#            jobs.append(p)
+#            print 'START',p, title
+#            p.result_queue = output
+#            p.start()
+#            #time.sleep(0.2)
+#        working=True
+#        while working:
+#            thesehists.append(output.get())
+#            if len(thesehists)==len(jobs): working=False
+#        for j in jobs:
+#            j.terminate()
+#        DeleteList(jobs)
         output.close()
         output.join_thread()
         hists += thesehists
@@ -843,12 +849,12 @@ def main(configMain):
                             if minusvar+"_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_loose"]:
                                 ch.regionListDict[region][minusvar+"_loose"] = "minusone_invert"
                             else:
-                                ch.regionListDict[region][minusvar+"_loose"] = "minusone"
+                                ch.regionListDict[region][minusvar+"_loose"] = "minusone_loose"
                         if hasattr(ch,minusvar+"_upper_loose"):
                             if minusvar+"_upper_loose" in ch.regionListDict[region].keys() and "invert" in ch.regionListDict[region][minusvar+"_upper_loose"]:
-                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_invert"
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_invert_loose"
                             else:
-                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone"
+                                ch.regionListDict[region][minusvar+"_upper_loose"] = "minusone_loose"
                     print "MINUS", minusvar, minusvarname
 
                     cuts=ch.getCuts(region)
@@ -911,25 +917,25 @@ def main(configMain):
                         if doBlindingMC and "SR" in region and whichKind['type'].find("minusone")==0:
                             if process['key'] == "Yjets":
                                 print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",configMain.lumi*kappaYjets)
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputfiles'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",configMain.lumi*kappaYjets)
                             else:
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key']]
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputfiles'],mcname,cuts+" && Meff < 1000 ",process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                                 print "MC is blinded beyond meffincl of 1000 GeV"
                         else:
                             if process['key'] == "Yjets":
                                 print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," lumi type: ", type(configMain.lumi), configMain.lumi
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputfiles'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
                             elif process['key'] == "QCDJS":
                                 print "Process is: ", process['key'], ", applying weight of 0.01 * eventWeight, lumi type: ", type(configMain.lumi), configMain.lumi
                                 print "MUFACT:", ana, process['key'], mufacts[ana]["Multijets"]
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputfiles'],mcname,cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
                             elif process['key'] == "QCDMC" and config.region=="CRY":
                                 print "Process is: ", process['key'], ", removing photon overlaps, lumi type: ", type(configMain.lumi), configMain.lumi
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts+"&&(phTruthOrigin!=38)",process['color'],weights,"mc",configMain.lumi)
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputfiles'],mcname,cuts+"&&(phTruthOrigin!=38)",process['color'],weights,"mc",configMain.lumi)
                             else:
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key']]
-                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
+                                ntmc=NtHandler(ana+region+process['treePrefix']+"_baseline",process['inputfiles'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                         fullPlotMC.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntmchandle":ntmc})
 
                         if doSyst:
@@ -937,15 +943,15 @@ def main(configMain):
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)+syst
                                 treename = ana+region+process['treePrefix']+"_baseline"
                                 if process['key'] == "QCDMC":
-                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
+                                    ntsyst=NtHandler(treename,process['inputfiles'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                                 elif process['key'] == "QCDJS":
-                                    ntsyst=NtHandler(treename,process['inputdir'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
+                                    ntsyst=NtHandler(treename,process['inputfiles'],process['treePrefix']+ch.getSuffixTreeName(region),cuts,process['color'],"0.01*eventWeight","mc",configMain.lumi*mufacts[ana]["Multijets"])
                                 elif process['key'] == "Yjets":
                                     print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets," weight type: ", type(weights)
-                                    ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
+                                    ntsyst=NtHandler(treename,process['inputfiles'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*kappaYjets)
                                 else:
                                     print "MUFACT:", ana, process['key'], mufacts[ana][process['key']]
-                                    ntsyst=NtHandler(treename,process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
+                                    ntsyst=NtHandler(treename,process['inputfiles'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key']])
                                 fullPlotMCSyst.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"ntsyst":syst,"ntsysthandle":ntsyst})
 
                     if doSyst:
@@ -955,7 +961,7 @@ def main(configMain):
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
                                 systfact = 1.99 if 'systup' in process['key'] else 0.01
                                 print "QCD SYST", systfact
-                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputfiles'],mcname,cuts,process['color'],0.01,"mc",configMain.lumi*mufacts[ana]["Multijets"]*systfact)
                                 fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":"","ntmcalthandle":ntsyst})
                             elif "Zjets" in process['key'] or "Diboson" in process['key']:
                                 systfact = 1.5 if "Diboson" in process['key'] else 1.11
@@ -963,12 +969,12 @@ def main(configMain):
                                 print process['key'], " SYST", systfact
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)
-                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]]*systfact)
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputfiles'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]]*systfact)
                                 fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":"","ntmcalthandle":ntsyst})
                             else:
                                 print "MUFACT:", ana, process['key'], mufacts[ana][process['key'].split('_')[0]]
                                 mcname=process['treePrefix']+ch.getSuffixTreeName(region)+process['treeSuffix']
-                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputdir'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]])
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+"_alternative",process['inputfiles'],mcname,cuts,process['color'],weights,"mc",configMain.lumi*mufacts[ana][process['key'].split('_')[0]])
                                 fullPlotMCAlt.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmcalthandle":ntsyst})
                         if doCRY:
                             for process in mc_truth:
@@ -976,7 +982,7 @@ def main(configMain):
                                 print "ALTERNATIVE SAMPLES!: PROCESS: ", process['key']
                                 print "Process is: ", process['key'], ", applying scale factor of ", kappaYjets
 
-                                ntsyst=NtHandler(ana+region+process['treePrefix']+process['treeSuffix'],process['inputdir'],mcname,truthcuts,process['color'],truthweights,"mc",configMain.lumi*kappaYjets)
+                                ntsyst=NtHandler(ana+region+process['treePrefix']+process['treeSuffix'],process['inputfiles'],mcname,truthcuts,process['color'],truthweights,"mc",configMain.lumi*kappaYjets)
 
                                 fullPlotMCTruth.append({"mcname":mcname,"mctreePrefix":process['treePrefix'],"mctreeSuffix":process['treeSuffix'],"ntmctruthalthandle":ntsyst})
 
@@ -1022,27 +1028,40 @@ def main(configMain):
 
                             arrow=-1
                             arrowupper=-1
-                            SpecialArrow=""
-                            SpecialArrowUpper=""
                             varcut = None
                             varcutupper = None
                             arrowvar = var
                             if varname in ["met","meffIncl"]: arrowvar = varname
                             print "ARROW", varname, arrowvar
                             if hasattr(ch,arrowvar) and not getattr(ch,arrowvar)==None:
-                                varcut=getattr(ch,arrowvar)
+                                if "loosen" in ch.regionListDict[region][arrowvar].lower():
+                                    varcut=getattr(ch,arrowvar+"_loose")
+                                else:
+                                    varcut=getattr(ch,arrowvar)
                             if hasattr(ch,arrowvar+"_upper") and not getattr(ch,arrowvar+"_upper")==None:
-                                varcutupper=getattr(ch,arrowvar+"_upper")
+                                if "loosen" in ch.regionListDict[region][arrowvar].lower():
+                                    varcutupper=getattr(ch,arrowvar+"_upper_loose")
+                                else:
+                                    varcutupper=getattr(ch,arrowvar+"_upper")
                             if not varcut==None:
                                 print "Place arrow at", arrowvar, " = ", varcut
                                 arrow=1
-                                SpecialArrow=plotname+">"+str(int(varcut))
                             if not varcutupper==None:
                                 print "Place uppercut arrow at", arrowvar, " = ", varcutupper
                                 arrowupper=1
-                                SpecialArrowUpper=plotname+"<"+str(int(varcutupper))
                             if ana.find("Pres")>=0:
                                 arrow=0
+
+                            extraarrow = -1
+                            extravarcut = None
+                            if region=="SR" and varname=="LastCut" and ("SRS" in ana or "SRG" in ana):
+                                extraarrow=1
+                                if "b" in ana:
+                                    thechan = allChannel[ana.replace('1b','1a').replace('2b','2a').replace('3b','3a')]
+                                elif ("1a" in ana or "2a" in ana or "3a" in ana):
+                                    thechan = allChannel[ana.replace('1a','1b').replace('2a','2b').replace('3a','3b')]
+                                extravarcut=getattr(thechan,arrowvar)
+                                print "EXTRAARROW for SR", ana, "at", extravarcut
 
                             mcInt = {}
                             firstbin = 0
@@ -1362,6 +1381,20 @@ def main(configMain):
                                 aru1.SetLineColor(kRed+2)
                                 aru1.SetFillColor(kRed+2)
                                 aru1.Draw("")
+
+                            if extraarrow>0:
+                                earmax = 5.0 if not whichKind['type'].find("baseline")>=0 else 100
+                                ear=TArrow(extravarcut,1.05*min,extravarcut,earmax,0.05,"-")
+                                ear.SetLineWidth(3)
+                                ear.SetLineColor(kRed+2)
+                                ear.SetFillColor(kRed+2)
+                                ear.Draw("")
+
+                                ear1=TArrow(extravarcut,earmax,extravarcut+binWidth,earmax,0.01,"|>")
+                                ear1.SetLineWidth(3)
+                                ear1.SetLineColor(kRed+2)
+                                ear1.SetFillColor(kRed+2)
+                                ear1.Draw("")
 
                             forPlotMcHisto=mcHisto[0]
                             cHisto=0
