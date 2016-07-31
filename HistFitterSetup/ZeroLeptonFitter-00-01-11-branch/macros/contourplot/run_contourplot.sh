@@ -1,7 +1,7 @@
 #!/bash/bin
 
- SIGNAL=(GG_direct)
- # SIGNAL=(SS_direct)
+ # SIGNAL=(GG_direct)
+ SIGNAL=(SS_direct)
  # SIGNAL=(SM_GG_N2)
  #SIGNAL=(SS_onestepCC)
 LUMI=13.3ifb_RJigsaw
@@ -17,9 +17,15 @@ do
   # -o -c, --all
 
 
-  # ./makeContours_Run2.py -o --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-SS_direct-20160719-124849/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
-  ./makeContours_Run2.py --all --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation/optimisation-GG_direct-20160729-145744/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  # ./makeContours_Run2.py -o --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation/optimisation-SS_direct-20160729-145750/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  # ./makeContours_Run2.py -c --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation/optimisation-GG_direct-20160729-145744/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
 
+
+#  ./makeContours_Run2.py --all --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-13/optimisation/optimisation-GG_direct-20160730-173023/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+
+
+#  ./makeContours_Run2.py --all --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-GG_direct-20160730-093045/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
+  ./makeContours_Run2.py --all --grid ${TYPE} --inputDir  /data/larryl/ZeroLeptonAnalysis/HistFitterSetup/ZeroLeptonFitter-00-01-11-branch/results/optimisation-SS_direct-20160730-093052/results/ --outputDir "$OUTPUTDIR/$LUMI/$TYPE" 2>&1 | tee makeContours_Run2_$LUMI${TYPE}.out
 
 
 done

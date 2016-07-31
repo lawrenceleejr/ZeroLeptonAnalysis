@@ -34,9 +34,9 @@ ROOT.TH1.SetDefaultSumw2()
 # datadirectory = "/afs/cern.ch/work/r/rogan/public/RJWorkshopSamples/v57_sys/"
 # signaldirectory = "/afs/cern.ch/work/r/rogan/public/RJWorkshopSamples/v57_sys/"
 
-directory = "/afs/cern.ch/work/r/rogan/public/RJWorkshopSamples/v103_sys/"
-datadirectory = "/afs/cern.ch/work/r/rogan/public/RJWorkshopSamples/v103_sys/"
-signaldirectory = "/afs/cern.ch/work/r/rogan/public/RJWorkshopSamples/v103_sys/"
+directory = "/data/jack/ICHEP/0Lepton/v111/RJ_submit_28072016/"
+datadirectory = "/data/jack/ICHEP/0Lepton/v111/RJ_submit_28072016/"
+signaldirectory = "/data/jack/ICHEP/0Lepton/v111/RJ_submit_28072016/"
 
 
 # treename = "%s_SRAll"%sampleHandlerName
@@ -46,33 +46,33 @@ signaldirectory = "/afs/cern.ch/work/r/rogan/public/RJWorkshopSamples/v103_sys/"
 treename = "SRAll"
 
 my_SHs = {}
-for sampleHandlerName in [
-#							"QCD",
-#							"GammaJet",
-#							"Wjets",
-#							"Zjets",
-#							"Top",
-#							"Diboson",
-							]:
+# for sampleHandlerName in [
+# #							"QCD",
+# #							"GammaJet",
+# #							"Wjets",
+# #							"Zjets",
+# #							"Top",
+# #							"Diboson",
+# 							]:
 
-	print sampleHandlerName
-	my_SHs[sampleHandlerName] = ROOT.SH.SampleHandler(); 
-	ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.*"%sampleHandlerName).scan(my_SHs[sampleHandlerName], directory+"/" ) #"/BKG/"
-	print my_SHs[sampleHandlerName]
-	print len(my_SHs[sampleHandlerName])
+# 	print sampleHandlerName
+# 	my_SHs[sampleHandlerName] = ROOT.SH.SampleHandler(); 
+# 	ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.*"%sampleHandlerName).scan(my_SHs[sampleHandlerName], directory+"/" ) #"/BKG/"
+# 	print my_SHs[sampleHandlerName]
+# 	print len(my_SHs[sampleHandlerName])
 
-	tmpTreeName = sampleHandlerName
-	if sampleHandlerName == "GammaJet":
-		tmpTreeName = "GAMMA"
+# 	tmpTreeName = sampleHandlerName
+# 	if sampleHandlerName == "GammaJet":
+# 		tmpTreeName = "GAMMA"
 
-	if sampleHandlerName == "Wjets":
-		tmpTreeName = "W"
+# 	if sampleHandlerName == "Wjets":
+# 		tmpTreeName = "W"
 
-	if sampleHandlerName == "Zjets":
-		tmpTreeName = "Z"
+# 	if sampleHandlerName == "Zjets":
+# 		tmpTreeName = "Z"
 
-	my_SHs[sampleHandlerName].setMetaString("nc_tree", "%s_%s"%(tmpTreeName, treename) )
-	pass
+# 	my_SHs[sampleHandlerName].setMetaString("nc_tree", "%s_%s"%(tmpTreeName, treename) )
+# 	pass
 
 
 
@@ -108,34 +108,36 @@ for sampleHandlerName in [
 	for treeName in treeList:
 		if treename in treeName and treename+"_" not in treeName:
 			print treeName
+			if treeName in ["GG_direct_1800_0_SRAll","SS_direct_800_500_SRAll","SS_direct_1300_0_SRAll"]:
+				continue
 			my_SHs[treeName] = ROOT.SH.SampleHandler(); 
 			ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.root"%sampleHandlerName).scan(my_SHs[treeName], signaldirectory)
 			my_SHs[treeName].setMetaString("nc_tree", "%s"%treeName )
 
 
 
-for sampleHandlerName in [
-						"DataMain2015",
-							]:
-	my_SHs[sampleHandlerName] = ROOT.SH.SampleHandler(); 
-	ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.root"%sampleHandlerName).scan(my_SHs[sampleHandlerName], datadirectory)
-	print my_SHs[sampleHandlerName]
-	print len(my_SHs[sampleHandlerName])
-	my_SHs[sampleHandlerName].setMetaString("nc_tree", "Data_%s"%treename )
+# for sampleHandlerName in [
+# 						"DataMain2015",
+# 							]:
+# 	my_SHs[sampleHandlerName] = ROOT.SH.SampleHandler(); 
+# 	ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.root"%sampleHandlerName).scan(my_SHs[sampleHandlerName], datadirectory)
+# 	print my_SHs[sampleHandlerName]
+# 	print len(my_SHs[sampleHandlerName])
+# 	my_SHs[sampleHandlerName].setMetaString("nc_tree", "Data_%s"%treename )
 
-	for sample in my_SHs[sampleHandlerName]:
-		print sample
-		print sample.makeTChain().GetEntries()
-
-
+# 	for sample in my_SHs[sampleHandlerName]:
+# 		print sample
+# 		print sample.makeTChain().GetEntries()
 
 
-# print ChannelsDict.finalChannelsDict
-# print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"]
-print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCuts()
-# print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].NV
-print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCutsDict()
-print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].commonCutList
+
+
+# # print ChannelsDict.finalChannelsDict
+# # print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"]
+# print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCuts()
+# # print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].NV
+# print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].getCutsDict()
+# print ChannelsDict.finalChannelsDict["SRJigsawSRS1a"].commonCutList
 
 
 
@@ -424,9 +426,9 @@ regions = {
 	"SRC4": baseline+"*"+"*".join( cuts["SRC4"].keys() ),
 	"SRC5": baseline+"*"+"*".join( cuts["SRC5"].keys() ),
 
-	"SRSLoose": baseline+"*"+"*".join( cuts["SRSLoose"].keys() ),
-	"SRGLoose": baseline+"*"+"*".join( cuts["SRGLoose"].keys() ),
-	"SRCLoose": baseline+"*"+"*".join( cuts["SRCLoose"].keys() ),
+	# "SRSLoose": baseline+"*"+"*".join( cuts["SRSLoose"].keys() ),
+	# "SRGLoose": baseline+"*"+"*".join( cuts["SRGLoose"].keys() ),
+	# "SRCLoose": baseline+"*"+"*".join( cuts["SRCLoose"].keys() ),
 
 }
 
@@ -441,7 +443,8 @@ for SH_name, mysamplehandler in my_SHs.iteritems():
 	if "Data" in SH_name:
 		weightstring = "(1)"
 	else:
-		weightstring = "weight*WZweight"
+		# weightstring = "weight*WZweight"
+		weightstring = "(1)"
 
 	if "CRWT" in treename :#and "Data" not in SH_name:
 		weightstring = weightstring + "*(bTagWeight)"

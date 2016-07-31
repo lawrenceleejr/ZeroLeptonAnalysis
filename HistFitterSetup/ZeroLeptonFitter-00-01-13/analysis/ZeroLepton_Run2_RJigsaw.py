@@ -1007,6 +1007,13 @@ for point in allpoints:
 #                    errorRad=getError(channel.name,REGION.name.replace("cuts_",""),topTheoSysRadDict)
 #                    sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1.+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
 
+    
+                    if zlFitterConfig.usePreComputedTopGeneratorSys:
+                        topSample.addSystematic(Systematic("generatorTop", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
+                    if zlFitterConfig.usePreComputedTopFragmentationSys:
+                        topSample.addSystematic(Systematic("Pythia8Top", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
+                        # topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+
 
 
                 #diboson

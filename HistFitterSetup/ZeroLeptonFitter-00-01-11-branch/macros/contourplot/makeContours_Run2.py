@@ -171,8 +171,8 @@ gridInfo["GG_onestepCC_LSP60"] = ("Gluino mass [GeV]", "x = #Deltam(#chi^{#pm}, 
 
 # Cross sections to use. (Up, down is the theory uncertainty)
 # Our plotting always uses Nominal for exp+obs+yellow band, up and down only for two extra obs curves
-allXS=["Nominal"]
-# allXS=["Nominal", "Up", "Down"]
+# allXS=["Nominal"]
+allXS=["Nominal", "Up", "Down"]
 
 ###########################################################################
 # useful functions
@@ -2079,10 +2079,16 @@ def Oring(config):
                     continue
                 # ignore expectedUpperLimit < 0.00001
 
-                print "exp vs obs ratio: %f"%pval / float(vals["CLs/F"])
-                if pval / float(vals["CLs/F"]) > 1e4:
+                if float(vals[allpar.index("CLs/F")])==0:
                     continue
-                if pval / float(vals["CLs/F"]) < 1e-4:
+
+                print "exp vs obs ratio: %f"% (pval / float(vals[allpar.index("CLs/F")]) )
+                if pval / float(vals[allpar.index("CLs/F")]) > 1e4:
+                    continue
+                if pval / float(vals[allpar.index("CLs/F")]) < 1e-4:
+                    continue
+
+                if pval < 1e-8:
                     continue
 
                 if selectpar == "expectedUpperLimit" and pval < 0.00001:

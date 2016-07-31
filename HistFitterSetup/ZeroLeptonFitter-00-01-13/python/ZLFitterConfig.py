@@ -82,8 +82,8 @@ class ZLFitterConfig:
         self.usePrecomputedError = True
         self.flatErrorSignal=0.0  #this number is only used for the signal, see TheoUncertainties.py for the background
         self.usePreComputedWGeneratorSys=False
-        self.usePreComputedTopGeneratorSys=False
-        self.usePreComputedTopFragmentationSys=False
+        self.usePreComputedTopGeneratorSys=True
+        self.usePreComputedTopFragmentationSys=True
         self.usePreComputedTopRadiationSys=False
         self.usePreComputedZGeneratorSys=True
 
