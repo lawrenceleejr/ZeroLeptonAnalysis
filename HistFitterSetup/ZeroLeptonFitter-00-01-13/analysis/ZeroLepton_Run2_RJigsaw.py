@@ -435,15 +435,25 @@ if zlFitterConfig.doSetNormRegion:
     if "CRTZL" in zlFitterConfig.constrainingRegionsList and "CRW" in zlFitterConfig.constrainingRegionsList:
         topSample.setNormRegions([("CRTZL", zlFitterConfig.binVar),("CRW", zlFitterConfig.binVar)])
 
-if not zlFitterConfig.usePreComputedTopGeneratorSys:
-    topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
-if not zlFitterConfig.usePreComputedTopFragmentationSys:
-    topSample.addSystematic(Systematic("Pythia8Top", "" , "_PowhegPythia8", "" , "tree", "overallNormHistoSysOneSide"))
-    # topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+# if not zlFitterConfig.usePreComputedTopGeneratorSys:
+#     topSample.addSystematic(Systematic("generatorTop", "", "_aMcAtNloHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+# if not zlFitterConfig.usePreComputedTopFragmentationSys:
+#     topSample.addSystematic(Systematic("Pythia8Top", "" , "_PowhegPythia8", "" , "tree", "overallNormHistoSysOneSide"))
+#     # topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
-if not zlFitterConfig.usePreComputedTopRadiationSys:
-    topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
+# if not zlFitterConfig.usePreComputedTopRadiationSys:
+#     topSample.addSystematic(Systematic("radiationTop", "", "_RadLo", "_RadHi", "tree", "overallNormHistoSys"))
+#     # topSample.addSystematic(Systematic("radiationTop", "", "_RadHi", "", "tree", "overallNormHistoSysOneSideSym"))
+
+
+if zlFitterConfig.usePreComputedTopRadiationSys:
+    topSample.addSystematic(Systematic("radiationTop", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys"))
     # topSample.addSystematic(Systematic("radiationTop", "", "_RadHi", "", "tree", "overallNormHistoSysOneSideSym"))
+if zlFitterConfig.usePreComputedTopGeneratorSys:
+    topSample.addSystematic(Systematic("generatorTop", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
+if zlFitterConfig.usePreComputedTopFragmentationSys:
+    topSample.addSystematic(Systematic("Pythia8Top", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
+    # topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
 
 
@@ -1008,13 +1018,13 @@ for point in allpoints:
 #                    sam.addSystematic(Systematic("TopRadiation", configMgr.weights, 1.+errorRad[0], 1-errorRad[1], "user", "userOverallSys"))
 
     
-                    if zlFitterConfig.usePreComputedTopGeneratorSys:
-                        topSample.addSystematic(Systematic("generatorTop", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
-                    if zlFitterConfig.usePreComputedTopFragmentationSys:
-                        topSample.addSystematic(Systematic("Pythia8Top", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
-                        # topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
+                    # if zlFitterConfig.usePreComputedTopGeneratorSys:
+                    #     topSample.addSystematic(Systematic("generatorTop", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
+                    # if zlFitterConfig.usePreComputedTopFragmentationSys:
+                    #     topSample.addSystematic(Systematic("Pythia8Top", configMgr.weights, 1.+0.999, 1.-0.999, "user", "userOverallSys") )
+                    #     # topSample.addSystematic(Systematic("HerwigppTop", "", "_PowhegHerwigpp", "", "tree", "overallNormHistoSysOneSide"))
 
-
+                    pass
 
                 #diboson
                 elif sam.name==zlFitterConfig.dibosonSampleName:
