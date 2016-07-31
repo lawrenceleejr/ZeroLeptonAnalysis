@@ -185,34 +185,34 @@ i=0
 
 SignalRegions = [
 
-"SR2jl",
-"SR2jm",
-"SR2jt",
-"SR4jt",
-"SR5j",
-"SR6jm",
-"SR6jt",
+# "SR2jl",
+# "SR2jm",
+# "SR2jt",
+# "SR4jt",
+# "SR5j",
+# "SR6jm",
+# "SR6jt",
 
 
-"SRJigsawSRG1a",
-"SRJigsawSRG1b",
-"SRJigsawSRG2a",
-"SRJigsawSRG2b",
+# "SRJigsawSRG1a",
+# "SRJigsawSRG1b",
+# "SRJigsawSRG2a",
+# "SRJigsawSRG2b",
 "SRJigsawSRG3a",
 "SRJigsawSRG3b",
 
-"SRJigsawSRS1a",
-"SRJigsawSRS1b",
-"SRJigsawSRS2a",
-"SRJigsawSRS2b",
-"SRJigsawSRS3a",
-"SRJigsawSRS3b",
+# "SRJigsawSRS1a",
+# "SRJigsawSRS1b",
+# "SRJigsawSRS2a",
+# "SRJigsawSRS2b",
+# "SRJigsawSRS3a",
+# "SRJigsawSRS3b",
 
-"SRJigsawSRC1",
-"SRJigsawSRC2",
-"SRJigsawSRC3",
-"SRJigsawSRC4",
-"SRJigsawSRC5",
+# "SRJigsawSRC1",
+# "SRJigsawSRC2",
+# "SRJigsawSRC3",
+# "SRJigsawSRC4",
+# "SRJigsawSRC5",
 
 ]
 
