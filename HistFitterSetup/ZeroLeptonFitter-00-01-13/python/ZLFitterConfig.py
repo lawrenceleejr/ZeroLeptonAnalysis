@@ -122,7 +122,7 @@ class ZLFitterConfig:
         # Luminosity
         ##############################################
 
-        self.luminosity = 13.28 # 2.674#unit is fb-1
+        self.luminosity = 22.070 # 2.674#unit is fb-1
         self.luminosityEr = 0.029 # style the run1 error ####################
 
         ##############################################
