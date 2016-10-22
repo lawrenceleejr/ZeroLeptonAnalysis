@@ -94,7 +94,7 @@ myfiles = {
 	'DibosonMassiveCB':ROOT.TFile('hists/output/DibosonMassiveCB/hist-DibosonMassiveCB.root.root'),
 }
 
-rebinfactor = 2
+rebinfactor = 5
 
 signalsamples = os.listdir("hists/output/")
 # print signalsamples
@@ -232,6 +232,8 @@ for histogramName in histogramNames:
 	histsToStack = []
 	stack = HistStack()
 
+	nBinsOrig = False
+
 	for sample in samples:
 		f = myfiles[sample]
 		# f.ls()
@@ -240,6 +242,8 @@ for histogramName in histogramNames:
 		# hists[sample] =  f.Get(histogramName).Clone(histogramName+sample) 
 
 		hists[sample] = asrootpy( f.Get(histogramName).Clone(histogramName+sample) )
+		if not nBinsOrig:
+			nBinsOrig = hists[sample].GetNbinsX()
 		hists[sample].Sumw2()
 		if hists[sample].GetNbinsX() > 10:
 			hists[sample].Rebin(rebinfactor)
@@ -382,6 +386,7 @@ for histogramName in histogramNames:
 			hists['DataMain'].Draw("E1 same")
 			rootstack.SetMaximum(hists['DataMain'].GetMaximum()*100)
 			rootstack.SetMinimum(0.01)
+			# c.Update()
 		# c.SaveAs("test.pdf")
 		# break
 	# plt.ylim([0.1,10])
@@ -415,7 +420,7 @@ for histogramName in histogramNames:
 		cutvalue = float(cutvalue)
 		boxDirection = 1 if ">" in histogramName else -1
 
-		if stack.sum.GetNbinsX()<11:
+		if nBinsOrig<11:
 			if boxDirection == 1:
 				cutvalue += 1.
 			elif boxDirection == -1:
@@ -432,6 +437,7 @@ for histogramName in histogramNames:
 
 		if plotWithROOT:
 			pad1.cd()
+			print "cutvalue for arrow: %f" %cutvalue
 			arrow = ROOT.TArrow(cutvalue,1,cutvalue,ROOT.gPad.GetUymin(),0.02,"|>");
 			arrow.Draw()
 
@@ -534,6 +540,7 @@ for histogramName in histogramNames:
 		ROOT.ATLASLabel(0.2,0.9,"Internal")
 
 		legend = Legend( 4, leftmargin=0.45, margin=0.3)
+		hists["DataMain"].SetTitle("Data 15+16 %s fb^{-1}"%lumiscale)
 		legend.AddEntry(hists["DataMain"], style='ep')
 		# sortedHistsToStack.reverse()
 		for BG in reversed(sortedHistsToStack):
