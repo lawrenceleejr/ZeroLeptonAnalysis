@@ -18,15 +18,15 @@ import ROOT
 ##########################
 
 # Set observed and expected number of events in counting experiment
-ndata     =  7. 	# Number of events observed in data
-nbkg      =  5.	 	# Number of predicted bkg events
+ndata     =  10 	# Number of events observed in data
+nbkg      =  2.8	 	# Number of predicted bkg events
 nsig      =  1.  	# Number of predicted signal events
-nbkgErr   =  1.  	# (Absolute) Statistical error on bkg estimate *from limited MC statistics*
+nbkgErr   =  0.  	# (Absolute) Statistical error on bkg estimate *from limited MC statistics*
 nsigErr   =  2.  	# (Absolute) Statistical error on signal estimate *from limited MC statistics*
 lumiError = 0.039 	# Relative luminosity uncertainty
 
 # Set uncorrelated systematics for bkg and signal (1 +- relative uncertainties)
-ucb = Systematic("uncorrl_bkg", configMgr.weights, 1.2,0.8, "user","userOverallSys")  # 20% error up and down
+ucb = Systematic("uncorrl_bkg", configMgr.weights, 1.27,1-.27, "user","userOverallSys")  # 20% error up and down
 
 
 # correlated systematic between background and signal (1 +- relative uncertainties)
@@ -40,7 +40,7 @@ configMgr.doExclusion=True # True=exclusion, False=discovery
 #configMgr.nTOYs=5000
 configMgr.calculatorType=2 # 2=asymptotic calculator, 0=frequentist calculator
 configMgr.testStatType=3   # 3=one-sided profile likelihood test statistic (LHC default)
-configMgr.nPoints=20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
+configMgr.nPoints=10       # number of values scanned of signal-strength for upper-limit determination of signal strength.
 
 configMgr.writeXML = True
 
@@ -65,7 +65,7 @@ bkgSample.buildHisto([nbkg],"UserRegion","cuts",0.5)
 bkgSample.addSystematic(ucb)
 
 sigSample = Sample("Sig",kPink)
-sigSample.setNormFactor("mu_SS",1.,0.,10.)
+sigSample.setNormFactor("mu_SS",1.,0.,100.)
 #sigSample.setStatConfig(True)
 sigSample.setNormByTheory()
 sigSample.buildHisto([nsig],"UserRegion","cuts",0.5)

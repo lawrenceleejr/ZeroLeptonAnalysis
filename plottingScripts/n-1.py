@@ -23,8 +23,8 @@ from ATLASStyle import *
 
 from rootpy import asrootpy
 
-ROOT.gROOT.LoadMacro("~/atlasstyle-00-03-04/AtlasStyle.C") 
-ROOT.gROOT.LoadMacro("~/atlasstyle-00-03-04/AtlasLabels.C") 
+ROOT.gROOT.LoadMacro("~/atlasstyle-00-03-04/AtlasStyle.C")
+ROOT.gROOT.LoadMacro("~/atlasstyle-00-03-04/AtlasLabels.C")
 ROOT.SetAtlasStyle()
 # import style_mpl
 
@@ -56,6 +56,7 @@ samples = [
 			'WMassiveCB',
 			'ZMassiveCB',
 			'DibosonMassiveCB',
+			# 'GG_direct_1800_0',
 			]
 
 combineDS1 = 0
@@ -79,7 +80,8 @@ colors = {
 	'WMassiveCB': colorpal[1],
 	'ZMassiveCB': colorpal[2],
 	'DibosonMassiveCB': colorpal[3],
-	# 'GammaJet': colorpal[4],
+	"GG_direct_1800_0" : 'white',
+	'GammaJet': colorpal[4],
 }
 
 myfiles = {
@@ -156,14 +158,9 @@ plottedsignals["SRG3Loose"] = ["GG_direct_1800_0"]
 
 
 f = myfiles['DataMain']
-f.ls()
-# f.ls()
-# print [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
 f.cd()
-# histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "SR" in key.GetName() ]
-histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
 
-# histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "dummy" in key.GetName() ]
+histogramNames = [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "dummy" in key.GetName() ]
 
 commonHistNames = [
 	"MET_",
@@ -180,6 +177,32 @@ commonHistNames = [
 
 # for tmpHistName in commonHistNames:
 # 	histogramNames += [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if tmpHistName in key.GetName() ]
+
+histogramNames += [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
+
+
+
+axislabels = {}
+
+axislabels[ "MET" ]       = "MET [GeV]"
+axislabels[ "Meff" ]      = "m_{Eff} [GeV]"
+axislabels[ "Aplan" ]     = "Aplanarity"
+axislabels[ "metTST" ]    = "MET TST Soft Term [GeV]"
+axislabels[ "dphi" ]      = "min #Delta #phi_{MET,j_{i}}"
+axislabels[ "pT_jet1" ]   = "Leading Jet p_{T}"
+axislabels[ "pT_jet4" ]   = "Fourth Leading Jet p_{T}"
+axislabels[ "eta_jet1" ]  = "Leading Jet #eta"
+axislabels[ "eta_jet4" ]  = "Fourth Leading Jet #eta"
+
+axislabels[ "H2PP" ]      = "H_{1,1}^{PP} [GeV]"
+axislabels[ "HT5PP" ]     = "H_{T4,1}^{PP} [GeV]"
+axislabels[ "maxRH1PPiH2PPi" ]  = "max(H_{1,0}^{Pi} / H_{2,0}^{Pi})"
+axislabels[ "minRpTj2iHT3PPi" ] = "min(p_{T,j2i}^{PP} / H_{T2,1i}^{PP})"
+axislabels[ "RPZHT5PP" ]   = "p_{PP,z}^{lab} / (p_{PP,z}^{lab}+H_{T4,1}^{PP})"
+axislabels[ "RPTHT5PP" ]   = "p_{T,PP}^{lab} / (p_{T,PP}^{lab}+H_{T4,1}^{PP})"
+axislabels[ "RHT5PPH5PP" ] = "H_{T4,1}^{PP}/H_{4,1}^{PP}"
+axislabels[ "RH2PPH5PP" ]  = "H_{1,1}^{PP}/H_{4,1}^{PP}"
+axislabels[ "deltaQCD" ]   = "#Delta QCD"
 
 
 
@@ -212,6 +235,7 @@ for histogramName in histogramNames:
 		'WMassiveCB':      ROOT.TFile('hists/output/WMassiveCB/hist-WMassiveCB.root.root'),
 		'ZMassiveCB':      ROOT.TFile('hists/output/ZMassiveCB/hist-ZMassiveCB.root.root'),
 		'DibosonMassiveCB':ROOT.TFile('hists/output/DibosonMassiveCB/hist-DibosonMassiveCB.root.root'),
+		'GG_direct_1800_0':ROOT.TFile('hists/output/GG_direct_1800_0_SRAll/hist-GG_direct.root.root'),
 	}
 
 
@@ -239,7 +263,7 @@ for histogramName in histogramNames:
 		# f.ls()
 		outputROOTFile.cd()
 		# f.Print()
-		# hists[sample] =  f.Get(histogramName).Clone(histogramName+sample) 
+		# hists[sample] =  f.Get(histogramName).Clone(histogramName+sample)
 
 		hists[sample] = asrootpy( f.Get(histogramName).Clone(histogramName+sample) )
 		if not nBinsOrig:
@@ -356,7 +380,7 @@ for histogramName in histogramNames:
 		# print "hists/output/%s/hist-%s.root.root"%(signalsample,  "_".join(signalsample.split("_")[:2])  )
 
 		outputROOTFile.cd()
-		hists[signalsample] =  signalfile.Get(histogramName).Clone( histogramName + signalsample ) 
+		hists[signalsample] =  signalfile.Get(histogramName).Clone( histogramName + signalsample )
 		hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")+additionalRegionName  )
 		hists[signalsample].Scale(lumiscale)
 
@@ -384,7 +408,7 @@ for histogramName in histogramNames:
 
 		if hists['DataMain'].Integral():
 			hists['DataMain'].Draw("E1 same")
-			rootstack.SetMaximum(hists['DataMain'].GetMaximum()*100)
+			rootstack.SetMaximum(hists['DataMain'].GetMaximum()*1000)
 			rootstack.SetMinimum(0.01)
 			# c.Update()
 		# c.SaveAs("test.pdf")
@@ -525,19 +549,23 @@ for histogramName in histogramNames:
 			# X axis ratio plot settings
 			tmpratio.GetXaxis().SetTitleSize(18);
 			tmpratio.GetXaxis().SetTitleFont(43);
-			tmpratio.GetXaxis().SetTitleOffset(3.);
+			tmpratio.GetXaxis().SetTitleOffset(5.);
 			tmpratio.GetXaxis().SetLabelFont(43); # Absolute font size in pixel (precision 3)
 			tmpratio.GetXaxis().SetLabelSize(15)
 
 			unityline = ROOT.TLine()
 			unityline.DrawLine(ROOT.gPad.GetUxmin(),1.,ROOT.gPad.GetUxmax(),1.)
 
+			try:
+				axislabel = axislabels[axislabel]
+			except:
+				axislabel = axislabel
 			tmpratio.GetXaxis().SetTitle(axislabel)
 
 
 	if plotWithROOT:
 		pad1.cd()
-		ROOT.ATLASLabel(0.2,0.9,"Internal")
+		ROOT.ATLASLabel(0.2,0.9,"Internal      %s"%regionName)
 
 		legend = Legend( 4, leftmargin=0.45, margin=0.3)
 		hists["DataMain"].SetTitle("Data 15+16 %s fb^{-1}"%lumiscale)
@@ -562,7 +590,7 @@ for histogramName in histogramNames:
 		legend.SetTextSize(0.03)
 		legend.Draw()
 
-		c.SaveAs("N-1Plots/root/%s.pdf"%histogramName)
+		c.SaveAs("N-1Plots/root/%s.pdf"%histogramName.split(">")[0].split("<")[0])
 		# break
 
 	if plotWithMPL:
@@ -580,7 +608,7 @@ for histogramName in histogramNames:
 
 		axes.set_ylim([0.05, 99999])
 
-		fig.savefig("N-1Plots/%s.pdf"%histogramName)
+		fig.savefig("N-1Plots/%s.pdf"%histogramName.split(">")[0].split("<")[0])
 
 
 	for sample in samples:
@@ -599,5 +627,9 @@ for histogramName in histogramNames:
 # 		"""%(histogramName, histogramName.split("_")[0], histogramName.translate(None, "<>")  )
 # 		)
 
+	del myfiles
+	del hists
+	del c
+	ROOT.gROOT.Reset()
 
-	# gc.collect()
+	gc.collect()

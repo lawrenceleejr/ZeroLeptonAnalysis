@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/bin/python
 """
  * Project : HistFitter - A ROOT-based package for statistical data analysis      *
  * Package : HistFitter                                                           *

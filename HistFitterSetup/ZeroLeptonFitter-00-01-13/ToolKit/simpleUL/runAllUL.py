@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/bin/python
 
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -22,7 +22,7 @@ lumi=20.3
 import os
 import sys
 
-from AnaList import *
+# from AnaList import *
 
 parser = OptionParser()
 parser.add_option("--asymptotic", default=False, action="store_true", help="asymptotic")
@@ -32,10 +32,10 @@ parser.add_option("-o", "--output-dir", default="results/",
 options.output_dir += "/" #to be sure
 
 #loop over analysis and compute UL,p0,...
-for ana in anaList:
-    anaShortname = anaInvDictPaper13[ana]
+for anaShortname in ["SR1"]:
+    # anaShortname = anaShortname
 
-    cmd = "HistFitter.py -w -f -r %s %s/ToolKit/simpleUL/SimpleUL.py" % (anaShortname, os.getenv("ZEROLEPTONFITTER") )
+    cmd = "HistFitter.py -w -t -f -r %s %s/ToolKit/simpleUL/SimpleUL.py" % (anaShortname, os.getenv("ZEROLEPTONFITTER") )
     print cmd
     subprocess.call(cmd, shell=True)
 
@@ -47,7 +47,7 @@ for ana in anaList:
     nPoints = 20
     nToys = 10000
 
-    if anaShortname == "SR2jl":
+    if anaShortname == "SR1":
         muRange = 3000
         nPoints = 40
     
@@ -80,11 +80,11 @@ for ana in anaList:
     cmd = "python $ZEROLEPTONFITTER/scripts/UpperLimitTable.py %s -c combined -n %d -p mu_SIG -w %s -l %.3f -o %s" % (option, nToys, fileName, lumi, outNameTMP)   
     cmd_pval = "cd %s/.. && HistFitter.py -z -r %s $ZEROLEPTONFITTER/ToolKit/simpleUL/SimpleUL.py && cd -" % (options.output_dir, anaShortname)
 
-    print cmd,">&"+anaInvDictPaper13[ana]+".log &"
+    print cmd,">&"+anaShortname+".log &"
     subprocess.call(cmd, shell=True)
         
     if os.path.exists(outNameTMP): 
-        cmd="cat "+outNameTMP+"| sed -e 's/combined/"+anaInvDictPaper13[ana]+"/g' > "+outName
+        cmd="cat "+outNameTMP+"| sed -e 's/combined/"+anaShortname+"/g' > "+outName
         subprocess.call(cmd, shell=True)
     else:
         print "WARNING: file %s is missing! Waiting for a few seconds." % outNameTMP

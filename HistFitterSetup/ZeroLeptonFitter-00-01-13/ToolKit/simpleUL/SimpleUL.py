@@ -18,21 +18,21 @@ import os
 results = {}
 
 # key=region name => [exp, expUnc, obs]
-results["SR2jl"] = [13000, 1000, 12315]
-results["SR2jm"] = [760, 50, 715]
-results["SR2jt"] = [125, 10, 133]
-results["SR2jW"] = [2.1, 0.7, 0]
-results["SR3j"] = [5.0, 1.3, 7]
-results["SR4jl-"] = [2120, 130, 2169]
-results["SR4jl"] = [630, 50, 608]
-results["SR4jm"] = [37, 6, 24]
-results["SR4jt"] = [2.51, 1.0, 0]
-results["SR4jW"] = [14, 4, 16]
-results["SR5j"] = [126, 16, 121]
-results["SR6jl"] = [111, 15, 121]
-results["SR6jm"] = [33, 6, 39]
-results["SR6jt"] = [5.2, 1.5, 5]
-results["SR6jt+"] = [4.9, 1.7, 6]
+# results["SR1"] = [13000, 1000, 12315]
+# results["SR2jm"] = [760, 50, 715]
+# results["SR2jt"] = [125, 10, 133]
+# results["SR2jW"] = [2.1, 0.7, 0]
+# results["SR3j"] = [5.0, 1.3, 7]
+# results["SR4jl-"] = [2120, 130, 2169]
+# results["SR4jl"] = [630, 50, 608]
+# results["SR4jm"] = [37, 6, 24]
+# results["SR4jt"] = [2.51, 1.0, 0]
+# results["SR4jW"] = [14, 4, 16]
+# results["SR5j"] = [126, 16, 121]
+# results["SR6jl"] = [111, 15, 121]
+# results["SR6jm"] = [33, 6, 39]
+# results["SR6jt"] = [5.2, 1.5, 5]
+results["SR1"] = [2.8, 2.8*0.27, 2.8]
 
 ##########################
 
@@ -46,6 +46,7 @@ if len(pickedSRs) == 0:
     log.fatal("No region specified!")    
 
 for SR in pickedSRs:
+    print SR
 
     if SR not in results:
         log.warning("SR %s not found in results dict!")
@@ -70,7 +71,7 @@ for SR in pickedSRs:
     # Setting the parameters of the hypothesis test
     #configMgr.nTOYs=5000
     configMgr.calculatorType=2 # 2=asymptotic calculator, 0=frequentist calculator
-    configMgr.testStatType=3   # 3=one-sided profile likelihood test statistic (LHC default)
+    configMgr.testStatType=2   # 3=one-sided profile likelihood test statistic (LHC default)
     configMgr.nPoints=20       # number of values scanned of signal-strength for upper-limit determination of signal strength.
 
     ##########################

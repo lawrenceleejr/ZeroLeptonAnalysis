@@ -1,8 +1,7 @@
-
-
 Data_SRAll->Scan("EventNumber:MET:H2PP:Meff:HT5PP:Aplan:Meff-MET:MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4):R_H2PP_H5PP:dphi:dphiMin1:dphiMin2:dphiMin3:deltaQCD","EventNumber == 97473523 || EventNumber == 302531573 || EventNumber == 760315296 || EventNumber == 2680447852 || EventNumber == 3262847263 || EventNumber == 2687528453 || EventNumber == 4019662466 || EventNumber == 3628270968 || EventNumber == 2038346111 || EventNumber == 893369235")
 
 EventNumber == 97473523 || EventNumber == 302531573 || EventNumber == 760315296 || EventNumber == 2680447852 || EventNumber == 3262847263 || EventNumber == 2687528453 || EventNumber == 4019662466 || EventNumber == 3628270968 || EventNumber == 2038346111 || EventNumber == 893369235
+
 
 root [8] Data_SRAll->Scan("EventNumber:MET:H2PP:Meff:HT5PP:Aplan:Meff-MET:MET/(MET+pT_jet1+pT_jet2+pT_jet3+pT_jet4):R_H2PP_H5PP:dphi:dphiMin1:dphiMin2:dphiMin3:deltaQCD","EventNumber == 97473523 || EventNumber == 302531573 || EventNumber == 760315296 || EventNumber == 2680447852 || EventNumber == 3262847263 || EventNumber == 2687528453 || EventNumber == 4019662466 || EventNumber == 3628270968 || EventNumber == 2038346111 || EventNumber == 893369235")
 ************************************************************************************************************************************************************************************
@@ -21,6 +20,7 @@ root [8] Data_SRAll->Scan("EventNumber:MET:H2PP:Meff:HT5PP:Aplan:Meff-MET:MET/(M
 ************************************************************************************************************************************************************************************
 ==> 10 selected entries
 (Long64_t) 10
+
 
 
 Cuts failed? (Aplan > 0.04, MET/MEFF > 0.2, dphi>0.4)
