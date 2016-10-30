@@ -173,6 +173,8 @@ commonHistNames = [
 	"pT_jet4_",
 	"eta_jet1_",
 	"eta_jet4_",
+	"NJet",
+	"nBJet"
 	]
 
 # for tmpHistName in commonHistNames:
@@ -193,6 +195,8 @@ axislabels[ "pT_jet1" ]   = "Leading Jet p_{T}"
 axislabels[ "pT_jet4" ]   = "Fourth Leading Jet p_{T}"
 axislabels[ "eta_jet1" ]  = "Leading Jet #eta"
 axislabels[ "eta_jet4" ]  = "Fourth Leading Jet #eta"
+axislabels[ "NJet" ]  = "Jet Multiplicity [p_{T}>50 GeV]"
+axislabels[ "nBJet" ]  = "B-Jet Multiplicity [p_{T}>50 GeV]"
 
 axislabels[ "H2PP" ]      = "H_{1,1}^{PP} [GeV]"
 axislabels[ "HT5PP" ]     = "H_{T4,1}^{PP} [GeV]"
@@ -269,7 +273,7 @@ for histogramName in histogramNames:
 		if not nBinsOrig:
 			nBinsOrig = hists[sample].GetNbinsX()
 		hists[sample].Sumw2()
-		if hists[sample].GetNbinsX() > 10:
+		if hists[sample].GetNbinsX() > 20:
 			hists[sample].Rebin(rebinfactor)
 		hists[sample].SetTitle(r"%s"%sample)
 		hists[sample].fillstyle = "solid"
@@ -384,7 +388,7 @@ for histogramName in histogramNames:
 		hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")+additionalRegionName  )
 		hists[signalsample].Scale(lumiscale)
 
-		if hists[signalsample].GetNbinsX() > 10:
+		if hists[signalsample].GetNbinsX() > 20:
 			hists[signalsample].Rebin(rebinfactor)
 		hists[signalsample].color = "red"
 
@@ -546,6 +550,11 @@ for histogramName in histogramNames:
 			tmpratio.GetYaxis().SetTitleOffset(1.55);
 			tmpratio.GetYaxis().SetLabelFont(43); # Absolute font size in pixel (precision 3)
 			tmpratio.GetYaxis().SetLabelSize(15);
+
+			if tmpratio.GetMaximum()>10:
+				tmpratio.SetMaximum(11)
+			tmpratio.SetMinimum(0)
+
 			# X axis ratio plot settings
 			tmpratio.GetXaxis().SetTitleSize(18);
 			tmpratio.GetXaxis().SetTitleFont(43);

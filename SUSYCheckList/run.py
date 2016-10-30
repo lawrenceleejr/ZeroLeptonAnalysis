@@ -70,3 +70,18 @@ for regionName in intree:
 	ATLASLabel(0.2,0.9,"Internal          %s"%regionName)
 	c.SaveAs("AcceptanceVsRun_%s.pdf"%regionName)
 
+c = TCanvas("c","c",1400,300)
+h_den.SetMarkerStyle(20)
+h_den.SetMarkerSize(0.5)
+
+h_den.Draw()
+
+ATLASLabel(0.2,0.9,"Internal ")
+c.SaveAs("LumiVsRun.pdf")
+
+
+
+
+
+
+
