@@ -16,6 +16,7 @@ from optparse import OptionParser
 
 from copy import deepcopy
 from collections import OrderedDict
+import multiprocessing as mp
 
 
 import atexit
@@ -35,6 +36,8 @@ signaldirectory = "/data/jack/ICHEP/0Lepton/v111/RJ_submit_28072016/"
 
 
 regionNames = ["SR","CRW","CRT","CRY"]
+
+ncores = 6
 # regionNames = ["CRY"]
 
 blindSR = False
@@ -47,7 +50,11 @@ print "List of region names to run over: "
 print regionNames
 
 
+def submitTheThing(driver,job,directory):
+	driver.submit(job, directory )
 
+def submitTheThingWrapper(stuff):
+	submitTheThing(*stuff)
 
 for regionName in regionNames:
 
@@ -170,11 +177,12 @@ for regionName in regionNames:
 
 	}
 
+	job = {}
 
 	for SH_name, mysamplehandler in my_SHs.iteritems():
 
-		job = ROOT.EL.Job()
-		job.sampleHandler(mysamplehandler)
+		job[SH_name] = ROOT.EL.Job()
+		job[SH_name].sampleHandler(mysamplehandler)
 
 		cutflow = {}
 
@@ -233,7 +241,7 @@ for regionName in regionNames:
 				if "Data" in SH_name and blindSR:
 					# Flip the cut so the region is blinded
 					flippedcutpart = cutpart.replace(">","%TEMP%").replace("<",">").replace("%TEMP%","<")
-					job.algsAdd(  ROOT.MD.AlgHist(
+					job[SH_name].algsAdd(  ROOT.MD.AlgHist(
 						ROOT.TH1F("%s_minus_%s"%(region,cutpartname),
 							"%s_%s"%(region,cutpartname),
 							limits[0], limits[1], limits[2]),
@@ -243,7 +251,7 @@ for regionName in regionNames:
 					)
 				else:
 					# Don't blind anything above the cut
-					job.algsAdd(  ROOT.MD.AlgHist(
+					job[SH_name].algsAdd(  ROOT.MD.AlgHist(
 						ROOT.TH1F("%s_minus_%s"%(region,cutpartname),
 							"%s_%s"%(region,cutpartname),
 							limits[0], limits[1], limits[2]),
@@ -254,12 +262,12 @@ for regionName in regionNames:
 
 				cutflow[region].GetXaxis().SetBinLabel (i+2, cutpart);
 
-			job.algsAdd(ROOT.MD.AlgCFlow (cutflow[region]))
+			job[SH_name].algsAdd(ROOT.MD.AlgCFlow (cutflow[region]))
 
 
 			## each of this histograms will be made for each region
 			for varname,varlimits in commonPlots.items() :
-				job.algsAdd(
+				job[SH_name].algsAdd(
 	            	ROOT.MD.AlgHist(
 	            		ROOT.TH1F(varname.replace("/","_over_")+"_%s"%region, varname+"_%s"%region, varlimits[0], varlimits[1], varlimits[2]),
 						varname,
@@ -268,7 +276,7 @@ for regionName in regionNames:
 					)
 
 			for varname,varlimits in commonPlots2D.items():
-				job.algsAdd(
+				job[SH_name].algsAdd(
 	            	ROOT.MD.AlgHist(
 	            		ROOT.TH2F("%s_%s_%s"%(varname[0], varname[1], region), "%s_%s_%s"%(varname[0], varname[1], region), varlimits[0][0], varlimits[0][1], varlimits[0][2], varlimits[1][0], varlimits[1][1], varlimits[1][2]),
 						varname[0], varname[1],
@@ -276,12 +284,28 @@ for regionName in regionNames:
 						)
 					)
 
-		driver = ROOT.EL.DirectDriver()
+	driver = ROOT.EL.DirectDriver()
+
+	jobs = []
+	outputDirs = []
+	for SH_name, mysamplehandler in my_SHs.iteritems():
 		if not os.path.exists( "output/%s"%( regionName ) ):
 			os.makedirs( "output/%s/"%( regionName ) )
 		if os.path.exists( "output/%s/%s"%( regionName, SH_name ) ):
 			shutil.rmtree( "output/%s/%s"%( regionName, SH_name ) )
-		driver.submit(job, "output/%s/%s"%( regionName, SH_name ) )
+		jobs.append(job[SH_name])
+		outputDirs.append("output/%s/%s"%( regionName, SH_name ) )
+
+
+
+	pool = mp.Pool(processes=ncores)
+	pool.map(submitTheThingWrapper,
+		itertools.izip( itertools.repeat(driver),
+			jobs,
+			outputDirs )
+		)
+	pool.close()
+	pool.join()
 
 	os.system("tar cvzf {0}.tgz output/{0}/*/hist-*.root".format( regionName )   )
 
