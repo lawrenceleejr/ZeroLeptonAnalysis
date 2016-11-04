@@ -35,10 +35,11 @@ datadirectory = "/data/larryl/ZeroLepton/v111/"
 signaldirectory = "/data/jack/ICHEP/0Lepton/v111/RJ_submit_28072016/"
 
 
-regionNames = ["SR","CRW","CRT","CRY"]
+# regionNames = ["SR","CRW","CRT","CRY"]
+regionNames = ["SR"]
 
 ncores = 6
-# regionNames = ["CRY"]
+
 
 blindSR = False
 
@@ -56,6 +57,11 @@ def submitTheThing(driver,job,directory):
 def submitTheThingWrapper(stuff):
 	submitTheThing(*stuff)
 
+
+
+jobs = []
+outputDirs = []
+
 for regionName in regionNames:
 
 	print "Running over region: %s"%regionName
@@ -68,7 +74,7 @@ for regionName in regionNames:
 	my_SHs = {}
 	for sampleHandlerName in [
 								"QCD",
-								"GammaJet",
+								"GAMMAMassiveCB",
 								"WMassiveCB",
 								"ZMassiveCB",
 								"Top",
@@ -81,7 +87,7 @@ for regionName in regionNames:
 		print len(my_SHs[sampleHandlerName])
 
 		tmpTreeName = sampleHandlerName
-		if sampleHandlerName == "GammaJet":
+		if sampleHandlerName == "GAMMAMassiveCB":
 			tmpTreeName = "GAMMA"
 
 		if sampleHandlerName == "WMassiveCB":
@@ -110,14 +116,14 @@ for regionName in regionNames:
 	"pT_jet4" : [20, 0, 1000],
 	"eta_jet1" : [20, -5, 5],
 	"eta_jet4" : [20, -5, 5],
-	"NJet" : [20, 0, 20],
-	"nBJet" : [20, 0, 20],
+	"NJet" : [10, 0, 10],
+	"nBJet" : [10, 0, 10],
 	}
 
 
 	commonPlots2D  = {
 	# ("MET","Meff") : ([50, 0, 3000] , [50, 0, 3000]   ),
-	# ("deltaQCD","R_H2PP_H3PP") : ([50, -1, 1] , [50, 0, 1]   ),
+	("deltaQCD","HT5PP") : ([50, -1, 1] , [50, 0, 5e3]   ),
 	}
 
 
@@ -139,9 +145,10 @@ for regionName in regionNames:
 			if "1800_0" not in treeName:
 				continue
 			if treename in treeName and treename+"_" not in treeName:
-				my_SHs[treeName] = ROOT.SH.SampleHandler();
-				ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.root"%sampleHandlerName).scan(my_SHs[treeName], signaldirectory)
-				my_SHs[treeName].setMetaString("nc_tree", "%s"%treeName )
+				chompedTreeName = "_".join(treeName.split("_")[:-1])
+				my_SHs[chompedTreeName] = ROOT.SH.SampleHandler();
+				ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.root"%sampleHandlerName).scan(my_SHs[chompedTreeName], signaldirectory)
+				my_SHs[chompedTreeName].setMetaString("nc_tree", "%s"%treeName )
 
 
 
@@ -197,17 +204,21 @@ for regionName in regionNames:
 
 			cutlist = regions[region][1:-1].split("&&")
 
-			cutflow[region] = ROOT.TH1F ("cutflow_%s"%region, "cutflow_%s"%region, len(cutlist)+1 , 0, len(cutlist)+1);
-			cutflow[region].GetXaxis().SetBinLabel(1, weightstring);
+			cutflow[region] = ROOT.TH1F ("cutflow_%s"%region, "cutflow_%s"%region, len(cutlist)+1 , 0, len(cutlist)+1)
+			cutflow[region].GetXaxis().SetBinLabel(1, weightstring)
 
 
 			for i,cutpart in enumerate(cutlist):
+
+				# print cutpart
 
 				skipCut = False
 				for extraCut in extraCutsFromChannel:
 					if cutpart.translate(None, " ") in extraCut:
 						skipCut = True
 						break
+				if "RunNumber" in cutpart:
+					continue
 				if skipCut:
 					continue
 
@@ -226,14 +237,16 @@ for regionName in regionNames:
 					limits = (20,-1,1)
 				elif "RPZ_" in variablename:
 					limits = (20,0,0.5)
+				elif "RPT_" in variablename:
+					limits = (20,0,0.4)
 				elif " minR_pTj2i_HT3PPi " in variablename:
 					limits = (20,0,0.5)
 				elif " maxR_H1PPi_H2PPi "  in variablename:
 					limits = (20,0.5,1)
 				elif " HT5PP " in variablename:
-					limits = (20,0,4000)
+					limits = (20,0,5000)
 				elif " H2PP " in variablename:
-					limits = (20,0,3000)
+					limits = (20,0,4000)
 				elif "lep1Pt" in variablename:
 					limits = (20,0,200)
 
@@ -250,6 +263,9 @@ for regionName in regionNames:
 						)
 					)
 				else:
+					# print variablename
+					# print regions[region]
+					# print weightstring+"*%s"%"*".join(["(%s)"%mycut for mycut in cutlist if mycut!=cutpart ])
 					# Don't blind anything above the cut
 					job[SH_name].algsAdd(  ROOT.MD.AlgHist(
 						ROOT.TH1F("%s_minus_%s"%(region,cutpartname),
@@ -286,8 +302,6 @@ for regionName in regionNames:
 
 	driver = ROOT.EL.DirectDriver()
 
-	jobs = []
-	outputDirs = []
 	for SH_name, mysamplehandler in my_SHs.iteritems():
 		if not os.path.exists( "output/%s"%( regionName ) ):
 			os.makedirs( "output/%s/"%( regionName ) )
@@ -298,14 +312,15 @@ for regionName in regionNames:
 
 
 
-	pool = mp.Pool(processes=ncores)
-	pool.map(submitTheThingWrapper,
-		itertools.izip( itertools.repeat(driver),
-			jobs,
-			outputDirs )
-		)
-	pool.close()
-	pool.join()
+pool = mp.Pool(processes=ncores)
+pool.map(submitTheThingWrapper,
+	itertools.izip( itertools.repeat(driver),
+		jobs,
+		outputDirs )
+	)
+pool.close()
+pool.join()
 
+for regionName in regionNames:
 	os.system("tar cvzf {0}.tgz output/{0}/*/hist-*.root".format( regionName )   )
 
