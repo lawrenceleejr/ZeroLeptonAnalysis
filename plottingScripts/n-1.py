@@ -19,6 +19,8 @@ from pylab import *
 import os
 import gc
 
+import glob
+
 from ATLASStyle import *
 
 from rootpy import asrootpy
@@ -47,11 +49,27 @@ mpl.rcParams['text.latex.preamble'] = [
 ]
 
 
+
+combineDS1 = 0
+plotWithROOT = True
+plotWithMPL = False
+
+lumiscale = 22.1
+
+
+
+kindOfRegion = "SR"
+# kindOfRegion = "CRY"
+# kindOfRegion = "CRW"
+# kindOfRegion = "CRT"
+
+
+
 samples = [
 			'DataMain',
 			# 'DataMain2016',
 			'QCD',
-			# 'GammaJet',
+			# 'GAMMAMassiveCB',
 			'Top',
 			'WMassiveCB',
 			'ZMassiveCB',
@@ -59,16 +77,12 @@ samples = [
 			# 'GG_direct_1800_0',
 			]
 
-combineDS1 = 0
-plotWithROOT = True
-plotWithMPL = False
-
-lumiscale = 22.7
-# if combineDS1:
-	# lumiscale = 5.8
+if "CRY" in kindOfRegion:
+	samples += ['GAMMAMassiveCB']
 
 
 
+# colorpal = sns.color_palette("husl", 5 )
 colorpal = sns.color_palette("husl", 5 )
 
 
@@ -81,61 +95,33 @@ colors = {
 	'ZMassiveCB': colorpal[2],
 	'DibosonMassiveCB': colorpal[3],
 	"GG_direct_1800_0" : 'white',
-	'GammaJet': colorpal[4],
+	'GAMMAMassiveCB': colorpal[4],
 }
 
 myfiles = {
-	'DataMain':   ROOT.TFile('hists/output/DataMain/hist-DataMain.root.root'),
-	# 'DataMain2016':   ROOT.TFile('hists/output/DataMain_data16_13TeV/hist-DataMain_data16_13TeV.root.root'),
-	'QCD':    ROOT.TFile('hists/output/QCD/hist-QCD.root.root'),
-	# 'GammaJet':    ROOT.TFile('hists/output/GAMMAMassiveCB/hist-GAMMAMassiveCB.root.root'),
+	'DataMain':   ROOT.TFile('hists/output/%s/DataMain/hist-DataMain.root.root'%kindOfRegion),
+	# 'DataMain2016':   ROOT.TFile('hists/output/%s/DataMain_data16_13TeV/hist-DataMain_data16_13TeV.root.root'%kindOfRegion),
+	'QCD':    ROOT.TFile('hists/output/%s/QCD/hist-QCD.root.root'%kindOfRegion),
+	# 'GammaJet':    ROOT.TFile('hists/output/%s/GAMMAMassiveCB/hist-GAMMAMassiveCB.root.root'%kindOfRegion),
 
-	'Top':    ROOT.TFile('hists/output/Top/hist-Top.root.root'),
-	'WMassiveCB':      ROOT.TFile('hists/output/WMassiveCB/hist-WMassiveCB.root.root'),
-	'ZMassiveCB':      ROOT.TFile('hists/output/ZMassiveCB/hist-ZMassiveCB.root.root'),
-	'DibosonMassiveCB':ROOT.TFile('hists/output/DibosonMassiveCB/hist-DibosonMassiveCB.root.root'),
+	'Top':    ROOT.TFile('hists/output/%s/Top/hist-Top.root.root'%kindOfRegion),
+	'WMassiveCB':      ROOT.TFile('hists/output/%s/WMassiveCB/hist-WMassiveCB.root.root'%kindOfRegion),
+	'ZMassiveCB':      ROOT.TFile('hists/output/%s/ZMassiveCB/hist-ZMassiveCB.root.root'%kindOfRegion),
+	'DibosonMassiveCB':ROOT.TFile('hists/output/%s/DibosonMassiveCB/hist-DibosonMassiveCB.root.root'%kindOfRegion),
 }
 
-rebinfactor = 5
+rebinfactor = 2
 
-signalsamples = os.listdir("hists/output/")
+signalsamples = os.listdir("hists/output/%s/"%kindOfRegion)
 # print signalsamples
 signalsamples = [x for x in signalsamples if "GG_direct" in x or "SS_direct" in x or "GG_onestepCC" in x]
-# print signalsamples
+print signalsamples
 
 # plottedsignals =  ["_1100_300_SRAll","_1100_500_SRAll","_1100_700_SRAll" ]
 # plottedsignals =  ["_1500_100_SRAll","_1600_0_SRAll","_1100_700_SRAll" ]
 # plottedsignals = []
 
 plottedsignals = {}
-
-# plottedsignals["SR2jl"] = ["SS_direct_900_0","SS_direct_900_200" ]
-# plottedsignals["SR2jm"] = ["SS_direct_900_0","SS_direct_900_200" ]
-# plottedsignals["SR2jCo"] = ["SS_direct_900_500","SS_direct_1000_600","SS_direct_1100_700" ]
-# plottedsignals["SR2jt"] = ["SS_direct_900_0","SS_direct_900_200" ]
-# plottedsignals["SR4jt"] = ["GG_direct_1400_0","GG_direct_1500_100","GG_direct_1600_0" ]
-# plottedsignals["SR5j"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-# plottedsignals["SR6jm"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-# plottedsignals["SR6jt"] = ["GG_direct_900_500","GG_direct_1000_600","GG_direct_1100_700" ]
-
-# plottedsignals["SRS1a"] = ["SS_direct_700_600","SS_direct_700_500","SS_direct_700_400", ]
-# plottedsignals["SRS1b"] = ["SS_direct_700_600","SS_direct_700_500","SS_direct_700_400", ]
-# plottedsignals["SRS2a"] = ["SS_direct_900_0","SS_direct_900_200" ]
-# plottedsignals["SRS2b"] = ["SS_direct_900_0","SS_direct_900_200" ]
-# plottedsignals["SRS3a"] = ["SS_direct_900_0","SS_direct_900_200" ]
-# plottedsignals["SRS3b"] = ["SS_direct_900_0","SS_direct_900_200" ]
-
-
-
-# plottedsignals["SRC1a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-# plottedsignals["SRC1b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-# plottedsignals["SRC2a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-# plottedsignals["SRC2b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-# plottedsignals["SRC3a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-# plottedsignals["SRC3b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-# plottedsignals["SRC4a"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-# plottedsignals["SRC4b"] = ["SS_direct_500_450","GG_direct_612_587","GG_direct_650_550" ]
-
 
 plottedsignals["SRG1a"] = ["GG_direct_1800_0"]
 plottedsignals["SRG1b"] = ["GG_direct_1800_0"]
@@ -148,9 +134,9 @@ plottedsignals["SRG1"] = ["GG_direct_1800_0"]
 plottedsignals["SRG2"] = ["GG_direct_1800_0"]
 plottedsignals["SRG3"] = ["GG_direct_1800_0"]
 
-plottedsignals["SRG1Loose"] = ["GG_direct_1800_0"]
-plottedsignals["SRG2Loose"] = ["GG_direct_1800_0"]
-plottedsignals["SRG3Loose"] = ["GG_direct_1800_0"]
+plottedsignals["SRG1Common"] = ["GG_direct_1800_0"]
+plottedsignals["SRG2Common"] = ["GG_direct_1800_0"]
+plottedsignals["SRG3Common"] = ["GG_direct_1800_0"]
 
 # plottedsignals["SR3A"] = ["GG_onestepCC_745_625_505"]
 
@@ -177,8 +163,8 @@ commonHistNames = [
 	"nBJet"
 	]
 
-# for tmpHistName in commonHistNames:
-# 	histogramNames += [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if tmpHistName in key.GetName() ]
+for tmpHistName in commonHistNames:
+	histogramNames += [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if tmpHistName in key.GetName() ]
 
 histogramNames += [key.GetName() for key in ROOT.gDirectory.GetListOfKeys() if "_minus_" in key.GetName() ]
 
@@ -230,16 +216,16 @@ for histogramName in histogramNames:
 
 
 	myfiles = {
-		'DataMain':   ROOT.TFile('hists/output/DataMain/hist-DataMain.root.root'),
-		# 'DataMain2016':   ROOT.TFile('hists/output/DataMain_data16_13TeV/hist-DataMain_data16_13TeV.root.root'),
-		'QCD':    ROOT.TFile('hists/output/QCD/hist-QCD.root.root'),
-		# 'GammaJet':    ROOT.TFile('hists/output/GAMMAMassiveCB/hist-GAMMAMassiveCB.root.root'),
+		'DataMain':   ROOT.TFile('hists/output/%s/DataMain/hist-DataMain.root.root'%kindOfRegion),
+		# 'DataMain2016':   ROOT.TFile('hists/output/%s/DataMain_data16_13TeV/hist-DataMain_data16_13TeV.root.root'%kindOfRegion),
+		'QCD':    ROOT.TFile('hists/output/%s/QCD/hist-QCD.root.root'%kindOfRegion),
+		'GAMMAMassiveCB':    ROOT.TFile('hists/output/%s/GAMMAMassiveCB/hist-GAMMAMassiveCB.root.root'%kindOfRegion),
 
-		'Top':    ROOT.TFile('hists/output/Top/hist-Top.root.root'),
-		'WMassiveCB':      ROOT.TFile('hists/output/WMassiveCB/hist-WMassiveCB.root.root'),
-		'ZMassiveCB':      ROOT.TFile('hists/output/ZMassiveCB/hist-ZMassiveCB.root.root'),
-		'DibosonMassiveCB':ROOT.TFile('hists/output/DibosonMassiveCB/hist-DibosonMassiveCB.root.root'),
-		'GG_direct_1800_0':ROOT.TFile('hists/output/GG_direct_1800_0_SRAll/hist-GG_direct.root.root'),
+		'Top':    ROOT.TFile('hists/output/%s/Top/hist-Top.root.root'%kindOfRegion),
+		'WMassiveCB':      ROOT.TFile('hists/output/%s/WMassiveCB/hist-WMassiveCB.root.root'%kindOfRegion),
+		'ZMassiveCB':      ROOT.TFile('hists/output/%s/ZMassiveCB/hist-ZMassiveCB.root.root'%kindOfRegion),
+		'DibosonMassiveCB':ROOT.TFile('hists/output/%s/DibosonMassiveCB/hist-DibosonMassiveCB.root.root'%kindOfRegion),
+		'GG_direct_1800_0':ROOT.TFile(glob.glob('hists/output/%s/GG_direct_1800_0*/hist-GG_direct.root.root'%kindOfRegion)[0]  ),
 	}
 
 
@@ -273,7 +259,7 @@ for histogramName in histogramNames:
 		if not nBinsOrig:
 			nBinsOrig = hists[sample].GetNbinsX()
 		hists[sample].Sumw2()
-		if hists[sample].GetNbinsX() > 20:
+		if hists[sample].GetNbinsX() > 10:
 			hists[sample].Rebin(rebinfactor)
 		hists[sample].SetTitle(r"%s"%sample)
 		hists[sample].fillstyle = "solid"
@@ -365,6 +351,8 @@ for histogramName in histogramNames:
 
 
 	for signalsample in signalsamples:
+		print signalsample
+		print plottedsignals[regionName]
 
 		skip = 1
 		try:
@@ -374,21 +362,20 @@ for histogramName in histogramNames:
 			skip=1
 
 		if skip:
-			# print "skipping"
+			print "skipping"
 			continue
 
-		if not "SR" in signalsample:
+		if not "SR" in kindOfRegion:
 			continue
 
-		signalfile = root_open("hists/output/%s/hist-%s.root.root"%(signalsample,  "_".join(signalsample.split("_")[:2])  ) )
-		# print "hists/output/%s/hist-%s.root.root"%(signalsample,  "_".join(signalsample.split("_")[:2])  )
+		signalfile = root_open(glob.glob('hists/output/%s/%s*/hist-*.root'%(kindOfRegion,signalsample) )[0] )
 
 		outputROOTFile.cd()
 		hists[signalsample] =  signalfile.Get(histogramName).Clone( histogramName + signalsample )
 		hists[signalsample].SetTitle(r"%s"%signalsample.replace("_"," ").replace("SRAll","")+additionalRegionName  )
 		hists[signalsample].Scale(lumiscale)
 
-		if hists[signalsample].GetNbinsX() > 20:
+		if hists[signalsample].GetNbinsX() > 10:
 			hists[signalsample].Rebin(rebinfactor)
 		hists[signalsample].color = "red"
 
@@ -398,9 +385,6 @@ for histogramName in histogramNames:
 				rplt.errorbar(hists[signalsample], axes=axes, yerr=False, xerr=False, alpha=0.9, fmt="--", rasterized=False, markersize=0)
 
 			if plotWithROOT:
-				# print "about to draw signal!!!!!-------------------------------"
-				# print signalsample
-				# hists[signalsample].Print("all")
 				hists[signalsample].SetLineStyle(2)
 				hists[signalsample].SetLineWidth(2)
 				hists[signalsample].Draw("hist same")
@@ -574,9 +558,9 @@ for histogramName in histogramNames:
 
 	if plotWithROOT:
 		pad1.cd()
-		ROOT.ATLASLabel(0.2,0.9,"Internal      %s"%regionName)
+		ROOT.ATLASLabel(0.2,0.9,"Internal      %s, %s"%(regionName,kindOfRegion)   )
 
-		legend = Legend( 4, leftmargin=0.45, margin=0.3)
+		legend = Legend( 4, leftmargin=0.45, margin=0.35, topmargin=0.07)
 		hists["DataMain"].SetTitle("Data 15+16 %s fb^{-1}"%lumiscale)
 		legend.AddEntry(hists["DataMain"], style='ep')
 		# sortedHistsToStack.reverse()
@@ -590,16 +574,20 @@ for histogramName in histogramNames:
 					skip=0
 			except:
 				skip=1
+
 			if skip:
 				# print "skipping"
 				continue
-			legend.AddEntry(hists[signalsample], style='L')
+			try:
+				legend.AddEntry(hists[signalsample], style='L')
+			except:
+				continue
 
 		legend.SetBorderSize(1)
 		legend.SetTextSize(0.03)
 		legend.Draw()
 
-		c.SaveAs("N-1Plots/root/%s.pdf"%histogramName.split(">")[0].split("<")[0])
+		c.SaveAs("N-1Plots/root/%s.pdf"%(kindOfRegion + "_" + histogramName.split(">")[0].split("<")[0])  )
 		# break
 
 	if plotWithMPL:
