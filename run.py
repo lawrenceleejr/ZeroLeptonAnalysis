@@ -35,11 +35,13 @@ datadirectory = "/data/larryl/ZeroLepton/v111/"
 signaldirectory = "/data/jack/ICHEP/0Lepton/v111/RJ_submit_28072016/"
 
 
-# regionNames = ["SR","CRW","CRT","CRY"]
-regionNames = ["SR"]
+# regionNames = ["SR","CRW","CRT","CRY","CRQ"]
+# regionNames = ["VRZ","VRZa","VRZb"]
+regionNames = ["CRQ","SR"]
+# regionNames = ["SR"]
 
 ncores = 6
-
+useJetSmearing = True
 
 blindSR = False
 
@@ -74,16 +76,21 @@ for regionName in regionNames:
 	my_SHs = {}
 	for sampleHandlerName in [
 								"QCD",
-								"GAMMAMassiveCB",
-								"WMassiveCB",
-								"ZMassiveCB",
-								"Top",
-								"DibosonMassiveCB",
+								# "GAMMAMassiveCB",
+								# "WMassiveCB",
+								# "ZMassiveCB",
+								# "Top",
+								# "DibosonMassiveCB",
 								]:
 
 		print sampleHandlerName
 		my_SHs[sampleHandlerName] = ROOT.SH.SampleHandler();
-		ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.*"%sampleHandlerName).scan(my_SHs[sampleHandlerName], directory+"/" ) #"/BKG/"
+
+		if "QCD" in sampleHandlerName and useJetSmearing:
+			ROOT.SH.ScanDir().sampleDepth(0).samplePattern("JetSmearing.root").scan(my_SHs[sampleHandlerName], directory+"/" ) #"/BKG/"
+		else:
+			ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.*"%sampleHandlerName).scan(my_SHs[sampleHandlerName], directory+"/" ) #"/BKG/"
+
 		print len(my_SHs[sampleHandlerName])
 
 		tmpTreeName = sampleHandlerName
@@ -98,7 +105,10 @@ for regionName in regionNames:
 		if sampleHandlerName == "DibosonMassiveCB":
 			tmpTreeName = "Diboson"
 
-		my_SHs[sampleHandlerName].setMetaString("nc_tree", "%s_%s"%(tmpTreeName, treename) )
+		if sampleHandlerName == "QCD" and useJetSmearing:
+			my_SHs[sampleHandlerName].setMetaString("nc_tree", "Data_SRAll" )
+		else:
+			my_SHs[sampleHandlerName].setMetaString("nc_tree", "%s_%s"%(tmpTreeName, treename) )
 		pass
 
 
@@ -129,7 +139,7 @@ for regionName in regionNames:
 
 	for sampleHandlerName in [
 							# "SS_direct",
-							"GG_direct",
+							# "GG_direct",
 							# "GG_onestepCC_fullsim"
 								]:
 
@@ -153,7 +163,7 @@ for regionName in regionNames:
 
 
 	for sampleHandlerName in [
-							"DataMain",
+							# "DataMain",
 								]:
 		my_SHs[sampleHandlerName] = ROOT.SH.SampleHandler();
 		ROOT.SH.ScanDir().sampleDepth(0).samplePattern("%s.root"%sampleHandlerName).scan(my_SHs[sampleHandlerName], datadirectory)
@@ -193,7 +203,7 @@ for regionName in regionNames:
 
 		cutflow = {}
 
-		if "Data" in SH_name:
+		if "Data" in SH_name or ("QCD" in SH_name and useJetSmearing):
 			weightstring = "(1)"
 		else:
 			weightstring = "(%s)"%weightStringFromChannel

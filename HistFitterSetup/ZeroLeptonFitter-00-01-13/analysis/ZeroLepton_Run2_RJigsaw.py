@@ -294,7 +294,7 @@ if configMgr.readFromTree:
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data15_13TeV.root")
     # dataFiles.append(INPUTDIR_DATA+ "/DataMain_data16_13TeV.root")
 #    dataFiles.append(INPUTDIR_DATA+ "/DataMain.root")
-    dataFiles.append(INPUTDIR_DATA+ "/DataMain_306451.root")
+    dataFiles.append(INPUTDIR_DATA+ "/DataMain.root")
 
     log.info("Using the following inputs:")
     log.info("topFiles = %s" % topFiles)

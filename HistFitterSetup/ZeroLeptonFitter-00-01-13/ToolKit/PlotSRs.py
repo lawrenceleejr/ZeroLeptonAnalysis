@@ -212,7 +212,7 @@ def main():
         if hist_data.GetBinContent(ibin) != 0.:
             nonzeroBins.append( ibin )
 
-    hist_data.GetXaxis().SetRange(nonzeroBins[0],nonzeroBins[-1])
+    # hist_data.GetXaxis().SetRange(nonzeroBins[0],nonzeroBins[-1])
 
     stack=THStack("stack","stack")
     for sam in samples:
@@ -435,7 +435,7 @@ def main():
         line.Draw("same")
         all.append(line)
 
-    line=TLine(0,1,hist_ratio.GetXaxis().GetBinUpEdge(nonzeroBins[-1]),1)
+    # line=TLine(0,1,hist_ratio.GetXaxis().GetBinUpEdge(nonzeroBins[-1]),1)
     line.SetLineWidth(2)
     line.SetLineColor(18)
     line.Draw("same")
