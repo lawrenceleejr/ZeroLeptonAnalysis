@@ -54,14 +54,15 @@ combineDS1 = 0
 plotWithROOT = True
 plotWithMPL = False
 
-lumiscale = 22.1
+lumiscale = 36.47
 
 
 
 kindOfRegion = "SR"
 # kindOfRegion = "CRY"
+# kindOfRegion = "CRQ"
 # kindOfRegion = "CRW"
-# kindOfRegion = "CRT"
+# kindOfRegion = "VRZ"
 
 
 
@@ -101,7 +102,7 @@ colors = {
 myfiles = {
 	'DataMain':   ROOT.TFile('hists/output/%s/DataMain/hist-DataMain.root.root'%kindOfRegion),
 	# 'DataMain2016':   ROOT.TFile('hists/output/%s/DataMain_data16_13TeV/hist-DataMain_data16_13TeV.root.root'%kindOfRegion),
-	'QCD':    ROOT.TFile('hists/output/%s/QCD/hist-QCD.root.root'%kindOfRegion),
+	'QCD':    ROOT.TFile('hists/output/%s/QCD/hist-JetSmearing.root.root'%kindOfRegion),
 	# 'GammaJet':    ROOT.TFile('hists/output/%s/GAMMAMassiveCB/hist-GAMMAMassiveCB.root.root'%kindOfRegion),
 
 	'Top':    ROOT.TFile('hists/output/%s/Top/hist-Top.root.root'%kindOfRegion),
@@ -218,7 +219,8 @@ for histogramName in histogramNames:
 	myfiles = {
 		'DataMain':   ROOT.TFile('hists/output/%s/DataMain/hist-DataMain.root.root'%kindOfRegion),
 		# 'DataMain2016':   ROOT.TFile('hists/output/%s/DataMain_data16_13TeV/hist-DataMain_data16_13TeV.root.root'%kindOfRegion),
-		'QCD':    ROOT.TFile('hists/output/%s/QCD/hist-QCD.root.root'%kindOfRegion),
+		# 'QCD':    ROOT.TFile('hists/output/%s/QCD/hist-QCD.root.root'%kindOfRegion),
+		'QCD':    ROOT.TFile('hists/output/%s/QCD/hist-JetSmearing.root.root'%kindOfRegion),
 		'GAMMAMassiveCB':    ROOT.TFile('hists/output/%s/GAMMAMassiveCB/hist-GAMMAMassiveCB.root.root'%kindOfRegion),
 
 		'Top':    ROOT.TFile('hists/output/%s/Top/hist-Top.root.root'%kindOfRegion),
@@ -236,8 +238,8 @@ for histogramName in histogramNames:
 
 	# if "Loose" not in histogramName:
 	# 	continue
-	# if "SRG3b" not in histogramName:
-	# 	continue
+	if "SRG2a" not in histogramName:# and "SRG3Common" not in histogramName:
+		continue
 
 	if plotWithMPL:
 		plt.clf()
@@ -255,6 +257,8 @@ for histogramName in histogramNames:
 		# f.Print()
 		# hists[sample] =  f.Get(histogramName).Clone(histogramName+sample)
 
+		print sample
+		print f
 		hists[sample] = asrootpy( f.Get(histogramName).Clone(histogramName+sample) )
 		if not nBinsOrig:
 			nBinsOrig = hists[sample].GetNbinsX()
@@ -271,8 +275,14 @@ for histogramName in histogramNames:
 		if "SS_direct" in sample:
 			hists[sample].Scale(0.8)
 
-		if not 'Data' in sample:
+
+		if "QCD" in sample:
+			hists[sample].Scale(0.006727*lumiscale*1.15)
+
+		elif not 'Data' in sample:
 			hists[sample].Scale(lumiscale)
+
+		if not 'Data' in sample:
 			histsToStack.append( hists[sample] )
 
 		# print hists[sample].Integral()

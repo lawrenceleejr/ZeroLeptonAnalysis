@@ -17,7 +17,8 @@ h_den = f.Get("lumi_histo").Clone("h_den")
 h_num = {}
 h_eff = {}
 
-ftree = TFile("../DataFiles/RJR/DataMain_306451.root")
+# ftree = TFile("../DataFiles/RJR/DataMain_306451.root")
+ftree = TFile("../DataFiles/RJR/DataMain_311481.root")
 
 intree = {}
 
@@ -100,28 +101,28 @@ observedZValue = []
 tmpIntegratedLumi = 0.0
 
 for ibin in xrange( h_den.GetNbinsX() ):
-	if tmpIntegratedLumi/1000.>22.1:
+	if tmpIntegratedLumi/1000.>36.5:
 		break
 	tmpIntegratedLumi += h_den.GetBinContent(ibin)
 
 	nobs = h_num["SRG3b"].Integral(0,ibin)
-	nexp = 2.8*tmpIntegratedLumi/(22.1 * 1000.)
-	nexpsig = 10*tmpIntegratedLumi/(22.1 * 1000.)
+	nexp = 4.72*tmpIntegratedLumi/(36.5 * 1000.)
+	nexpsig = 12*tmpIntegratedLumi/(36.5 * 1000.)
 
 	integratedLumi.append(tmpIntegratedLumi/1000.)
 
-	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nexpsig,nexp,0.27)/2.
+	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nexpsig,nexp,0.25)/2.
 	tmpZvalue = RooStats.PValueToSignificance( tmpPvalue ) if tmpPvalue else 0
 	expectedZValue.append( tmpZvalue )
 
-	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nexpsig,nexp*(1+0.27),0.27)/2.
+	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nexpsig,nexp*(1+0.25),0.25)/2.
 	tmpZvalue = RooStats.PValueToSignificance( tmpPvalue ) if tmpPvalue else 0
 	expectedUpZValue.append( tmpZvalue )
-	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nexpsig,nexp*(1-0.27),0.27)/2.
+	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nexpsig,nexp*(1-0.25),0.25)/2.
 	tmpZvalue = RooStats.PValueToSignificance( tmpPvalue ) if tmpPvalue else 0
 	expectedDownZValue.append( tmpZvalue )
 
-	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nobs,nexp,0.27)/2.
+	tmpPvalue = RooStats.NumberCountingUtils.BinomialObsP(nobs,nexp,0.25)/2.
 	tmpZvalue = RooStats.PValueToSignificance( tmpPvalue ) if tmpPvalue else 0
 	observedZValue.append(  tmpZvalue )
 
@@ -168,13 +169,15 @@ gr_obs.Draw("LP")
 line = TLine()
 line.SetLineStyle(7)
 line.DrawLine(13.3,0,13.3,3)
-line.DrawLine(22.1,0,22.1,3)
+line.DrawLine(22,0,22,3)
+line.DrawLine(36.5,0,36.5,3)
 
 text = TLatex()
 text.SetTextAngle(90)
 text.SetTextSize(0.02)
 text.DrawText(13.2,0.1,"ICHEP")
-text.DrawText(22.0,0.1,"22.1 ifb")
+text.DrawText(22.0,0.1,"22 ifb")
+text.DrawText(36.5,0.1,"36.5 ifb")
 
 
 gPad.SetGrid()

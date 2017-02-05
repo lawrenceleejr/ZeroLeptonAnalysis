@@ -24,8 +24,8 @@ intree["SR"] = ftree.Get("trees_SR_")
 # intree["CRY"] = ftree.Get("Data_CRY")
 
 
-# var = "averageInteractionsPerCrossing"
-var = "NPV"
+var = "averageInteractionsPerCrossing"
+# var = "NPV"
 
 for regionName in intree:
 
@@ -60,6 +60,7 @@ for regionName in intree:
 
 		h_eff[mytree].Divide(h_num[mytree],h_den,1,1)
 		h_eff[mytree].GetYaxis().SetTitle("Efficiency wrt Preselection");
+		h_eff[mytree].GetXaxis().SetTitle("Mu")
 		h_eff[mytree].SetLineColor(colors[itree])
 		h_eff[mytree].SetMarkerColor(colors[itree])
 		h_eff[mytree].SetMarkerStyle(20)
@@ -77,7 +78,7 @@ for regionName in intree:
 	legend.Draw()
 
 	ATLASLabel(0.2,0.9,"Internal          %s"%regionName)
-	c.SaveAs("AcceptanceVsNPV_%s.pdf"%regionName)
+	c.SaveAs("AcceptanceVsMu_%s.pdf"%regionName)
 
 	
 
